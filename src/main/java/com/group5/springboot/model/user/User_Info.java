@@ -2,10 +2,15 @@ package com.group5.springboot.model.user;
 
 import java.sql.Blob;
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -13,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.group5.springboot.model.cart.OrderInfo;
+import com.group5.springboot.model.product.ProductInfo;
 
 @Entity
 @Table(name = "user_info")
@@ -42,6 +49,20 @@ public class User_Info {
 	@Transient
 	private String pictureString;
 	
+	/*********************************************************************/
+	// 被Order參考
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
+	private Set<OrderInfo> order = new HashSet<OrderInfo>();
+	public Set<OrderInfo> getOrder() {		return order;	}
+	public void setOrder(Set<OrderInfo> order) {		this.order = order;	}
+	// 被ProductInfo參考
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
+	private Set<ProductInfo> productInfo = new HashSet<ProductInfo>();
+	public Set<ProductInfo> getProductInfo() {		return productInfo;	}
+	public void setProductInfo(Set<ProductInfo> productInfo) {		this.productInfo = productInfo;	}
+	/*********************************************************************/
 	
 	//constructor
 	public User_Info() {

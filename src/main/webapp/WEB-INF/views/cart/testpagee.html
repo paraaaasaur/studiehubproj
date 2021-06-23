@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    
+    <!-- <input type="checkbox" id="ckbox" value="">普通ckbox1
+    <input type="checkbox" id="ckbox" value="">普通ckbox2 -->
+
+    <div id="dataArea">div</div>
+
+    <button id="delete" disabled>移除</button>
+
+    <script src="../resources/js/jquery-3.6.0.min.js"></script>
+    <script>
+        // 1 (showCart by AJAX) ✔
+        let dataArea = $('#dataArea');
+        $(window).on('load', function(){
+            let segment = "";
+            for (let i = 0; i < 8; i++) {
+                segment += "<input type='checkbox' name='ckbox' value='' id='ckbox'>手加的取消之 + " + i + "<br>";
+            }
+            dataArea.html(segment);
+        });
+
+        $(function(){
+            // DELETE功能防呆
+            $('input#ckbox').on('click', function(){
+					let ckboxes = $('input#ckbox:checked');
+					$('#delete').attr('disabled', true);
+						if($(ckboxes).length == 0 || $(ckboxes).length == null) {
+							console.log('(if)' + $(ckboxes).length);
+						} else {
+							$('#delete').attr('disabled', false);
+							console.log('(else)' + $(ckboxes).length);		
+						}
+				})
+
+
+
+            
+            
+        })
+    </script>
+</body>
+</html>

@@ -1,8 +1,3 @@
-<%@page import="tw.group5.controller.cart.*"%>
-<%@page import="javax.naming.*"%>
-<%@page import="java.util.*"%>
-<%@page import="java.sql.*"%>
-<%@page import="javax.sql.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -64,7 +59,7 @@
 		
 		<!--****************************************** S      C      R      I      P      T ******************************************-->
 		
-		<script src="/SpringMvcWebHW/js/jquery-3.6.0.min.js"></script>
+		<script src="<%= this.getServletContext().getContextPath()%>/assets/js/jquery.min.js"></script>
 		<script>
 			$(function(){
 				let logo = $('#logo');

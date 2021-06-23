@@ -23,8 +23,8 @@ public class OrderService implements IOrderService{
 		return orderDao.selectAll();
 	}
 	
-	public OrderInfo select(String P_ID) {
-		return orderDao.select(P_ID);
+	public OrderInfo select(OrderInfo orderBean) {
+		return orderDao.select(orderBean);
 	}
 
 	public List<OrderInfo> selectCustom(String hql) {

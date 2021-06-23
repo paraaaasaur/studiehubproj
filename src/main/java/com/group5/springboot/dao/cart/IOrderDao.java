@@ -8,9 +8,10 @@ public interface IOrderDao {
 	// 建立連線、提供SQL方法
 	
 	OrderInfo insert(OrderInfo orderBean);
-	OrderInfo select(String P_ID);
+//	OrderInfo select(String P_ID);
 	List<OrderInfo> selectCustom(String hql);
 	List<OrderInfo> selectAll();
+	OrderInfo select(OrderInfo orderBean);
 	
 	/**
 	

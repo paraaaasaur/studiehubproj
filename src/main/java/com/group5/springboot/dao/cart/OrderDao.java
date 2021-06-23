@@ -2,11 +2,15 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,11 +20,8 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class OrderDao implements IOrderDao {
-	@Autowired // SDI✔
-	private SessionFactory factory;
-//	private Session session;
-	// dataArrays在每次執行selectAllOrder()或selectOrder()時都會先被重製，
-	// 其他需要重製的時候需要手動重製。
+	@Autowired 
+	private EntityManager em;
 	public static ArrayList<ArrayList<String>> dataArrays;
 	public static final String columnNames[] = {"O_ID", "P_ID", "P_Name", "P_Price", "U_ID", "U_FirstName", "U_LastName",
 			"U_Email", "O_Status", "O_Date", "O_Amt"};
@@ -28,10 +29,9 @@ public class OrderDao implements IOrderDao {
 	
 	@Override
 	public OrderInfo insert(OrderInfo oBean) {
-		Session session = factory.getCurrentSession();
 
-		ProductInfo pBean = session.get(ProductInfo.class, oBean.getP_id());
-		User_Info uBean = session.get(User_Info.class, oBean.getU_id());
+		ProductInfo pBean = em.find(ProductInfo.class, oBean.getP_id());
+		User_Info uBean = em.find(User_Info.class, oBean.getU_id());
 		
 		if(pBean == null) {
 			System.out.println("********** 錯誤：以 p_id (" + oBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
@@ -49,50 +49,44 @@ public class OrderDao implements IOrderDao {
 		oBean.setProductInfo(pBean); // O-P 關聯
 		oBean.setUser_Info(uBean); // O-U 關聯
 		
-		session.save(oBean);
+		em.persist(oBean);
 		return oBean;
 	}
 	
 	@Override
 	public List<OrderInfo> selectAll() {
-		Session session = factory.getCurrentSession();
-		Query<OrderInfo> query = session.createQuery("FROM Order_Info", OrderInfo.class);
-		return query.list();
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo", OrderInfo.class);
+		return query.getResultList();
 	}
 	
 	@Override
-	public OrderInfo select(String P_ID) {
-		Session session = factory.getCurrentSession();
+	public OrderInfo select(OrderInfo orderBean) {
 		// ‼ HQL不是用table名而是 @Entity ‼
-		Query<OrderInfo> query = session.createQuery("SELECT * FROM Order WHERE p_id = :pid", OrderInfo.class);
-		query.setParameter("pid", P_ID);
-		return query.uniqueResult();
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
+		query.setParameter("oid", orderBean.getO_id());
+		return query.getSingleResult();
 	}
 
 	@Override
 	public List<OrderInfo> selectCustom(String hql) {
-		Session session = factory.getCurrentSession();
-		Query<OrderInfo> query = session.createQuery(hql, OrderInfo.class);
+		TypedQuery<OrderInfo> query = em.createQuery(hql, OrderInfo.class);
 		List<OrderInfo> resultList = query.getResultList();
 		return resultList;
 	}
 	
 	// Admin - 1
 	public List<OrderInfo> selectTop20() {
-		Session session = factory.getCurrentSession();
-		Query<OrderInfo> query = session.createQuery("FROM Order ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
-//		Order uniqueResult = query.uniqueResult();
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
 		List<OrderInfo> resultList = query.getResultList();
 		return resultList;
 	}
 	// Admin - 2
 	public boolean update(OrderInfo newOBean) {
-		Session session = factory.getCurrentSession();
 		boolean updateStatus = false;
 		// 以PK查出資料庫的 O- / P- / U-Bean
-		OrderInfo oBean = session.get(OrderInfo.class, newOBean.getO_id()); 
-		ProductInfo pBean = session.get(ProductInfo.class, newOBean.getP_id());
-		User_Info uBean = session.get(User_Info.class, newOBean.getU_id());
+		OrderInfo oBean = em.find(OrderInfo.class, newOBean.getO_id()); 
+		ProductInfo pBean = em.find(ProductInfo.class, newOBean.getP_id());
+		User_Info uBean = em.find(User_Info.class, newOBean.getU_id());
 		
 		if(pBean == null) {
 			System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
@@ -123,7 +117,7 @@ public class OrderDao implements IOrderDao {
 			oBean.setProductInfo(pBean); // O-P 關聯
 			oBean.setUser_Info(uBean); // O-U 關聯
 			
-			session.update(oBean); 
+			em.merge(oBean); 
 		} else {
 			System.out.println("*** Order with O_ID = " + newOBean.getO_id() + "doesn't exist in the database :^) ***");
 		}
@@ -131,16 +125,14 @@ public class OrderDao implements IOrderDao {
 		return updateStatus;
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public boolean delete(OrderInfo orderBean) {
-		Session session = factory.getCurrentSession();
 		// 方法⓵ > 執行SELECT + DELETE
-/**		Order resultBean = session.get(Order.class, orderBean.getO_id());
+/**		Order resultBean = em.find(Order.class, orderBean.getO_id());
 		if (resultBean != null) {
 			session.delete(orderBean); 
 		}*/
 		// 方法⓶ > HQL
-		Query query = session.createQuery("DELETE Order WHERE o_id = :oid");
+		Query query = em.createQuery("DELETE Order WHERE o_id = :oid");
 		query.setParameter("oid", orderBean.getO_id());
 		int deletedNum = query.executeUpdate();
 		System.out.println("You deleted " + deletedNum + " row(s) from order_info table.");

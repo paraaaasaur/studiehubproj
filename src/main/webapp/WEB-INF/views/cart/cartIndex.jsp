@@ -28,7 +28,6 @@
 	</style>
 </head>
 <body>
-	<center>
 	<h1>您的購物車內有：</h1>
 	<!-- 顯示當前購物車內容表格 -->
 	<form method="POST" action="#"> 
@@ -57,7 +56,6 @@
 		<button formmethod="GET" formaction="<c:url value='/cart.controller/cartAdmin' />">到購物車GM頁面</button>
 	</form>
 		<hr>
-	</center>
 
 	<!--****************************************** S      C      R      I      P      T ******************************************-->
 

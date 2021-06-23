@@ -52,14 +52,16 @@ public class OrderInfo implements Serializable{
 	// 去參考User_Info
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)	
-	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true, 
+			columnDefinition = "NVARCHAR(50) CONSTRAINT FK_UID FOREIGN KEY REFERENCES user_info(u_id) ON UPDATE CASCADE")
 	private User_Info user_Info;
 	public User_Info getUser_Info() {return user_Info;}
 	public void setUser_Info(User_Info user_Info) {this.user_Info = user_Info;}
 	// 去參考ProductInfo
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "P_ID", referencedColumnName = "P_ID", insertable = true, updatable = true)
+	@JoinColumn(name = "P_ID", referencedColumnName = "P_ID", insertable = true, updatable = true,
+			columnDefinition = "INT CONSTRAINT FK_PID FOREIGN KEY REFERENCES ProductInfo(p_id) ON UPDATE CASCADE")
 	private ProductInfo productInfo;
 	public ProductInfo getProductInfo() {return productInfo;}
 	public void setProductInfo(ProductInfo productInfo) {this.productInfo = productInfo;}

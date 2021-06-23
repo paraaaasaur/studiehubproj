@@ -59,7 +59,7 @@
 
 	<!--****************************************** S      C      R      I      P      T ******************************************-->
 
-	<script src="/SpringMvcWebHW/js/jquery-3.6.0.min.js"></script>
+	<script src="<c:url value='/' />assets/js/jquery.min.js"></script>
 	<script>
 		$(function(){
 		let products;	

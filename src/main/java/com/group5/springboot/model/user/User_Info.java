@@ -50,18 +50,18 @@ public class User_Info {
 	private String pictureString;
 	
 	/*********************************************************************/
-	// 被Order參考
+	// 被OrderInfo參考
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
-	private Set<OrderInfo> order = new HashSet<OrderInfo>();
-	public Set<OrderInfo> getOrder() {		return order;	}
-	public void setOrder(Set<OrderInfo> order) {		this.order = order;	}
+	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
+	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
+	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
 	// 被ProductInfo參考
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
-	private Set<ProductInfo> productInfo = new HashSet<ProductInfo>();
-	public Set<ProductInfo> getProductInfo() {		return productInfo;	}
-	public void setProductInfo(Set<ProductInfo> productInfo) {		this.productInfo = productInfo;	}
+	private Set<ProductInfo> productInfoSet = new HashSet<ProductInfo>();
+	public Set<ProductInfo> getProductInfoSet() {		return productInfoSet;	}
+	public void setProductInfoSet(Set<ProductInfo> productInfoSet) {		this.productInfoSet = productInfoSet;	}
 	/*********************************************************************/
 	
 	//constructor

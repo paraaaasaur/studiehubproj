@@ -1,7 +1,3 @@
-<%@page import="tw.group5.controller.cart.*"%>
-<%@page import="tw.group5.model.cart.*"%>
-<%@page import="tw.group5.model.product.ProductInfo"%>
-<%@page import="java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -11,7 +7,6 @@
 <title>Checkout Page</title>
 </head>
 <body>
-	<center>
 	<h1>您欲購買的項目如下：</h1>
 	<!-- 1. 顯示當前購物車內容表格........................................ -->
 	<form> 
@@ -35,11 +30,10 @@
 		<button formmethod="POST" formaction="<c:url value='/cart.controller/pay' />">確定結帳</button>
 		<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>
 		<hr>
-	</form>		
-	</center>
+	</form>
 	<!--****************************************** S      C      R      I      P      T ******************************************-->
 
-	<script src="/SpringMvcWebHW/js/jquery-3.6.0.min.js"></script>
+	<script src="<c:url value='/' />assets/js/jquery.min.js"></script>
 	<script>
 		$(function(){
 			// [AJAX] showCart ✔

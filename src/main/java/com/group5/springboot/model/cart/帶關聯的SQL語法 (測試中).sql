@@ -70,40 +70,13 @@ DELETE FROM ProductInfo
 DELETE FROM User_Info
 GO
 -- user part
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'josh', N'josh', CAST(N'1997-08-18' AS Date), N'Sun', N'Joshua', NULL, N'josh@email', N'0987654321', N'男', N'TWTYC')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'ken', N'kenken', CAST(N'2021-12-31' AS Date), N'Huang', N'Ken', NULL, N'freakinpink@gmail', N'12345', N'男', N'TW')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'nick', N'nick', CAST(N'2021-12-31' AS Date), N'Chung', N'Meng Hua', NULL, N'nick@gmail.com', N'45678', N'男', N'TW')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'tajen', N'tajen', CAST(N'2021-12-31' AS Date), N'Wang', N'Ta Jen', NULL, N'tajen@gmail.com', N'23456', N'男', N'TW')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'test0608', N'tt', CAST(N'1900-01-01' AS Date), N'test', N'testfirst', NULL, N'test@email', N'0123456789', N'女', N'桃園市')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'test0609', N'test0609', CAST(N'2021-06-09' AS Date), N'test0609', N'test0609', NULL, N'0609@email', N'06099999', N'女', N'TW')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'test0610', N'test0610', CAST(N'2021-06-10' AS Date), N'測試', N'測試名字', NULL, N'0610@email', N'987654321', N'女', N'台北市')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'test06101', N'test06101', CAST(N'2021-06-10' AS Date), N'0610姓', N'0610名', NULL, N'0610@email', N'0987654321', N'女', N'新北市')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'yen', N'yen', CAST(N'2021-12-31' AS Date), N'Yen', N'Jia Cheng', NULL, N'yen@gmail.com', N'56789', N'男', N'TW')
-GO
-INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstname], [u_img], [u_email], [u_tel], [u_gender], [u_address]) VALUES (N'yuz', N'yuz', CAST(N'2021-12-31' AS Date), N'Tu', N'Yu Zhe', NULL, N'yuz@gmail.com', N'34567', N'男', N'TW')
+INSERT user_info VALUES ('fbk001', 'image/jpeg', 'galaxy', GETDATE(), 'c@a.t', 'Fubuki', 'female', 0x, 'Shirakami', 'kitsunejai', '0415')
 GO
 
 -- product part
-INSERT INTO ProductInfo VALUES ('EN_Speaking', 'EN', 5006, 'lul', null, '1999-12-12', 100, 100)
-INSERT ProductInfo VALUES ('RU_READING', 'RU', 6000, 'NICE N FUN', 'ken', '2000-01-02', 100, 100)
--- order part
-/*
-INSERT [dbo].[Order_Info] VALUES (1, N'EN_Speaking', 300, N'elf001', N'fl', N'b', N'w@w.w', N'cancelled', CAST(N'1901-12-01T00:00:00' AS SmallDateTime), 300)
-INSERT [dbo].[Order_Info] VALUES (6, N'JP_Speaking', 500, N'fox002', N'fu', N'b', N'x@x.x', N'done', CAST(N'1902-12-02T00:00:00' AS SmallDateTime), 500)
-INSERT [dbo].[Order_Info] VALUES (49, N'EN_Reading', 900, N'sheep004', N'wa', N'b', N'y@y.y', N'cancelled', CAST(N'1903-12-03T00:00:00' AS SmallDateTime), 900)
-INSERT [dbo].[Order_Info] VALUES (1753, N'DE_Speaking', 799, N'alien909', N'erf', N'id', N'z@z.z', N'done', CAST(N'1904-06-03T00:00:00' AS SmallDateTime), 799)
-INSERT [dbo].[Order_Info] VALUES (100201, N'ES_Writing', 199, N'893doragon', N'cc', N'msg', N'a@a.a', N'done', CAST(N'1905-01-01T00:00:00' AS SmallDateTime), 762)
-INSERT [dbo].[Order_Info] VALUES (057771, N'SV_Translation', 563, N'bark563', N'knr', N'ingm', N'b@b.b', N'done', CAST(N'1906-11-22T22:05:00' AS SmallDateTime), 762)
+INSERT ProductInfo VALUES ('RU', 'halashu', 0x, 'RU_Reading', 7000, null, '2000-01-02', 'fbk001')
+INSERT ProductInfo VALUES ('EN', 'awesome', 0x, 'EN_Speaking', 6000, null, '1999-12-12', 'fbk001')
 GO
-*/
-INSERT Order_Info VALUES (1, N'EN_Speaking', 5006, 'tajen', N'fl', N'b', N'w@w.w', DEFAULT, DEFAULT, 300)
-INSERT Order_Info VALUES (1, 'RU_READING', 6000, 'tajen', 'jen', 'ta', '1@2.3', DEFAULT, DEFAULT, 999)
+-- order part
+INSERT Order_Info VALUES (13000, DEFAULT, DEFAULT, 1, 'RU_Reading', 7000, 'c@a.t', 'Fubuki', 'fbk001', 'Shirakami')
 GO

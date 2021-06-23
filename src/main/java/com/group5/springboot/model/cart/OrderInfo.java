@@ -1,6 +1,5 @@
 package com.group5.springboot.model.cart;
 
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,8 +21,7 @@ import com.group5.springboot.model.user.User_Info;
 // OrderBean = cart +- 一些額外資訊
 @Entity @Table(name = "order_info") 
 @Component
-public class OrderInfo implements Serializable{
-	private static final long serialVersionUID = 1422113491878164504L;
+public class OrderInfo {
 	
 	@Id @Column(name = "O_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,26 +40,24 @@ public class OrderInfo implements Serializable{
 	private String u_lastname; 
 	@Column(name = "U_EMAIL")
 	private String u_email; 
-	@Column(name = "O_STATUS")
+	@Column(name = "O_STATUS", columnDefinition = "NVARCHAR(100)  DEFAULT 'DONE'", insertable = false, updatable = true)
 	private String o_status;
-	@Column(name = "O_DATE", insertable = false, updatable = true)
-	private String o_date; // Date()會不會更好？
+	@Column(name = "O_DATE", insertable = false, updatable = true, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
+	private String o_date; // ❗Date()會不會更好？
 	@Column(name = "O_AMT")
 	private Integer o_amt;
 	/*********************************************************************/
 	// 去參考User_Info
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)	
-	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true, 
-			columnDefinition = "NVARCHAR(50) CONSTRAINT FK_UID FOREIGN KEY REFERENCES user_info(u_id) ON UPDATE CASCADE")
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {return user_Info;}
 	public void setUser_Info(User_Info user_Info) {this.user_Info = user_Info;}
 	// 去參考ProductInfo
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "P_ID", referencedColumnName = "P_ID", insertable = true, updatable = true,
-			columnDefinition = "INT CONSTRAINT FK_PID FOREIGN KEY REFERENCES ProductInfo(p_id) ON UPDATE CASCADE")
+	@JoinColumn(name = "P_ID", referencedColumnName = "P_ID", insertable = true, updatable = true)
 	private ProductInfo productInfo;
 	public ProductInfo getProductInfo() {return productInfo;}
 	public void setProductInfo(ProductInfo productInfo) {this.productInfo = productInfo;}
@@ -84,20 +80,6 @@ public class OrderInfo implements Serializable{
 		setO_date       (o_Date     );
 		setO_amt        (o_Amt      );
 	}
-	public OrderInfo(Integer p_ID, String p_Name, Integer p_Price, String u_ID, String u_FirstName,
-			String u_LastName, String u_Email, String o_Status, String o_Date, Integer o_Amt) {
-//		setO_id         (o_ID       );
-		setP_id         (p_ID       );
-		setP_name       (p_Name     );
-		setP_price      (p_Price    );
-		setU_id         (u_ID       );
-		setU_firstname  (u_FirstName);
-		setU_lastname   (u_LastName );
-		setU_email      (u_Email    );
-		setO_status     (o_Status   );
-		setO_date       (o_Date     );
-		setO_amt        (o_Amt      );
-	}                    
 	
 	// getters
 	public Integer getO_id()        {return o_id;}
@@ -125,12 +107,10 @@ public class OrderInfo implements Serializable{
 	public void setO_date(String o_Date) {o_date = o_Date;}
 	public void setO_amt(Integer o_Amt) {o_amt = o_Amt;}
 	
-
-	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Order [o_id=");
+		builder.append("OrderInfo [o_id=");
 		builder.append(o_id);
 		builder.append(", p_id=");
 		builder.append(p_id);
@@ -152,94 +132,12 @@ public class OrderInfo implements Serializable{
 		builder.append(o_date);
 		builder.append(", o_amt=");
 		builder.append(o_amt);
+		builder.append(", user_Info=");
+		builder.append(user_Info);
+		builder.append(", productInfo=");
+		builder.append(productInfo);
 		builder.append("]");
 		return builder.toString();
-	}
-	
-	// 為了配合for迴圈的懶人用方法之一...
-	public String take(int SqlIndex) {
-		String returnedString = null;
-		switch (SqlIndex) {
-		case 1:
-			returnedString = String.valueOf(getO_id());
-			break;
-		case 2:
-			returnedString = String.valueOf(getP_id());
-			break;
-		case 3:
-			returnedString = getP_name();
-			break;
-		case 4:
-			returnedString = String.valueOf(getP_price());
-			break;
-		case 5:
-			returnedString = getU_id();
-			break;
-		case 6:
-			returnedString = getU_firstname();
-			break;
-		case 7:
-			returnedString = getU_lastname();
-			break;
-		case 8:
-			returnedString = getU_email();
-			break;
-		case 9:
-			returnedString = getO_status();
-			break;
-		case 10:
-			returnedString = getO_date();
-			break;
-		case 11:
-			returnedString = String.valueOf(getO_amt());
-			break;
-
-		default:
-			break;
-		}
-		return returnedString;
-	}
-	
-	// 為了配合for迴圈的懶人用方法之二...
-	public void assign(int SQLindex, String value) {
-		switch (SQLindex) {
-		case 1:
-			setO_id(Integer.parseInt(value));
-			break;
-		case 2:
-			setP_id(Integer.parseInt(value));
-			break;
-		case 3:
-			setP_name(value);
-			break;
-		case 4:
-			setP_price(Integer.parseInt(value));
-			break;
-		case 5:
-			setU_id(value);
-			break;
-		case 6:
-			setU_firstname(value);
-			break;
-		case 7:
-			setU_lastname(value);
-			break;
-		case 8:
-			setU_email(value);
-			break;
-		case 9:
-			setO_status(value);
-			break;
-		case 10:
-			setO_date(value);
-			break;
-		case 11:
-			setO_amt(Integer.parseInt(value));
-			break;
-
-		default:
-			break;
-		}
 	}
 	
 }

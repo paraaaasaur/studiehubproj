@@ -59,7 +59,7 @@
 		
 		<!--****************************************** S      C      R      I      P      T ******************************************-->
 		
-		<script src="<%= this.getServletContext().getContextPath()%>/assets/js/jquery.min.js"></script>
+		<script src="<c:url value='/' />/assets/js/jquery.min.js"></script>
 		<script>
 			$(function(){
 				let logo = $('#logo');
@@ -111,7 +111,7 @@
 						}
 					}
 					showTop20();
-					logo.text('已刪除勾選之項目！');
+// 					logo.text('已刪除勾選之項目！');
 
 				})
 
@@ -337,10 +337,10 @@
 					<tr style="background-color: yellow;">
 						<td></td>
 							<td><input required type='text' class='new0' value='由系統自動產生' readonly name='new` + counter + `0'    ></td>
-							<td><input required type='text' class='new1' value='555' name='new` + counter + `1'    ></td>
+							<td><input required type='text' class='new1' value='1' name='new` + counter + `1'    ></td>
 							<td><input required type='text' class='new2' value='CS_Conversation' name='new` + counter + `2'    ></td>
 							<td><input required type='text' class='new3' value='777' name='new` + counter + `3'  id='num'  ></td>
-							<td><input required type='text' class='new4' value='randomAlien' name='new` + counter + `4'    ></td>
+							<td><input required type='text' class='new4' value='fbk001' name='new` + counter + `4'    ></td>
 							<td><input required type='text' class='new5' value='aaa' name='new` + counter + `5'    ></td>
 							<td><input required type='text' class='new6' value='bbb' name='new` + counter + `6'    ></td>
 							<td><input required type='text' class='new7' value='c@e.f' name='new` + counter + `7'    ></td>

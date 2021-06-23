@@ -2,7 +2,6 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,34 +21,48 @@ import com.group5.springboot.model.user.User_Info;
 public class OrderDao implements IOrderDao {
 	@Autowired 
 	private EntityManager em;
-	public static ArrayList<ArrayList<String>> dataArrays;
-	public static final String columnNames[] = {"O_ID", "P_ID", "P_Name", "P_Price", "U_ID", "U_FirstName", "U_LastName",
-			"U_Email", "O_Status", "O_Date", "O_Amt"};
 	
 	
 	@Override
 	public OrderInfo insert(OrderInfo oBean) {
-
+		
 		ProductInfo pBean = em.find(ProductInfo.class, oBean.getP_id());
 		User_Info uBean = em.find(User_Info.class, oBean.getU_id());
 		
 		if(pBean == null) {
-			System.out.println("********** 錯誤：以 p_id (" + oBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
+			System.out.println("********** 新增失敗：以 p_id (" + oBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
 			return null;
 		} else if(uBean == null) {
-			System.out.println("********** 錯誤：以 o_id (" + oBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
+			System.out.println("********** 新增失敗：以 u_id (" + oBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
 			return null;	
 		}
+		// 把值補完整
+		oBean.setU_firstname(uBean.getU_firstname()); 
+		oBean.setU_lastname(uBean.getU_lastname()); 
+		oBean.setU_email(uBean.getU_email());
+		
+		oBean.setP_name(pBean.getP_Name());
+		oBean.setP_price(pBean.getP_Price());
+		
 		// 準備綁定關聯
 		Set<OrderInfo> orderSet = new HashSet<OrderInfo>();
 		orderSet.add(oBean);
-		// 互相綁定關聯
-		pBean.setOrder(orderSet); // P-Os 關聯
-		uBean.setOrder(orderSet); // U-Os 關聯
+		Set<ProductInfo> productInfoSet = new HashSet<ProductInfo>();
+		productInfoSet.add(pBean);
+		
+		// 互相綁定關聯 (共計 3! = 6 個關聯)
+		pBean.setOrderInfoSet(orderSet); // P-Os 關聯
+		uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+		uBean.setProductInfoSet(productInfoSet); // U-Ps 關聯
 		oBean.setProductInfo(pBean); // O-P 關聯
 		oBean.setUser_Info(uBean); // O-U 關聯
+		pBean.setUser_Info(uBean); // P-U 關聯
 		
-		em.persist(oBean);
+		System.out.println("**********************************************************");
+		System.out.println(oBean.toString());
+		System.out.println("**********************************************************");
+		em.merge(oBean);
+//		em.persist(oBean); // ❓ Admin可以 Index不行，為何RRR
 		return oBean;
 	}
 	
@@ -112,8 +125,8 @@ public class OrderDao implements IOrderDao {
 			Set<OrderInfo> orderSet = new HashSet<OrderInfo>();
 			orderSet.add(oBean);
 			// 互相綁定關聯
-			pBean.setOrder(orderSet); // P-Os 關聯
-			uBean.setOrder(orderSet); // U-Os 關聯
+			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
+			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
 			oBean.setProductInfo(pBean); // O-P 關聯
 			oBean.setUser_Info(uBean); // O-U 關聯
 			
@@ -132,7 +145,7 @@ public class OrderDao implements IOrderDao {
 			session.delete(orderBean); 
 		}*/
 		// 方法⓶ > HQL
-		Query query = em.createQuery("DELETE Order WHERE o_id = :oid");
+		Query query = em.createQuery("DELETE OrderInfo WHERE o_id = :oid");
 		query.setParameter("oid", orderBean.getO_id());
 		int deletedNum = query.executeUpdate();
 		System.out.println("You deleted " + deletedNum + " row(s) from order_info table.");

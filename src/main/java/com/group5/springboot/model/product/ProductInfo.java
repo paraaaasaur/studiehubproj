@@ -38,7 +38,7 @@ public class ProductInfo {
 	private int p_Price;
 	@Column(name = "p_DESC")
 	private String p_DESC;
-	@Column(name = "u_ID")
+	@Column(name = "u_ID", insertable = false, updatable = false)
 	private String u_ID;
 //	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ProductInfo")
 //	private Product product;
@@ -53,16 +53,16 @@ public class ProductInfo {
 	private byte[] p_Video;
 	
 	/*********************************************************************/
-	// 被Order參考
+	// 被OrderInfo參考
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
-	private Set<OrderInfo> order = new HashSet<OrderInfo>();
-	public Set<OrderInfo> getOrder() {		return order;	}
-	public void setOrder(Set<OrderInfo> order) {		this.order = order;	}
+	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
+	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
+	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
 	// 去參考User_Info
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = false, updatable = false)
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {		return user_Info;	}
 	public void setUser_Info(User_Info user_Info) {		this.user_Info = user_Info;	}

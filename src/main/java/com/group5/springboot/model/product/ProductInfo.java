@@ -4,6 +4,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,8 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.model.cart.OrderInfo;
 
 @Entity
 @Table(name = "ProductInfo")
@@ -41,6 +40,8 @@ public class ProductInfo {
 	private Blob p_Img;
 	@JsonIgnore
 	private Blob p_Video;
+	// ❗ 下面兩者，之後和 User 建關聯時應該會需要要關成false
+	// ❗ @Column(insertable = true, updatable = true) 
 	private String u_ID;
 	private String img_mimeType;
 	private String video_mimeType;
@@ -52,21 +53,23 @@ public class ProductInfo {
 	@Transient
 	private MultipartFile videoFile;
 	
-	/*********************************************************************/
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 	// 被OrderInfo參考
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
 	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
 	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
 	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
-	// 去參考User_Info
+	// 去參考User_Info (※以後要和User_Info建立關聯時再開啟)
+	/*
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {		return user_Info;	}
 	public void setUser_Info(User_Info user_Info) {		this.user_Info = user_Info;	}
-	/*********************************************************************/
+	*/
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 
 	public Integer getP_ID() {
 		return p_ID;

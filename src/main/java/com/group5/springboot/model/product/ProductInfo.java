@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,6 +25,7 @@ import com.group5.springboot.model.cart.OrderInfo;
 
 @Entity
 @Table(name = "ProductInfo")
+@Component
 public class ProductInfo {
 
 	@Id
@@ -52,6 +54,7 @@ public class ProductInfo {
 	private MultipartFile imgFile;
 	@Transient
 	private MultipartFile videoFile;
+
 	
 	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 	// 被OrderInfo參考
@@ -70,6 +73,7 @@ public class ProductInfo {
 	public void setUser_Info(User_Info user_Info) {		this.user_Info = user_Info;	}
 	*/
 	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
+
 
 	public Integer getP_ID() {
 		return p_ID;

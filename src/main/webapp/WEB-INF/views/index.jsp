@@ -33,9 +33,11 @@ window.onload = function(){
     
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
+    var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
     if(u_id){
     	loginHref.hidden = true;
+    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     } 
     

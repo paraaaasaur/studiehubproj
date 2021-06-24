@@ -22,11 +22,14 @@ public class User_Info {
 	@Id
 	@Column(name = "u_id")
 	private String u_id;
-
+	@Column(nullable = false)
 	private String u_psw;
 	private Date u_birthday;
+	@Column(nullable = false)
 	private String u_lastname;
+	@Column(nullable = false)
 	private String u_firstname;
+	@Column(nullable = false)
 	private String u_email;
 	private String u_tel;
 	private String u_gender;

@@ -19,10 +19,12 @@
 										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
 										<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
 										<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li> -->
-			<li><a href="#" class=""><span class="label">登出</span></a></li>
+			<li id='logoutHref' style="visibility:hidden"><a href="<c:url value='/logout.controller' />" id='logout'><span class="label">登出</span></a></li>
+<%-- 			<li><a href="<c:url value='/logout.controller' />" class="" id='logout'><span class="label">登出</span></a></li> --%>
 			<!-- <li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li> -->
 		</ul>
 	</header>
+	
 </body>
 
 </html>

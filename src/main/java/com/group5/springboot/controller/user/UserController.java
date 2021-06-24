@@ -41,7 +41,8 @@ public class UserController {
 		String returnPage = "";
 		boolean loginResult = checkIfLogin(model);
 		if (loginResult) {
-			returnPage = "user/userIndex";
+//			returnPage = "user/userIndex";
+			returnPage = "index";
 		}else {
 			returnPage = "user/login";
 		}

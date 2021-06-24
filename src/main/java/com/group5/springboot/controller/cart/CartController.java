@@ -1,7 +1,5 @@
 package com.group5.springboot.controller.cart;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -97,30 +95,11 @@ public class CartController {
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping("/cart.controller/pay")
 	public String pay() {
-		
-		// (1) 取得O_ID：查出最新的O_ID ❌
-		// (2) 取得U_ID，U_FirstName，U_LastName，U_Email
-		ArrayList<User_Info> fakeUserInfos = new ArrayList<User_Info>();
+
 		User_Info fakeUserInfo00 = new User_Info();
 		fakeUserInfo00.setU_id("fbk001");
-//		fakeUserInfo00.setU_psw("tkym999");
-//		fakeUserInfo00.setU_birthday(new Date(System.currentTimeMillis()));
-//		fakeUserInfo00.setU_lastname("Tokoyami");
-//		fakeUserInfo00.setU_firstname("Towa");
-//		fakeUserInfo00.setU_email("akuma@tmt.jp");
-//		fakeUserInfo00.setU_gender("female");
-//		fakeUserInfo00.setU_address("Earth");
-//		fakeUserInfo00.setU_img(null);
-//		fakeUserInfo00.setMimeType("image/jpeg");
-		fakeUserInfos.add(fakeUserInfo00);
 		
-		// (3) 取得O_Date (使用SimpleDateFormat)
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		String now = sdf.format(calendar.getTime());
-		
-		// (4) 取得O_Amt
+		// 取得O_Amt
 		 Integer O_Amt = 0;
 		 for (int i = 0; i < this.cart.size(); i++) {
 			O_Amt += this.cart.get(i).getP_Price();
@@ -133,7 +112,7 @@ public class CartController {
 			orderBean.setP_id(cart.get(i).getP_ID()); // FK
 //			orderBean.setP_name(cart.get(i).getP_Name()); 
 //			orderBean.setP_price(cart.get(i).getP_Price()); 
-			orderBean.setU_id(fakeUserInfos.get(0).getU_id()); // FK // fake
+			orderBean.setU_id(fakeUserInfo00.getU_id()); // FK // fake
 //			orderBean.setU_firstname(fakeUserInfos.get(0).getU_firstname()); 
 //			orderBean.setU_lastname(fakeUserInfos.get(0).getU_lastname()); 
 //			orderBean.setU_email(fakeUserInfos.get(0).getU_email());
@@ -176,8 +155,7 @@ public class CartController {
 	@PostMapping(value = "/cart.controller/updateAdmin")
 	@ResponseBody
 	public Map<String, String> adminUpdate(@RequestBody OrderInfo order) {
-		
-		
+		// ❗ 之後加上一圈先檢查 FK 的機制
 		boolean updateStatus = (orderService.update(order))? true : false;
 		String msg = "oid = " + order.getO_id() + ((updateStatus)?  "：修改成功✔" : "：修改失敗❌");
 		HashMap<String, String> resultMap = new HashMap<>();

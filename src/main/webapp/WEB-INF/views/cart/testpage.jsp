@@ -21,7 +21,7 @@
 				let dataArea = $('#dataArea');
 				// let sss = $('#sss');
 				let xhr = new XMLHttpRequest();
-				let url = "<c:url value='/cart.controller/initAdminPageData' />";
+				let url = "<c:url value='/cart.controller/adminSelectTop20' />";
 				xhr.open("GET", url, true);
 				xhr.send();
 				xhr.onreadystatechange = function() {

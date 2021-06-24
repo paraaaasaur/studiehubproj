@@ -68,16 +68,8 @@
 				let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
 				// 從1990-01-01到2021-12-31 // 沒有防大小月和２月
 
-			/************************************************************************************/
+			/*********************************************************************************************************/
 
-				$('#testxx').on('click', function(){
-					for(let i = 0; i< oldRowsNum; i++) {
-						let ckboxValue = $('.ckbox' + i).val();
-						let ckboxIsChecked = $('.ckbox' + i).is(':checked');
-						console.log('ckboxValue' + i + ' = ' + ckboxValue);
-						console.log('ckboxIsChecked? = ' + ckboxIsChecked);
-					}
-				})
 
 				// [AJAX] admin massive delete
 				$('#delete').on('click', function(){
@@ -171,7 +163,7 @@
 						xhr.send(JSON.stringify(json));
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								let result = JSON.parse(xhr.responseText);
+								let result = JSON.parse(xhr.responseText); // 還回來一張map
 								console.log(result.state);
 							}
 						}
@@ -265,7 +257,7 @@
 			function  showTop20() {
 				let dataArea = $('#dataArea');
 				let xhr = new XMLHttpRequest();
-				let url = "<c:url value='/cart.controller/initAdminPageData' />";
+				let url = "<c:url value='/cart.controller/adminSelectTop20' />";
 				xhr.open("GET", url, true);
 				xhr.send();
 				xhr.onreadystatechange = function() {

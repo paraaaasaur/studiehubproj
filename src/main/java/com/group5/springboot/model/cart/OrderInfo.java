@@ -23,28 +23,21 @@ import com.group5.springboot.model.user.User_Info;
 @Component
 public class OrderInfo {
 	
-	@Id @Column(name = "O_ID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer o_id ; // PK
 	@Column(name = "P_ID", insertable = false, updatable = false) 
 	private Integer p_id; // FK
-	@Column(name = "P_NAME")
 	private String p_name; 
-	@Column(name = "P_PRICE")
 	private Integer p_price; 
 	@Column(name = "U_ID", insertable = false, updatable = false) 
 	private String u_id; // FK
-	@Column(name = "U_FIRSTNAME")
 	private String u_firstname; 
-	@Column(name = "U_LASTNAME")
 	private String u_lastname; 
-	@Column(name = "U_EMAIL")
 	private String u_email; 
-	@Column(name = "O_STATUS", columnDefinition = "NVARCHAR(100)  DEFAULT 'DONE'", insertable = false, updatable = true)
+	@Column(columnDefinition = "NVARCHAR(100)  DEFAULT 'DONE'", insertable = false, updatable = false)
 	private String o_status;
-	@Column(name = "O_DATE", insertable = false, updatable = true, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
+	@Column(insertable = false, updatable = false, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
 	private String o_date; // ❗Date()會不會更好？
-	@Column(name = "O_AMT")
 	private Integer o_amt;
 	/*********************************************************************/
 	// 去參考User_Info

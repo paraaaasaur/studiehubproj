@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.model.cart.OrderInfo;
-import com.group5.springboot.model.product.ProductInfo;
 
 @Entity
 @Table(name = "user_info")
@@ -29,11 +28,14 @@ public class User_Info {
 	@Id
 	@Column(name = "u_id")
 	private String u_id;
-
+	@Column(nullable = false)
 	private String u_psw;
 	private Date u_birthday;
+	@Column(nullable = false)
 	private String u_lastname;
+	@Column(nullable = false)
 	private String u_firstname;
+	@Column(nullable = false)
 	private String u_email;
 	private String u_tel;
 	private String u_gender;
@@ -49,20 +51,22 @@ public class User_Info {
 	@Transient
 	private String pictureString;
 	
-	/*********************************************************************/
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 	// 被OrderInfo參考
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
 	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
 	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
 	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
-	// 被ProductInfo參考
+	// 被ProductInfo參考 (※以後要和ProductInfo建立關聯時再開啟)
+	/*
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
 	private Set<ProductInfo> productInfoSet = new HashSet<ProductInfo>();
 	public Set<ProductInfo> getProductInfoSet() {		return productInfoSet;	}
 	public void setProductInfoSet(Set<ProductInfo> productInfoSet) {		this.productInfoSet = productInfoSet;	}
-	/*********************************************************************/
+	*/
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 	
 	//constructor
 	public User_Info() {

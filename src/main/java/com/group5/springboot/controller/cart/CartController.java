@@ -1,5 +1,7 @@
 package com.group5.springboot.controller.cart;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,7 @@ import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.OrderService;
+import com.group5.springboot.utils.SystemUtils;
 
 @SessionAttributes(names = "cart")
 @Controller
@@ -189,17 +192,21 @@ public class CartController {
 		System.out.println("正在檢查你的cart是不是空的...");
 		
 		if(cart.size() == 0 || cart == null) {
-			byte[] aa = {1, 2};
+//			byte[] aa = {1, 2};
 			ProductInfo fakeProductBean1 = new ProductInfo();
 			fakeProductBean1.setP_ID(1);
 			fakeProductBean1.setP_Name("EN_Speaking");
 			fakeProductBean1.setP_Class("EN");
 			fakeProductBean1.setP_Price(500);
-			fakeProductBean1.setP_DESC("nice!!!");
+			fakeProductBean1.setP_DESC(SystemUtils.stringToClob("nice!!!"));
 			fakeProductBean1.setU_ID("fbk001");
-			fakeProductBean1.setP_createDate("1999-11-22");
-			fakeProductBean1.setP_Img(aa);
-			fakeProductBean1.setP_Video(aa);
+			try {
+				fakeProductBean1.setP_createDate(DateFormat.getDateInstance().parse("1999-11-22"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+//			fakeProductBean1.setP_Img(aa);
+//			fakeProductBean1.setP_Video(aa);
 			
 			if(cart == null) {
 				cart = new ArrayList<ProductInfo>();

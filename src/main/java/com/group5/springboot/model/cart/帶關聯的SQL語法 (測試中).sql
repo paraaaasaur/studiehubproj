@@ -74,9 +74,13 @@ INSERT user_info VALUES ('fbk001', 'image/jpeg', 'galaxy', GETDATE(), 'c@a.t', '
 GO
 
 -- product part
-INSERT ProductInfo VALUES ('RU', 'halashu', 0x, 'RU_Reading', 7000, null, '2000-01-02', 'fbk001')
-INSERT ProductInfo VALUES ('EN', 'awesome', 0x, 'EN_Speaking', 6000, null, '1999-12-12', 'fbk001')
+INSERT ProductInfo VALUES ('image/jpeg', 'RU', 'halashu', 0x, 'RU_Reading', 7000, null, '2000-01-02', 'fbk001', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'EN', 'awesome', 0x, 'EN_Speaking', 6000, null, '1999-12-12', 'fbk001', 'video/x-matroska')
 GO
 -- order part
 INSERT Order_Info VALUES (13000, DEFAULT, DEFAULT, 1, 'RU_Reading', 7000, 'c@a.t', 'Fubuki', 'fbk001', 'Shirakami')
 GO
+
+select * from order_info;
+select * from ProductInfo;
+select * from user_info;

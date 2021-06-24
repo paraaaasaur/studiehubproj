@@ -137,6 +137,7 @@ public class UserDao implements IUserDao {
 	public void deleteUserById(String u_id) {
 		user_info.setU_id(u_id);
 		em.remove(user_info);
+//		em.remove(em.find(User_Info.class, u_id)); // 我自己測試這樣的話可以 by 大任
 	}
 	
 	@Override

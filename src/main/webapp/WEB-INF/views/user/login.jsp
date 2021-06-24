@@ -48,14 +48,17 @@ window.onload = function(){
 				result = JSON.parse(xhr.responseText);
 				//判斷回傳
 				if(result.fail){
-					resultMsg.innerHTML = "<font color='red' >" + result.fail + "</font>";
+// 					resultMsg.innerHTML = "<font color='red' >" + result.fail + "</font>";
+					alert(result.fail);
 					var u_idc = document.getElementById("u_id");
 					var u_pswc = document.getElementById("u_psw");
 					u_idc.value = "";
 					u_pswc.value = "";
 				}else if(result.success){
-					alert(result.loginBean.u_id+ ", " + result.success + "! 點擊跳轉至首頁...");
-					top.location='<c:url value='/gotoUserIndex.controller' />';
+// 					alert(result.loginBean.u_id+ ", " + result.success + "! 點擊跳轉至首頁...");
+					alert(result.loginBean.u_id+ ", " + result.success);
+// 					top.location='<c:url value='/gotoUserIndex.controller' />';
+					top.location='<c:url value='/' />';
 				}
 			}
 		}
@@ -80,22 +83,22 @@ window.onload = function(){
 <%@include file="../universal/header.jsp" %> 
 
 <div align='center'>
-  <h3>登入</h3>
+<!--   <h3>登入</h3> -->
   <div id='resultMsg' style="height: 18px; font-weight: bold;"></div>
   <hr>
 </div>
 
 <div style="text-align: center;">
   <div style="display: inline-block; text-align: left;">
-      帳號: <input type="text" name="u_id" id='u_id'><br>
+      帳號: <input type="text" name="u_id" id='u_id'>
       <div id='result0c' style="height: 10px;"></div><br>
-      密碼: <input type="password" name="u_psw" id='u_psw'><br>
+      密碼: <input type="password" name="u_psw" id='u_psw'>
       <div id='result1c' style="height: 10px;"></div><br>
   </div>
   <div align='center'>
-    <button id="login">登入</button>
+    <button id="login" class='primary'>登入</button>
     <hr>
-    <a href="<c:url value='/gotoUserIndex.controller' />">上一頁</a>
+<%--     <a href="<c:url value='/gotoUserIndex.controller' />">上一頁</a> --%>
   </div>
 </div>
 

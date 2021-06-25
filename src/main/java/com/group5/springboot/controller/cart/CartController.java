@@ -2,6 +2,7 @@ package com.group5.springboot.controller.cart;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -201,7 +202,9 @@ public class CartController {
 			fakeProductBean1.setP_DESC(SystemUtils.stringToClob("nice!!!"));
 			fakeProductBean1.setU_ID("fbk001");
 			try {
-				fakeProductBean1.setP_createDate(DateFormat.getDateInstance().parse("1999-11-22"));
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse("1999-11-22");
+				fakeProductBean1.setP_createDate(date);
+//				fakeProductBean1.setP_createDate(java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse("1999-11-22").getTime())); // in case of java.sql.Date
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

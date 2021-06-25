@@ -58,7 +58,7 @@
 				</header>
 				<div class="mini-posts">
 					<article>
-						<a href="#" class="image"><img src="images/demopic1.jpg"
+						<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/demopic1.jpg"
 							alt="" /></a>
 						<p>
 							除了go Dutch，還有什麼俚語包括國家名稱？<br /> 一起學習 8
@@ -66,7 +66,7 @@
 						</p>
 					</article>
 					<article>
-						<a href="#" class="image"><img src="images/demopic2.jpg"
+						<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/demopic2.jpg"
 							alt="" /></a>
 						<p>
 							正式英文 email 究竟該怎麼寫？ 該怎麼稱呼對方？ 又該如何有禮貌地結束信件？<br /> 幫你搞定商業
@@ -74,7 +74,7 @@
 						</p>
 					</article>
 					<article>
-						<a href="#" class="image"><img src="images/demopic3.png"
+						<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/demopic3.png"
 							alt="" /></a>
 						<p>別再說 “I am boring”！這十種最常見的英文錯誤你中了幾個？</p>
 					</article>

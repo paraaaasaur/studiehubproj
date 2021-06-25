@@ -6,8 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>會員註冊</title>
 
 <script>
@@ -21,7 +20,7 @@ window.onload = function(){
 		var u_id = document.getElementById("u_id").value;
 		var span = document.getElementById("result0c");
 		if(!u_id){
-			span.innerHTML = "<font color='blue' size='-1'>請輸入帳號</font>";
+			span.innerHTML = "<font color='red' size='-1'>請輸入帳號</font>";
 			return;
 		}
 		var xhr = new XMLHttpRequest();
@@ -40,7 +39,7 @@ window.onload = function(){
 				message = "<font color='red' size='-2'>發生錯誤: 代號" + result.u_id + "</font>";
 				}
 				else {
-					message = "<font color='red' size='-2'>帳號重複，請使用其它帳號!</font>";
+					message = "<font color='red' size='-2'>此帳號已被註冊!</font>";
 				}
 				span.innerHTML = message;
 			}
@@ -64,7 +63,7 @@ window.onload = function(){
 		var span4 = document.getElementById('result4c'); //信箱span
 		var spanCheckPsw = document.getElementById('checkPsw'); //確認密碼
 		
-		var spanResult = document.getElementById('resultMsg');
+// 		var spanResult = document.getElementById('resultMsg');
 
 		if(!u_id){
 			setErrorFor(span0, "請輸入帳號");
@@ -123,7 +122,8 @@ window.onload = function(){
 				result = JSON.parse(xhr1.responseText);
 				//判斷回傳
 				if(result.fail){
-					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
+// 					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
+					span0.innerHTML = "<font color='red' >" + result.fail + "</font>";
 				}else if(result.success){
 					alert(result.success + "! 為您導到登入頁面, 請盡早修改會員資料...");
 					top.location='<c:url value='/gotologin.controller' />';
@@ -156,39 +156,39 @@ window.onload = function(){
 							<table style="width: 750px;">
 								<tr>
 									<td>帳號:</td>
-									<td style="width:280px;"><input type="text" name="u_id" id="u_id" style="width:250px;"></td>
-									<td style="font-size: small;"><a href="#" id='accountCheck'>檢查帳號</a></td>
-									<td style="width:200px;"><span id="result0c">&nbsp;</span></td>
+									<td style="width:300px;"><input type="text" name="u_id" id="u_id" style="width:250px;"></td>
+									<td style="font-size: small; width:80px; text-align:left;"><a href="#" id='accountCheck' style="color:blue;">檢查帳號</a></td>
+									<td style="width:150px;"><span id="result0c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>密碼:</td>
-									<td style="width:280px;"><input type="password" name="u_psw" id="u_psw" style="width:250px;"></td>
-									<td></td>
-									<td style="width:200px;"><span id="result1c">&nbsp;</span></td>
+									<td style="width:300px;"><input type="password" name="u_psw" id="u_psw" style="width:250px;"></td>
+									<td style="width:80px;"></td>
+									<td style="width:150px;"><span id="result1c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>確認密碼:</td>
-									<td style="width:280px;"><input type="password" name="ck_psw" id="ck_psw" style="width:250px;"></td>
-									<td></td>
-									<td style="width:200px;"><span id="checkPsw">&nbsp;</span></td>
+									<td style="width:300px;"><input type="password" name="ck_psw" id="ck_psw" style="width:250px;"></td>
+									<td style="width:80px;"></td>
+									<td style="width:150px;"><span id="checkPsw">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>姓氏:</td>
-									<td style="width:280px;"><input type="text" name="u_lastname" id="u_lastname" style="width:250px;"></td>
-									<td></td>
-									<td style="width:200px;"><span id="result2c">&nbsp;</span></td>
+									<td style="width:300px;"><input type="text" name="u_lastname" id="u_lastname" style="width:250px;"></td>
+									<td style="width:80px;"></td>
+									<td style="width:150px;"><span id="result2c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>名字:</td>
-									<td style="width:280px;"><input type="text" name="u_firstname" id="u_firstname" style="width:250px;"></td>
-									<td></td>
-									<td style="width:200px;"><span id="result3c">&nbsp;</span></td>
+									<td style="width:300px;"><input type="text" name="u_firstname" id="u_firstname" style="width:250px;"></td>
+									<td style="width:80px;"></td>
+									<td style="width:150px;"><span id="result3c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>信箱:</td>
-									<td style="width:280px;"><input type="text" name="u_email" id="u_email" style="width:250px;"></td>
-									<td></td>
-									<td style="width:200px;"><span id="result4c">&nbsp;</span></td>
+									<td style="width:300px;"><input type="text" name="u_email" id="u_email" style="width:250px;"></td>
+									<td style="width:80px;"></td>
+									<td style="width:150px;"><span id="result4c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">

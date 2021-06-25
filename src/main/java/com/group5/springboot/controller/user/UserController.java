@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -81,25 +82,25 @@ public class UserController {
 		return returnPage;
 	}
 	
-	//登出
-	@GetMapping(path = "/logout.controller", produces = {"application/json"})
-	@ResponseBody
-	public Map<String, String> logout(Model model, SessionStatus ss){
-		Map<String, String> map = new HashMap<>();
-		try {
-			User_Info bean = (User_Info)model.getAttribute("loginBean");
-			if(bean != null && !(bean.getU_id().length() == 0)) {
-				ss.setComplete();
-				map.put("success", "已成功登出!");
-			}else {
-				map.put("fail", "尚未登入，請先登入後再操作...");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("fail", "發生問題，請重新操作...");
-		}
-		return map;
-	}
+//	//登出
+//	@GetMapping(path = "/logout.controller", produces = {"application/json"})
+//	@ResponseBody
+//	public Map<String, String> logout(Model model, SessionStatus ss){
+//		Map<String, String> map = new HashMap<>();
+//		try {
+//			User_Info bean = (User_Info)model.getAttribute("loginBean");
+//			if(bean != null && !(bean.getU_id().length() == 0)) {
+//				ss.setComplete();
+//				map.put("success", "已成功登出!");
+//			}else {
+//				map.put("fail", "尚未登入，請先登入後再操作...");
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			map.put("fail", "發生問題，請重新操作...");
+//		}
+//		return map;
+//	}
 	
 	
 	
@@ -256,7 +257,23 @@ public class UserController {
 	}
 	
 	
-	
+	//0624新增ModelAttribute
+	@ModelAttribute("userBean")
+	public User_Info getLoginUserInfos(User_Info userBean, Model model){
+		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
+		System.out.println("******************************************");
+		User_Info userInfo = null;
+		try {
+			userInfo = iUserService.getSingleUser(loginBean.getU_id());
+			System.out.println("******************************************");
+			System.out.println("in getLoginUserIndos, id= " + userInfo.getU_id());
+			System.out.println("******************************************");
+		} catch (Exception e) {
+			userInfo = new User_Info();
+			System.out.println("no login Bean in getLoginUserInfos().......");
+		}
+		return userInfo;
+	}
 	
 	
 	

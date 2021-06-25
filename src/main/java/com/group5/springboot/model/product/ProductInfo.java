@@ -1,5 +1,7 @@
 package com.group5.springboot.model.product;
 
+import java.io.CharArrayWriter;
+import java.io.Reader;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.util.Date;
@@ -21,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group5.springboot.model.cart.OrderInfo;
+import com.group5.springboot.utils.SystemUtils;
 
 @Entity
 @Table(name = "ProductInfo")
@@ -36,7 +38,7 @@ public class ProductInfo {
 	private Integer p_Price;
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date p_createDate;
-	@JsonIgnore
+//	@JsonIgnore
 	private Clob p_DESC;
 	@JsonIgnore
 	private Blob p_Img;
@@ -51,13 +53,36 @@ public class ProductInfo {
 	@Transient
 	private String pictureString;
 	@Transient
+	private String videoString;
+	@Transient
 	private MultipartFile imgFile;
 	@Transient
 	private MultipartFile videoFile;
+	@Transient
+	private String descString;
+	
+	
 
 	
+	public String getVideoString() {
+		return SystemUtils.blobToDataProtocol(video_mimeType, p_Video);
+	}
+
+	public void setVideoString(String videoString) {
+		this.videoString = videoString;
+	}
+
+	public String getDescString() {
+		return descString;
+	}
+
+	public void setDescString(String descString) {
+		this.descString = descString;
+	}
+
 	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 	// 被OrderInfo參考
+	/*/
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
 	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
@@ -115,8 +140,22 @@ public class ProductInfo {
 		this.p_createDate = p_createDate;
 	}
 
-	public Clob getP_DESC() {
-		return p_DESC;
+	public String getP_DESC() {
+		
+		String result = "";
+		try {
+			Reader reader = p_DESC.getCharacterStream();
+			CharArrayWriter caw = new CharArrayWriter();
+			char[] c = new char[8192];
+			int len = 0;
+			while ((len=reader.read(c))!=-1) {
+				caw.write(c, 0, len);
+			}
+			result = p_DESC.getSubString(1, (int) p_DESC.length());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	public void setP_DESC(Clob p_DESC) {
@@ -164,7 +203,8 @@ public class ProductInfo {
 	}
 
 	public String getPictureString() {
-		return pictureString;
+		return SystemUtils.blobToDataProtocol(img_mimeType, p_Img);
+
 	}
 
 	public void setPictureString(String pictureString) {

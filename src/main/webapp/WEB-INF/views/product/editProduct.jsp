@@ -11,7 +11,9 @@
 		color:red;
 		display: inline-block;
 		font-size:5pt;
-	
+		}
+	textarea{
+		resize: none;
 	}
 </style>
 <meta charset="UTF-8">
@@ -65,11 +67,28 @@ window.onload = function(){
 						<div class="inner">
 						<%@include file="../universal/header.jsp" %>  
 						
-						<h2 align='center'>請輸入課程資訊</h2>
+						<h2 align='center'>請更改課程資訊</h2>
 						<hr>
 
 							<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
 								<table border="1">
+									<c:choose>
+										<c:when test="${producInfo.p_ID == null }">
+											<tr>
+												<td>&nbsp;</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<td>編號:<br>&bnsp;</td>
+												<td><form:hidden path="p_ID"/>${productInfo.p_ID }<br>&nbsp;</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								
                                     <tr>
                                         <td>課程名稱:</td>
                                         <td><form:input path="p_Name"/>
@@ -95,8 +114,9 @@ window.onload = function(){
                                     </tr>
                                     <tr>
                                         <td>課程介紹:</td>
-                                    	<td><textarea rows="10" cols="100" name="descString" id="descString"></textarea>
+                                    	<td><form:textarea path="descString" rows="10" cols="100"  />
                                     		<form:errors path='descString' cssClass="error"/>
+                                    		
                                     	</td>
                                     </tr>
                                     <tr>

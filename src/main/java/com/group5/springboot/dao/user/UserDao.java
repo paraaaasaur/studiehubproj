@@ -132,12 +132,19 @@ public class UserDao implements IUserDao {
 		return getUserResult;
 	}
 	
+	
+	// 0626 更新
 	@Override
 	//刪除會員資料
 	public void deleteUserById(String u_id) {
-		user_info.setU_id(u_id);
-		em.remove(user_info);
+		try {
+		em.remove(em.find(User_Info.class, u_id));
+		} catch (Exception e) {
+			System.out.println("***** error occurs in deleteUserById: " + e.getMessage() + "*****");
+			e.printStackTrace();
+		}
 	}
+	
 	
 	@Override
 	// 修改會員資料

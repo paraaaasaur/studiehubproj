@@ -1,26 +1,35 @@
 package com.group5.springboot.controller.user;
 
+import java.io.File;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.IUserService;
+import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.validate.UserValidator;
 
 @Controller
 @SessionAttributes(names = {"loginBean"})
@@ -29,6 +38,10 @@ public class UserController {
 	IUserService iUserService;
 	@Autowired
 	User_Info user_info;
+	@Autowired
+	UserValidator userValidator;
+	@Autowired
+	ServletContext context;
 
 	// 到會員的index
 	@GetMapping(path = "/gotoUserIndex.controller")
@@ -82,37 +95,12 @@ public class UserController {
 		return returnPage;
 	}
 	
-//	//登出
-//	@GetMapping(path = "/logout.controller", produces = {"application/json"})
-//	@ResponseBody
-//	public Map<String, String> logout(Model model, SessionStatus ss){
-//		Map<String, String> map = new HashMap<>();
-//		try {
-//			User_Info bean = (User_Info)model.getAttribute("loginBean");
-//			if(bean != null && !(bean.getU_id().length() == 0)) {
-//				ss.setComplete();
-//				map.put("success", "已成功登出!");
-//			}else {
-//				map.put("fail", "尚未登入，請先登入後再操作...");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			map.put("fail", "發生問題，請重新操作...");
-//		}
-//		return map;
-//	}
-	
-	
-	
-
-	
 	//讀取單筆會員資料(全部會員資料到刪除單筆資料)
 	@GetMapping("/showSingleUser.controller/{u_id}")
 	public @ResponseBody User_Info showSingleUser(@PathVariable String u_id) {
 		User_Info user = iUserService.getSingleUser(u_id);
 		return user;
 	}
-	
 	
 	
 	//登入
@@ -198,44 +186,109 @@ public class UserController {
 	}
 	
 	
-	// 修改會員資料
-	@PutMapping(path = "/updateUserinfo.controller/{id}", consumes = { "application/json" }, produces = {"application/json" })
-	@ResponseBody
-	public Map<String, String> updateUser(@RequestBody User_Info user_Info, @PathVariable String id) {
-		System.out.println("前端傳進來的值:");
-		System.out.println("id:"+user_Info.getU_id());
-		System.out.println("psw:"+user_Info.getU_psw());
-		System.out.println("lastname:"+user_Info.getU_lastname());
-		System.out.println("firstname:"+user_Info.getU_firstname());
-		System.out.println("bday:"+user_Info.getU_birthday());
-		System.out.println("email:"+user_Info.getU_email());
-		System.out.println("tel:"+user_Info.getU_tel());
-		System.out.println("address:"+user_Info.getU_address());
-		System.out.println("img:"+user_Info.getU_img());
-		System.out.println("********************************");
-		Map<String, String> map = new HashMap<>();
-		User_Info usif = null;
-		if (id != null) {
-			usif = iUserService.getSingleUser(id);
-			if (usif == null || usif.getU_id().length() == 0) {
-				map.put("fail", "帳號: " + id + " 不存在!");
-			} else {
-				System.out.println("********************************");
-				System.out.println("\'id!=null\'， 要修改的會員帳號為: " + id);
-				System.out.println("********************************");
-				try {
-					iUserService.updateUser(user_Info);
-					map.put("success", "資料修改成功!");
-				} catch (Exception e) {
-					map.put("fail", "修改失敗!");
-				}
-			}
-		} else {
-			System.out.println("id: " + id + "沒傳進來啊...厚唷");
+//	// 修改會員資料
+//	@PutMapping(path = "/updateUserinfo.controller/{id}", consumes = { "application/json" }, produces = {"application/json" })
+//	@ResponseBody
+//	public Map<String, String> updateUser(@RequestBody User_Info user_Info, @PathVariable String id) {
+//		System.out.println("前端傳進來的值:");
+//		System.out.println("id:"+user_Info.getU_id());
+//		System.out.println("psw:"+user_Info.getU_psw());
+//		System.out.println("lastname:"+user_Info.getU_lastname());
+//		System.out.println("firstname:"+user_Info.getU_firstname());
+//		System.out.println("bday:"+user_Info.getU_birthday());
+//		System.out.println("email:"+user_Info.getU_email());
+//		System.out.println("tel:"+user_Info.getU_tel());
+//		System.out.println("address:"+user_Info.getU_address());
+//		System.out.println("img:"+user_Info.getU_img());
+//		System.out.println("********************************");
+//		Map<String, String> map = new HashMap<>();
+//		User_Info usif = null;
+//		if (id != null) {
+//			usif = iUserService.getSingleUser(id);
+//			if (usif == null || usif.getU_id().length() == 0) {
+//				map.put("fail", "帳號: " + id + " 不存在!");
+//			} else {
+//				System.out.println("********************************");
+//				System.out.println("\'id!=null\'， 要修改的會員帳號為: " + id);
+//				System.out.println("********************************");
+//				try {
+//					iUserService.updateUser(user_Info);
+//					map.put("success", "資料修改成功!");
+//				} catch (Exception e) {
+//					map.put("fail", "修改失敗!");
+//				}
+//			}
+//		} else {
+//			System.out.println("id: " + id + "沒傳進來啊...厚唷");
+//		}
+//		return map;
+//
+//	}
+	
+	//0626 修改test
+	@PostMapping("/updateUserinfo.controller")
+	public String updateUser(@ModelAttribute("userBean") User_Info user_Info,
+			BindingResult bindingResult,
+			RedirectAttributes ra) {
+		
+		userValidator.validate(user_Info, bindingResult);
+		if(bindingResult.hasErrors()) {
+			return "user/updateUser";
 		}
-		return map;
-
+		
+		Blob blob = null;
+		String mimeType = "";
+		String ogfName = "";
+		MultipartFile uploadImage = user_Info.getUploadImage();
+		if(uploadImage != null && uploadImage.getSize() > 0) {
+			try {
+				InputStream is = uploadImage.getInputStream();
+				ogfName = uploadImage.getOriginalFilename();
+				blob = SystemUtils.inputStreamToBlob(is);
+				mimeType = context.getMimeType(ogfName);
+				user_Info.setU_img(blob);
+				user_Info.setMimeType(mimeType);
+				//將上傳的檔案移到指定的資料夾
+				String ext = SystemUtils.getExtFilename(ogfName);
+				try {
+					File imageFolder = new File(SystemUtils.PLACE_IMAGE_FOLDER);
+					if (!imageFolder.exists())
+						imageFolder.mkdirs();
+					File file = new File(imageFolder, "MemberImage_" + user_Info.getU_id() + ext);
+					uploadImage.transferTo(file);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException("檔案上傳發生異常: " + e.getMessage());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		/*
+		String result = "";
+		//測試
+		System.out.println("修改的id: " + user_Info.getU_id());
+		System.out.println("修改的名字: " + user_Info.getU_firstname());
+		try {
+			iUserService.updateUser(user_Info);
+			result = "更新成功!";
+		} catch (Exception e) {
+			result = "更新失敗";
+			System.out.println("***** errors occurs in UserController.updateUser, message= " + e.getMessage() + "*****");
+			e.printStackTrace();
+		}
+		System.out.println("result: " + result);
+		return result;
+		*/
+		iUserService.updateUser(user_Info);
+		ra.addFlashAttribute("successMessage", user_Info.getU_id() + "修改成功!");	//暫時沒做秀出成功訊息
+		return "redirect:/gotoUpdateUserinfo.controller";
 	}
+	
+	
+	
+	
+	
 	
 	
 	
@@ -259,7 +312,8 @@ public class UserController {
 	
 	//0624新增ModelAttribute
 	@ModelAttribute("userBean")
-	public User_Info getLoginUserInfos(User_Info userBean, Model model){
+//	public User_Info getLoginUserInfos(User_Info userBean, Model model){
+	public User_Info getLoginUserInfos(Model model){
 		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
 		System.out.println("******************************************");
 		User_Info userInfo = null;
@@ -275,6 +329,14 @@ public class UserController {
 		return userInfo;
 	}
 	
+	//GENDER LIST
+	@ModelAttribute("genderList")
+    public Map<String, String>  getGenderList(){
+		Map<String, String> map = new LinkedHashMap<>();
+		map.put("男", "男");
+		map.put("女", "女");
+		return map;
+    }
 	
 	
 	

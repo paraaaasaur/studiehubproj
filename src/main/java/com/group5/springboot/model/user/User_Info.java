@@ -2,10 +2,15 @@ package com.group5.springboot.model.user;
 
 import java.sql.Blob;
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -45,12 +50,31 @@ public class User_Info {
 	// Blob物件轉base64
 	@Transient
 	private String pictureString;
-
 	// 抓上傳的圖片
 	@Transient
 	MultipartFile uploadImage;
 
-	// constructor
+	
+	
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
+	// 被OrderInfo參考
+	@JsonIgnore
+//	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
+//	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
+//	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
+//	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
+//	// 被ProductInfo參考 (※以後要和ProductInfo建立關聯時再開啟)
+	/*
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
+	private Set<ProductInfo> productInfoSet = new HashSet<ProductInfo>();
+	public Set<ProductInfo> getProductInfoSet() {		return productInfoSet;	}
+	public void setProductInfoSet(Set<ProductInfo> productInfoSet) {		this.productInfoSet = productInfoSet;	}
+	*/
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
+	
+	//constructor
+
 	public User_Info() {
 	}
 

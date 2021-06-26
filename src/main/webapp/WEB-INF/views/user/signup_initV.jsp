@@ -1,6 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>會員註冊</title>
-
 <script>
 var hasError = false;
 window.onload = function(){
@@ -20,7 +18,7 @@ window.onload = function(){
 		var u_id = document.getElementById("u_id").value;
 		var span = document.getElementById("result0c");
 		if(!u_id){
-			span.innerHTML = "<font color='red' size='-1'>請輸入帳號</font>";
+			span.innerHTML = "<font color='blue' size='-1'>請輸入帳號</font>";
 			return;
 		}
 		var xhr = new XMLHttpRequest();
@@ -39,7 +37,7 @@ window.onload = function(){
 				message = "<font color='red' size='-2'>發生錯誤: 代號" + result.u_id + "</font>";
 				}
 				else {
-					message = "<font color='red' size='-2'>此帳號已被註冊!</font>";
+					message = "<font color='red' size='-2'>帳號重複，請使用其它帳號!</font>";
 				}
 				span.innerHTML = message;
 			}
@@ -63,7 +61,7 @@ window.onload = function(){
 		var span4 = document.getElementById('result4c'); //信箱span
 		var spanCheckPsw = document.getElementById('checkPsw'); //確認密碼
 		
-// 		var spanResult = document.getElementById('resultMsg');
+		var spanResult = document.getElementById('resultMsg');
 
 		if(!u_id){
 			setErrorFor(span0, "請輸入帳號");
@@ -100,7 +98,7 @@ window.onload = function(){
 			spanCheckPsw.innerHTML = "";
 			hasError = false;
 		}else{
-			spanCheckPsw.innerHTML = "<font color='red' size='-2'>密碼不同，請再次確認!</font>";
+			spanCheckPsw.innerHTML = "<font color='red' size='-2'>密碼不同，請再次輸入並確認!</font>";
 			hasError = true;
 		}
 		if (hasError){
@@ -122,11 +120,10 @@ window.onload = function(){
 				result = JSON.parse(xhr1.responseText);
 				//判斷回傳
 				if(result.fail){
-// 					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
-					span0.innerHTML = "<font color='red' >" + result.fail + "</font>";
+					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
 				}else if(result.success){
-					alert(result.success + "! 為您導到登入頁面, 請盡早修改會員資料...");
-					top.location='<c:url value='/gotologin.controller' />';
+					alert(result.success + "! 為您導回上一頁...");
+					top.location='<c:url value='/gotoUserIndex.controller' />';
 				}
 			}
 		}
@@ -143,72 +140,55 @@ window.onload = function(){
 </script>
 
 </head>
+<!-- <body> -->
 <body class="is-preload">
-	<div id="wrapper">
-		<div id="main">
-			<div class="inner">
-				<%@include file="../universal/header.jsp"%><!-- 帳號，密碼，確認密碼，姓，名，信箱 -->
-				
-				<div align='center'>
-					<div class="container">
-					<br>
-						<form>
-							<table style="width: 750px;">
-								<tr>
-									<td>帳號:</td>
-									<td style="width:300px;"><input type="text" name="u_id" id="u_id" style="width:250px;"></td>
-									<td style="font-size: small; width:80px; text-align:left;"><a href="#" id='accountCheck' style="color:blue;">檢查帳號</a></td>
-									<td style="width:150px;"><span id="result0c">&nbsp;</span></td>
-								</tr>
-								<tr>
-									<td>密碼:</td>
-									<td style="width:300px;"><input type="password" name="u_psw" id="u_psw" style="width:250px;"></td>
-									<td style="width:80px;"></td>
-									<td style="width:150px;"><span id="result1c">&nbsp;</span></td>
-								</tr>
-								<tr>
-									<td>確認密碼:</td>
-									<td style="width:300px;"><input type="password" name="ck_psw" id="ck_psw" style="width:250px;"></td>
-									<td style="width:80px;"></td>
-									<td style="width:150px;"><span id="checkPsw">&nbsp;</span></td>
-								</tr>
-								<tr>
-									<td>姓氏:</td>
-									<td style="width:300px;"><input type="text" name="u_lastname" id="u_lastname" style="width:250px;"></td>
-									<td style="width:80px;"></td>
-									<td style="width:150px;"><span id="result2c">&nbsp;</span></td>
-								</tr>
-								<tr>
-									<td>名字:</td>
-									<td style="width:300px;"><input type="text" name="u_firstname" id="u_firstname" style="width:250px;"></td>
-									<td style="width:80px;"></td>
-									<td style="width:150px;"><span id="result3c">&nbsp;</span></td>
-								</tr>
-								<tr>
-									<td>信箱:</td>
-									<td style="width:300px;"><input type="text" name="u_email" id="u_email" style="width:250px;"></td>
-									<td style="width:80px;"></td>
-									<td style="width:150px;"><span id="result4c">&nbsp;</span></td>
-								</tr>
-								<tr>
-									<td colspan="4" align="center" style="table-layout: fixed">
-										<button type="button" class="primary" id="sendData">送出</button> &nbsp;
-										<input type="reset" value="清除">
-									</td>
-								</tr>
-							</table>
-						</form>
-					</div>
-				</div>
+<div id="wrapper">
+<div id="main">
+<div class="inner">
+<%@include file="../universal/header.jsp" %>  
 
-			</div>
-		</div>
-		<%@include file="../universal/sidebar.jsp"%>
-	</div>
-	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+<div style="text-align: center;">
+<h3>填寫會員資料</h3>
+<span id='resultMsg' style="height: 18px; font-weight: bold;"></span>
+<hr>
+<div style="display: inline-block; text-align: left">
+  <form>
+  <table style="line-height:20px;">	
+    <tr>
+      <td>帳號:&nbsp;&nbsp;<span id='result0c'></span><br/><input type="text" id="u_id" name="u_id"/>&nbsp;<a href='#' id='accountCheck' style='font-size: 10pt;'>檢查帳號</a></td>
+    </tr>
+    <tr>
+      <td>密碼:&nbsp;&nbsp;<span id='result1c'></span><br/><input type="password" id="u_psw" name="u_psw"/></td>
+    </tr>
+    <tr>
+      <td>確認密碼:&nbsp;&nbsp;<span id='checkPsw'></span><br/><input type="password" id="ck_psw" name="ck_psw"/></td>
+    </tr>
+    <tr>
+      <td>姓:&nbsp;&nbsp;<span id='result2c'></span><br/><input type="text" id="u_lastname" name="u_lastname"/></td>
+    </tr>
+    <tr>
+      <td>名:&nbsp;&nbsp;<span id='result3c'></span><br/><input type="text" id="u_firstname" name="u_firstname"/></td>
+    </tr>
+    <tr>
+      <td>信箱:&nbsp;&nbsp;<span id='result4c'></span><br/><input type="text" id="u_email" name="u_email"/></td>
+    </tr>
+    <tr><td><button type="button" id="sendData">送出</button>&nbsp;&nbsp;<button type="reset">清除</button></td></tr>
+  </table>
+  </form>
+</div>
+<hr/>
+<a href="<c:url value='/gotoUserIndex.controller' />">上一頁</a>
+</div>
+
+</div>
+</div>
+<%@include file="../universal/sidebar.jsp" %> 
+</div>
+<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+
 </body>
 </html>

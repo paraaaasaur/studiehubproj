@@ -34,7 +34,7 @@
 					<li id='loginHref'><a href="<c:url value='/gotologin.controller' />">登入</a></li>
 					<!-- <li><a href="generic.html">Generic</a></li> -->
 <!-- 					<li><a href="users.html">註冊</a></li> -->
-					<li><a href="<c:url value='/gotosignup.controller' />">註冊</a></li>
+					<li id='signupHref'><a href="<c:url value='/gotosignup.controller' />">註冊</a></li>
 					<!-- <li><a href="elements.html">Elements</a></li> -->
 					<li><span class="opener">會員資訊</span>
 						<ul>

@@ -58,7 +58,7 @@ public class User_Info {
 	
 	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 	// 被OrderInfo參考
-	@JsonIgnore
+//	@JsonIgnore
 //	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
 //	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
 //	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}

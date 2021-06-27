@@ -20,6 +20,9 @@ public class SystemUtils {
 	public static final String PLACE_IMAGE_FOLDER = "C:\\images\\place";
 	// pathToBlob預設圖片
 	public static final String NO_IMAGE_PATH = "\\static\\images\\NoImage.png";
+	
+	// 題庫:上傳檔案資料夾
+	public static final String QUESTION_FILE_FOLDER = "C:\\images\\question";
 
 	// 給一個檔名，這邊給一個副檔名
 	public static String getExtFilename(String filename) {

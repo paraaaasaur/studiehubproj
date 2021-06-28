@@ -9,6 +9,9 @@
 <title>Studie Hub</title>
 
 <script>
+
+if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
+
 var u_id = "${loginBean.u_id}";
 
 window.onload = function(){

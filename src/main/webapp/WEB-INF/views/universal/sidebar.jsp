@@ -38,7 +38,7 @@
 					<!-- <li><a href="elements.html">Elements</a></li> -->
 					<li><span class="opener">會員資訊</span>
 						<ul>
-							<li><a href="#">更改密碼</a></li>
+							<li><a href="<c:url value='/gotoChangePassword.controller' />">更改密碼</a></li>
 							<li><a href="<c:url value='/gotoUpdateUserinfo.controller' />">編輯個人資料</a></li>
 							<!-- <li><a href="#">Tempus Magna</a></li>
 												<li><a href="#">Feugiat Veroeros</a></li> -->

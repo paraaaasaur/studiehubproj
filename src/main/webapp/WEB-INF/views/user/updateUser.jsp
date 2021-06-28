@@ -23,6 +23,9 @@
 </style>
 <title>會員資訊</title>
 <script>
+
+if("${successMessage}"=="修改成功"){alert('會員資料修改成功!');}
+
 var u_id = "${loginBean.u_id}";
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -52,7 +55,7 @@ window.onload = function(){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    } 
+    }
 }
 </script>
 </head>

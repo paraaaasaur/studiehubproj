@@ -205,7 +205,15 @@ public class UserController {
 	@PostMapping("/changePassword.controller")
 	public String changePassword(@ModelAttribute("userBean") User_Info user_Info,
 			RedirectAttributes ra,
+			@RequestParam String u_psw, @RequestParam String cfm_psw,
 			Model model, SessionStatus status) {
+		
+		System.out.println("u_psw="+u_psw+", cfm_psw="+cfm_psw);
+		if(!(u_psw.equals(cfm_psw))) {
+			ra.addFlashAttribute("errorMessageOfChangingPassword", "兩次密碼不同");
+			return "redirect:/gotoChangePassword.controller";
+		}
+		
 		iUserService.updateUser(user_Info);
 		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
 		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
@@ -254,22 +262,7 @@ public class UserController {
 				e.printStackTrace();
 			}
 		}
-		/*
-		String result = "";
-		//測試
-		System.out.println("修改的id: " + user_Info.getU_id());
-		System.out.println("修改的名字: " + user_Info.getU_firstname());
-		try {
-			iUserService.updateUser(user_Info);
-			result = "更新成功!";
-		} catch (Exception e) {
-			result = "更新失敗";
-			System.out.println("***** errors occurs in UserController.updateUser, message= " + e.getMessage() + "*****");
-			e.printStackTrace();
-		}
-		System.out.println("result: " + result);
-		return result;
-		*/
+		
 		iUserService.updateUser(user_Info);
 		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
 		ra.addFlashAttribute("successMessage", "修改成功");	//暫時沒做秀出成功訊息
@@ -278,7 +271,7 @@ public class UserController {
 	
 	
 	
-	
+	//查看是否登入
 	public boolean checkIfLogin(Model model) {
 		boolean result = false;
 		try {

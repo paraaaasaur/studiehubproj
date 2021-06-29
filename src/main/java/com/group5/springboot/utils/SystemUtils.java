@@ -28,7 +28,7 @@ public class SystemUtils {
 		if (n >= 0) {
 			return filename.substring(n);
 		} else {
-			return "";
+			return null;
 		}
 		// return filename.substring(filename.lastIndexOf("."));
 	}

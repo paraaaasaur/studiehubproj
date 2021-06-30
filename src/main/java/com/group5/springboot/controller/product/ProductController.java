@@ -48,6 +48,11 @@ public class ProductController {
 		return "product/editProduct";
 	}
 	
+	@GetMapping("/queryProductForUser")
+	public String queryProductForUser() {
+		return "product/showProductToUser";
+	}
+	
 	@GetMapping("/queryProduct")
 	public String sendQueryProduct() {
 		return "product/showProduct";

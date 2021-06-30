@@ -11,6 +11,23 @@
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
+<style type="text/css">
+
+.product{
+    border: 1px rgb(153, 149, 149) solid;
+    padding: 30px;
+    margin: 50px;
+    border-radius: 50px;
+    text-align: center;
+    display: inline-block;
+    width:300px;
+    height:300px;
+}
+.image{
+	text-align: center;
+}
+
+</style>
 
 <script>
 var u_id = "${loginBean.u_id}";
@@ -84,30 +101,44 @@ function showData(textObj) {
 	console.log(obj);
 	console.log(size);
 	console.log(products);
-    let segment = "<table border='1' style = 'width:1300px;text-align: center;'>";
+    let segment = "";
         if (size == 0) {
 			segment += "<tr><th colspan='8'>查無資料</th></tr>";
 		} else {
-            segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
-
-			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th width:50px;>功能</th></tr>";
-			for (n = 0; n < products.length; n++) {
+			
+			for(n=0;n<products.length;n++){
 				let product = products[n];
-    			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
-    			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
-    			console.log(tmp0);
-				segment += "<tr>";
-                segment += "<td><img width='100' height='60' src='" + product.pictureString + "' ></td>";
-				segment += "<td>" + product.p_Name + "</td>";
-				segment += "<td style='width: 100px;'>" + product.p_Class + "</td>";
-				segment += "<td style='width: 100px;'>" + product.p_Price + "</td>";
-				segment += "<td>" + product.p_DESC + "</td>";
-				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\"'/>";
-				segment += "<input type='button'value='刪除'onclick=\"window.location.href='"+tmp1+"'\" /></td>";
-				segment += "</tr>";
-                }
+				segment += "<div class='product'>";
+				segment += "<a href='???????'class='image'style='height:270px'>";
+				segment += "<img src='"+ product.pictureString +"' width='230px' height='120px'>";
+				segment += "<br>";
+				segment += "<h3>"+ product.p_Name +"</h3>"
+			    segment += "</a>";
+			    segment += "</div>";
+			}
+			
+			
+			
+//             segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
+
+// 			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th width:50px;>功能</th></tr>";
+// 			for (n = 0; n < products.length; n++) {
+// 				let product = products[n];
+//     			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
+//     			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
+//     			console.log(tmp0);
+// 				segment += "<tr>";
+//                 segment += "<td><img width='100' height='60' src='" + product.pictureString + "' ></td>";
+// 				segment += "<td>" + product.p_Name + "</td>";
+// 				segment += "<td>" + product.p_Class + "</td>";
+// 				segment += "<td>" + product.p_Price + "</td>";
+// 				segment += "<td>" + product.p_DESC + "</td>";
+// 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\"'/>";
+// 				segment += "<input type='button'value='刪除'onclick=\"window.location.href='"+tmp1+"'\" /></td>";
+// 				segment += "</tr>";
+//                 }
         }
-        segment += "</table>";
+       
         return segment;
 }
 </script>
@@ -126,10 +157,10 @@ function showData(textObj) {
 				<div style="text-align: center;">
 					<input type="text" id="productname" style="display: inline; width: 500px; float: none;border-radius: 50px;" placeholder="請輸入課程關鍵字">
 					<button id="query" style="display: inline;">搜尋</button>
-					<br>
 				<br>
-				</div>
+				<br>
 				
+				</div>
 				<div id='dataArea'></div>
 			</div>
 		</div>

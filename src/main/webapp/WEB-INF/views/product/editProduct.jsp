@@ -87,7 +87,7 @@ textarea {
 							</c:when>
 							<c:otherwise>
 								<tr>
-									<td>編號:<br>&bnsp;
+									<td>編號:<br>&nbsp;
 									</td>
 									<td><form:hidden path="p_ID" />
 									${productInfo.p_ID }<br>&nbsp;</td>

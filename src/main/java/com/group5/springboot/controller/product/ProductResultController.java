@@ -25,7 +25,7 @@ public class ProductResultController {
 		return productService.findAll();
 	}
 	
-	@GetMapping(value = "/queryByName", produces ="application/json; charset=UTF-8")
+	@GetMapping(value = "/queryByProductName", produces ="application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object>queryByName(@RequestParam("pname")String pname) {
 		return productService.queryByName(pname);
 	}

@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -89,6 +89,20 @@ public class UserController {
 		boolean loginResult = checkIfLogin(model);
 		if (loginResult) {
 			returnPage = "user/updateUser";
+		}else {
+			returnPage = "user/login";
+		}
+		return returnPage;
+	}
+	
+	
+	//到修改會員密碼頁面
+	@GetMapping(path = "/gotoChangePassword.controller")
+	public String gotoChangePassword(Model model) {
+		String returnPage = "";
+		boolean loginResult = checkIfLogin(model);
+		if (loginResult) {
+			returnPage = "user/changePassword";
 		}else {
 			returnPage = "user/login";
 		}
@@ -162,13 +176,6 @@ public class UserController {
 		return map;
 	}
 	
-	//查看全部會員資料
-	@GetMapping(path = "/showAllUser.controller", produces = {"application/json"})
-	@ResponseBody
-	public List<User_Info> gotoFindAllUserPage() {
-		List<User_Info> users = iUserService.showAllUsers();
-		return users;
-	}
 	
 	//刪除會員資料
 	@DeleteMapping("/user.controller/{u_id}")
@@ -186,50 +193,33 @@ public class UserController {
 	}
 	
 	
-//	// 修改會員資料
-//	@PutMapping(path = "/updateUserinfo.controller/{id}", consumes = { "application/json" }, produces = {"application/json" })
-//	@ResponseBody
-//	public Map<String, String> updateUser(@RequestBody User_Info user_Info, @PathVariable String id) {
-//		System.out.println("前端傳進來的值:");
-//		System.out.println("id:"+user_Info.getU_id());
-//		System.out.println("psw:"+user_Info.getU_psw());
-//		System.out.println("lastname:"+user_Info.getU_lastname());
-//		System.out.println("firstname:"+user_Info.getU_firstname());
-//		System.out.println("bday:"+user_Info.getU_birthday());
-//		System.out.println("email:"+user_Info.getU_email());
-//		System.out.println("tel:"+user_Info.getU_tel());
-//		System.out.println("address:"+user_Info.getU_address());
-//		System.out.println("img:"+user_Info.getU_img());
-//		System.out.println("********************************");
-//		Map<String, String> map = new HashMap<>();
-//		User_Info usif = null;
-//		if (id != null) {
-//			usif = iUserService.getSingleUser(id);
-//			if (usif == null || usif.getU_id().length() == 0) {
-//				map.put("fail", "帳號: " + id + " 不存在!");
-//			} else {
-//				System.out.println("********************************");
-//				System.out.println("\'id!=null\'， 要修改的會員帳號為: " + id);
-//				System.out.println("********************************");
-//				try {
-//					iUserService.updateUser(user_Info);
-//					map.put("success", "資料修改成功!");
-//				} catch (Exception e) {
-//					map.put("fail", "修改失敗!");
-//				}
-//			}
-//		} else {
-//			System.out.println("id: " + id + "沒傳進來啊...厚唷");
-//		}
-//		return map;
-//
-//	}
+	//修改密碼
+	@PostMapping("/changePassword.controller")
+	public String changePassword(@ModelAttribute("userBean") User_Info user_Info,
+			RedirectAttributes ra,
+			@RequestParam String u_psw, @RequestParam String cfm_psw,
+			Model model, SessionStatus status) {
+		
+		System.out.println("u_psw="+u_psw+", cfm_psw="+cfm_psw);
+		if(!(u_psw.equals(cfm_psw))) {
+			ra.addFlashAttribute("errorMessageOfChangingPassword", "兩次密碼不同");
+			return "redirect:/gotoChangePassword.controller";
+		}
+		
+		iUserService.updateUser(user_Info);
+		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
+		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
+		return "redirect:/";
+	}
 	
-	//0626 修改test
+
+	
+	//修改會員資料
 	@PostMapping("/updateUserinfo.controller")
 	public String updateUser(@ModelAttribute("userBean") User_Info user_Info,
 			BindingResult bindingResult,
-			RedirectAttributes ra) {
+			RedirectAttributes ra,
+			Model model, SessionStatus status) {
 		
 		userValidator.validate(user_Info, bindingResult);
 		if(bindingResult.hasErrors()) {
@@ -264,34 +254,16 @@ public class UserController {
 				e.printStackTrace();
 			}
 		}
-		/*
-		String result = "";
-		//測試
-		System.out.println("修改的id: " + user_Info.getU_id());
-		System.out.println("修改的名字: " + user_Info.getU_firstname());
-		try {
-			iUserService.updateUser(user_Info);
-			result = "更新成功!";
-		} catch (Exception e) {
-			result = "更新失敗";
-			System.out.println("***** errors occurs in UserController.updateUser, message= " + e.getMessage() + "*****");
-			e.printStackTrace();
-		}
-		System.out.println("result: " + result);
-		return result;
-		*/
+		
 		iUserService.updateUser(user_Info);
-		ra.addFlashAttribute("successMessage", user_Info.getU_id() + "修改成功!");	//暫時沒做秀出成功訊息
+		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
+		ra.addFlashAttribute("successMessage", "修改成功");	//暫時沒做秀出成功訊息
 		return "redirect:/gotoUpdateUserinfo.controller";
 	}
 	
 	
 	
-	
-	
-	
-	
-	
+	//查看是否登入
 	public boolean checkIfLogin(Model model) {
 		boolean result = false;
 		try {
@@ -308,6 +280,17 @@ public class UserController {
 		}
 		return result;
 	}
+	
+	
+	//更新sessionAttribute裡的bean資料
+	public void updateLoginBean(Model model, SessionStatus status) {
+		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
+		System.out.println("oldBean id:" + loginBean.getU_id() + ", old psw:" + loginBean.getU_psw() + ", old lastname:" + loginBean.getU_lastname());
+		User_Info updateBean = iUserService.getSingleUser(loginBean.getU_id());
+		System.out.println("updatedBean id:" + updateBean.getU_id() + ", update psw:" + updateBean.getU_psw() + ", update lastname" + updateBean.getU_lastname());
+		model.addAttribute("loginBean", updateBean);
+	}
+	
 	
 	
 	//0624新增ModelAttribute

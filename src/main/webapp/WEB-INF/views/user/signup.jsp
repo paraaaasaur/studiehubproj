@@ -156,37 +156,37 @@ window.onload = function(){
 							<table style="width: 750px;">
 								<tr>
 									<td>帳號:</td>
-									<td style="width:300px;"><input type="text" name="u_id" id="u_id" style="width:250px;"></td>
+									<td style="width:300px;"><input type="text" name="u_id" id="u_id" style="width:250px;" placeholder="Account"></td>
 									<td style="font-size: small; width:80px; text-align:left;"><a href="#" id='accountCheck' style="color:blue;">檢查帳號</a></td>
 									<td style="width:150px;"><span id="result0c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>密碼:</td>
-									<td style="width:300px;"><input type="password" name="u_psw" id="u_psw" style="width:250px;"></td>
+									<td style="width:300px;"><input type="password" name="u_psw" id="u_psw" style="width:250px;" placeholder="Password"></td>
 									<td style="width:80px;"></td>
 									<td style="width:150px;"><span id="result1c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>確認密碼:</td>
-									<td style="width:300px;"><input type="password" name="ck_psw" id="ck_psw" style="width:250px;"></td>
+									<td style="width:300px;"><input type="password" name="ck_psw" id="ck_psw" style="width:250px;" placeholder="Confirm Password"></td>
 									<td style="width:80px;"></td>
 									<td style="width:150px;"><span id="checkPsw">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>姓氏:</td>
-									<td style="width:300px;"><input type="text" name="u_lastname" id="u_lastname" style="width:250px;"></td>
+									<td style="width:300px;"><input type="text" name="u_lastname" id="u_lastname" style="width:250px;" placeholder="Last name"></td>
 									<td style="width:80px;"></td>
 									<td style="width:150px;"><span id="result2c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>名字:</td>
-									<td style="width:300px;"><input type="text" name="u_firstname" id="u_firstname" style="width:250px;"></td>
+									<td style="width:300px;"><input type="text" name="u_firstname" id="u_firstname" style="width:250px;" placeholder="First name"></td>
 									<td style="width:80px;"></td>
 									<td style="width:150px;"><span id="result3c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td>信箱:</td>
-									<td style="width:300px;"><input type="text" name="u_email" id="u_email" style="width:250px;"></td>
+									<td style="width:300px;"><input type="text" name="u_email" id="u_email" style="width:250px;" placeholder="E-mail"></td>
 									<td style="width:80px;"></td>
 									<td style="width:150px;"><span id="result4c">&nbsp;</span></td>
 								</tr>

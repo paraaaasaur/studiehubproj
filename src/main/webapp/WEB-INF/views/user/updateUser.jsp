@@ -23,7 +23,11 @@
 </style>
 <title>會員資訊</title>
 <script>
+
+if("${successMessage}"=="修改成功"){alert('會員資料修改成功!');}
+
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 window.onload = function(){
     var logout = document.getElementById("logout");
     logout.onclick = function(){
@@ -48,11 +52,13 @@ window.onload = function(){
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
+    var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    } 
+    	userPic.src = userPicString;	//有登入就秀大頭貼
+    }
 }
 </script>
 </head>

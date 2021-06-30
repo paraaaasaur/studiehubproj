@@ -28,20 +28,13 @@
 					<h2>Menu</h2>
 				</header>
 				<ul>
-					<!-- <li><a href="index.html">Homepage</a></li> -->
 					<li><a href="<c:url value='/' />">首頁</a></li>
-<%-- 					<li><a href="<c:url value='/gotologin.controller' />">登入</a></li> --%>
 					<li id='loginHref'><a href="<c:url value='/gotologin.controller' />">登入</a></li>
-					<!-- <li><a href="generic.html">Generic</a></li> -->
-<!-- 					<li><a href="users.html">註冊</a></li> -->
 					<li id='signupHref'><a href="<c:url value='/gotosignup.controller' />">註冊</a></li>
-					<!-- <li><a href="elements.html">Elements</a></li> -->
 					<li><span class="opener">會員資訊</span>
 						<ul>
-							<li><a href="#">更改密碼</a></li>
+							<li><a href="<c:url value='/gotoChangePassword.controller' />">更改密碼</a></li>
 							<li><a href="<c:url value='/gotoUpdateUserinfo.controller' />">編輯個人資料</a></li>
-							<!-- <li><a href="#">Tempus Magna</a></li>
-												<li><a href="#">Feugiat Veroeros</a></li> -->
 						</ul></li>
 					<li><a href="#">課程</a></li>
 					<li><a href="<c:url value='/' />">購物車</a></li>

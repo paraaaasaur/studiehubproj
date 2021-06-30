@@ -14,6 +14,7 @@
 	if("${errorMessageOfChangingPassword}"=="兩次密碼不同"){alert('兩次密碼不同! 請再試一次');}
 
 	var u_id = "${loginBean.u_id}";
+	var userPicString = "${loginBean.pictureString}";
 	var pswInOGBean = "${loginBean.u_psw}";
 	
 	var hasError = false;
@@ -58,14 +59,17 @@
 
 		
 
-		var loginHref = document.getElementById('loginHref');
-		var signupHref = document.getElementById('signupHref');
-		var logoutHref = document.getElementById('logoutHref');
-		if (u_id) {
-			loginHref.hidden = true;
-			signupHref.hidden = true;
-			logoutHref.style.visibility = "visible"; //有登入才會show登出標籤(預設為hidden)
-		}
+	    //如果有登入，隱藏登入標籤
+	    var loginHref = document.getElementById('loginHref');
+	    var signupHref = document.getElementById('signupHref');
+	    var logoutHref = document.getElementById('logoutHref');
+	    var userPic = document.getElementById('userPic');
+	    if(u_id){
+	    	loginHref.hidden = true;
+	    	signupHref.hidden = true;
+	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+	    	userPic.src = userPicString;	//有登入就秀大頭貼
+	    }
 	}
 </script>
 

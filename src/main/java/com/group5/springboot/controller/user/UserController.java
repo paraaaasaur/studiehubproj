@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -177,13 +176,6 @@ public class UserController {
 		return map;
 	}
 	
-	//查看全部會員資料
-	@GetMapping(path = "/showAllUser.controller", produces = {"application/json"})
-	@ResponseBody
-	public List<User_Info> gotoFindAllUserPage() {
-		List<User_Info> users = iUserService.showAllUsers();
-		return users;
-	}
 	
 	//刪除會員資料
 	@DeleteMapping("/user.controller/{u_id}")

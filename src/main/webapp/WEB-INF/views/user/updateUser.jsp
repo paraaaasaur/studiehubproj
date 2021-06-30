@@ -52,12 +52,14 @@ window.onload = function(){
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
+    var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
+    	userId.innerHTML = u_id;
     }
 }
 </script>

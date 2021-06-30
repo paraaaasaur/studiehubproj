@@ -44,6 +44,8 @@ window.onload = function(){
     } 
     
     var dataArea = document.getElementById("dataArea");
+	var query = document.getElementById("query");
+	var productname = document.getElementById("productname");
     let xhr = new XMLHttpRequest();
     xhr.open("GET","<c:url value='/findAllProduct' />",true);
     xhr.send();
@@ -51,10 +53,27 @@ window.onload = function(){
 
         if(xhr.readyState == 4 && xhr.status == 200){
             var result = JSON.parse(xhr.responseText);
-            console.log(result);
 			dataArea.innerHTML = showData(result);
         }
     }
+
+	query.addEventListener('click',function(){
+		let pname = productname.value;
+		if(!pname){
+			alert('請輸入關鍵字');
+			return
+		}
+
+		let xhr2 = new XMLHttpRequest();
+		xhr2.open('GET',"<c:url value='/queryByName' />?pname="+pname);
+		xhr2.send();
+		xhr2.onreadystatechange = function(){
+			if(xhr2.readyState == 4 && xhr2.status == 200){
+				var result = JSON.parse(xhr2.responseText)
+				dataArea.innerHTML = showData(result);
+			}
+		}
+	})
     
 }
 
@@ -62,16 +81,20 @@ function showData(textObj) {
     let obj = JSON.parse(JSON.stringify(textObj));
     let size = obj.size;
     let products = obj.list;
-    let segment = "<table border='1' style = 'width:1000px'>";
+	console.log(obj);
+	console.log(size);
+	console.log(products);
+    let segment = "<table border='1' style = 'width:1300px'>";
         if (size == 0) {
 			segment += "<tr><th colspan='8'>查無資料</th></tr>";
 		} else {
             segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
 
-			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th>功能</th></tr>";
+			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th width:50px;>功能</th></tr>";
 			for (n = 0; n < products.length; n++) {
 				let product = products[n];
     			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
+    			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
     			console.log(tmp0);
 				segment += "<tr>";
                 segment += "<td><img width='100' height='60' src='" + product.pictureString + "' ></td>";
@@ -79,7 +102,8 @@ function showData(textObj) {
 				segment += "<td>" + product.p_Class + "</td>";
 				segment += "<td>" + product.p_Price + "</td>";
 				segment += "<td>" + product.p_DESC + "</td>";
-				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
+				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\"'/>";
+				segment += "<input type='button'value='刪除'onclick=\"window.location.href='"+tmp1+"'\" /></td>";
 				segment += "</tr>";
                 }
         }
@@ -99,10 +123,12 @@ function showData(textObj) {
 				<%@include file="../universal/header.jsp"%>
 				<h2 align='center'>課程資訊</h2>
 				<hr>
+					課程名稱:<input type="text" id="productname" style="display: inline; width: 500px; float: none;">
+					<button id="query" style="display: inline;">搜尋</button>
+				
 				<div id='dataArea'></div>
 			</div>
 		</div>
-
 		<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
 		<%@include file="../universal/sidebar.jsp"%>

@@ -32,7 +32,7 @@ import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 
 @Controller
-@SessionAttributes(names = {"loginBean"})
+@SessionAttributes(names = {"loginBean","adminBean"})
 public class UserController {
 	@Autowired
 	IUserService iUserService;
@@ -55,7 +55,6 @@ public class UserController {
 		String returnPage = "";
 		boolean loginResult = checkIfLogin(model);
 		if (loginResult) {
-//			returnPage = "user/userIndex";
 			returnPage = "index";
 		}else {
 			returnPage = "user/login";
@@ -63,18 +62,13 @@ public class UserController {
 		return returnPage;
 	}
 	
+	
 	//到註冊頁面
 	@GetMapping(path = "/gotosignup.controller")
 	public String gotoSignupPage() {
 		return "user/signup";
 	}
-	
-	//到查看全部會員資料頁面
-	@GetMapping(path = "/gotoShowAllUser.controller")
-	public String gotoShowAllUser() {
-		return "user/showAllUser";
-	}
-	
+		
 	//到刪除會員的頁面
 	@GetMapping(path = "/gotoDeleteUser.controller/{u_id}")
 	public String gotoDeleteUser(@PathVariable String u_id, Model model) {

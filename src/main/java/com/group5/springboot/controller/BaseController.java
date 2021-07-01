@@ -10,5 +10,6 @@ public class BaseController {
 	public String index() {
 		return "index";
 	}
+	
 		
 }

@@ -11,6 +11,7 @@
 
 <script>
 var hasError = false;
+var pswHasError = false;
 window.onload = function(){
 	var alink = document.getElementById("accountCheck");
 	var sendData = document.getElementById("sendData");
@@ -95,15 +96,25 @@ window.onload = function(){
 		} else{
 			span4.innerHTML = "";
 		}
+		//檢查email格式
+// 		if(!(u_email.includes('@')) || !u_email){
+// 			setErrorFor(span4, "信箱格式錯誤");
+// 			hasError = true;
+// 		} else{
+// 			span4.innerHTML = "";
+// 		}
+		
+		
+		
 		// 檢查密碼是否一致
 		if(u_psw==ck_psw && ck_psw!=""){
 			spanCheckPsw.innerHTML = "";
-			hasError = false;
+			pswHasError = false;
 		}else{
 			spanCheckPsw.innerHTML = "<font color='red' size='-2'>密碼不同，請再次確認!</font>";
-			hasError = true;
+			pswHasError = true;
 		}
-		if (hasError){
+		if (hasError && pswHasError){
 			return false;
 		}
 		var xhr1 = new XMLHttpRequest();

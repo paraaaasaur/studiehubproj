@@ -58,7 +58,9 @@ public class OrderInfo {
 	
 	// constructors
 	public OrderInfo() {};
-	/** 不要用這個，因為o_id現在是用IDENTITY(1, 1)去產生的，所以不想要手動指定 */
+	public OrderInfo(Integer o_id) {
+		setO_id(o_id);
+	};
 	public OrderInfo(Integer o_ID, Integer p_ID, String p_Name, Integer p_Price, String u_ID, String u_FirstName,
 			String u_LastName, String u_Email, String o_Status, String o_Date, Integer o_Amt) {
 		setO_id         (o_ID       );

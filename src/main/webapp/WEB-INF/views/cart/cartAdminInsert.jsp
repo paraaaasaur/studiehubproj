@@ -67,25 +67,11 @@ window.onload = function(){
 								<button id="newRow">添加空白訂單列</button>
 								<button id="cheat">添加訂單列(懶人用)</button>
 								<form> 
-									<h1>以下顯示的是資料庫至多20筆的最新訂單</h1>
+									<h1>以下顯示的是資料庫的至多200筆訂單</h1>
 									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
 									<table border="2px">
-										<thead>
-											<th>DELETE BUTTON</th>
-											<th style="background: aquamarine;" >訂單代號(o_id)<br>(READ-ONLY)</th>
-											<th>課程代號<br>(p_id)</th>
-											<th>課程名稱<br>(p_name)</th>
-											<th>課程售價<br>(p_price)</th>
-											<th>用戶帳號<br>(u_id)</th>
-											<th>用戶名字<br>(u_firstname)</th>
-											<th>用戶姓氏<br>(u_lastname)</th>
-											<th>用戶郵箱<br>(u_email)</th>
-											<th>訂單狀態<br>(o_status)</th>
-											<th>訂單時間<br>(o_date)</th>
-											<th>訂單總額<br>(o_amt)</th>
-										</thead>
-										<tbody id="dataArea">
-										</tbody>
+										<thead id="headArea"></thead>
+										<tbody id="dataArea"></tbody>
 									</table>
 									<h1 id='logo' style="background-color: red"></h1>
 									<hr>
@@ -126,13 +112,63 @@ window.onload = function(){
 				$(function(){
 					let logo = $('#logo');
 					let dataArea = $('#dataArea');
+					let headArea = $('#headArea');
 					let oldRowsNum = 0;
-					let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
+					// let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
 					// 從1990-01-01到2021-12-31 // 沒有防大小月和２月
 	
 				/*********************************************************************************************************/
-	
-					// [AJAX] admin massive delete
+				
+					$(window).on('load', function(){
+						headArea.html(
+								"<th>DELETE BUTTON</th>"
+								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
+								+ "<th>課程代號<br>(p_id)</th>"
+								+ "<th>用戶帳號<br>(u_id)</th>"
+								+ "<th>訂單狀態<br>(o_status)</th>"
+								+ "<th>訂單時間<br>(o_date)</th>"
+								+ "<th>訂單總額<br>(o_amt)</th>"
+						)
+						showTop20();
+					});
+					
+						
+					// [AJAX] 載入便顯示資料庫最新20筆訂單 (SELECT TOP(20))
+					function showTop20() {
+						let dataArea = $('#dataArea');
+						let xhr = new XMLHttpRequest();
+						let url = "<c:url value='/cart.controller/adminSelectTop20' />";
+						xhr.open("GET", url, true);
+						xhr.send();
+						xhr.onreadystatechange = function() {
+							if (xhr.readyState == 4 && xhr.status == 200) {
+								dataArea.html(parseSelectedRows(xhr.responseText));
+							}
+						}
+					} 
+					function parseSelectedRows(orderList) {
+						let orders = JSON.parse(orderList);
+						let segment = "";
+							   let totalPrice = 0;
+							   oldRowsNum = orders.length;
+							   for (let i = 0; i < orders.length; i++) {
+								   totalPrice += orders[i].p_price;
+									segment +=	 "<tr>" + 
+														"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
+														"<td><input required name='" + i + "0' type='text' class='old" + i + "0' value='" + orders[i].o_id + "' readonly></td>" +
+														"<td><input required name='" + i + "1' type='text' class='old" + i + "1' value='" + orders[i].p_id + "' ></td>" +
+														"<td><input required name='" + i + "2' type='text' class='old" + i + "2' value='" + orders[i].u_id + "' ></td>" +
+														"<td><input required name='" + i + "3' type='text' class='old" + i + "3' value='" + orders[i].o_status + "' ></td>" +
+														"<td><input required name='" + i + "4' type='text' class='old" + i + "4' value='" + orders[i].o_date + "' ></td>" +
+														"<td><input required name='" + i + "5' type='text' class='old" + i + "5' value='" + orders[i].o_amt + "' id='num'></td>" +
+														"</tr>";
+							   }
+							   segment += "<div>小計：" + totalPrice + "</div>";
+							   return segment;
+					};	
+					
+				/*********************************************************************************************************/
+					// DELETE
 					$('#delete').on('click', function(){
 						for(let i = 0; i < oldRowsNum; i++) {
 							let ckboxIsChecked = $('.ckbox' + i).is(':checked');
@@ -163,7 +199,8 @@ window.onload = function(){
 						showTop20();
 	// 					logo.text('已刪除勾選之項目！');
 					})
-
+					
+				/*********************************************************************************************************/
 					// [AJAX] admin massive update
 					$('#update').on('click', function(){
 						for(let i = 0; i < oldRowsNum; i++) {
@@ -278,10 +315,6 @@ window.onload = function(){
 								return;
 							}
 	
-						// let queryString = 'o_id=' + o_id + '&p_id=' + p_id + '&p_name=' + p_name + '&p_price=' + p_price
-						// 						 + '&u_id=' + u_id + '&u_firstname=' + u_firstname + '&u_lastname=' + u_lastname
-						// 						 + '&u_email=' + u_email + '&o_status=' + o_status + '&o_date=' + o_date + '&o_amt=' + o_amt;
-	
 						// (b) 送進Ajax處理
 	
 						let xhr = new XMLHttpRequest();
@@ -306,105 +339,9 @@ window.onload = function(){
 					})
 					
 	
-				$(window).on('load', function(){
-					showTop20();
-				});
-					
-				// [AJAX] 載入便顯示資料庫最新20筆訂單 (SELECT TOP(20))
-				function  showTop20() {
-					let dataArea = $('#dataArea');
-					let xhr = new XMLHttpRequest();
-					let url = "<c:url value='/cart.controller/adminSelectTop20' />";
-					xhr.open("GET", url, true);
-					xhr.send();
-					xhr.onreadystatechange = function() {
-						if (xhr.readyState == 4 && xhr.status == 200) {
-							dataArea.html(parseSelectedRows(xhr.responseText));
-						}
-					}
-				} 
-				function parseSelectedRows(orderList) {
-					let orders = JSON.parse(orderList);
-					let segment = "";
-						   let totalPrice = 0;
-						   oldRowsNum = orders.length;
-						   for (let i = 0; i < orders.length; i++) {
-							   totalPrice += orders[i].p_price;
-								segment +=	 "<tr>" + 
-													"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
-													"<td style='background: aquamarine;'>" + 
-														  "<input required name='" + i + "0' type='text' class='old" + i + "0' value='" + orders[i].o_id + "' readonly></td>" +
-													"<td><input required name='" + i + "1'  type='text' class='old" + i + "1' value='" + orders[i].p_id + "' ></td>" +
-													"<td><input required name='" + i + "2'  type='text' class='old" + i + "2' value='" + orders[i].p_name + "' ></td>" +
-													"<td><input required name='" + i + "3'  type='text' class='old" + i + "3' value='" + orders[i].p_price + "' id='num'></td> <!--price-->" +
-													"<td><input required name='" + i + "4'  type='text' class='old" + i + "4' value='" + orders[i].u_id + "' ></td>" +
-													"<td><input required name='" + i + "5'  type='text' class='old" + i + "5' value='" + orders[i].u_firstname + "' ></td>" +
-													"<td><input required name='" + i + "6'  type='text' class='old" + i + "6' value='" + orders[i].u_lastname + "' ></td>" +
-													"<td><input required name='" + i + "7'  type='text' class='old" + i + "7' value='" + orders[i].u_email + "' ></td>" +
-													"<td><input required name='" + i + "8'  type='text' class='old" + i + "8' value='" + orders[i].o_status + "' ></td>" +
-													"<td><input required name='" + i + "9'  type='text' class='old" + i + "9' value='" + orders[i].o_date + "' ></td>" +
-													"<td><input required name='" + i + "10' type='text' class='old" + i + "10' value='" + orders[i].o_amt + "' id='num'></td>" +
-													"</tr>";
-						   }
-						   segment += "<div>小計：" + totalPrice + "</div>";
-						   return segment;
-				};
+
 	
 					
-					// 加入空白列
-					let counter = -1;
-					$('#newRow').on('click', function(){
-						counter++;
-						$('#counter').attr('value', counter + 1)
-						let content = `
-						<tr style="background-color: yellow;">
-							<td></td>
-								<td><input required type='text' class='new0' name='new0' id='num' value='由系統自動產生' readonly ></td>
-								<td><input required type='text' class='new1' name='new1'  id='num'  ></td>
-								<td><input required type='text' class='new2' name='new2'    ></td>
-								<td><input required type='text' class='new3' name='new3' id='num'   ></td>
-								<td><input required type='text' class='new4' name='new4'    ></td>
-								<td><input required type='text' class='new5' name='new5'    ></td>
-								<td><input required type='text' class='new6' name='new6'    ></td>
-								<td><input required type='text' class='new7' name='new7'    ></td>
-								<td><input required type='text' class='new8' name='new8'    ></td>
-								<td><input required type='text' class='new9' name='new9'     value=` /* + fs (有bug，無法正確新增)*/ + `></td>
-								<td><input required type='text' class='new10' name='new10' id='num'   ></td>
-								</tr>
-								`;
-						$('#dataArea').append(content);
-						$(this).attr('disabled', true);
-						$('#cheat').attr('disabled', true);
-						$('#insert').attr('disabled', false);
-					})
-	
-					// 一鍵產生資料
-					$('#cheat').on('click', function(){
-						counter++;
-						$('#counter').attr('value', counter + 1)
-						let content = `
-						<tr style="background-color: yellow;">
-							<td></td>
-								<td><input required type='text' class='new0' value='由系統自動產生' readonly name='new` + counter + `0'    ></td>
-								<td><input required type='text' class='new1' value='1' name='new` + counter + `1'    ></td>
-								<td><input required type='text' class='new2' value='CS_Conversation' name='new` + counter + `2'    ></td>
-								<td><input required type='text' class='new3' value='777' name='new` + counter + `3'  id='num'  ></td>
-								<td><input required type='text' class='new4' value='fbk001' name='new` + counter + `4'    ></td>
-								<td><input required type='text' class='new5' value='aaa' name='new` + counter + `5'    ></td>
-								<td><input required type='text' class='new6' value='bbb' name='new` + counter + `6'    ></td>
-								<td><input required type='text' class='new7' value='c@e.f' name='new` + counter + `7'    ></td>
-								<td><input required type='text' class='new8' value='done' name='new` + counter + `8'    ></td>
-								<td><input required type='text' class='new9' value='1907-01-23 00:11:22.0' name='new` + counter + `9'     value=` /* + fs (有bug，無法正確新增)*/ + `></td>
-								<td><input required type='text' class='new10' value='777' name='new` + counter + `10' id='num'   value='1' readonly></td>
-								</tr>
-								`;
-						$('#dataArea').append(content);
-						$(this).attr('disabled', true);
-						$('#newRow').attr('disabled', true);
-						$('#insert').attr('disabled', false);
-					})
-					// func.03 不完整的數字檢查
-					// 不知道為什麼抓不到新增列id=num的格子，明明F12可以看到他有ID
 	
 					$('input#num').on('focusout', function(){
 						if(!isNaN($(this).val())){
@@ -437,45 +374,6 @@ window.onload = function(){
 					})
 	
 				})
-				// 以下只是自訂日期(為了smalldatetime)
-				/*let d = new Date();
-				let year = d.getFullYear(); // 
-				console.log("year = " + year);
-				let date = d.getDate(); // 
-				let monthIndex = d.getMonth();
-				let months = {
-						0: 　'01',
-						1: 　'02',
-						2: 　'03',
-						3: 　'04',
-						4: 　'05',
-						5: 　'06',
-						6: 　'07',
-						7: 　'08',
-						8: 　'09',
-						9: 　'10',
-						10:　'11',
-						11:　'12'
-				};
-				let month = months[monthIndex];
-				let hour = d.getHours();
-				let minute = d.getMinutes();
-				let second = d.getSeconds().toString();
-				if(second < 10){
-					second = '0' + second
-				};
-				if(minute < 10) {
-					minute = '0' + minute
-				};
-				if(hour < 10) {
-					hour = '0' + hour
-				}
-				
-				let formatted = year + '-' + month + '-' + 
-				date + '&nbsp;' + hour + ':' + 
-				minute + ':' + second + '.0';
-				let fs = formatted.toString(); */
-				// -----------------------------------------------------------------
 				</script>		
 		
 		</body>

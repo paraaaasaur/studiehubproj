@@ -9,7 +9,10 @@
 <title>Studie Hub</title>
 
 <script>
+if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
+
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -33,11 +36,15 @@ window.onload = function(){
     
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
+    var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
+    var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
+    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    } 
+    	userPic.src = userPicString;	//有登入就秀大頭貼
+    }
     
 }
 </script>
@@ -58,8 +65,6 @@ window.onload = function(){
 								<%@include file="../universal/header.jsp" %>  
 
 								<h1>您的購物車內有：</h1>
-								<input type="checkbox" id="test01"><label> CHECKBOX </label>
-								<input type="button" id="test02"><label> BUTTON </label>
 								<!-- 顯示當前購物車內容表格 -->
 								<form method="POST" action="#"> 
 									<table>
@@ -84,7 +89,7 @@ window.onload = function(){
 								<form>
 									<button formmethod="POST" id="checkout" formaction="<c:url value='/cart.controller/cartCheckout' />">去結帳</button>
 									<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/cart.controller/cartAdmin' />">到購物車GM頁面</button>
+									<button formmethod="GET" formaction="<c:url value='/cart.controller/cartAdminSelect' />">到購物車GM頁面</button>
 								</form>
 									<hr>
 

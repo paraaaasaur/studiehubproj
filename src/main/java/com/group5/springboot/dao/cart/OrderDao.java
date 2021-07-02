@@ -79,8 +79,8 @@ public class OrderDao implements IOrderDao {
 			productInfoSet.add(pBean);
 			
 			// 互相綁定關聯 (共計 3! = 6 個關聯)
-			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
-			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+//			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
+//			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
 //			uBean.setProductInfoSet(productInfoSet); // U-Ps 關聯
 			oBean.setProductInfo(pBean); // O-P 關聯
 			oBean.setUser_Info(uBean); // O-U 關聯
@@ -125,11 +125,13 @@ public class OrderDao implements IOrderDao {
 			// 準備綁定關聯
 			Set<OrderInfo> orderSet = new HashSet<OrderInfo>();
 			orderSet.add(oBean);
-			// 互相綁定關聯
-			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
-			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+			// 互相綁定關聯 (共計 3! = 6 個關聯)
+//			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
+//			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+//			uBean.setProductInfoSet(productInfoSet); // U-Ps 關聯
 			oBean.setProductInfo(pBean); // O-P 關聯
 			oBean.setUser_Info(uBean); // O-U 關聯
+//			pBean.setUser_Info(uBean); // P-U 關聯
 			
 			em.merge(oBean); 
 		} else {

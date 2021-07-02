@@ -67,27 +67,9 @@ window.onload = function(){
 								<%@include file="../universal/header.jsp" %>  
 
 								<fieldset style="width:960px;">
-									<legend >維護餐廳資料</legend> 
+									<legend style="text-align: center;">維護訂單資料</legend> 
 									<form:form method="POST" modelAttribute="orderInfo" enctype='multipart/form-data'>
 										<Table>
-											<c:choose>
-												<c:when test='${orderInfo.o_id == null}'>
-												    <tr>
-												    	<td>&nbsp;</td>
-												    	<td>
-											   	  		   &nbsp;
-											   	  		</td>
-												    </tr>
-										        </c:when>	   
-										    	<c:otherwise>
-											 	 <tr>
-											       <td>編號：<br>&nbsp;</td>
-											   	   <td><form:hidden path='o_id'/>
-											   	    	${orderInfo.o_id}<br>&nbsp;
-											   	   </td>
-											    </tr>
-										       </c:otherwise>   
-										    </c:choose>         
 										   <tr>  
 										      <td>(1) 訂單代號(o_id)：<br>&nbsp;</td>
 										        <td  width='360'>

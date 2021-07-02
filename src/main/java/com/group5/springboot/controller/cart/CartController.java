@@ -54,37 +54,37 @@ public class CartController {
 
 	/***************************************************************************** */
 	@GetMapping(value = "/cart.controller/adminSelectTop20", produces = "application/json; charset=UTF-8")
-	public List<OrderInfo> adminSelectTop20(){
+	public Map<String, Object> adminSelectTop20(){
 		return orderService.selectTop20();
 	}
 	
 	/***************************************************************************** */
 	@GetMapping(value = "/cart.controller/adminSearchBar")
-	public List<OrderInfo> adminSearchBar(@RequestParam("searchBy") String searchBy, @RequestParam("searchBar") String searchValue) {
+	public Map<String, Object> adminSearchBar(@RequestParam("searchBy") String searchBy, @RequestParam("searchBar") String searchValue) {
 		return orderService.selectLikeOperator(searchBy, searchValue);
 	}
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/insertAdmin")
-	public Map<String, String> adminInsert(@RequestBody OrderInfo order) {
-		boolean insertStatus = (orderService.insert(order) != null)? true : false;
+	public Map<String, Object> adminInsert(@RequestBody OrderInfo order) {
+		Map<String, Object> map = orderService.insert(order);
+		boolean insertStatus = (map != null)? true : false;
 		String msg = (insertStatus)? "新增成功！" : "新增失敗 :^)";
-		HashMap<String, String> resultMap = new HashMap<>();
-		resultMap.put("state", msg);
+		map.put("state", msg);
 		
-		return resultMap;
+		return map;
 	}
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/updateAdmin")
-	public Map<String, String> adminUpdate(@RequestBody OrderInfo order) {
+	public Map<String, Object> adminUpdate(@RequestBody OrderInfo order) {
 		// ❗ 之後加上一圈先檢查 FK 的機制
+		HashMap<String, Object> map = new HashMap<>();
 		boolean updateStatus = (orderService.update(order))? true : false;
 		String msg = "oid = " + order.getO_id() + ((updateStatus)?  "：修改成功✔" : "：修改失敗❌");
-		HashMap<String, String> resultMap = new HashMap<>();
-		resultMap.put("state", msg);
+		map.put("state", msg);
 		
-		return resultMap;
+		return map;
 	}
 
 	/***************************************************************************** */

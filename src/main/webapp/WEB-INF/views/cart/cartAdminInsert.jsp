@@ -77,7 +77,7 @@ window.onload = function(){
 <%-- 											      <form:errors path='typeId' cssClass="error"/> --%>
 											  </td>
 										      <td>(2) 課程代號(p_id)：<br>&nbsp;</td>
-											  <td  width='360'><form:input path='p_id' /><br>&nbsp;	
+											  <td  width='360'><form:input path='p_id' id="p_id" /><br>&nbsp;	
 <%-- 											      <form:errors path='name' cssClass="error"/> --%>
 											  </td>
 										   </tr>
@@ -94,7 +94,7 @@ window.onload = function(){
 										   <tr>
 										      <td>(5) 會員帳號(u_id)：<br>&nbsp;</td>
 										        <td  width='360'>
-										      	<form:input path="u_id" /><br>&nbsp;	
+										      	<form:input path="u_id" id="u_id" /><br>&nbsp;	
 <%-- 											      <form:errors path='longitude' cssClass="error"/> --%>
 											  </td>
 <!-- 										      <td>(6) 會員名字(u_firstname)：<br>&nbsp;</td> -->
@@ -116,7 +116,7 @@ window.onload = function(){
 										   <tr>
 										      <td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
 										   	  <td>
-										   	  	 <form:input path="o_status" /><br>&nbsp;
+										   	  	 <form:input path="o_status" id="o_status" /><br>&nbsp;
 <%-- 										   	  	 <form:errors path="link"  cssClass="error" /> --%>
 										   	  </td>
 										   	  <td>(10) 訂單日期(o_date)：<br>&nbsp;</td>
@@ -129,11 +129,12 @@ window.onload = function(){
 										   <tr>
 										       <td>(11) 訂單小計(o_amt)：<br>&nbsp;</td>
 										   	   <td>
-											   	  	 <form:input path="o_amt" /><br>&nbsp;
+											   	  	 <form:input path="o_amt" id="o_amt" /><br>&nbsp;
 	<%-- 									   	  	 <form:errors path="link"  cssClass="error" /> --%>
 										   	   </td>
 										       <td colspan='4' align='center'><br>&nbsp;
-											       <input type='submit'>
+											       <input type='submit' value='送出資料'>
+												   <input type='button' id='cheat' value='一鍵生成'>
 									           </td>
 										   </tr>
 										</Table>
@@ -142,7 +143,7 @@ window.onload = function(){
 									
 								</fieldset>
 								
-								<a href="./../" >回前頁</a>
+								<a href="http:\/\/localhost:8080/studiehub/cart.controller/cartAdminInsert" >回首頁</a>
 						</div>
 					</div>
 
@@ -160,6 +161,20 @@ window.onload = function(){
 			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
+			<script>
+				$(function(){
+					
+					$('#cheat').on('click', function(){
+						console.log(123);
+						$('#p_id').val(1);
+						$('#u_id').val('fbk001');
+						$('#o_status').val('DONE');
+						$('#o_amt').val(99999);
+					})
+
+					
+				})
+			</script>
 
 		</body>
 </html>

@@ -87,10 +87,10 @@ window.onload = function(){
 									</table>
 									<h1 id='logo' style="background-color: red"></h1>
 									<hr>
-<!-- 									<input name="counter" value="-1" id="counter" type="text" value="xxx" hidden> -->
 									
 								</form>
-								<button name="todo" id="insert" value="insertAdmin">新增</button>
+								<button name="todo" id="insert" value="insertAdmin" 
+								onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/cartAdminInsert'">新增</button>
 								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
 								<button id="testxx" hidden="true">測試</button>
 								<hr>
@@ -181,8 +181,9 @@ window.onload = function(){
 							}
 						}
 					} 
-					function parseSelectedRows(orderList) {
-						let orders = JSON.parse(orderList);
+					function parseSelectedRows(map) {
+						let parsedMap = JSON.parse(map);
+						let orders = parsedMap.list;
 						let segment = "";
 							   let totalPrice = 0;
 							   oldRowsNum = orders.length;
@@ -190,12 +191,12 @@ window.onload = function(){
 								    totalPrice += orders[i].p_price;
 									segment +=	 "<tr>" + 
 														"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
-														"<td><input required name='" + i + "0' type='text' class='old" + i + "0' value='" + orders[i].o_id + "' readonly></td>" +
-														"<td><input required name='" + i + "1' type='text' class='old" + i + "1' value='" + orders[i].p_id + "' ></td>" +
-														"<td><input required name='" + i + "2' type='text' class='old" + i + "2' value='" + orders[i].u_id + "' ></td>" +
-														"<td><input required name='" + i + "3' type='text' class='old" + i + "3' value='" + orders[i].o_status + "' ></td>" +
-														"<td><input required name='" + i + "4' type='text' class='old" + i + "4' value='" + orders[i].o_date + "' ></td>" +
-														"<td><input required name='" + i + "5' type='text' class='old" + i + "5' value='" + orders[i].o_amt + "' id='num'></td>" +
+														"<td><label data-val='" + orders[i].o_id + "' class='old" + i + "0' >" + orders[i].o_id + "</label></td>" +
+														"<td><label data-val='" + orders[i].p_id + "' class='old" + i + "1' >" + orders[i].p_id + "</label></td>" +
+														"<td><label data-val='" + orders[i].u_id + "' class='old" + i + "2' >" + orders[i].u_id + "</label></td>" +
+														"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
+														"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
+														"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
 														"<td width='120'><a href='http://localhost:8080/studiehub/cart.controller/cartAdminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
 														"</tr>";
 							   }
@@ -214,10 +215,10 @@ window.onload = function(){
 								let ckboxValue = $('.ckbox' + i).val();
 								console.log('ckboxValue' + i + ' = ' + ckboxValue);
 	
-								let o_id = $('.old' + i + '0').val()
+								let o_id = $('.old' + i + '0').attr('data-val');
 	
-								let queryString = 'o_id=' + o_id 
-								console.log(queryString)
+								let queryString = 'o_id=' + o_id;
+								console.log(queryString);
 								
 								let xhr = new XMLHttpRequest();
 								let url = "<c:url value='/cart.controller/deleteAdmin' />";
@@ -238,7 +239,10 @@ window.onload = function(){
 					
 				/*********************************************************************************************************/
 		
-
+					// $('#insert').on('click', function(){
+					// 	let url = "http://localhost:8080/studiehub/cart.controller/cartAdminInsert";
+					// 	window.location.href = url;
+					// })
 					
 	
 

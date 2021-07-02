@@ -40,9 +40,18 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@PostMapping(value = {"/cart.controller/cartAdminInsert"})
+	public String cartAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo OrderInfo,
+			BindingResult result, 
+			RedirectAttributes ra) {
+		orderService.insert(OrderInfo);
+		return "/cart/cartAdminSelect";
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/cartAdminUpdate/{oid}"})
 	public String toCartAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
-		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)));
+		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)).get("orderInfo"));
 		return "/cart/cartAdminUpdate";
 	}
 	

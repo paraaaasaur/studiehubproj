@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<link rel='stylesheet' href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.css">
 
 <title>Studie Hub</title>
 
@@ -45,7 +46,7 @@ function showData(textobj) {
 	let events = obj.list
 
     let segment="" ;
-  
+   
 
 	
 	
@@ -55,10 +56,16 @@ function showData(textobj) {
 					
 			
                 let tmp0 = "<c:url value='/' />"  + event.a_picturepath;
+                let tmp1 = event.a_name ;
+                let tmp2 = event.a_startTime;
+                let tmp3 = event.a_endTime;
+                let tmp4 = event.a_address;
+                
 			    segment += "<article>";
-			    segment += "<a href='#' class='image'><img src='"+tmp0+"' alt='' class='img-responsive center-block'/></a>"
-				segment += "<h3>Interdum aenean</h3>"
-				segment += "<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>"
+			    segment += "<a href='#' class='image'><img src='"+tmp0+"' alt='' width='460' height='345'/></a>"
+				segment += "<h3>"+tmp1+"</h3>"
+				segment += "<p>活動時間:"+tmp2+"<span>至"+tmp3+"</span>"+"</p>"
+				segment += "<p>活動地點:"+tmp4+"</p>"
 				segment += "<ul class='actions'>"
 				segment += "<li><a href='#' class='button'>More</a></li>"
 				segment += "</ul>"

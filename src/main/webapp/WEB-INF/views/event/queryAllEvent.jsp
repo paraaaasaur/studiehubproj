@@ -62,12 +62,13 @@ span.error {
 			}
 
 			let xhr2 = new XMLHttpRequest();
-			xhr2.open('GET', "<c:url value='/queryByName' />?rname=" + rname);
+			xhr2.open('GET', "<c:url value='/queryEventByName' />?rname=" + rname);
 			xhr2.send();
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
 					console.log(xhr2.responseText);
+					
 					dataArea.innerHTML = showData(xhr2.responseText);
 
 				}
@@ -95,7 +96,7 @@ span.error {
 
 			for (n = 0; n < events.length; n++) {
 				let event = events[n];
-				console.log("<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/updateProduct/"+event.a_aid+"'/>' /></td>")
+// 				console.log("<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/updateProduct/"+event.a_aid+"'/>' /></td>")
 						
 
 				let tmp0 = "<c:url value = '/updateEvent/'/>" + event.a_aid;

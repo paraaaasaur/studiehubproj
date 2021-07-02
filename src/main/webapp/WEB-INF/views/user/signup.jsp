@@ -15,7 +15,6 @@ var pswHasError = false;
 window.onload = function(){
 	var alink = document.getElementById("accountCheck");
 	var sendData = document.getElementById("sendData");
-
 	//檢查帳號是否重複
 	alink.onclick = function(){
 		var u_id = document.getElementById("u_id").value;
@@ -46,7 +45,6 @@ window.onload = function(){
 			}
 		}
 	}
-
     
 	//確認送出資料
 	sendData.onclick = function(){
@@ -65,7 +63,6 @@ window.onload = function(){
 		var spanCheckPsw = document.getElementById('checkPsw'); //確認密碼
 		
 // 		var spanResult = document.getElementById('resultMsg');
-
 		if(!u_id){
 			setErrorFor(span0, "請輸入帳號");
 		} else{
@@ -97,14 +94,12 @@ window.onload = function(){
 			span4.innerHTML = "";
 		}
 		//檢查email格式
-// 		if(!(u_email.includes('@')) || !u_email){
+// 		if(!(u_email.includes('@'))){
 // 			setErrorFor(span4, "信箱格式錯誤");
-// 			hasError = true;
+// // 			hasError = true;
 // 		} else{
 // 			span4.innerHTML = "";
 // 		}
-		
-		
 		
 		// 檢查密碼是否一致
 		if(u_psw==ck_psw && ck_psw!=""){
@@ -138,17 +133,17 @@ window.onload = function(){
 				}else if(result.success){
 					alert(result.success + "! 為您導到登入頁面, 請盡早修改會員資料...");
 					top.location='<c:url value='/gotologin.controller' />';
+				}else if(result.formatError){
+					alert(result.formatError);
 				}
 			}
 		}
 	}
-
 	
 	function setErrorFor(input, message){
 		input.innerHTML = "<font color='red' size='-2'>" + message + "</font>";
 		hasError = true;
 	}
-
 		
 }
 </script>

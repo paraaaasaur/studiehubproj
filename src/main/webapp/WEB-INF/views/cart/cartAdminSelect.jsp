@@ -66,7 +66,7 @@ window.onload = function(){
 								
 								
 								<h1>管理者頁面</h1>
-								<input type='text' id='searchBar'><label for='searchBar'>模糊搜尋：</label>
+								<input type='text' id='searchBar'><label for='searchBar'>模糊搜尋：</label><button type="submit" id="searchBtn">查詢</button>
 								<select id='searchBy'>
 									<option value='o_id' selected>以帳單編號</option>
 									<option value='p_id'>以課程代號</option>
@@ -78,7 +78,7 @@ window.onload = function(){
 									<option value='o_date'>以訂單日期</option>
 								</select>
 								<hr>
-								<form> 
+								<form>
 									<h1 id='topLogo'>以下顯示的是資料庫的至多200筆訂單</h1>
 									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
 									<table border="2px">
@@ -90,9 +90,8 @@ window.onload = function(){
 <!-- 									<input name="counter" value="-1" id="counter" type="text" value="xxx" hidden> -->
 									
 								</form>
-								<button name="todo" id="insert" value="insertAdmin" disabled>新增 (一次新增一筆)</button>
-								<button name="todo" id="update" value="updateAdmin">修改 (可大幅修改)</button>
-								<button name="todo" id="delete" value="deleteAdmin">刪除 (勾選者皆可刪除)</button>
+								<button name="todo" id="insert" value="insertAdmin">新增</button>
+								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
 								<button id="testxx" hidden="true">測試</button>
 								<hr>
 								<form>
@@ -123,8 +122,11 @@ window.onload = function(){
 			<script>
 				// go to UPDATE page
 				function toUpdatePage(oid){
-					window.location.href = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid;
-				})
+					// let url = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid; // ❓
+					let url = "http://localhost:8080/studiehub/cart.controller/cartAdminUpdate/" + oid;
+					console.log(url);
+					top.location = url;
+				}
 				
 				$(function(){
 					let logo = $('#logo');
@@ -151,17 +153,19 @@ window.onload = function(){
 						)
 						showTop20();
 					});
+					
 					// Search Bar 模糊搜尋
-					$('#searchBar').on('click', function(){
+					$('#searchBtn').on('click', function(){
+						let searchBy = $('#searchBy').val();
+						let searchBar = $('#searchBar').val();
 						let xhr = new XMLHttpRequest();
 						xhr.open('GET', "<c:url value='/cart.controller/adminSearchBar' />", true);
-						xhr.send();
+						xhr.send('?searchBy=' + searchBy + '&searchBar=' + searchBar);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								dataArea.html(parseSelectedRows(xhr.responseText));
 							}
 						}
-						
 					})
 						
 					// [AJAX] 載入便顯示資料庫最新20筆訂單 (SELECT TOP(20))
@@ -183,7 +187,7 @@ window.onload = function(){
 							   let totalPrice = 0;
 							   oldRowsNum = orders.length;
 							   for (let i = 0; i < orders.length; i++) {
-								   totalPrice += orders[i].p_price;
+								    totalPrice += orders[i].p_price;
 									segment +=	 "<tr>" + 
 														"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
 														"<td><input required name='" + i + "0' type='text' class='old" + i + "0' value='" + orders[i].o_id + "' readonly></td>" +
@@ -192,7 +196,7 @@ window.onload = function(){
 														"<td><input required name='" + i + "3' type='text' class='old" + i + "3' value='" + orders[i].o_status + "' ></td>" +
 														"<td><input required name='" + i + "4' type='text' class='old" + i + "4' value='" + orders[i].o_date + "' ></td>" +
 														"<td><input required name='" + i + "5' type='text' class='old" + i + "5' value='" + orders[i].o_amt + "' id='num'></td>" +
-														"<td><button formaction='#' id='oid" + orders[i].o_id + "' name='oid" + orders[i].o_id + "' onclick='toUpdatePage(" + orders[i].o_id + ")'>修改</button></td>" +
+														"<td width='120'><a href='http://localhost:8080/studiehub/cart.controller/cartAdminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
 														"</tr>";
 							   }
 							   segment += "<div>小計：" + totalPrice + "</div>";
@@ -233,7 +237,7 @@ window.onload = function(){
 					})
 					
 				/*********************************************************************************************************/
-	
+		
 
 					
 	

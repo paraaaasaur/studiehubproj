@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,34 +65,84 @@ window.onload = function(){
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/header.jsp" %>  
-								<h1>管理者頁面</h1>
-								<button id="newRow">添加空白訂單列</button>
-								<button id="cheat">添加訂單列(懶人用)</button>
-								<form> 
-									<h1>以下顯示的是資料庫的至多200筆訂單</h1>
-									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
-									<table border="2px">
-										<thead id="headArea"></thead>
-										<tbody id="dataArea"></tbody>
-									</table>
-									<h1 id='logo' style="background-color: red"></h1>
-									<hr>
-<!-- 									<input name="counter" value="-1" id="counter" type="text" value="xxx" hidden> -->
-									
-								</form>
-								<button name="todo" id="insert" value="insertAdmin" disabled>新增 (一次新增一筆)</button>
-								<button name="todo" id="update" value="updateAdmin">修改 (可大幅修改)</button>
-								<button name="todo" id="delete" value="deleteAdmin">刪除 (勾選者皆可刪除)</button>
-								<button id="testxx" hidden>測試</button>
-								<hr>
-								<form>
-									<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/cart.controller/cartIndex' />">回購物車使用者首頁</button>
-								</form>
-								
-								<button type="button" id="labelall" hidden>click me</button>
-								
 
+								<fieldset style="width:960px;">
+									<legend >維護餐廳資料</legend> 
+									<form:form method="POST" modelAttribute="emptyOrderInfo" enctype='multipart/form-data'>
+										<Table>
+										   <tr>  
+										      <td>(1) 訂單代號(o_id)：<br>&nbsp;</td>
+										        <td  width='360'>
+										      	<form:input path="o_id" readonly="true" /><br>&nbsp;	   // property name 
+<%-- 											      <form:errors path='typeId' cssClass="error"/> --%>
+											  </td>
+										      <td>(2) 課程代號(p_id)：<br>&nbsp;</td>
+											  <td  width='360'><form:input path='p_id' /><br>&nbsp;	
+<%-- 											      <form:errors path='name' cssClass="error"/> --%>
+											  </td>
+										   </tr>
+<!-- 										   <tr> -->
+<!-- 										      <td>(3) 課程名稱(p_name)：<br>&nbsp;</td> -->
+<!-- 										      <td  width='360'> -->
+<%-- 										      	<form:input path="p_name" readonly="true" /><br>&nbsp;	 --%>
+<!-- 											  </td> -->
+<!-- 											   <td>(4) 課程價格(p_price)：<br>&nbsp;</td> -->
+<!-- 										   	  <td> -->
+<%-- 										      	<form:input path="p_price" readonly="true" /><br>&nbsp;	 --%>
+<!-- 											  </td> -->
+<!-- 										   </tr> -->
+										   <tr>
+										      <td>(5) 會員帳號(u_id)：<br>&nbsp;</td>
+										        <td  width='360'>
+										      	<form:input path="u_id" /><br>&nbsp;	
+<%-- 											      <form:errors path='longitude' cssClass="error"/> --%>
+											  </td>
+<!-- 										      <td>(6) 會員名字(u_firstname)：<br>&nbsp;</td> -->
+<%-- 											  <td  width='360'><form:input path='u_firstname' readonly="true" /><br>&nbsp;	 --%>
+<!-- 											  </td> -->
+										   </tr>
+										 
+<!-- 										   <tr> -->
+<!-- 										      <td>(7) 會員姓氏(u_lastname)：<br>&nbsp;</td> -->
+<!-- 										   	  <td> -->
+<%-- 										   	  	 <form:input path="u_lastname" readonly="true" /><br>&nbsp; --%>
+<!-- 										   	  </td> -->
+<!-- 										   	  <td>(8) 會員信箱(u_email)：<br>&nbsp;</td> -->
+<!-- 										   	  <td> -->
+<%-- 										   	  	 <form:input path="u_email" readonly="true" /><br>&nbsp; --%>
+<!-- 										   	  </td> -->
+<!-- 										   </tr> -->
+										   
+										   <tr>
+										      <td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
+										   	  <td>
+										   	  	 <form:input path="o_status" /><br>&nbsp;
+<%-- 										   	  	 <form:errors path="link"  cssClass="error" /> --%>
+										   	  </td>
+										   	  <td>(10) 訂單日期(o_date)：<br>&nbsp;</td>
+										   	  <td>
+										   	  	 <form:input path="o_date" readonly="true" /><br>&nbsp;
+<%-- 										   	  	 <form:errors path="placeImage"  cssClass="error" /> --%>
+										   	  </td>
+										   </tr>
+										   
+										   <tr>
+										       <td>(11) 訂單小計(o_amt)：<br>&nbsp;</td>
+										   	   <td>
+											   	  	 <form:input path="o_amt" /><br>&nbsp;
+	<%-- 									   	  	 <form:errors path="link"  cssClass="error" /> --%>
+										   	   </td>
+										       <td colspan='4' align='center'><br>&nbsp;
+											       <input type='submit'>
+									           </td>
+										   </tr>
+										</Table>
+										 
+									</form:form>
+									
+								</fieldset>
+								
+								<a href="./../" >回前頁</a>
 						</div>
 					</div>
 
@@ -108,273 +160,6 @@ window.onload = function(){
 			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
-			<script>
-				$(function(){
-					let logo = $('#logo');
-					let dataArea = $('#dataArea');
-					let headArea = $('#headArea');
-					let oldRowsNum = 0;
-					// let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
-					// 從1990-01-01到2021-12-31 // 沒有防大小月和２月
-	
-				/*********************************************************************************************************/
-				
-					$(window).on('load', function(){
-						headArea.html(
-								"<th>DELETE BUTTON</th>"
-								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
-								+ "<th>課程代號<br>(p_id)</th>"
-								+ "<th>用戶帳號<br>(u_id)</th>"
-								+ "<th>訂單狀態<br>(o_status)</th>"
-								+ "<th>訂單時間<br>(o_date)</th>"
-								+ "<th>訂單總額<br>(o_amt)</th>"
-						)
-						showTop20();
-					});
-					
-						
-					// [AJAX] 載入便顯示資料庫最新20筆訂單 (SELECT TOP(20))
-					function showTop20() {
-						let dataArea = $('#dataArea');
-						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/adminSelectTop20' />";
-						xhr.open("GET", url, true);
-						xhr.send();
-						xhr.onreadystatechange = function() {
-							if (xhr.readyState == 4 && xhr.status == 200) {
-								dataArea.html(parseSelectedRows(xhr.responseText));
-							}
-						}
-					} 
-					function parseSelectedRows(orderList) {
-						let orders = JSON.parse(orderList);
-						let segment = "";
-							   let totalPrice = 0;
-							   oldRowsNum = orders.length;
-							   for (let i = 0; i < orders.length; i++) {
-								   totalPrice += orders[i].p_price;
-									segment +=	 "<tr>" + 
-														"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
-														"<td><input required name='" + i + "0' type='text' class='old" + i + "0' value='" + orders[i].o_id + "' readonly></td>" +
-														"<td><input required name='" + i + "1' type='text' class='old" + i + "1' value='" + orders[i].p_id + "' ></td>" +
-														"<td><input required name='" + i + "2' type='text' class='old" + i + "2' value='" + orders[i].u_id + "' ></td>" +
-														"<td><input required name='" + i + "3' type='text' class='old" + i + "3' value='" + orders[i].o_status + "' ></td>" +
-														"<td><input required name='" + i + "4' type='text' class='old" + i + "4' value='" + orders[i].o_date + "' ></td>" +
-														"<td><input required name='" + i + "5' type='text' class='old" + i + "5' value='" + orders[i].o_amt + "' id='num'></td>" +
-														"</tr>";
-							   }
-							   segment += "<div>小計：" + totalPrice + "</div>";
-							   return segment;
-					};	
-					
-				/*********************************************************************************************************/
-					// DELETE
-					$('#delete').on('click', function(){
-						for(let i = 0; i < oldRowsNum; i++) {
-							let ckboxIsChecked = $('.ckbox' + i).is(':checked');
-							console.log('ckboxIsChecked? = ' + ckboxIsChecked);
-							
-							if(ckboxIsChecked) { // 不勾選 == 不存在 == 不會進此迴圈 == 檢查下一個checkbox值
-								let ckboxValue = $('.ckbox' + i).val();
-								console.log('ckboxValue' + i + ' = ' + ckboxValue);
-	
-								let o_id = $('.old' + i + '0').val()
-	
-								let queryString = 'o_id=' + o_id 
-								console.log(queryString)
-								
-								let xhr = new XMLHttpRequest();
-								let url = "<c:url value='/cart.controller/deleteAdmin' />";
-								xhr.open("POST", url, true);
-								xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // 用處？？？？？？？？？
-								xhr.send(queryString);
-								xhr.onreadystatechange = function() {
-									if (xhr.readyState == 4 && xhr.status == 200) {
-										let result = JSON.parse(xhr.responseText);
-										console.log(result.state);
-									}
-								}
-							}
-						}
-						showTop20();
-	// 					logo.text('已刪除勾選之項目！');
-					})
-					
-				/*********************************************************************************************************/
-					// [AJAX] admin massive update
-					$('#update').on('click', function(){
-						for(let i = 0; i < oldRowsNum; i++) {
-							let s0 = '.old' + i + '0'; let o_id = $(s0).val()
-							let s1 = '.old' + i + '1'; let p_id = $(s1).val()
-							let s2 = '.old' + i + '2'; let p_name = $(s2).val()
-							let s3 = '.old' + i + '3'; let p_price = $(s3).val()
-							let s4 = '.old' + i + '4'; let u_id = $(s4).val()
-							let s5 = '.old' + i + '5'; let u_firstname = $(s5).val()
-							let s6 = '.old' + i + '6'; let u_lastname = $(s6).val()
-							let s7 = '.old' + i + '7'; let u_email = $(s7).val()
-							let s8 = '.old' + i + '8'; let o_status = $(s8).val()
-							let s9 = '.old' + i + '9'; let o_date = $(s9).val()
-							let s10 = '.old' + i + '10'; let o_amt = $(s10).val()
-							// 空值 & 類型防呆
-							let nullCheck = (!o_id || !p_id || !p_name || !p_price || !u_id || !u_firstname || !u_lastname || !u_email || !o_status || !o_date || !o_amt);
-							if(nullCheck) {
-								logo.text('不得送出空值！');
-								return;
-							} else if(isNaN(p_id)) {
-								logo.text('課程代號須為純數字！');
-								return;
-							} else if(isNaN(p_price)) {
-								logo.text('課程售價須為純數字！');
-								return;
-							} else if(isNaN(o_amt)) {
-								logo.text('訂單總額須為純數字！');
-								return;
-							} else if(false) {
-								logo.text('訂單日期格式錯誤，請參照上方！');
-								return;
-							}
-						console.log('LULLLLLLLLLLLLL');
-						}
-						for(let i = 0; i < oldRowsNum; i++) {
-							let json = {
-									'o_id' : parseInt($('.old' + i + '0').val()),
-									'p_id' : parseInt( $('.old' + i + '1').val()),
-									'p_name' : $('.old' + i + '2').val(),
-									'p_price' : parseInt($('.old' + i + '3').val()),
-									'u_id' : $('.old' + i + '4').val(),
-									'u_firstname' : $('.old' + i + '5').val(),
-									'u_lastname' : $('.old' + i + '6').val(),
-									'u_email' :  $('.old' + i + '7').val(),
-									'o_status' : $('.old' + i + '8').val(),
-									'o_date' : $('.old' + i + '9').val(),
-									'o_amt' : parseInt($('.old' + i + '10').val())
-							}
-							
-							let xhr = new XMLHttpRequest();
-							let url = "<c:url value='/cart.controller/updateAdmin' />";
-							xhr.open("POST", url, true);
-							xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-							xhr.send(JSON.stringify(json));
-							xhr.onreadystatechange = function() {
-								if (xhr.readyState == 4 && xhr.status == 200) {
-									let result = JSON.parse(xhr.responseText); // 還回來一張map
-									console.log(result.state);
-								}
-							}
-						}
-						showTop20(); // 為什麼會不起作用？？？？非得讓我F5不可
-						logo.text('更新完成！');
-					})
-	
-					// [AJAX] admin single insert
-					// 有時間的話改試form:form表單
-					$('#insert').on('click', function(){
-						// (a) 讀取到所有要insert進資料庫的欄位資料，建立查詢字串
-	
-						let o_id = $('.new0').val()
-						let p_id = $('.new1').val()
-						let p_name = $('.new2').val()
-						let p_price = $('.new3').val()
-						let u_id = $('.new4').val()
-						let u_firstname = $('.new5').val()
-						let u_lastname = $('.new6').val()
-						let u_email = $('.new7').val()
-						let o_status = $('.new8').val()
-						let o_date = $('.new9').val()
-						let o_amt = $('.new10').val()
-	
-						let json = {
-									'o_id' : parseInt(o_id),
-									'p_id' : parseInt(p_id),
-									'p_name' : p_name,
-									'p_price' : parseInt(p_price),
-									'u_id' : u_id,
-									'u_firstname' : u_firstname,
-									'u_lastname' : u_lastname,
-									'u_email' :  u_email,
-									'o_status' : o_status,
-									'o_date' : o_date,
-									'o_amt' : parseInt(o_amt)
-							}
-	
-						let nullCheck = (!o_id || !p_id || !p_name || !p_price || !u_id || !u_firstname || !u_lastname || !u_email || !o_status || !o_date || !o_amt);
-							if(nullCheck) {
-								logo.text('不得送出空值！');
-								return;
-							} else if(isNaN(p_id)) {
-								logo.text('課程代號須為純數字！');
-								return;
-							} else if(isNaN(p_price)) {
-								logo.text('課程售價須為純數字！');
-								return;
-							} else if(isNaN(o_amt)) {
-								logo.text('訂單總額須為純數字！');
-								return;
-							} else if(false) { // 待修正
-								logo.text('訂單日期格式錯誤，請參照上方！');
-								return;
-							}
-	
-						// (b) 送進Ajax處理
-	
-						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/insertAdmin' />";
-						xhr.open("POST", url, true);
-						// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // 用處？？？？？？？？？
-						xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8"); // 用處？？？？？？？？？
-						// xhr.send(queryString);
-						xhr.send(JSON.stringify(json));
-						xhr.onreadystatechange = function() {
-							if (xhr.readyState == 4 && xhr.status == 200) {
-								let result = JSON.parse(xhr.responseText);
-								logo.text(result.state);
-								showTop20();
-								$('#newRow').attr('disabled', false);
-								$('#cheat').attr('disabled', false);
-								$('#insert').attr('disabled', true);
-							}
-						}
-	
-	
-					})
-					
-	
 
-	
-					
-	
-					$('input#num').on('focusout', function(){
-						if(!isNaN($(this).val())){
-							console.log('if')
-							return;
-						} else {
-							console.log('else')
-							logo.text('Only numbers are allowed.')
-							$(this).val('')
-						}
-					})
-	
-	
-					// func.04 
-					
-					$('i#gcIcon', 'button#gcBtn').on('click', function(event){
-						event.preventDefault();
-					})
-	
-					// func.05 刪除功能防呆 ❌施工中
-					$('input#ckbox').on('click', function(){
-						let ckboxes = $('input#ckbox:checked');
-						$('#delete').attr('disabled', true);
-							if($(ckboxes).length == 0 || $(ckboxes).length == null) {
-								console.log('(if)' + $(ckboxes).length);
-							} else {
-								$('#delete').attr('disabled', false);
-								console.log('(else)' + $(ckboxes).length);		
-							}
-					})
-	
-				})
-				</script>		
-		
 		</body>
 </html>

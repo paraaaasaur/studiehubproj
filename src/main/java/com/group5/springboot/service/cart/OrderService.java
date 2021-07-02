@@ -2,6 +2,8 @@ package com.group5.springboot.service.cart;
 
 import java.util.List;
 
+import javax.persistence.TypedQuery;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,10 @@ public class OrderService implements IOrderService{
 	
 	public List<OrderInfo> selectAll() {
 		return orderDao.selectAll();
+	}
+	
+	public List<OrderInfo> selectLikeOperator(Object condition, Object value) {
+		return orderDao.selectLikeOperator(condition, value);
 	}
 	
 	public OrderInfo select(OrderInfo orderBean) {

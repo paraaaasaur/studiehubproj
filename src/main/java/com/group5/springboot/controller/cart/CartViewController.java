@@ -8,11 +8,14 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
@@ -31,7 +34,8 @@ public class CartViewController {
 
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/cartAdminInsert"})
-	public String toCartAdminInsert() {
+	public String toCartAdminInsert(Model model) {
+		model.addAttribute("emptyOrderInfo", new OrderInfo());
 		return "/cart/cartAdminInsert";
 	}
 	
@@ -40,6 +44,27 @@ public class CartViewController {
 	public String toCartAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
 		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)));
 		return "/cart/cartAdminUpdate";
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@PostMapping(value = {"/cart.controller/cartAdminUpdate/{oid}"})
+	public String cartAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
+			BindingResult result, 
+			RedirectAttributes ra) {
+		
+//		placeValidator.validate(place, result);
+//		if (result.hasErrors()) {
+//          下列敘述可以理解Spring MVC如何處理錯誤			
+//			List<ObjectError> list = result.getAllErrors();
+//			for (ObjectError error : list) {
+//				System.out.println("有錯誤：" + error);
+//			}
+//		ra.addFlashAttribute("successMessage", place.getName() + "修改成功");
+		
+		// 新增或修改成功，要用response.sendRedirect(newURL) 通知瀏覽器對newURL發出請求
+		orderService.update(orderInfo);
+		return "/cart/cartAdminSelect";
+		
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */

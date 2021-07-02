@@ -29,6 +29,15 @@ public class OrderDao implements IOrderDao {
 		return query.getResultList();
 	}
 	
+	public List<OrderInfo> selectLikeOperator(Object condition, Object value) {
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE :condition LIKE :value", OrderInfo.class);
+		query.setParameter("condition", (String) condition);
+		boolean isString = (value instanceof String);
+		Object parsedValue = (isString)? (String) value : (Integer) value;
+		query.setParameter("value", "%" + parsedValue + "%");
+		return query.getResultList();
+	}
+	
 	@Override
 	public OrderInfo select(OrderInfo orderBean) {
 		// ‼ HQL不是用table名而是 Class Name ‼

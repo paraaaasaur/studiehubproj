@@ -23,13 +23,11 @@ import com.group5.springboot.service.cart.OrderService;
 public class CartController {
 	@Autowired // SDI ✔
 	private OrderService orderService;
-//	@Autowired // SDI ✔
 	public List<ProductInfo> cart = new ArrayList<ProductInfo>();
 
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
 	@SuppressWarnings("unchecked")
 	@GetMapping(value="/cart.controller/showCart", produces = "application/json; charset=UTF-8")
-//	@ResponseBody
 	public List<ProductInfo> showCart(HttpSession session) {
 		session.setAttribute("cart", cart);
 		cart = (ArrayList<ProductInfo>) session.getAttribute("cart");
@@ -39,10 +37,9 @@ public class CartController {
 		return cart;
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
 	@SuppressWarnings("unchecked")
 	@PostMapping(value = "/cart.controller/remove", produces = "application/json; charset=UTF-8")
-//	@ResponseBody
 	public List<ProductInfo> removeProductFromCart(@RequestParam String[] ckboxValues, HttpSession session) {
 		cart = (ArrayList<ProductInfo>) session.getAttribute("cart");
 		System.out.println(ckboxValues);
@@ -55,28 +52,21 @@ public class CartController {
 		return cart;
 	}
 
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
 	@GetMapping(value = "/cart.controller/adminSelectTop20", produces = "application/json; charset=UTF-8")
-//	@ResponseBody
 	public List<OrderInfo> adminSelectTop20(){
-		List<OrderInfo> a = orderService.selectTop20();
-//		for (int i = 0; i < a.size(); i++) {
-//			System.out.println(a.get(i));
-//		}
-		return a; 
+		return orderService.selectTop20();
 	}
 	
+	/***************************************************************************** */
 	@GetMapping(value = "/cart.controller/adminSearchBar")
-	public List<OrderInfo> adminSearchBar() {
-		
-		
+	public List<OrderInfo> adminSearchBar(@RequestParam("searchBy") String searchBy, @RequestParam("searchBar") String searchValue) {
+		return orderService.selectLikeOperator(searchBy, searchValue);
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/insertAdmin")
-//	@ResponseBody
 	public Map<String, String> adminInsert(@RequestBody OrderInfo order) {
-		// 下面的O_ID有跟沒有一樣
 		boolean insertStatus = (orderService.insert(order) != null)? true : false;
 		String msg = (insertStatus)? "新增成功！" : "新增失敗 :^)";
 		HashMap<String, String> resultMap = new HashMap<>();
@@ -85,9 +75,8 @@ public class CartController {
 		return resultMap;
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/updateAdmin")
-//	@ResponseBody
 	public Map<String, String> adminUpdate(@RequestBody OrderInfo order) {
 		// ❗ 之後加上一圈先檢查 FK 的機制
 		boolean updateStatus = (orderService.update(order))? true : false;
@@ -98,9 +87,8 @@ public class CartController {
 		return resultMap;
 	}
 
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/deleteAdmin")
-//	@ResponseBody
 	public Map<String, String> adminDelete(@RequestParam String o_id) {
 		
 		OrderInfo order = new OrderInfo();

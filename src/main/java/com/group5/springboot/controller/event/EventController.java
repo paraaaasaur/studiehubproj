@@ -5,6 +5,8 @@ import java.sql.Clob;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -225,5 +227,14 @@ public class EventController {
 		return eventinfo;
 
 	}
+	@ModelAttribute("occupationList")
+    public Map<Integer, String>  getAll2255(){
+		Map<Integer, String> map = new HashMap<>();
+		map.put(12, "學生");
+		map.put(1, "公務員");
+		map.put(3, "商");
+		map.put(5, "工");
+		return map;
+    }
 
 }

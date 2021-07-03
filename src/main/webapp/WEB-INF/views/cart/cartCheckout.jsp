@@ -9,7 +9,10 @@
 <title>Studie Hub</title>
 
 <script>
+if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
+
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -33,11 +36,15 @@ window.onload = function(){
     
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
+    var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
+    var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
+    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    } 
+    	userPic.src = userPicString;	//有登入就秀大頭貼
+    }
     
 }
 </script>

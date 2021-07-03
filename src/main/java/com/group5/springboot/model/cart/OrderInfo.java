@@ -42,8 +42,10 @@ public class OrderInfo {
 	/*********************************************************************/
 	// 去參考User_Info
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)	
-	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
+	@ManyToOne(fetch = FetchType.LAZY) 	
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true )
+	//name(OrderInf裡的外來鍵)  referencedColumnName(USER的主鍵) insertable 是否可以帶值進來(true可以) save的時候把user的uid存進去OrderInfo
+	//cascade = CascadeType.All, 是否連帶操作(刪除)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {return user_Info;}
 	public void setUser_Info(User_Info user_Info) {this.user_Info = user_Info;}

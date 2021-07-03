@@ -41,7 +41,7 @@
     <a href="<c:url value='/eventindex' />">使用者活動頁</a><br> 
     <hr>
     
-    <a href="<c:url value='/insertType' />">新增類型資料</a><br> 
+    <a href="<c:url value='/NewFile' />">活動模板</a><br> 
     <a href="<c:url value='/queryType' />">查詢類型資料</a><br> 
     
  

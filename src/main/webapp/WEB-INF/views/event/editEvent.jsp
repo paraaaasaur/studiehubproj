@@ -27,7 +27,7 @@ span.error {
 </head>
 
 <body class="is-preload">
-	屬性
+	
 
 	<!-- Wrapper -->
 	<div id="wrapper">

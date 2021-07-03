@@ -6,11 +6,8 @@
 <head>
 
 <style type="text/css">
-span.error {
-	color: red;
-	display: inline-block;
-	font-size: 5pt;
-}
+ td {white-space:nowrap;overflow:hidden;text-overflow: ellipsis;}
+ table{table-layout:fixed;word-wrap:break-word;}
 </style>
 <meta charset="UTF-8">
 <meta name="viewport"

@@ -3,6 +3,7 @@ package com.group5.springboot.controller.question;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,19 +43,19 @@ public class QuestionController {
 
 	
 ////前往提庫首頁
-	@GetMapping(path = "/gotoQuestionIndex")
-	public String gotoUserIndex() {
+	@GetMapping(path = "/question.controller/turnQuestionIndex")
+	public String turnQuestionIndex() {
 		return "question/questionIndex";
 	}	
 	
 ////送空白表單
-	@GetMapping("/insertQuestion")
+	@GetMapping("/question.controller/insertQuestion")
 	public String sendInsertQuestion() {
 		return "question/insertQuestion";
 	}
 	
 ////新增試題
-	@PostMapping("/insertQuestion")
+	@PostMapping("/question.controller/insertQuestion")
 	public String saveQuestion(@ModelAttribute("Q1") Question_Info question_Info,
 			BindingResult result,
 			RedirectAttributes ra
@@ -93,6 +93,10 @@ public class QuestionController {
 			mimeTypeAudio = context.getMimeType(nameAudio);
 			question_Info.setQ_audio(blob);
 			question_Info.setMimeTypeAudio(mimeTypeAudio);
+			
+			question_Info.setCreateDate(new Timestamp(System.currentTimeMillis()));
+			//加入時間戳記
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -117,27 +121,27 @@ public class QuestionController {
 		
 		ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  新增成功!");
 		// 新增或修改成功，要用response.sendRedirect(newURL) 通知瀏覽器對newURL發出請求
-		return "redirect:/queryQuestion";  
+		return "redirect:/question.controller/queryQuestion";  
 	}
 	
 	
-	
-	
-////查詢所有試題 (送JSON)
-	//produces:指定返回的內容類型，僅當request請求頭中的(Accept)類型中包含該指定類型才返回
-	@GetMapping(value="/findAllQuestions", produces = "application/json; charset=UTF-8")	
-	public @ResponseBody Map<String, Object> findAllQuestions(){
-		return questionService.findAllQuestions();
-	}	
-	
 ////送出顯示所有試題的表單
-	@GetMapping("/queryQuestion")
+	@GetMapping("/question.controller/queryQuestion")
 	public String sendQueryQuestion() {
 		return "question/queryQuestion";
 	}
 	
+////回傳所有試題 (送JSON)
+	//produces:指定返回的內容類型，僅當request請求頭中的(Accept)類型中包含該指定類型才返回
+	@GetMapping(value="/question.controller/findAllQuestions", produces = "application/json; charset=UTF-8")	
+	public @ResponseBody Map<String, Object> findAllQuestions(){
+		return questionService.findAllQuestions();
+	}	
+	
+	
 ////模糊搜尋問題內容
-	@GetMapping(value="/queryQuestionByName", produces = "application/json; charset=UTF-8")	
+
+	@GetMapping(value="/question.controller/queryByName", produces = "application/json; charset=UTF-8")	
 	public @ResponseBody Map<String, Object> queryByName(
 			@RequestParam("qname") String qname
 	){
@@ -147,7 +151,7 @@ public class QuestionController {
 
 ////修改試題內容	
 	//送該表單
-	@GetMapping("/modifyQuestion/{q_id}")
+	@GetMapping("/question.controller/modifyQuestion/{q_id}")
     public String sendEditPage(
     		@PathVariable Long q_id, Model model
     ) {
@@ -156,7 +160,7 @@ public class QuestionController {
 		return "question/editQuestion";
 	}	
 	//提出表單修改要求
-	@PostMapping("/modifyQuestion/{q_id}")
+	@PostMapping("/question.controller/modifyQuestion/{q_id}")
 	public String updateQuestion(@ModelAttribute("Q1") Question_Info question_Info,
 			BindingResult result, 
 			RedirectAttributes ra) {
@@ -237,24 +241,50 @@ public class QuestionController {
 		questionService.update(question_Info);
 		ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  修改成功!");
 		// 新增或修改成功，要用response.sendRedirect(newURL) 通知瀏覽器對newURL發出請求
-		return "redirect:/queryQuestion";  
+		return "redirect:/question.controller/queryQuestion";  
 	}
 	
 ////依照鍵值刪除單筆會員資料
-	@GetMapping("/deleteQuestionById/{q_id}")
-	public @ResponseBody Map<String, String> deleteQuestionById(@PathVariable(required = true) Long q_id) {
-		Map<String, String> map = new HashMap<>();
-		try {
-			questionService.deleteQuestionById(q_id);
-			map.put("success", "刪除成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("fail", "刪除失敗");
-			System.out.println("刪除失敗");
-		}
-		return map;
+//	@GetMapping("/deleteQuestionById/{q_id}")
+//	public @ResponseBody Map<String, String> deleteQuestionById(@PathVariable(required = true) Long q_id) {
+//		Map<String, String> map = new HashMap<>();
+//		try {
+//			questionService.deleteQuestionById(q_id);
+//			map.put("success", "刪除成功");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			map.put("fail", "刪除失敗");
+//			System.out.println("刪除失敗");
+//		}
+//		return map;
+//	}
+
+	
+////刪除單筆試題(by bean)	
+	@GetMapping("/question.controller/deleteQuestion/{q_id}")
+	public String deleteEditPage(@PathVariable Long q_id, Model model,RedirectAttributes ra) {
+	Question_Info question_Info = questionService.findById(q_id);
+	questionService.deleteQuestion(question_Info);
+	ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  刪除成功!");
+	return "redirect:/question.controller/queryQuestion";	
 	}
 	
+////送出顯示所有試題的表單
+	@GetMapping("/question.controller/startRandomExam")
+	public String startRandomExam() {
+		return "question/examQuestion";
+	}	
+	
+////回傳隨機試題 (JSON)
+	//produces:指定返回的內容類型，僅當request請求頭中的(Accept)類型中包含該指定類型才返回
+	@GetMapping(value="/question.controller/sendRandomExam", produces = "application/json; charset=UTF-8")	
+	public @ResponseBody Map<String, Object> sendRandomExam(){
+		return questionService.sendRandomExam();
+	}
+	
+	
+	
+//// ModelAttribute :  ////
 	
 	@ModelAttribute("Q1")
 	public Question_Info getQuestion1(@RequestParam(value="q_id", required = false ) Long q_id) {
@@ -287,5 +317,6 @@ public class QuestionController {
 		map.put("聽力題", "聽力題");
 		return map;
     }
+	
 	
 }

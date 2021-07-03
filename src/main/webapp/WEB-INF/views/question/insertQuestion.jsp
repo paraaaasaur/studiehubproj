@@ -7,6 +7,7 @@
 
 <html>
 <head>
+
 <style type="text/css">
    span.error {
 	color: red;
@@ -14,13 +15,29 @@
 	font-size: 5pt;
 }
 </style>
+
 <meta charset="UTF-8">
-<%-- <link rel='stylesheet' href="<c:url value='/css/style.css' />" type="text/css" /> --%>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel='stylesheet'
+	href="${pageContext.request.contextPath}/assets/css/main.css">
+<title>Studie Hub</title>
+
+
 </head>
-<body>  
+
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Main -->
+		<div id="main">
+			<div class="inner">
+				<%@include file="../universal/header.jsp"%>
+
 <div align="center">
-<fieldset style="width:960px;">
-	<legend >新增試題資料</legend> 
+	<h2 align='center'>新增試題資料</h2>
 	<form:form method="POST"  modelAttribute="Q1" enctype='multipart/form-data'>
  	<Table>
  	<c:choose>
@@ -44,7 +61,7 @@
 		
 		<tr>  
 	     	<td>課程分類：<br>&nbsp;</td>
-	        <td  width='360'>
+	        <td>
 		       <form:select path="q_class" >
                    <form:option label="請挑選" value="" />
                    <form:options  items="${classList}" />
@@ -52,10 +69,11 @@
                   <br>&nbsp;
                <form:errors path="q_class"  cssClass="error"/>		      
 		   </td>
-		  
-		  
+		</tr>  
+		
+		<tr>   
 	     	<td>題目類型：<br>&nbsp;</td>
-	        <td  width='360'>
+	        <td>
 		       <form:select path="q_type" >
                    <form:option label="請挑選" value="" />
                    <form:options  items="${typeList}" />
@@ -67,10 +85,13 @@
 		
 	   <tr>
 	      <td>問題<br>&nbsp;</td>
-	      <td  width='360'>
+	      <td>
 	      	<form:input path="q_question"/><br>&nbsp;	
 		      <form:errors path='q_question' cssClass="error"/>
 		  </td>
+		</tr>  
+		
+		<tr> 	  
 		   <td>選項A：<br>&nbsp;</td>
 	   	  <td>
 	      	<form:input path="q_selectionA"/><br>&nbsp;	
@@ -78,12 +99,16 @@
 		  </td>
 	   </tr>	   
 	   
+	   
 	   	<tr>
 	      <td>選項B<br>&nbsp;</td>
-	      <td  width='360'>
+	      <td>
 	      	<form:input path="q_selectionB"/><br>&nbsp;	
 		      <form:errors path='q_selectionB' cssClass="error"/>
 		  </td>
+		</tr>
+		   
+		<tr>  
 		   <td>選項C：<br>&nbsp;</td>
 	   	  <td>
 	      	<form:input path="q_selectionC"/><br>&nbsp;	
@@ -91,12 +116,17 @@
 		  </td>
 	   </tr>	
 	   
+	   
 	  <tr>
 	      <td>選項D<br>&nbsp;</td>
-	      <td  width='360'>
+	      <td>
 	      	<form:input path="q_selectionD"/><br>&nbsp;	
 		      <form:errors path='q_selectionD' cssClass="error"/>
 		  </td>
+		</tr>
+		
+		  
+		<tr>   
 		   <td>正解：<br>&nbsp;</td>
 	   	  <td>
 	      	<form:input path="q_answer"/><br>&nbsp;	
@@ -106,23 +136,20 @@
 	   
 	   <tr>
 	      <td>題目照片<br>&nbsp;</td>
-	      <td  width='360'>
+	      <td>
 	   	  	 <form:input path="multipartFilePic" type='file'/><br>&nbsp;
 		      <form:errors path='multipartFilePic' cssClass="error"/>
 		  </td>
+		</tr>  
+		
+		
+		<tr>  
 		   <td>題目音檔：<br>&nbsp;</td>
 	   	  <td>
 	      	<form:input path="multipartFileAudio" type='file'/><br>&nbsp;	
 		      <form:errors path='multipartFileAudio' cssClass="error"/>
 		  </td>
 	   </tr>	
-		
-		
-		
-		
-		
-		
-		
 		
 		
 	   <tr>
@@ -134,10 +161,27 @@
 		 
 	</form:form>
 	
-</fieldset>
+	<br>
+	<a href="<c:url value='/question.controller/turnQuestionIndex'/>">回前頁</a>
+			</div>
+		</div>
+	</div>
 
-<br>
-<a href="<c:url value='/gotoQuestionIndex'/>">回前頁</a>
-</div>
+	<!-- Sidebar -->
+		<!-- 這邊把side bar include進來 -->
+		<%@include file="../universal/sidebar.jsp"%>
+
+	</div>
+
+	<!-- Scripts -->
+	<script
+		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
+	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
+	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	
 </body>
 </html>

@@ -15,7 +15,7 @@ window.addEventListener('load', function(){
 	query = document.getElementById("query");
 	dataArea = document.getElementById("dataArea");
 	let xhr = new XMLHttpRequest();
-	xhr.open('GET', "<c:url value='/findAllQuestions' />", true);
+	xhr.open('GET', "<c:url value='/question.controller/findAllQuestions' />", true);
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4 && xhr.status == 200 ){
 			console.log(xhr.responseText);
@@ -33,7 +33,7 @@ window.addEventListener('load', function(){
 		}
 		
 		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET', "<c:url value='/queryByName' />?qname=" + qname);
+		xhr2.open('GET', "<c:url value='/question.controller/queryByName' />?qname=" + qname);
 		xhr2.send();
 		xhr2.onreadystatechange=function(){
 			if (xhr2.readyState == 4 && xhr2.status == 200){
@@ -44,7 +44,8 @@ window.addEventListener('load', function(){
 		
 	});
 })
-function showData(textObj){
+
+ function showData(textObj){
 	
 	let obj = JSON.parse(textObj);
 	let size = obj.size;
@@ -54,14 +55,31 @@ function showData(textObj){
 	if (size == 0){
 		segment += "<tr><th colspan='9'>查無資料</th><tr>";
 	} else {
-		segment += "<tr><th colspan='12'>共計" + size + "筆資料</th><tr>";
-	    segment += "<tr><th>編輯</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>選項A</th><th>選項B</th><th>選項C</th><th>選項D</th><th>正解</th><th>題目照片</th><th>題目音檔</th></tr>";
+		segment += "<tr><th colspan='13'>共計" + size + "筆資料</th><tr>";
+	    segment += "<tr><th>編輯</th><th>刪除</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>選項A</th><th>選項B</th><th>選項C</th><th>選項D</th><th>正解</th><th>題目照片</th><th>題目音檔</th></tr>";
+	    
 	    for(n = 0; n < questions.length ; n++){
 		   	let question = questions[n];
-			let tmp1 = "<c:url value='/modifyQuestion/'  />" + question.q_id;
-	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='47' height='47' src='<c:url value='/images/question/edit.png' />'" + "</a>";
+	   		
+// 			console.log("<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' /></td>")
+
+
+		   	let tmp1 = "<c:url value='/question.controller/modifyQuestion/'  />" + question.q_id;
+	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/edit.png' />'" + "</a>";
+	     	
+		   	let tmp3 = "<c:url value='/question.controller/queryQuestion/'  />" ;
+// 	     	let tmp4 = "<a href='" + tmp3 + "'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
+// 	     	目前無法用連結方式正常使用警示功能
+	     	let tmp4 = "<a  onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
+
+	     	
+	     	
 			segment += "<tr>";
 			segment += "<td>" + tmp0 + "</td>"; 	
+			
+// 			segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' /></td>"
+			segment += "<td>" + tmp4 + "</td>"; 	
+			
 			segment += "<td>" + question.q_id + "</td>"; 	
 			segment += "<td>" + question.q_class + "</td>"; 	
 			segment += "<td>" + question.q_type + "</td>"; 	
@@ -89,6 +107,7 @@ function showData(textObj){
 <h2>所有試題資料</h2>
 <hr>
 <font color='red'>${successMessage}</font>&nbsp;
+
 <hr>
 
 
@@ -98,7 +117,7 @@ function showData(textObj){
 
 <div  id='dataArea'>
 </div>
-<a href="<c:url value='/gotoQuestionIndex'/> " >回前頁</a>
+<a href="<c:url value='/question.controller/turnQuestionIndex'/> " >回前頁</a>
 </div>
 </body>
 </html>

@@ -36,6 +36,11 @@ public class EventController {
 	ServletContext context;
 
 	// 從網頁首頁跳到老師的首頁
+	@GetMapping("/NewFile")
+	public String NewFile() {
+		return "event/NewFile";
+	}
+	// 從網頁首頁跳到老師的首頁
 	@GetMapping("/Eventindex")
 	public String Eventindex() {
 		return "event/index";

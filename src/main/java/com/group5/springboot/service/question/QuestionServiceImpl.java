@@ -35,10 +35,10 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionDao.findById(q_id);
 	}
 	
-	////依照鍵值刪除單筆會員資料
+	////刪除單筆試題
 	@Override
-	public void deleteQuestionById(Long q_id) {
-		questionDao.deleteQuestionById(q_id);
+	public void deleteQuestion(Question_Info question_Info) {
+		questionDao.deleteQuestion(question_Info);
 	}
 	
 	////模糊搜尋問題內容
@@ -50,6 +50,12 @@ public class QuestionServiceImpl implements QuestionService {
 	////修改試題
 	public void update(Question_Info question_Info) {
 		questionDao.update(question_Info);
+	}
+	
+	////送出隨機測驗題目
+	@Override
+	public Map<String, Object> sendRandomExam() {
+		return questionDao.sendRandomExam();
 	}
 	
 	

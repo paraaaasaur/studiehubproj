@@ -2,8 +2,10 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -24,75 +26,97 @@ public class OrderDao implements IOrderDao {
 	
 	
 	@Override
-	public List<OrderInfo> selectAll() {
+	public Map<String, Object> selectAll() {
+		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo", OrderInfo.class);
-		return query.getResultList();
+		map.put("list", query.getResultList());
+		return map;
+	}
+	
+	public Map<String, Object> selectLikeOperator(Object condition, Object value) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE :condition LIKE :value", OrderInfo.class);
+		query.setParameter("condition", (String) condition);
+		boolean isString = (value instanceof String);
+		Object parsedValue = (isString)? (String) value : (Integer) value;
+		query.setParameter("value", "%" + parsedValue + "%");
+		map.put("list", query.getResultList());
+		return map;
 	}
 	
 	@Override
-	public OrderInfo select(OrderInfo orderBean) {
-		// ‼ HQL不是用table名而是 Class Name ‼
+	public Map<String, Object> select(OrderInfo orderBean) {
+		// ‼ HQL不是用table名 ‼
+		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
 		query.setParameter("oid", orderBean.getO_id());
-		return query.getSingleResult();
+		map.put("orderInfo", query.getSingleResult());
+		return map;
 	}
 
 	@Override
-	public List<OrderInfo> selectCustom(String hql) {
+	public Map<String, Object> selectCustom(String hql) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery(hql, OrderInfo.class);
 		List<OrderInfo> resultList = query.getResultList();
-		return resultList;
+		map.put("list", resultList);
+		return map;
 	}
 	
 	// Admin - 1
-	public List<OrderInfo> selectTop20() {
+	public Map<String, Object> selectTop20() {
+		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
 		List<OrderInfo> resultList = query.getResultList();
-		return resultList;
+		map.put("list", resultList);
+		return map;
 	}
 	
 	@Override
-		public OrderInfo insert(OrderInfo oBean) {
-			
-			ProductInfo pBean = em.find(ProductInfo.class, oBean.getP_id());
-			User_Info uBean = em.find(User_Info.class, oBean.getU_id());
-			
-			if(pBean == null) {
-				System.out.println("********** 新增失敗：以 p_id (" + oBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
-				return null;
-			} else if(uBean == null) {
-				System.out.println("********** 新增失敗：以 u_id (" + oBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
-				return null;	
-			}
-			// 把值補完整
-			oBean.setU_firstname(uBean.getU_firstname()); 
-			oBean.setU_lastname(uBean.getU_lastname()); 
-			oBean.setU_email(uBean.getU_email());
-			
-			oBean.setP_name(pBean.getP_Name());
-			oBean.setP_price(pBean.getP_Price());
-			
-			// 準備綁定關聯
-			Set<OrderInfo> orderSet = new HashSet<OrderInfo>();
-			orderSet.add(oBean);
-			Set<ProductInfo> productInfoSet = new HashSet<ProductInfo>();
-			productInfoSet.add(pBean);
-			
-			// 互相綁定關聯 (共計 3! = 6 個關聯)
-			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
-			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
-//			uBean.setProductInfoSet(productInfoSet); // U-Ps 關聯
-			oBean.setProductInfo(pBean); // O-P 關聯
-			oBean.setUser_Info(uBean); // O-U 關聯
-//			pBean.setUser_Info(uBean); // P-U 關聯
-			
-			System.out.println("**********************************************************");
-			System.out.println(oBean.toString());
-			System.out.println("**********************************************************");
-			em.merge(oBean);
-	//		em.persist(oBean); // ❓ Admin可以 Index不行，為何RRR
-			return oBean;
+	public Map<String, Object> insert(OrderInfo oBean) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		ProductInfo pBean = em.find(ProductInfo.class, oBean.getP_id());
+		User_Info uBean = em.find(User_Info.class, oBean.getU_id());
+		
+		if(pBean == null) {
+			System.out.println("********** 新增失敗：以 p_id (" + oBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
+			return null;
+		} else if(uBean == null) {
+			System.out.println("********** 新增失敗：以 u_id (" + oBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
+			return null;	
 		}
+		// 把值補完整
+		oBean.setU_firstname(uBean.getU_firstname()); 
+		oBean.setU_lastname(uBean.getU_lastname()); 
+		oBean.setU_email(uBean.getU_email());
+		
+		oBean.setP_name(pBean.getP_Name());
+		oBean.setP_price(pBean.getP_Price());
+		
+		// 準備綁定關聯
+		Set<OrderInfo> orderSet = new HashSet<OrderInfo>();
+		orderSet.add(oBean);
+		Set<ProductInfo> productInfoSet = new HashSet<ProductInfo>();
+		productInfoSet.add(pBean);
+		
+		// 互相綁定關聯 (共計 3! = 6 個關聯)
+//			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
+//			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+//			uBean.setProductInfoSet(productInfoSet); // U-Ps 關聯
+		oBean.setProductInfo(pBean); // O-P 關聯
+		oBean.setUser_Info(uBean); // O-U 關聯
+//			pBean.setUser_Info(uBean); // P-U 關聯
+		
+		System.out.println("**********************************************************");
+		System.out.println(oBean.toString());
+		System.out.println("**********************************************************");
+		em.merge(oBean);
+//		em.persist(oBean); // ❓ Admin可以 Index不行，為何RRR
+		
+		map.put("orderBean", oBean);
+		return map;
+	}
 
 	// Admin - 2
 	public boolean update(OrderInfo newOBean) {
@@ -125,11 +149,13 @@ public class OrderDao implements IOrderDao {
 			// 準備綁定關聯
 			Set<OrderInfo> orderSet = new HashSet<OrderInfo>();
 			orderSet.add(oBean);
-			// 互相綁定關聯
-			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
-			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+			// 互相綁定關聯 (共計 3! = 6 個關聯)
+//			pBean.setOrderInfoSet(orderSet); // P-Os 關聯
+//			uBean.setOrderInfoSet(orderSet); // U-Os 關聯
+//			uBean.setProductInfoSet(productInfoSet); // U-Ps 關聯
 			oBean.setProductInfo(pBean); // O-P 關聯
 			oBean.setUser_Info(uBean); // O-U 關聯
+//			pBean.setUser_Info(uBean); // P-U 關聯
 			
 			em.merge(oBean); 
 		} else {

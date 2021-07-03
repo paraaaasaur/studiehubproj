@@ -7,11 +7,11 @@ import com.group5.springboot.model.cart.OrderInfo;
 public interface IOrderDao {
 	// 建立連線、提供SQL方法
 	
-	OrderInfo insert(OrderInfo orderBean);
+	Map<String, Object> insert(OrderInfo orderBean);
 //	OrderInfo select(String P_ID);
-	List<OrderInfo> selectCustom(String hql);
-	List<OrderInfo> selectAll();
-	OrderInfo select(OrderInfo orderBean);
+	Map<String, Object> selectCustom(String hql);
+	Map<String, Object> selectAll();
+	Map<String, Object> select(OrderInfo orderBean);
 	
 	/**
 	

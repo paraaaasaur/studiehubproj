@@ -36,13 +36,12 @@ public class ProductDaoImpl implements ProductDao {
 	public Map<String, Object> queryByName(String p_Name) {
 
 		HashMap<String, Object> map = new HashMap<>();
-		String hql = "from ProductInfo p where p.p_Name like :name";
-		List list = em.createQuery(hql)
+		String hql = "FROM ProductInfo p WHERE p.p_Name like :name";
+		List<ProductInfo> list = em.createQuery(hql, ProductInfo.class)
 					  .setParameter("name", "%"+p_Name+"%")
 					  .getResultList();
 		map.put("size", list.size());
 		map.put("list", list);
-		
 		return map;
 	}
 

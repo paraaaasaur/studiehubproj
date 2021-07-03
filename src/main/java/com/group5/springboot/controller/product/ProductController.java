@@ -42,11 +42,15 @@ public class ProductController {
 	
 	@GetMapping("/updateProduct/{p_ID}")
 	public String updateProduct(@PathVariable Integer p_ID,Model model) {
-		ProductInfo product = productService.findByProductID(p_ID);
-		product.setDescString(product.getP_DESC());
-		model.addAttribute("productInfo",product);
-		
+		ProductInfo productInfo = productService.findByProductID(p_ID);
+		productInfo.setDescString(productInfo.getP_DESC());
+		model.addAttribute("productInfo",productInfo);
 		return "product/editProduct";
+	}
+	
+	@GetMapping("/queryProductForUser")
+	public String queryProductForUser() {
+		return "product/showProductToUser";
 	}
 	
 	@GetMapping("/queryProduct")
@@ -63,6 +67,7 @@ public class ProductController {
 								@ModelAttribute("productInfo") ProductInfo productInfo,
 								BindingResult result,
 								RedirectAttributes ra) {
+		System.out.println("post"+productInfo);
 		ProductInfo oldProduct = productService.findByProductID(productInfo.getP_ID());
 		
 		prodcutValidator.validate(productInfo, result);
@@ -123,6 +128,7 @@ public class ProductController {
 //		Clob clob = SystemUtils.stringToClob(descString);
 //		productInfo.setP_DESC(clob);
 //		productService.save(productInfo);
+		System.out.println("beforeupdate"+productInfo);
 		productService.update(productInfo);
 		ra.addFlashAttribute("successMessage",productInfo.getP_Name()+"更新成功");
 		return "redirect:/queryProduct";
@@ -174,15 +180,21 @@ public class ProductController {
 		return "redirect:/queryProduct";
 	}
 	
+	@GetMapping("/deleteProduct/{p_ID}")
+	public String deleteProduct(@PathVariable("p_ID") Integer p_ID) {
+		
+		productService.deleteProduct(p_ID);
+		
+		return "redirect:/queryProduct";
+	}
+	
 	@ModelAttribute("productInfo")
 	public ProductInfo getProductInfo(@RequestParam(value = "p_ID",required = false)Integer p_ID) {
 		ProductInfo productInfo = null;
 		if (p_ID != null) {
 			productInfo = productService.findByProductID(p_ID);
-			System.out.println(productInfo);
 		}else {
 			productInfo = new ProductInfo();
-			System.out.println("haha");
 		}
 		return productInfo;
 	}

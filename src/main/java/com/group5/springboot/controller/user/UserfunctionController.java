@@ -3,6 +3,7 @@ package com.group5.springboot.controller.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +12,14 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.service.user.IUserService;
 
 @Controller
 @SessionAttributes(names = {"loginBean"})
 public class UserfunctionController {
+	
+	@Autowired
+	IUserService iUserService;
 
 	//登出
 	@GetMapping(path = "/logout.controller", produces = {"application/json"})
@@ -35,5 +40,13 @@ public class UserfunctionController {
 		}
 		return map;
 	}
+	
+//	//查看全部會員資料
+//	@GetMapping(path = "/showAllUser.controller", produces = {"application/json"})
+//	@ResponseBody
+//	public List<User_Info> gotoFindAllUserPage() {
+//		List<User_Info> users = iUserService.showAllUsers();
+//		return users;
+//	}
 	
 }

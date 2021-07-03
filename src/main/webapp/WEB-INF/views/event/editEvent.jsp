@@ -27,7 +27,7 @@ span.error {
 </head>
 
 <body class="is-preload">
-	屬性
+	
 
 	<!-- Wrapper -->
 	<div id="wrapper">
@@ -73,11 +73,11 @@ span.error {
 						</tr>
 						<tr>
 							<td>活動開始時間:</td>
-							<td><form:input path="a_startTime" /></td>
+							<td><form:input type="datetime-local" path="Transienta_startTime" /></td>
 						</tr>
 						<tr>
 							<td>活動結束時間</td>
-							<td><form:input path="a_endTime" /></td>
+							<td><form:input type="datetime-local" path="Transienta_endTime" /></td>
 						</tr>
 						<tr>
 							<td>活動地址:</td>

@@ -8,7 +8,13 @@
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 
 <title>Studie Hub</title>
-
+<style>
+.ellipsis {
+overflow:hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+</style>
 
 <script>
 let div1 = null;
@@ -45,7 +51,7 @@ function showData(textobj) {
 	let events = obj.list
 
     let segment="" ;
-  
+   
 
 	
 	
@@ -55,12 +61,24 @@ function showData(textobj) {
 					
 			
                 let tmp0 = "<c:url value='/' />"  + event.a_picturepath;
-			    segment += "<article>";
-			    segment += "<a href='#' class='image'><img src='"+tmp0+"' alt='' class='img-responsive center-block'/></a>"
-				segment += "<h3>Interdum aenean</h3>"
-				segment += "<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>"
+                let tmpx = "<c:url value='/modifyRestaurant/' />" + event.a_aid;
+                let tmpxx = "<a href= '"+tmpx+"'>"+event.a_name+"</a>";
+                let tmp1 = event.a_name ;
+                let tmp2 = event.a_startTime;
+                let tmp3 = event.a_endTime;
+                let tmp4 = event.a_address;
+                let tmp5 = "https://www.google.com/maps?q="+event.a_address ;
+				console.log(tmp5);
+
+//                 width='460' height='345'
+			    segment += "<article  class='container'>";
+			    segment += "<a href='"+tmpx+"' class='image'><img src='"+tmp0+"' alt='' class='thumbnail' /></a>"
+				segment += "<h3 class='ellipsis'>"+tmpxx+"</h3>"
+				segment += "<p>活動時間:"+tmp2+"<span>至"+tmp3+"</span>"+"</p>"
+				segment += "<p>活動地點:"+tmp4+"</p>"
 				segment += "<ul class='actions'>"
-				segment += "<li><a href='#' class='button'>More</a></li>"
+				segment += "<li><a href="+tmpx+" class='button'>詳細資訊</a></li>"
+				segment += "<li><a href="+tmp5+" class='button'>詳細地址</a></li>"
 				segment += "</ul>"
 				segment += "</article>"
 

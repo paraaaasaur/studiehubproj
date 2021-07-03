@@ -42,8 +42,10 @@ public class OrderInfo {
 	/*********************************************************************/
 	// 去參考User_Info
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)	
-	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
+	@ManyToOne(fetch = FetchType.LAZY) 	
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true )
+	//name(OrderInf裡的外來鍵)  referencedColumnName(USER的主鍵) insertable 是否可以帶值進來(true可以) save的時候把user的uid存進去OrderInfo
+	//cascade = CascadeType.All, 是否連帶操作(刪除)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {return user_Info;}
 	public void setUser_Info(User_Info user_Info) {this.user_Info = user_Info;}
@@ -58,7 +60,9 @@ public class OrderInfo {
 	
 	// constructors
 	public OrderInfo() {};
-	/** 不要用這個，因為o_id現在是用IDENTITY(1, 1)去產生的，所以不想要手動指定 */
+	public OrderInfo(Integer o_id) {
+		setO_id(o_id);
+	};
 	public OrderInfo(Integer o_ID, Integer p_ID, String p_Name, Integer p_Price, String u_ID, String u_FirstName,
 			String u_LastName, String u_Email, String o_Status, String o_Date, Integer o_Amt) {
 		setO_id         (o_ID       );

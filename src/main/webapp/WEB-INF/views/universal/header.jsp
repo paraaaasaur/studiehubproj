@@ -13,15 +13,12 @@
 <body>
 
 	<header id="header">
-		<!-- <a href="index.html" class="logo"><strong>Editorial</strong> by HTML5 UP</a> -->
 		<ul class="icons">
 			<!-- <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-										<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
 										<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li> -->
-			<li id='logoutHref' style="visibility:hidden"><a href="<c:url value='/logout.controller' />" id='logout'><span class="label">登出</span></a></li>
-<%-- 			<li><a href="<c:url value='/logout.controller' />" class="" id='logout'><span class="label">登出</span></a></li> --%>
-			<!-- <li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li> -->
+			<li style='vertical-align: middle;'><b><span class="label" style="color:#f56a6a" id="userId"></span></b></li>
+			<li style='vertical-align: middle;'><span class="label"><img id='userPic' width='45px' style='border-radius: 10%;' src=''></span></li>
+			<li id='logoutHref' style="visibility:hidden; vertical-align: middle;"><a href="<c:url value='/logout.controller' />" id='logout'><span class="label">登出</span></a></li>
 		</ul>
 	</header>
 	

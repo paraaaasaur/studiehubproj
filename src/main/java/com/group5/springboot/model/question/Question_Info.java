@@ -1,7 +1,9 @@
 package com.group5.springboot.model.question;
 
 import java.sql.Blob;
+import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,7 @@ import javax.persistence.Transient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.utils.SystemUtils;
 
@@ -25,14 +28,23 @@ import com.group5.springboot.utils.SystemUtils;
 	    private Long q_id;
 		private String q_class;
 	    private String q_type;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_question;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_selectionA;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_selectionB;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = true)
 	    private String q_selectionC;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = true)
 	    private String q_selectionD;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_answer;
 	    private String mimeTypePic;
 	    private String mimeTypeAudio;
+	    
+		@JsonFormat(pattern = "yyyy-MM-dd_HH:mm:ss", timezone = "GMT+8")
+	    private Timestamp createDate;  
 	    
 	    
 	    @JsonIgnore      //前端送的東西不能直接塞在這裏面
@@ -60,7 +72,7 @@ import com.group5.springboot.utils.SystemUtils;
 
 		public Question_Info(String q_class, String q_type, String q_question, String q_selectionA,
 				String q_selectionB, String q_selectionC, String q_selectionD, String q_answer, String mimeTypePic,String mimeTypeAudio,
-				Blob q_pictureBlob, Blob q_audioBlob, MultipartFile multipartFilePic, MultipartFile multipartFileAudio) {
+				Blob q_pictureBlob, Blob q_audioBlob, MultipartFile multipartFilePic, MultipartFile multipartFileAudio,Timestamp createDate) {
 			super();
 			this.q_class = q_class;
 			this.q_type = q_type;
@@ -76,6 +88,7 @@ import com.group5.springboot.utils.SystemUtils;
 			this.q_audio = q_audioBlob;
 			this.multipartFilePic = multipartFilePic;
 			this.multipartFileAudio = multipartFileAudio;
+			this.createDate = createDate;
 			
 		}
 
@@ -186,7 +199,6 @@ import com.group5.springboot.utils.SystemUtils;
 		public String getQ_pictureString() { 
 			return SystemUtils.blobToDataProtocol(mimeTypePic, q_picture);
 		}
-
 		public void setQ_pictureString(String q_pictureString) {
 			this.q_pictureString = q_pictureString;
 		}
@@ -194,7 +206,6 @@ import com.group5.springboot.utils.SystemUtils;
 		public String getQ_audioString() {
 			return SystemUtils.blobToDataProtocol(mimeTypeAudio,q_audio);
 		}
-
 		public void setQ_audioString(String q_audioString) {
 			this.q_audioString = q_audioString;
 		}
@@ -204,7 +215,6 @@ import com.group5.springboot.utils.SystemUtils;
 		public MultipartFile getMultipartFilePic() {
 			return multipartFilePic;
 		}
-
 		public void setMultipartFilePic(MultipartFile multipartFilePic) {
 			this.multipartFilePic = multipartFilePic;
 		}
@@ -212,10 +222,19 @@ import com.group5.springboot.utils.SystemUtils;
 		public MultipartFile getMultipartFileAudio() {
 			return multipartFileAudio;
 		}
-
 		public void setMultipartFileAudio(MultipartFile multipartFileAudio) {
 			this.multipartFileAudio = multipartFileAudio;
 		}
+		
+		
+
+		public Timestamp getCreateDate() {
+			return createDate;
+		}
+		public void setCreateDate(Timestamp createDate) {
+			this.createDate = createDate;
+		}
+		
 
 		@Override
 		public String toString() {

@@ -18,8 +18,8 @@ public interface QuestionService {
 	////查詢單筆試題
 	public Question_Info findById(Long q_id);
 	
-	////依照鍵值刪除單筆會員資料
-	public void deleteQuestionById(Long q_id);
+	////刪除單筆試題
+	public void deleteQuestion(Question_Info question_Info);
 	
 	////模糊搜尋問題內容
 	Map<String, Object> queryByName(String qname);
@@ -27,5 +27,7 @@ public interface QuestionService {
 	////修改試題
 	public void update(Question_Info question_Info);
 	
+	////送出隨機測驗題目
+	public Map<String, Object> sendRandomExam();
 	
 }

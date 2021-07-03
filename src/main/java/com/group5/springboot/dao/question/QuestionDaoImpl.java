@@ -43,11 +43,11 @@ public class QuestionDaoImpl implements QuestionDao {
 	public Question_Info findById(Long q_id) {
 		return em.find(Question_Info.class, q_id);
 	}
-
+	
+	////刪除
 	@Override
-	public void deleteQuestionById(Long q_id) {
-		question_Info.setQ_id(q_id);
-		em.remove(q_id);
+	public void deleteQuestion(Question_Info question_Info) {
+		em.remove(question_Info);
 	}
 	
 	////模糊搜尋問題內容
@@ -67,6 +67,21 @@ public class QuestionDaoImpl implements QuestionDao {
 	@Override
 	public void update(Question_Info question_Info) {
 		em.merge(question_Info);
+	}
+	
+	////送出隨機測驗題目
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> sendRandomExam() {
+		Map<String, Object> map = new HashMap<>();
+		String hql = "FROM Question_Info ORDER BY NEWID()";
+		List<Question_Info> list = em.createQuery(hql).setMaxResults(3).getResultList();
+		//設定隨機抽樣數量:setMaxResults()
+		System.out.println("list.get(0)=" + list.get(0));
+		map.put("size", list.size()); 
+		//較沒啥意義，再看要改啥
+		map.put("list", list); 
+		 return map;
 	}
 	
 }

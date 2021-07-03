@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -7,13 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
-
 <script>
-
-if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
-
 var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -37,23 +33,16 @@ window.onload = function(){
     
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
-    var userId = document.getElementById('userId');
-    var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
-    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
-    }
+    } 
     
 }
 </script>
 
 </head>
-
 <body class="is-preload">
 
 		<!-- Wrapper -->
@@ -87,8 +76,7 @@ window.onload = function(){
 							<!-- Section -->
 								<section>
 									<header class="major">
-<!-- 										<h2>Erat lacinia</h2> -->
-										<h2>關於 Studie Hub</h2>
+										<h2>Erat lacinia</h2>
 									</header>
 									<div class="features">
 										<article>

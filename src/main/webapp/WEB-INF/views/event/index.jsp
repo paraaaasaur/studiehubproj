@@ -8,6 +8,10 @@
 <!-- 可以連到 -->
 
 <link rel='stylesheet' href="<c:url value='/' />css/style.css" />
+
+<link rel='stylesheet' href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.css">
+	
+
 <%-- <c:url value='/' 他會去找 文件跟目錄下的專案名稱  /springapp/ --%>
 <!-- 可以連到 -->
 
@@ -28,6 +32,9 @@
     <h2>Spring Boot 範例</h2>
     <hr>
     
+
+<button type="button" class="btn btn-primary">（首选项）Primary</button>
+<BR>
 
     <a href="<c:url value='/queryAllEvent' />">活動後台</a><br> 
     <a href="<c:url value='/insertEvent' />">新增活動表單</a><br> 

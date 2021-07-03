@@ -47,17 +47,20 @@ window.onload = function(){
             }
         }
     }
+    
 
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
+    var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
+    	userId.innerHTML = u_id;
     }
 }
 </script>
@@ -114,7 +117,8 @@ window.onload = function(){
 							</tr>
 							<tr>
 								<td class="tdTitle">照片:</td>
-								<td class="tdContent"><form:input path="uploadImage" type='file' /></td>
+								<td class="tdContent"><img id="output" width="30%" src="${loginBean.pictureString }"/><form:input path="uploadImage" type='file' onchange="loadFile(event)" /></td>
+								
 								<td class="tdError"><form:errors path="uploadImage" cssClass="error"/></td>
 							</tr>
 							
@@ -133,5 +137,15 @@ window.onload = function(){
 	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script>
+  var loadFile = function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+      var output = document.getElementById('output');
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+</script>
 </body>
 </html>

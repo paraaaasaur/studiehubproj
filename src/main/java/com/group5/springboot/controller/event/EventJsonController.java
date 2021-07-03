@@ -23,6 +23,7 @@ public class EventJsonController {
 	@GetMapping(value = "/queryEventByName", produces = "application/json; charset=UTF8")
 	public @ResponseBody Map<String, Object> queryByName(@RequestParam("rname") String rname) {
 //		@RequestParam 從前端畫面找 name = rname 的值  抓的是請求參數  /findByTypeId?rname=string
+		
 		return eventserviceImpl.queryByName(rname);
 		
 	}

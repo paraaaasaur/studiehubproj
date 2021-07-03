@@ -2,6 +2,7 @@ package com.group5.springboot.dao.event;
 
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,17 @@ public class EventDaoImpl implements EventDao {
 		Map<String, Object> map = new HashMap<>();
 		String hql = "FROM EventInfo";
 		List<EventInfo> list = em.createQuery(hql).getResultList();
+		//System.out.println("反轉前==============="+list);
+		//for (EventInfo p : list) {
+		//System.out.println(p.getA_name()+p.getA_aid()); 
+		//}
+		Collections.reverse(list);
+		//讓排序反轉
+        //System.out.println("反轉後==============="+list);
+        //for (EventInfo p : list) {
+        //System.out.println(p.getA_name()+p.getA_aid()); 
+        //}
+	    
 		map.put("size", list.size()); 
 		map.put("list", list); 
 		 return map;

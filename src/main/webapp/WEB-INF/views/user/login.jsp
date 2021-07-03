@@ -34,7 +34,6 @@ window.onload = function(){
 		if (hasError){
 			return false;
 		}
-
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", "<c:url value='/login.controller' />");
 		var jsonLoginData = {
@@ -63,7 +62,6 @@ window.onload = function(){
 			}
 		}
 	}
-
 	
 	function setErrorFor(input, message){
 		input.innerHTML = "<font color='red' size='-2'>" + message + "</font>";

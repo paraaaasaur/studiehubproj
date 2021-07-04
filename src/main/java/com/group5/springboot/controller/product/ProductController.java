@@ -40,6 +40,13 @@ public class ProductController {
 	@Autowired
 	ServletContext context;
 	
+	@GetMapping("/takeClass/{p_ID}")
+	public String takeClass(@PathVariable Integer p_ID,Model model) {
+		ProductInfo product = productService.findByProductID(p_ID);
+		model.addAttribute("product", product);
+		return "product/Product";
+	}
+	
 	@GetMapping("/updateProduct/{p_ID}")
 	public String updateProduct(@PathVariable Integer p_ID,Model model) {
 		ProductInfo productInfo = productService.findByProductID(p_ID);

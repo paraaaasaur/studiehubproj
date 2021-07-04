@@ -31,8 +31,8 @@ import com.group5.springboot.service.user.IUserService;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 
-@Controller
-@SessionAttributes(names = {"loginBean","adminBean"})
+//@Controller
+//@SessionAttributes(names = {"loginBean","adminBean"})
 public class UserController {
 	@Autowired
 	IUserService iUserService;

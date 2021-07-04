@@ -4,33 +4,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-<%-- <link  rel='stylesheet' href="<c:url value='/css/style.css'  />" /> --%>
 <script>
-let dataArea = null; 
-let next = null; 
-let submit = null; 
+var obj = null; 
+// 全部值
+var size = 0; 
+// 總題數
+var counter = 0; 
+// 目前題目
 
 window.addEventListener('load', function(){
 	
-	dataArea = document.getElementById("dataArea");
+	var dataArea = document.getElementById("dataArea");
+	var next = document.getElementById("next");
+	var back = document.getElementById("back");
 	let xhr = new XMLHttpRequest();
 	xhr.open('GET', "<c:url value='/question.controller/sendRandomExam' />", true);
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4 && xhr.status == 200 ){
 			console.log(xhr.responseText);
-			dataArea.innerHTML = showData(xhr.responseText);
+			dataArea.innerHTML = showFirstData(xhr.responseText);
 		}
 	};
 	xhr.send();
 	
 	
-
+	next.addEventListener('click', function(){
+		counter += 1;
+		dataArea.innerHTML = showFirstData(xhr.responseText);
+	})
+	
+	back.addEventListener('click', function(){
+		counter -= 1;
+		dataArea.innerHTML = showFirstData(xhr.responseText);
+	})
+	
+	
 })
 
- function showData(textObj){
+ function showFirstData(textObj){
 	
-	let obj = JSON.parse(textObj);
-	let size = obj.size;
+	obj = JSON.parse(textObj);
+	size = obj.size;
 	let questions = obj.list;
 	let segment = "";
 	
@@ -39,9 +53,8 @@ window.addEventListener('load', function(){
 	} else {
 		segment += "<div>測驗共" + size + "題</div><br>";
 	    
-	    for(n = 0; n < questions.length ; n++){
-		   	let question = questions[n];
-	   		let number = n+1;
+		   	let question = questions[counter];
+	   		let number = counter+1;
 	     	
 		   	segment += "<div>第" + number + "題</div>";
 			segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
@@ -53,12 +66,15 @@ window.addEventListener('load', function(){
 			segment += "<div><input type='radio' value='C' name='userAnswer' id='C' />"+ "C " + question.q_selectionC +"</div>"
 			segment += "<div><input type='radio' value='D' name='userAnswer' id='D' />"+ "D " + question.q_selectionD +"</div><br><hr><br>"
 
-
-	    	   
+			
 	   }
+			return segment;
 	}
-	return segment;
-}
+	
+
+
+
+
 </script>
 <meta charset="UTF-8">
 <title>線上測驗區</title>
@@ -74,7 +90,8 @@ window.addEventListener('load', function(){
 <div align='left'  id='dataArea'>
 </div>
 
-<button id='next'>下一頁</button>
+<button id='back'>上一題</button>
+<button id='next'>下一題</button>
 <button id='submit'>提交</button>
 
 

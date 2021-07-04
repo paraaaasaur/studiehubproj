@@ -43,7 +43,7 @@
 						</ul>
 					</li>
 					<li><a href="<c:url value='/' />">購物車</a></li>
-					<li><a href="#">討論區</a></li>
+					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
 					<li><a href="<c:url value='/question.controller/turnQuestionIndex' />">題庫</a></li>
 					<li><a href="<c:url value='/Eventindex' />">活動</a></li>
 					<li><a href="<c:url value='/gotoAdminIndex.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li>

@@ -120,7 +120,7 @@
 						
 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
 
-				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
+				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.aid+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
 						
 
 						

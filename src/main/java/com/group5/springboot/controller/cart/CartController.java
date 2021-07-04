@@ -59,6 +59,18 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@GetMapping(value = "/cart.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> adminSelectTop100(){
+		return orderService.selectTop100();
+	}
+	
+	/***************************************************************************** */
+	@GetMapping(value = "/cart.controller/adminSelectAll", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> adminSelectAll(){
+		return orderService.selectAll();
+	}
+	
+	/***************************************************************************** */
 	@GetMapping(value = "/cart.controller/adminSearchBar")
 	public Map<String, Object> adminSearchBar(@RequestParam("searchBy") String searchBy, @RequestParam("searchBar") String searchValue) {
 		return orderService.selectLikeOperator(searchBy, searchValue);

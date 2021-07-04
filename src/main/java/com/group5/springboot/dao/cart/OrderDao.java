@@ -72,6 +72,14 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 	
+	public Map<String, Object> selectTop100() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(100);
+		List<OrderInfo> resultList = query.getResultList();
+		map.put("list", resultList);
+		return map;
+	}
+	
 	@Override
 	public Map<String, Object> insert(OrderInfo oBean) {
 		Map<String, Object> map = new HashMap<String, Object>();

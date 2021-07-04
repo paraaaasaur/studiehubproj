@@ -1,6 +1,10 @@
 package com.group5.springboot.service.cart;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,11 @@ public class OrderService implements IOrderService{
 	// Admin - 1
 	public Map<String, Object> selectTop20() {
 		return orderDao.selectTop20();
+	}
+	
+	
+	public Map<String, Object> selectTop100() {
+		return orderDao.selectTop100();
 	}
 	
 	// Admin - 2

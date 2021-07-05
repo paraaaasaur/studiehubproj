@@ -27,7 +27,7 @@ public class OrderService implements IOrderService{
 		return orderDao.selectAll();
 	}
 	
-	public Map<String, Object> selectLikeOperator(Object condition, Object value) {
+	public Map<String, Object> selectLikeOperator(String condition, String value) {
 		return orderDao.selectLikeOperator(condition, value);
 	}
 	
@@ -57,5 +57,9 @@ public class OrderService implements IOrderService{
 	// Admin - 3
 	public boolean delete(OrderInfo orderBean) {
 		return orderDao.delete(orderBean);
+	}
+	
+	public Map<String, Object>test() {
+		return orderDao.test();
 	}
 }

@@ -33,14 +33,27 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 	
-	public Map<String, Object> selectLikeOperator(Object condition, Object value) {
+	public Map<String, Object>test() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE :condition LIKE :value", OrderInfo.class);
-		query.setParameter("condition", (String) condition);
-		boolean isString = (value instanceof String);
-		Object parsedValue = (isString)? (String) value : (Integer) value;
-		query.setParameter("value", "%" + parsedValue + "%");
-		map.put("list", query.getResultList());
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE o.o_id = :value", OrderInfo.class);
+//		query.setParameter("condition", "o." + "o_id");
+		query.setParameter("value", 1);
+		List<OrderInfo> result = query.getResultList();
+		map.put("list", result);
+		System.out.println(result);
+		return map;
+	}
+	
+	public Map<String, Object> selectLikeOperator(String condition, String value) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean isString = !( "o_id".equals(condition) || "p_id".equals(condition));
+		condition = (isString)? "o." + condition : "STR(o." + condition + ")";
+		System.out.println("condition = " + condition + "; value = " + value);
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " LIKE :value", OrderInfo.class);
+		query.setParameter("value", "%" + value + "%");
+		List<OrderInfo> result = query.getResultList();
+		map.put("list", result);
+		System.out.println(result);
 		return map;
 	}
 	

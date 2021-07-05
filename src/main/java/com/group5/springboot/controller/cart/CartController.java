@@ -27,6 +27,13 @@ public class CartController {
 
 	/***************************************************************************** */
 	@SuppressWarnings("unchecked")
+	@GetMapping(value="/test00")
+	public List<ProductInfo> test00() {
+		return (List<ProductInfo>) orderService.test().get("list");
+	}
+	
+	/***************************************************************************** */
+	@SuppressWarnings("unchecked")
 	@GetMapping(value="/cart.controller/showCart", produces = "application/json; charset=UTF-8")
 	public List<ProductInfo> showCart(HttpSession session) {
 		session.setAttribute("cart", cart);
@@ -71,9 +78,9 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@GetMapping(value = "/cart.controller/adminSearchBar")
-	public Map<String, Object> adminSearchBar(@RequestParam("searchBy") String searchBy, @RequestParam("searchBar") String searchValue) {
-		return orderService.selectLikeOperator(searchBy, searchValue);
+	@PostMapping(value = "/cart.controller/adminSearchBar")
+	public Map<String, Object> adminSearchBar(@RequestParam String searchBy, @RequestParam String searchBar) {
+		return orderService.selectLikeOperator(searchBy, searchBar);
 	}
 	
 	/***************************************************************************** */
@@ -105,10 +112,11 @@ public class CartController {
 		
 		OrderInfo order = new OrderInfo();
 		order.setO_id(Integer.parseInt(o_id));
-		boolean deleteStatus = (orderService.delete(order))? true : false;
+		Boolean deleteStatus = (orderService.delete(order))? true : false;
 		String msg = "oid = " + o_id + ((deleteStatus)?  "：刪除成功✔" : "：刪除失敗❌");
 		HashMap<String, String> resultMap = new HashMap<>();
 		resultMap.put("state", msg);
+		resultMap.put("status", deleteStatus.toString());
 		
 		return resultMap;
 	}

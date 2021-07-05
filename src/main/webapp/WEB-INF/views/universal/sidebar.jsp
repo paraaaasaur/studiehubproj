@@ -38,12 +38,12 @@
 						</ul></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="<c:url value='queryProductForUser' />">所有課程</a></li>
-							<li><a href="<c:url value='queryProduct' />">所有課程(後端)</a></li>
+							<li><a href="/studiehub/queryProductForUser">所有課程</a></li>
+							<li><a href="/studiehub//queryProduct">所有課程(後端)</a></li>
 						</ul>
 					</li>
 					<li><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
-					<li><a href="#">討論區</a></li>
+					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
 					<li><a href="<c:url value='/question.controller/turnQuestionIndex' />">題庫</a></li>
 					<li><a href="<c:url value='/Eventindex' />">活動</a></li>
 					<li><a href="<c:url value='/gotoAdminIndex.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li>

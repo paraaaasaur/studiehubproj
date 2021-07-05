@@ -35,12 +35,12 @@ public class ChatController {
 	
 	@GetMapping("/goSelectAllChat")
 	public String goSelectAllChat(){
-		return "chat/SelectAllChat";
+		return "chat/selectAllChat";
 	}
 	
 	@GetMapping("/goInsertChat")
 	public String insertChat(){
-		return "chat/InsertChat";
+		return "chat/insertChat";
 	}
 	
 	@GetMapping("/goDeleteChat/{c_ID}")

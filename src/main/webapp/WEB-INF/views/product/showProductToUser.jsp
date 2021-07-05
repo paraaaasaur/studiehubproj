@@ -54,10 +54,16 @@ window.onload = function(){
     
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
+    var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
+    var userId = document.getElementById('userId');
+    var userPic = document.getElementById('userPic');
     if(u_id){
     	loginHref.hidden = true;
+    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+    	userPic.src = userPicString;	//有登入就秀大頭貼
+    	userId.innerHTML = u_id;
     } 
     
     var dataArea = document.getElementById("dataArea");
@@ -109,7 +115,7 @@ function showData(textObj) {
 			for(n=0;n<products.length;n++){
 				let product = products[n];
 				segment += "<div class='product'>";
-				segment += "<a href='???????'class='image'style='height:270px'>";
+				segment += "<a href='"+ "<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'class='image'style='height:270px'>";
 				segment += "<img src='"+ product.pictureString +"' width='230px' height='120px'>";
 				segment += "<br>";
 				segment += "<h3>"+ product.p_Name +"</h3>"

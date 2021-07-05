@@ -69,8 +69,8 @@ window.addEventListener('load', function(){
 	     	
 		   	let tmp3 = "<c:url value='/question.controller/queryQuestion/'  />" ;
 // 	     	let tmp4 = "<a href='" + tmp3 + "'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
-// 	     	目前無法用連結方式正常使用警示功能
-	     	let tmp4 = "<a  onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
+// 	     	井號:無作用連結
+	     	let tmp4 = "<a href='#' onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
 
 	     	
 	     	

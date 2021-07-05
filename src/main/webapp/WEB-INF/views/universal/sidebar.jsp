@@ -42,7 +42,7 @@
 							<li><a href="/studiehub//queryProduct">所有課程(後端)</a></li>
 						</ul>
 					</li>
-					<li><a href="<c:url value='/' />">購物車</a></li>
+					<li><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
 					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
 					<li><a href="<c:url value='/question.controller/turnQuestionIndex' />">題庫</a></li>
 					<li><a href="<c:url value='/Eventindex' />">活動</a></li>

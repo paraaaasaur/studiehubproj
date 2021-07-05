@@ -143,7 +143,7 @@ window.onload = function(){
 									
 								</fieldset>
 								
-								<a href="http:\/\/localhost:8080/studiehub/cart.controller/cartAdminInsert" >回首頁</a>
+								<a href="http:\/\/localhost:8080/studiehub/cart.controller/cartAdminSelect" >回上一頁</a>
 						</div>
 					</div>
 

@@ -147,7 +147,7 @@ window.onload = function(){
 									
 								</fieldset>
 								
-								<a href="./../" >回前頁</a>
+								<a href="<c:url value='/cart.controller/cartAdminSelect' />" >回前頁</a>
 						</div>
 					</div>
 

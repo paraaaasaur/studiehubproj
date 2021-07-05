@@ -129,6 +129,7 @@ window.onload = function(){
 						
 						// #parseCart() ✔
 						function parseCart(cart) {
+							console.log('parseCart方法開始');
 							products = JSON.parse(cart);
 							let segment = "";
 							let totalPrice = 0;
@@ -145,6 +146,8 @@ window.onload = function(){
 												+ "</tr>";
 								totalPrice += products[i].p_Price;
 							}
+							console.log(segment);
+							console.log('parseCart方法結束');
 							return segment;
 						};
 					

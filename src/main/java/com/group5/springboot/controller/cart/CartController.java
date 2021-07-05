@@ -1,5 +1,7 @@
 package com.group5.springboot.controller.cart;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.service.cart.OrderService;
+import com.group5.springboot.utils.SystemUtils;
 
 @SessionAttributes(names = "cart")
 @RestController
@@ -36,6 +39,7 @@ public class CartController {
 	@SuppressWarnings("unchecked")
 	@GetMapping(value="/cart.controller/showCart", produces = "application/json; charset=UTF-8")
 	public List<ProductInfo> showCart(HttpSession session) {
+		refill();
 		session.setAttribute("cart", cart);
 		cart = (ArrayList<ProductInfo>) session.getAttribute("cart");
 		System.out.println("*** 現在正在showCart()方法內 ***");
@@ -119,6 +123,73 @@ public class CartController {
 		resultMap.put("status", deleteStatus.toString());
 		
 		return resultMap;
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/**
+	 * 純粹測試用；最後用不到
+	 * 每次經過這個Controller都會跑這個block
+	 * 測試用。cart如果是空的，會自動補3件下列商品作為測試
+	 **/
+	private void refill() {
+		System.out.println("正在檢查你的cart是不是空的...");
+		
+		if(cart.size() == 0 || cart == null) {
+//			byte[] aa = {1, 2};
+			ProductInfo fakeProductBean1 = new ProductInfo();
+			fakeProductBean1.setP_ID(1);
+			fakeProductBean1.setP_Name("EN_Speaking");
+			fakeProductBean1.setP_Class("EN");
+			fakeProductBean1.setP_Price(500);
+			fakeProductBean1.setP_DESC(SystemUtils.stringToClob("Cool & Fun"));
+			fakeProductBean1.setU_ID("fbk001");
+			try {
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse("1999-11-22");
+				fakeProductBean1.setP_createDate(date);
+//				fakeProductBean1.setP_createDate(java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse("1999-11-22").getTime())); // in case of java.sql.Date
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+//			fakeProductBean1.setP_Img(aa);
+//			fakeProductBean1.setP_Video(aa);
+			
+			ProductInfo fakeProductBean2 = new ProductInfo();
+			fakeProductBean2.setP_ID(2);
+			fakeProductBean2.setP_Name("RU_Reading");
+			fakeProductBean2.setP_Class("RU");
+			fakeProductBean2.setP_Price(750);
+			fakeProductBean2.setP_DESC(SystemUtils.stringToClob("хороший"));
+			fakeProductBean2.setU_ID("Stalin");
+			try {
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse("1878-12-06");
+				fakeProductBean2.setP_createDate(date);
+//				fakeProductBean2.setP_createDate(java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse("1999-11-22").getTime())); // in case of java.sql.Date
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			ProductInfo fakeProductBean3 = new ProductInfo();
+			fakeProductBean3.setP_ID(2);
+			fakeProductBean3.setP_Name("AR_Reading");
+			fakeProductBean3.setP_Class("AR");
+			fakeProductBean3.setP_Price(345);
+			fakeProductBean3.setP_DESC(SystemUtils.stringToClob("Excellent"));
+			fakeProductBean3.setU_ID("Oil");
+			try {
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse("1878-12-06");
+				fakeProductBean3.setP_createDate(date);
+//				fakeProductBean3.setP_createDate(java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse("1999-11-22").getTime())); // in case of java.sql.Date
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			if(cart == null) {
+				cart = new ArrayList<ProductInfo>();
+			}
+			cart.add(fakeProductBean1);
+			cart.add(fakeProductBean2);
+			cart.add(fakeProductBean3);
+		}
 	}
 	
 }

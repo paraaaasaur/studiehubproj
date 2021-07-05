@@ -78,6 +78,9 @@ public class OrderInfo {
 		setO_amt        (o_Amt      );
 	}
 	
+	public OrderInfo(Integer oid) {
+		setO_id(oid);
+	}
 	// getters
 	public Integer getO_id()        {return o_id;}
 	public Integer getP_id()        {return p_id;}

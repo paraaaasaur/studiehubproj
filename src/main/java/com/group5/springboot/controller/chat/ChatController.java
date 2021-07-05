@@ -38,6 +38,11 @@ public class ChatController {
 		return "chat/selectAllChat";
 	}
 	
+	@GetMapping("/goSelectAllChatAdmin")
+	public String goSelectAllChatAdmin(){
+		return "chat/selectAllChatAdmin";
+	}
+	
 	@GetMapping("/goInsertChat")
 	public String insertChat(){
 		return "chat/insertChat";
@@ -47,6 +52,12 @@ public class ChatController {
 	public String goDeleteChat(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
 		return "chat/DeleteChat";
+	}
+	
+	@GetMapping("/goDeleteChatAdmin/{c_ID}")
+	public String goDeleteChatAdmin(@PathVariable int c_ID, Model model){
+		model.addAttribute("c_ID", c_ID);
+		return "chat/deleteChatAdmin";
 	}
 	
 	@GetMapping("/goUpdateChat")
@@ -68,6 +79,13 @@ public class ChatController {
 		return chat_Info;
 	}
 	
+	@GetMapping(path = "/selectAllChatAdmin", produces = {"application/json"})
+	@ResponseBody
+	public List<Chat_Info> findAllChatAdmin() {
+		List<Chat_Info> chat_Info = chatService.findAllChat();
+		return chat_Info;
+	}
+	
 	@PostMapping(path = "/insertChat", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info){
@@ -85,6 +103,20 @@ public class ChatController {
 	@DeleteMapping("/deleteChat/{c_ID}")
 	@ResponseBody
 	public Map<String, String> deleteChat(@PathVariable(required = true) int c_ID){
+		Map<String, String> map = new HashMap<>();
+		try {
+			chatService.deleteChat(c_ID);
+			map.put("success", "刪除成功");
+		} catch (Exception e) {
+			map.put("fail", "刪除失敗，請再試一次...");
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	@DeleteMapping("/deleteChatAdmin/{c_ID}")
+	@ResponseBody
+	public Map<String, String> deleteChatAdmin(@PathVariable(required = true) int c_ID){
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.deleteChat(c_ID);

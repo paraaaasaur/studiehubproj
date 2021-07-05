@@ -62,6 +62,14 @@ window.onload = function(){
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
     }
+    
+    //一鍵帶入
+    $('#autoInput').on('click', function(){
+    	$('#u_address').val("中央大學");
+    	$('#u_address').val("中央大學");
+    	$('#u_tel').val("0933509390");
+    	$('#u_birthday').val("1997-08-18");
+    })
 }
 </script>
 </head>
@@ -123,7 +131,7 @@ window.onload = function(){
 							</tr>
 							
 							<tr>
-							    <td colspan='3' align='center'><input class="primary" type='submit' value="儲存"></td>
+							    <td colspan='3' align='center'><button type="button" id="autoInput">一鍵</button> &nbsp;<input class="primary" type='submit' value="儲存"></td>
 						   </tr>
 						</table>
 					</form:form>

@@ -40,7 +40,7 @@ public class ChatController {
 	
 	@GetMapping("/goInsertChat")
 	public String insertChat(){
-		return "chat/InsertChat";
+		return "chat/insertChat";
 	}
 	
 	@GetMapping("/goDeleteChat/{c_ID}")

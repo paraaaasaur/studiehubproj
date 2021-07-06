@@ -53,6 +53,9 @@ public class User_Info {
 	// 抓上傳的圖片
 	@Transient
 	MultipartFile uploadImage;
+	// 記住帳號(待查資料)
+	@Transient
+	String rememberMe;
 
 	
 	

@@ -77,9 +77,9 @@ window.onload = function(){
 									<!-- <option value='o_status'>以訂單狀態(o_status)</option>❗ -->
 									<option value='o_date'>以訂單日期(o_date)</option>
 								</select>
+								<h1 id='topLogo'>以下是資料庫最新${selectedRowNum}筆訂單</h1>
 								<hr id="pageHref">
 								<form>
-									<h1 id='topLogo'>以下顯示的是資料庫的至多100筆訂單</h1>
 									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
 									<table border="2px">
 										<thead id="headArea"></thead>
@@ -92,7 +92,6 @@ window.onload = function(){
 								<button name="todo" id="insert" value="insertAdmin" 
 								onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/cartAdminInsert'">新增</button>
 								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
-								<button id="testxx" hidden="true">測試</button>
 								<hr>
 								<form>
 									<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>

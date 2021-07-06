@@ -66,41 +66,43 @@ window.onload = function(){
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/header.jsp" %>  
 
-								<fieldset style="width:960px;">
+								<fieldset>
 									<legend style="text-align: center;">維護訂單資料</legend> 
 									<form:form method="POST" modelAttribute="orderInfo" enctype='multipart/form-data'>
 										<Table>
 										   <tr>  
 										      <td>(1) 訂單代號(o_id)：<br>&nbsp;</td>
-										        <td  width='360'>
-										      	<form:input path="o_id" readonly="true" /><br>&nbsp;	   // property name 
-<%-- 											      <form:errors path='typeId' cssClass="error"/> --%>
+										        <td>
+										        	<form:input path="o_id" readonly="true" /><br>&nbsp;
+<%-- 										        	<form:errors path='typeId' cssClass="error"/> --%>
 											  </td>
 										      <td>(2) 課程代號(p_id)：<br>&nbsp;</td>
-											  <td  width='360'><form:input path='p_id' /><br>&nbsp;	
-<%-- 											      <form:errors path='name' cssClass="error"/> --%>
+											  <td>
+											  		<form:input path='p_id' /><br>&nbsp;
+											  		<form:errors path='p_id' />
 											  </td>
 										   </tr>
 										   <tr>
 										      <td>(3) 課程名稱(p_name)：<br>&nbsp;</td>
-										      <td  width='360'>
-										      	<form:input path="p_name" readonly="true" /><br>&nbsp;	
+										      <td>
+										      		<form:input path="p_name" readonly="true" /><br>&nbsp;	
 <%-- 											      <form:errors path='phone' cssClass="error"/> --%>
 											  </td>
-											   <td>(4) 課程價格(p_price)：<br>&nbsp;</td>
+											  <td>(4) 課程價格(p_price)：<br>&nbsp;</td>
 										   	  <td>
-										      	<form:input path="p_price" readonly="true" /><br>&nbsp;	
+										   	  		<form:input path="p_price" readonly="true" /><br>&nbsp;	
 <%-- 											      <form:errors path='address' cssClass="error"/> --%>
 											  </td>
 										   </tr>	   
 										   <tr>
 										      <td>(5) 會員帳號(u_id)：<br>&nbsp;</td>
-										        <td  width='360'>
-										      	<form:input path="u_id" /><br>&nbsp;	
-<%-- 											      <form:errors path='longitude' cssClass="error"/> --%>
+										      <td>
+										      		<form:input path="u_id" /><br>&nbsp;
+										      		<form:errors path='u_id' />
 											  </td>
 										      <td>(6) 會員名字(u_firstname)：<br>&nbsp;</td>
-											  <td  width='360'><form:input path='u_firstname' readonly="true" /><br>&nbsp;	
+											  <td>
+											  		<form:input path='u_firstname' readonly="true" /><br>&nbsp;	
 <%-- 											      <form:errors path='latitude' cssClass="error"/> --%>
 											  </td>
 										   </tr>
@@ -108,12 +110,12 @@ window.onload = function(){
 										   <tr>
 										      <td>(7) 會員姓氏(u_lastname)：<br>&nbsp;</td>
 										   	  <td>
-										   	  	 <form:input path="u_lastname" readonly="true" /><br>&nbsp;
+										   	  		<form:input path="u_lastname" readonly="true" /><br>&nbsp;
 <%-- 										   	  	 <form:errors path="link"  cssClass="error" /> --%>
 										   	  </td>
 										   	  <td>(8) 會員信箱(u_email)：<br>&nbsp;</td>
 										   	  <td>
-										   	  	 <form:input path="u_email" readonly="true" /><br>&nbsp;
+										   	  		<form:input path="u_email" readonly="true" /><br>&nbsp;
 <%-- 										   	  	 <form:errors path="placeImage"  cssClass="error" /> --%>
 										   	  </td>
 										   </tr>
@@ -121,12 +123,12 @@ window.onload = function(){
 										   <tr>
 										      <td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
 										   	  <td>
-										   	  	 <form:input path="o_status" /><br>&nbsp;
-<%-- 										   	  	 <form:errors path="link"  cssClass="error" /> --%>
+										   	  		<form:input path="o_status" /><br>&nbsp;
+										   	  	 	<form:errors path="o_status" />
 										   	  </td>
 										   	  <td>(10) 訂單日期(o_date)：<br>&nbsp;</td>
 										   	  <td>
-										   	  	 <form:input path="o_date" readonly="true" /><br>&nbsp;
+										   	  		<form:input path="o_date" readonly="true" /><br>&nbsp;
 <%-- 										   	  	 <form:errors path="placeImage"  cssClass="error" /> --%>
 										   	  </td>
 										   </tr>
@@ -134,8 +136,8 @@ window.onload = function(){
 										   <tr>
 										       <td>(11) 訂單小計(o_amt)：<br>&nbsp;</td>
 										   	   <td>
-											   	  	 <form:input path="o_amt" /><br>&nbsp;
-	<%-- 									   	  	 <form:errors path="link"  cssClass="error" /> --%>
+										   	   		<form:input path="o_amt" /><br>&nbsp;
+										   	  	 	<form:errors path="o_amt" />
 										   	   </td>
 										       <td colspan='4' align='center'><br>&nbsp;
 											       <input type='submit'>

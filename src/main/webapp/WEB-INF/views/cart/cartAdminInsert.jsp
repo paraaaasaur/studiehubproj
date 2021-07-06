@@ -66,19 +66,20 @@ window.onload = function(){
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/header.jsp" %>  
 
-								<fieldset style="width:960px;">
-									<legend >維護餐廳資料</legend> 
+								<fieldset>
+									<legend >新增訂單資料</legend> 
 									<form:form method="POST" modelAttribute="emptyOrderInfo" enctype='multipart/form-data'>
 										<Table>
 										   <tr>  
 										      <td>(1) 訂單代號(o_id)：<br>&nbsp;</td>
 										        <td  width='360'>
-										      	<form:input path="o_id" readonly="true" /><br>&nbsp;	   // property name 
-<%-- 											      <form:errors path='typeId' cssClass="error"/> --%>
+										        	<form:input path="o_id" readonly="true" /><br>&nbsp;
+<%-- 										        	<form:errors path='o_id'/> --%>
 											  </td>
 										      <td>(2) 課程代號(p_id)：<br>&nbsp;</td>
-											  <td  width='360'><form:input path='p_id' id="p_id" /><br>&nbsp;	
-<%-- 											      <form:errors path='name' cssClass="error"/> --%>
+											  <td  width='360'>
+											  		<form:input path='p_id' id="p_id" /><br>&nbsp;
+											  		<form:errors path='p_id' />
 											  </td>
 										   </tr>
 <!-- 										   <tr> -->
@@ -94,8 +95,8 @@ window.onload = function(){
 										   <tr>
 										      <td>(5) 會員帳號(u_id)：<br>&nbsp;</td>
 										        <td  width='360'>
-										      	<form:input path="u_id" id="u_id" /><br>&nbsp;	
-<%-- 											      <form:errors path='longitude' cssClass="error"/> --%>
+										        	<form:input path="u_id" id="u_id" /><br>&nbsp;
+										        	<form:errors path='u_id' />
 											  </td>
 <!-- 										      <td>(6) 會員名字(u_firstname)：<br>&nbsp;</td> -->
 <%-- 											  <td  width='360'><form:input path='u_firstname' readonly="true" /><br>&nbsp;	 --%>
@@ -116,8 +117,8 @@ window.onload = function(){
 										   <tr>
 										      <td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
 										   	  <td>
-										   	  	 <form:input path="o_status" id="o_status" /><br>&nbsp;
-<%-- 										   	  	 <form:errors path="link"  cssClass="error" /> --%>
+										   	  		<form:input path="o_status" id="o_status" /><br>&nbsp;
+										   	  		<form:errors path="o_status" />
 										   	  </td>
 										   	  <td>(10) 訂單日期(o_date)：<br>&nbsp;</td>
 										   	  <td>
@@ -130,7 +131,7 @@ window.onload = function(){
 										       <td>(11) 訂單小計(o_amt)：<br>&nbsp;</td>
 										   	   <td>
 											   	  	 <form:input path="o_amt" id="o_amt" /><br>&nbsp;
-	<%-- 									   	  	 <form:errors path="link"  cssClass="error" /> --%>
+										   	  		 <form:errors path="o_amt" />
 										   	   </td>
 										       <td colspan='4' align='center'><br>&nbsp;
 											       <input type='submit' value='送出資料'>
@@ -165,7 +166,6 @@ window.onload = function(){
 				$(function(){
 					
 					$('#cheat').on('click', function(){
-						console.log(123);
 						$('#p_id').val(1);
 						$('#u_id').val('fbk001');
 						$('#o_status').val('DONE');

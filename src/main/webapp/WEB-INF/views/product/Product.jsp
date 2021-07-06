@@ -109,9 +109,7 @@ console.log(${product.videoString});
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
-				<h2 align='center'>課程資訊</h2>
-				<hr>
-				<div style="text-align: center;">
+				<div style="text-align: center;margin-top: 10px;">
 					<input type="text" id="productname" style="display: inline; width: 500px; float: none;border-radius: 50px;" placeholder="請輸入課程關鍵字">
 					<button id="query" style="display: inline;">搜尋</button>
 				<br>

@@ -36,8 +36,7 @@
 					<li><a href="<c:url value='/gotoShowAllUser.controller' />">會員資訊</a></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="<c:url value='queryProductForUser' />">所有課程</a></li>
-							<li><a href="<c:url value='queryProduct' />">所有課程(後端)</a></li>
+							<li><a href="/studiehub/queryProduct">所有課程</a></li>
 						</ul>
 					</li>
 					<li><a href="<c:url value='/' />">購物車</a></li>

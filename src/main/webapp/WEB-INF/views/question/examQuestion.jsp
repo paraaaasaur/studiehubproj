@@ -1,9 +1,50 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html>
 <head>
+
+<style type="text/css">
+   span.error {
+	color: red;
+	display: inline-block;
+	font-size: 5pt;
+}
+
+.spinner {
+    width: 70px;
+    height: 70px;
+    background-color: #5b99de;
+    margin: 50px auto 50px auto;
+  }
+  .spin {
+    animation: RotatePlane 1.5s infinite ease-in-out;
+  }
+  .text {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 2rem;
+    color: #5b99de;
+  }
+  @keyframes RotatePlane {
+    0%   { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
+    50%  { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
+    100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
+  }
+
+</style>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel='stylesheet'
+	href="${pageContext.request.contextPath}/assets/css/main.css">
+
+<title>線上測驗區</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 var obj = null; 
 // 全部值
@@ -28,18 +69,35 @@ window.addEventListener('load', function(){
 	xhr.send();
 	
 	
+
 	next.addEventListener('click', function(){
-		counter += 1;
-		dataArea.innerHTML = showFirstData(xhr.responseText);
-	})
-	
+		if(counter < size-1){
+			counter += 1;
+			back.style.display = '';
+			dataArea.innerHTML = showFirstData(xhr.responseText);
+		}else{
+			alert("已經是最後一頁了!");
+
+// 		next.style.display = 'none';
+			}
+		});
+		
 	back.addEventListener('click', function(){
-		counter -= 1;
-		dataArea.innerHTML = showFirstData(xhr.responseText);
+		if(counter > 1){
+			counter -= 1;
+			back.style.display = '';
+			dataArea.innerHTML = showFirstData(xhr.responseText);
+		}else if(counter == 1){
+			counter -= 1;
+			back.style.display = 'none';
+			dataArea.innerHTML = showFirstData(xhr.responseText);
+		}else{
+			back.style.display = 'none';
+			dataArea.innerHTML = showFirstData(xhr.responseText);
+			}
+		
+		});
 	})
-	
-	
-})
 
  function showFirstData(textObj){
 	
@@ -49,53 +107,83 @@ window.addEventListener('load', function(){
 	let segment = "";
 	
 	if (size == 0){
-		segment += "<div>很抱歉，目前系統無相關試題</div>";
+		segment += "<h4>很抱歉，目前系統無相關試題</h4>";
 	} else {
-		segment += "<div>測驗共" + size + "題</div><br>";
+		segment += "<h4>測驗共" + size + "題</h4><br>";
 	    
 		   	let question = questions[counter];
 	   		let number = counter+1;
 	     	
-		   	segment += "<div>第" + number + "題</div>";
+		   	segment += "<h4>第&ensp;" + number + "&ensp;題</h4>";
 			segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
 			segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 	
 	
-			segment += "<div>問題:" + question.q_question + "</div><br>"; 
-			segment += "<div><input type='radio' value='A' name='userAnswer' id='A' />"+ "A " + question.q_selectionA +"</div>"
-			segment += "<div><input type='radio' value='B' name='userAnswer' id='B' />"+ "B " + question.q_selectionB +"</div>"
-			segment += "<div><input type='radio' value='C' name='userAnswer' id='C' />"+ "C " + question.q_selectionC +"</div>"
-			segment += "<div><input type='radio' value='D' name='userAnswer' id='D' />"+ "D " + question.q_selectionD +"</div><br><hr><br>"
+			segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
+			segment += "<div><input type='radio' value='A' name='userAnswer' id='A' /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+			segment += "<input type='radio' value='B' name='userAnswer' id='B' /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+			segment += "<input type='radio' value='C' name='userAnswer' id='C' /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+			segment += "<input type='radio' value='D' name='userAnswer' id='D' /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
 
-			
 	   }
 			return segment;
 	}
 	
 
 
-
-
 </script>
-<meta charset="UTF-8">
-<title>線上測驗區</title>
+
+
 </head>
-<body>
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Main -->
+		<div id="main">
+			<div class="inner">
+				<%@include file="../universal/header.jsp"%>
+
 <div align='center'>
 <h2>線上測驗區</h2>
+
+
 
 <!-- <hr> -->
 <%-- <font color='red'>${successMessage}</font>&nbsp; --%>
 <!-- <hr> -->
+   
 
 <div align='left'  id='dataArea'>
 </div>
 
-<button id='back'>上一題</button>
+<div>
+<button id='back' style="display: none">上一題</button>
 <button id='next'>下一題</button>
-<button id='submit'>提交</button>
+&emsp;<button id='submit'>提交</button>
+</div><br>
+<!-- <br> -->
+<%-- <br><a href="<c:url value='/question.controller/turnQuestionIndex'/> " >回前頁</a> --%>
+			</div>
+		</div>
+	</div>
 
 
-<br><br><a href="<c:url value='/question.controller/turnQuestionIndex'/> " >回前頁</a>
-</div>
+	<!-- Sidebar -->
+		<!-- 這邊把side bar include進來 -->
+		<%@include file="../universal/sidebar.jsp"%>
+
+	</div>
+
+	<!-- Scripts -->
+	<script
+		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
+	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
+	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	
 </body>
 </html>

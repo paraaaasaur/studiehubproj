@@ -124,8 +124,25 @@ public class QuestionController {
 		return "redirect:/question.controller/queryQuestion";  
 	}
 	
+
+////送出顯示所有試題的表單 //使用者
+	@GetMapping("/question.controller/guestQueryQuestion")
+	public String sendGuestQueryQuestion() {
+		return "question/guestQueryQuestion";
+	}	
+////單筆詳細資料 //使用者
+	@GetMapping("/question.controller/guestOneQuestion/{q_id}")
+    public String guestOneQuestion(
+    		@PathVariable Long q_id, Model model
+    ) {
+		Question_Info question_Info = questionService.findById(q_id);
+		model.addAttribute("Q1", question_Info);
+		return "question/guestOneQuestion";
+	}	
 	
-////送出顯示所有試題的表單
+	
+	
+////送出顯示所有試題的表單 //後台
 	@GetMapping("/question.controller/queryQuestion")
 	public String sendQueryQuestion() {
 		return "question/queryQuestion";

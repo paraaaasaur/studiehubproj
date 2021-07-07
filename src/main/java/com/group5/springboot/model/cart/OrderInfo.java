@@ -81,6 +81,9 @@ public class OrderInfo {
 	public OrderInfo(Integer oid) {
 		setO_id(oid);
 	}
+	public OrderInfo(String o_status) {
+		setO_status(o_status);
+	}
 	// getters
 	public Integer getO_id()        {return o_id;}
 	public Integer getP_id()        {return p_id;}

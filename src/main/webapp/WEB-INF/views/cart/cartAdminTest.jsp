@@ -50,7 +50,7 @@
 				let segments = []; 
 				let counter = 0;
 				let pageNum = 0;
-				let rowPerPage = 10;
+				let rowPerPage = 15; // 每頁想要多少筆資料行
 				
 				$(function(){
 					let dataArea = $('#dataArea');
@@ -109,7 +109,6 @@
 
 					//【自訂函數 4】主程式函數
 					function mainFunc(){
-						console.log('Start of mainFunc()');
 						headArea.html(
 							"<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
 							+ "<th>課程代號<br>(p_id)</th>"
@@ -138,8 +137,7 @@
 									// 不知道為什麼寫成function呼叫之前一直出錯，照理來說應該寫成function比較好
 								pageNum = Math.ceil((segments.length)/rowPerPage);
 								let temp0 = "";
-								let tempPageNum = (pageNum > rowPerPage)? rowPerPage : pageNum;
-								for(let i = 0; i < tempPageNum; i++){
+								for(let i = 0; i < pageNum; i++){
 									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
 								pageHref.html(temp0);
@@ -149,7 +147,6 @@
 								})
 							}
 						}
-						console.log('End of mainFunc()');
 					}
 					
 				/*********************************************************************************************************/

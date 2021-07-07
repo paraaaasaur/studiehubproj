@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
+import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.SystemUtils;
 
 @SessionAttributes(names = "cart")
@@ -29,6 +31,8 @@ public class CartController {
 	private OrderService orderService;
 	@Autowired // SDI ✔
 	private ProductServiceImpl productService;
+	@Autowired // SDI ✔
+	private UserService userService;
 	public List<ProductInfo> cart = new ArrayList<ProductInfo>();
 
 	/***************************************************************************** */
@@ -129,9 +133,15 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/selectProduct")
-	public ProductInfo selectProduct(@RequestParam("p_id") String p_id) {
+	@PostMapping(value = "/cart.controller/adminSelectProduct")
+	public ProductInfo adminSelectProduct(@RequestParam("p_id") String p_id) {
 		return productService.findByProductID(Integer.parseInt(p_id));
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/adminSelectUser")
+	public User_Info adminSelectUser(@RequestParam("u_id") String u_id) {
+		return userService.getSingleUser(u_id);
 	}
 	
 	/***************************************************************************** */

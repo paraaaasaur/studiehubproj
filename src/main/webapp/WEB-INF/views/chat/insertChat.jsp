@@ -54,10 +54,10 @@ window.onload = function(){
 				result = JSON.parse(xhr1.responseText);
 				//判斷回傳
 				if(result.fail){
-					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
+					span1.innerHTML = "<font color='red' >" + result.fail + "</font>";
 				}else if(result.success){
 					alert(result.success + "! 為您導回上一頁...");
-					top.location='<c:url value='/chatIndex' />';
+					top.location='<c:url value='/goSelectAllChat' />';
 				}
 			}
 		}
@@ -103,8 +103,13 @@ window.onload = function(){
 								</tr>
 								<tr>
 									<td style="width:60px;">內容:</td>
-									<td style="width:650px;"><textarea name="c_Conts" id="c_Conts" placeholder="請輸入文章內容..."></textarea>
-									<span id="result2c">&nbsp;</span></td>
+									<td style="width:650px;"><input type="text" name="c_Conts" id="c_Conts" style="width:650px;"><span id="result2c">&nbsp;</span></td>
+									
+								</tr>
+								<tr>
+									<td style="width:60px;">內容:</td>
+									<td style="width:650px;"><textarea name="c_Contss" id="c_Contss" placeholder="請輸入文章內容..."></textarea>
+									</td>
 								</tr>
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">
@@ -127,7 +132,7 @@ window.onload = function(){
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 	<script>
-	ClassicEditor.create( document.querySelector( '#c_Conts' ))
+	ClassicEditor.create( document.querySelector( '#c_Contss' ))
 		.then( editor => {
 			console.log( editor );
 		 })

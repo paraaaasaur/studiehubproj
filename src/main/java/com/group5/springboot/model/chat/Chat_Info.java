@@ -15,18 +15,12 @@ import org.springframework.stereotype.Component;
 public class Chat_Info {
 	
 	@Id
-	@Column(name = "c_ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer c_ID;
-	@Column(name = "c_Date")
 	private String c_Date;
-	@Column(name = "c_Class")
 	private String c_Class;
-	@Column(name = "c_Title")
 	private String c_Title;
-	@Column(name = "c_Conts")
 	private String c_Conts;
-	@Column(name = "u_ID")
 	private String u_ID;
 	
 	public Integer getC_ID() {

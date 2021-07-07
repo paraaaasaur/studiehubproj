@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.validate.OrderValidator;
 
 @SessionAttributes(names = "cart")
 @Controller
@@ -31,6 +33,8 @@ public class CartViewController {
 	private OrderService orderService;
 //	@Autowired // SDI ✔
 	public List<ProductInfo> cart = new ArrayList<ProductInfo>();
+	@Autowired
+	private OrderValidator orderValidator;
 
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/cartAdminInsert"})
@@ -41,11 +45,24 @@ public class CartViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping(value = {"/cart.controller/cartAdminInsert"})
-	public String cartAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo OrderInfo,
+	public String cartAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
 			BindingResult result, 
 			RedirectAttributes ra) {
-		orderService.insert(OrderInfo);
-		return "/cart/cartAdminSelect";
+		//		//		//		//		//		//		//
+		orderValidator.validate(orderInfo, result);
+		if (result.hasErrors()) {
+          // 下列敘述可以理解Spring MVC如何處理錯誤			
+			List<ObjectError> list = result.getAllErrors();
+			for (ObjectError error : list) {
+				System.out.println("有錯誤：" + error);
+			}
+			return "/cart/cartAdminInsert";
+//			return "redirect:/cart.controller/cartAdminInsert";
+		}
+		//		//		//		//		//		//		//
+		orderService.insert(orderInfo);
+		ra.addFlashAttribute("successMessage", "訂單編號 = " + orderInfo.getO_id() + "新增成功！");
+		return "redirect:/cart.controller/cartAdminSelect";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
@@ -61,18 +78,21 @@ public class CartViewController {
 			BindingResult result, 
 			RedirectAttributes ra) {
 		
-//		placeValidator.validate(place, result);
-//		if (result.hasErrors()) {
-//          下列敘述可以理解Spring MVC如何處理錯誤			
-//			List<ObjectError> list = result.getAllErrors();
-//			for (ObjectError error : list) {
-//				System.out.println("有錯誤：" + error);
-//			}
-//		ra.addFlashAttribute("successMessage", place.getName() + "修改成功");
+		orderValidator.validate(orderInfo, result);
+		if (result.hasErrors()) {
+          // 下列敘述可以理解Spring MVC如何處理錯誤			
+			List<ObjectError> list = result.getAllErrors();
+			for (ObjectError error : list) {
+				System.out.println("有錯誤：" + error);
+			}
+			return "/cart/cartAdminUpdate";
+		}
+		//		//		//		//		//		//		//
 		
 		// 新增或修改成功，要用response.sendRedirect(newURL) 通知瀏覽器對newURL發出請求
 		orderService.update(orderInfo);
-		return "/cart/cartAdminSelect";
+		ra.addFlashAttribute("successMessage", "o_id = " + orderInfo.getO_id() + "修改成功");
+		return "redirect:/cart.controller/cartAdminSelect";
 		
 	}
 	
@@ -96,6 +116,12 @@ public class CartViewController {
 	@GetMapping(value = {"/cart.controller/cartAdminSelect"})
 	public String toCartAdminSelect() {
 		return "cart/cartAdminSelect";
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@GetMapping(value = {"/test01"})
+	public String toCartAdminTest() {
+		return "cart/cartAdminTest";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
@@ -138,6 +164,14 @@ public class CartViewController {
 		System.out.println("購買成功，感謝您！");
 		return "/cart/cartThanks";
 	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@SuppressWarnings("unchecked")
+	@ModelAttribute("selectedRowNum")
+	public Integer getSelectedRowNum() {
+		return ((List<OrderInfo>)(orderService.selectTop100().get("list"))).size();
+	}
+	
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	/**

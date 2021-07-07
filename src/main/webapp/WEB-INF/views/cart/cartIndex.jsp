@@ -89,7 +89,6 @@ window.onload = function(){
 								<form>
 									<button formmethod="POST" id="checkout" formaction="<c:url value='/cart.controller/cartCheckout' />">去結帳</button>
 									<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/cart.controller/cartAdminSelect' />">到購物車GM頁面</button>
 								</form>
 									<hr>
 

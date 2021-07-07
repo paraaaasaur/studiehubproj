@@ -34,7 +34,7 @@ public class OrderInfo {
 	private String u_firstname; 
 	private String u_lastname; 
 	private String u_email; 
-	@Column(columnDefinition = "NVARCHAR(100)  DEFAULT 'DONE'", insertable = false, updatable = false)
+	@Column(columnDefinition = "NVARCHAR(100)  DEFAULT 'DONE'")
 	//直接指定SQL的條件限制 
 	private String o_status;
 	@Column(insertable = false, updatable = false, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
@@ -80,6 +80,9 @@ public class OrderInfo {
 	
 	public OrderInfo(Integer oid) {
 		setO_id(oid);
+	}
+	public OrderInfo(String o_status) {
+		setO_status(o_status);
 	}
 	// getters
 	public Integer getO_id()        {return o_id;}

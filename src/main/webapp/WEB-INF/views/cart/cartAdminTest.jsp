@@ -45,13 +45,12 @@
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>
 				// 不用等DOM就可以先宣告的變數們
-				let segments = [];
+
+				// 把Server送回來的資料轉換成要掛上的html格式的資料陣列。
+				let segments = []; 
 				let counter = 0;
 				let pageNum = 0;
-				let rowNum = 0;
 				let rowPerPage = 10;
-				// let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
-				// 從1990-01-01到2021-12-31 // 沒有防大小月和２月
 				
 				$(function(){
 					let dataArea = $('#dataArea');
@@ -78,26 +77,21 @@
 						}
 					} 					
 
-					// 【自訂函數 2】解析回傳資料&暫存進segments陣列
+					// 【自訂函數 2】解析資料 & 暫存進segments陣列
 					function parseSelectedRows(map) {
 						parsedMap = JSON.parse(map);
 						let orders = parsedMap.list;
-							let totalPrice = 0;
-							rowNum = orders.length;
-							segments = [];
+							segments = []; // 清空segments陣列
 							for (let i = 0; i < orders.length; i++) {
-								totalPrice += orders[i].p_price;
 								let temp0 =	 "<tr>" + 
-													"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
 													"<td><label data-val='" + orders[i].o_id + "' class='old" + i + "0' >" + orders[i].o_id + "</label></td>" +
 													"<td><label data-val='" + orders[i].p_id + "' class='old" + i + "1' >" + orders[i].p_id + "</label></td>" +
 													"<td><label data-val='" + orders[i].u_id + "' class='old" + i + "2' >" + orders[i].u_id + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
-													"<td width='120'><a href='http://localhost:8080/studiehub/cart.controller/cartAdminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
 													"</tr>";
-								segments.push(temp0);
+								segments.push(temp0); // push()可以把參數送進陣列最後一個位置
 							}
 					};
 					
@@ -117,14 +111,12 @@
 					function mainFunc(){
 						console.log('Start of mainFunc()');
 						headArea.html(
-								"<th>DELETE BUTTON</th>"
-								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
-								+ "<th>課程代號<br>(p_id)</th>"
-								+ "<th>用戶帳號<br>(u_id)</th>"
-								+ "<th>訂單狀態<br>(o_status)</th>"
-								+ "<th>訂單時間<br>(o_date)</th>"
-								+ "<th>訂單總額<br>(o_amt)</th>"
-								+ "<th>操作</th>"
+							"<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
+							+ "<th>課程代號<br>(p_id)</th>"
+							+ "<th>用戶帳號<br>(u_id)</th>"
+							+ "<th>訂單狀態<br>(o_status)</th>"
+							+ "<th>訂單時間<br>(o_date)</th>"
+							+ "<th>訂單總額<br>(o_amt)</th>"
 						)
 
 						let xhr0 = new XMLHttpRequest();
@@ -143,6 +135,7 @@
 								}
 								dataArea.html(htmlStuff);
 								// 掛分頁按鈕
+									// 不知道為什麼寫成function呼叫之前一直出錯，照理來說應該寫成function比較好
 								pageNum = Math.ceil((segments.length)/rowPerPage);
 								let temp0 = "";
 								let tempPageNum = (pageNum > rowPerPage)? rowPerPage : pageNum;

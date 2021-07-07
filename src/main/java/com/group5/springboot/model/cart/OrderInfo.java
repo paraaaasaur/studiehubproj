@@ -17,8 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 
-// Cart = ArrayList<ProductBean> = ArrayList<CartItem>
-// OrderBean = cart +- 一些額外資訊
+
 @Entity @Table(name = "order_info") 
 @Component
 public class OrderInfo {
@@ -62,7 +61,8 @@ public class OrderInfo {
 	
 	// constructors
 	public OrderInfo() {};
-	/** 不要用這個，因為o_id現在是用IDENTITY(1, 1)去產生的，所以不想要手動指定 */
+	public OrderInfo(Integer o_id) {		setO_id(o_id);	}
+	public OrderInfo(String o_status) {		setO_status(o_status);	}
 	public OrderInfo(Integer o_ID, Integer p_ID, String p_Name, Integer p_Price, String u_ID, String u_FirstName,
 			String u_LastName, String u_Email, String o_Status, String o_Date, Integer o_Amt) {
 		setO_id         (o_ID       );
@@ -78,12 +78,6 @@ public class OrderInfo {
 		setO_amt        (o_Amt      );
 	}
 	
-	public OrderInfo(Integer oid) {
-		setO_id(oid);
-	}
-	public OrderInfo(String o_status) {
-		setO_status(o_status);
-	}
 	// getters
 	public Integer getO_id()        {return o_id;}
 	public Integer getP_id()        {return p_id;}

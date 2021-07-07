@@ -185,15 +185,11 @@ window.onload = function(){
 					let o_status = $('#o_status');
 					let o_date = $('#o_date');
 					let o_amt = $('#o_amt');
-					
-					$('#cheat').on('click', function(){
-						p_id.val(1);
-						u_id.val('fbk001');
-						o_status.val('DONE');
-						o_amt.val(99999);
-					})
 
-					$(p_id).on('focusout', function(){
+					let cheat = $('#cheat');
+					
+
+					function autoFillInProductStuff(){
 						let xhr = new XMLHttpRequest();
 						xhr.open("POST", "<c:url value='/cart.controller/adminSelectProduct' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -210,9 +206,13 @@ window.onload = function(){
 								}
 							}
 						})
+					}
+
+					$(p_id).on('focusout', function(){
+						autoFillInProductStuff();
 					});
 					
-					$(u_id).on('focusout', function(){
+					function autoFillInUserStuff(){
 						let xhr = new XMLHttpRequest();
 						xhr.open("POST", "<c:url value='/cart.controller/adminSelectUser' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -231,8 +231,19 @@ window.onload = function(){
 								}
 							}
 						})
+					}
+
+					$(u_id).on('focusout', function(){
+						autoFillInUserStuff();
 					});
 
+					$(cheat).on('click', function(){
+						p_id.val(1);
+						u_id.val('fbk001');
+						o_amt.val(Math.round(Math.random() * 100000));
+						autoFillInProductStuff();
+						autoFillInUserStuff();
+					})
 
 				})
 			</script>

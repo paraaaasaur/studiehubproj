@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -25,7 +24,6 @@ import com.group5.springboot.utils.SystemUtils;
 
 @SessionAttributes(names = "cart")
 @RestController
-@RequestMapping
 public class CartController {
 	@Autowired // SDI ✔
 	private OrderService orderService;
@@ -58,7 +56,7 @@ public class CartController {
 	/***************************************************************************** */
 	@SuppressWarnings("unchecked")
 	@PostMapping(value = "/cart.controller/remove", produces = "application/json; charset=UTF-8")
-	public List<ProductInfo> removeProductFromCart(@RequestParam String[] ckboxValues, HttpSession session) {
+	public List<ProductInfo> removeProductFromCart(@RequestParam String[] ckboxValues, HttpSession session) { // ❗
 		cart = (ArrayList<ProductInfo>) session.getAttribute("cart");
 		System.out.println(ckboxValues);
 		for (int i = 0; i < ckboxValues.length; i++) {
@@ -89,6 +87,18 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/adminSelectProduct")
+	public ProductInfo adminSelectProduct(@RequestParam("p_id") String p_id) {
+		return productService.findByProductID(Integer.parseInt(p_id));
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/adminSelectUser")
+	public User_Info adminSelectUser(@RequestParam("u_id") String u_id) {
+		return userService.getSingleUser(u_id);
+	}
+	
+	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/adminSearchBar")
 	public Map<String, Object> adminSearchBar(@RequestParam String searchBy, @RequestParam String searchBar) {
 		return orderService.selectLikeOperator(searchBy, searchBar);
@@ -106,6 +116,8 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+/**
+ * @沒用了
 	@PostMapping(value = "/cart.controller/updateAdmin")
 	public Map<String, Object> adminUpdate(@RequestBody OrderInfo order) {
 		// ❗ 之後加上一圈先檢查 FK 的機制
@@ -116,7 +128,7 @@ public class CartController {
 		
 		return map;
 	}
-
+*/
 	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/deleteAdmin")
 	public Map<String, String> adminDelete(@RequestParam String o_id) {
@@ -131,18 +143,7 @@ public class CartController {
 		
 		return resultMap;
 	}
-	
-	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/adminSelectProduct")
-	public ProductInfo adminSelectProduct(@RequestParam("p_id") String p_id) {
-		return productService.findByProductID(Integer.parseInt(p_id));
-	}
-	
-	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/adminSelectUser")
-	public User_Info adminSelectUser(@RequestParam("u_id") String u_id) {
-		return userService.getSingleUser(u_id);
-	}
+
 	
 	/***************************************************************************** */
 	

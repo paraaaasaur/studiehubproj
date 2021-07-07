@@ -119,6 +119,12 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@GetMapping(value = {"/test01"})
+	public String toCartAdminTest() {
+		return "cart/cartAdminTest";
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = "/cart.controller/index")
 	public String backToMainPage() {
 		return "/index";

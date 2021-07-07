@@ -170,15 +170,33 @@ window.onload = function(){
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>
 				$(function(){
+					let p_id = $('#p_id');
+					let u_id = $('#u_id');
+					let o_status = $('#o_status');
+					let o_amt = $('#o_amt');
 					
 					$('#cheat').on('click', function(){
-						$('#p_id').val(1);
-						$('#u_id').val('fbk001');
-						$('#o_status').val('DONE');
-						$('#o_amt').val(99999);
+						p_id.val(1);
+						u_id.val('fbk001');
+						o_status.val('DONE');
+						o_amt.val(99999);
 					})
+/* 
+					$(p_id).on('focusout', function(){
+						let xhr = new XMLHttpRequest();
+						xhr.open("POST", "<c:url value='/cart.controller/selectProduct' />", true);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						xhr.send("p_id=" + p_id.val());
+						xhr.on('readystatechange', function(){
+							if(xhr.readyState == 4 && xhr.status == 200){
 
-					
+
+							}
+						})
+
+					})
+ */
+
 				})
 			</script>
 

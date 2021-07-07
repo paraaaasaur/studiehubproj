@@ -18,14 +18,17 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.service.cart.OrderService;
+import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.utils.SystemUtils;
 
 @SessionAttributes(names = "cart")
 @RestController
-@RequestMapping(path = "")
+@RequestMapping
 public class CartController {
 	@Autowired // SDI ✔
 	private OrderService orderService;
+	@Autowired // SDI ✔
+	private ProductServiceImpl productService;
 	public List<ProductInfo> cart = new ArrayList<ProductInfo>();
 
 	/***************************************************************************** */
@@ -125,7 +128,39 @@ public class CartController {
 		return resultMap;
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/selectProduct")
+	public ProductInfo selectProduct(@RequestParam("p_id") String p_id) {
+		return productService.findByProductID(Integer.parseInt(p_id));
+	}
+	
+	/***************************************************************************** */
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/***************************************************************************** */
+	/***************************************************************************** */
 	/**
 	 * 純粹測試用；最後用不到
 	 * 每次經過這個Controller都會跑這個block

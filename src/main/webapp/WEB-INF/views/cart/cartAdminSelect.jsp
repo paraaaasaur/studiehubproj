@@ -74,16 +74,16 @@ window.onload = function(){
 									<option value='u_id'>以使用者帳號(u_id)</option>
 									<option value='u_lastname'>以使用者姓氏(u_lastname)</option>
 									<option value='u_firstname'>以使用者名字(u_firstname)</option>
-									<!-- <option value='o_status'>以訂單狀態(o_status)</option>❗ -->
+									<option value='o_status'>以訂單狀態(o_status)</option>
 									<option value='o_date'>以訂單日期(o_date)</option>
 								</select>
+								<h1 id='topLogo'>以下是資料庫最新${selectedRowNum}筆訂單</h1>
 								<hr id="pageHref">
 								<form>
-									<h1 id='topLogo'>以下顯示的是資料庫的至多100筆訂單</h1>
 									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
 									<table border="2px">
-										<thead id="headArea"></thead>
-										<tbody id="dataArea"></tbody>
+										<thead id="theadArea"></thead>
+										<tbody id="tbodyArea"></tbody>
 									</table>
 									<h1 id='logo' style="background-color: red"></h1>
 									<hr>
@@ -92,11 +92,10 @@ window.onload = function(){
 								<button name="todo" id="insert" value="insertAdmin" 
 								onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/cartAdminInsert'">新增</button>
 								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
-								<button id="testxx" hidden="true">測試</button>
 								<hr>
 								<form>
-									<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/cart.controller/cartIndex' />">回購物車使用者首頁</button>
+									<button formmethod="GET" formaction="<c:url value='/gotoAdminIndex.controller' />">回管理者首頁</button>
+									<button formmethod="GET" formaction="<c:url value='/' />">回使用者首頁</button>
 								</form>
 								
 
@@ -125,13 +124,15 @@ window.onload = function(){
 				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
+				let rowPerPage = 10;
+				let maxPageNum = 10;
 				// let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
 				// 從1990-01-01到2021-12-31 // 沒有防大小月和２月
 				
 				$(function(){
 					let logo = $('#logo');
-					let dataArea = $('#dataArea');
-					let headArea = $('#headArea');
+					let tbodyArea = $('#tbodyArea');
+					let theadArea = $('#theadArea');
 					let pageHref = $('#pageHref');
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
@@ -149,17 +150,14 @@ window.onload = function(){
 					
 					function switchPage(pageIndex){
 						let htmlStuff = "";
-						counter = pageIndex * 10;
-						let tempCounter0 = (counter + 10 > segments.length)? segments.length : counter + 10;
+						counter = pageIndex * rowPerPage;
+						let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
 						for(let i = counter; i < tempCounter0; i++){
 							htmlStuff += segments[i];
 						}
-						dataArea.html(htmlStuff);
+						tbodyArea.html(htmlStuff);
 					}
-					
-
-					
-					
+									
 					// 【自訂函數 3】模糊搜尋
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
@@ -170,23 +168,24 @@ window.onload = function(){
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								dataArea.html("");
+								tbodyArea.html("");
 								pageHref.html("");
 								// 解析&暫存回傳資料
 								parseSelectedRows(xhr.responseText);
 								// 掛資料
 								let htmlStuff = "";
-								let tempCounter0 = (counter + 10 > segments.length)? segments.length : counter + 10;
+								let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
 								for(let i = counter; i < tempCounter0; i++){
 									htmlStuff += segments[i]
 								}
-								dataArea.html(htmlStuff);
-								// 掛分頁按鈕
-								pageNum = Math.ceil((segments.length)/10);
+								tbodyArea.html(htmlStuff);
+								// 掛頁籤
+								pageNum = Math.ceil((segments.length)/rowPerPage); // 57 / 10 => 6 個頁籤
 								let temp0 = "";
-								let tempPageNum = (pageNum > 10)? 10 : pageNum;
+								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum; // 資料再多也只會顯示10個頁籤
+								console.log('tempPageNum = ' + tempPageNum);
 								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+									temp0 += "<button class='pageBtn primary' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
 								pageHref.html(temp0);
 								$('.pageBtn').on('click', function(){
@@ -208,11 +207,11 @@ window.onload = function(){
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								parseSelectedRows(xhr.responseText);
 								let htmlStuff = "";
-								let tempCounter0 = (counter + 10 > segments.length)? segments.length : counter + 10;
+								let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
 								for(let i = counter; i < tempCounter0; i++){
 									htmlStuff += segments[i]
 								}
-								dataArea.html(htmlStuff);
+								tbodyArea.html(htmlStuff);
 							}
 						}
 					} 
@@ -263,7 +262,7 @@ window.onload = function(){
 										// showTop100();
 										if(tempCounter1 == rowNum){ // ❗
 											pageHref.html("");
-											dataArea.html("");
+											tbodyArea.html("");
 											mainFunc();
 											// top.location = "http://localhost:8080/studiehub/cart.controller/cartAdminSelect"
 											// if(result.status == "true"){
@@ -280,8 +279,8 @@ window.onload = function(){
 
 					//【自訂函數 7】主程式函數
 					function mainFunc(){
-						console.log('Start of mainFunc()');
-						headArea.html(
+						// console.log('Start of mainFunc()');
+						theadArea.html(
 								"<th>DELETE BUTTON</th>"
 								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
 								+ "<th>課程代號<br>(p_id)</th>"
@@ -302,15 +301,15 @@ window.onload = function(){
 								parseSelectedRows(xhr0.responseText);
 								// 掛資料
 								let htmlStuff = "";
-								let tempCounter0 = (counter + 10 > segments.length)? segments.length : counter + 10;
+								let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
 								for(let i = counter; i < tempCounter0; i++){
 									htmlStuff += segments[i]
 								}
-								dataArea.html(htmlStuff);
+								tbodyArea.html(htmlStuff);
 								// 掛分頁按鈕
-								pageNum = Math.ceil((segments.length)/10);
+								pageNum = Math.ceil((segments.length)/rowPerPage);
 								let temp0 = "";
-								let tempPageNum = (pageNum > 10)? 10 : pageNum;
+								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
 								for(let i = 0; i < tempPageNum; i++){
 									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
@@ -321,7 +320,7 @@ window.onload = function(){
 								})
 							}
 						}
-						console.log('End of mainFunc()');
+						// console.log('End of mainFunc()');
 					}
 					
 				/*********************************************************************************************************/

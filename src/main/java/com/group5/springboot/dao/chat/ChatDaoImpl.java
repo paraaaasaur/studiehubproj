@@ -27,8 +27,7 @@ public class ChatDaoImpl implements ChatDao{
 
 	@Override
 	public void deleteChat(int c_ID) {
-		chat_Info.setC_ID(c_ID);
-		em.remove(chat_Info);
+		em.remove(em.find(Chat_Info.class, c_ID));
 	}
 
 	@Override

@@ -9,7 +9,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
-
+	<style type="text/css">
+	   span.error {
+		color: red;
+		display: inline-block;
+		font-size: 5pt;
+	}
+	</style>
 <script>
 if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
 
@@ -79,7 +85,7 @@ window.onload = function(){
 										      <td>(2) 課程代號(p_id)：<br>&nbsp;</td>
 											  <td  width='360'>
 											  		<form:input path='p_id' id="p_id" /><br>&nbsp;
-											  		<form:errors path='p_id' />
+											  		<form:errors path='p_id'  cssClass="error" />
 											  </td>
 										   </tr>
 <!-- 										   <tr> -->
@@ -96,7 +102,7 @@ window.onload = function(){
 										      <td>(5) 會員帳號(u_id)：<br>&nbsp;</td>
 										        <td  width='360'>
 										        	<form:input path="u_id" id="u_id" /><br>&nbsp;
-										        	<form:errors path='u_id' />
+										        	<form:errors path='u_id'  cssClass="error" />
 											  </td>
 <!-- 										      <td>(6) 會員名字(u_firstname)：<br>&nbsp;</td> -->
 <%-- 											  <td  width='360'><form:input path='u_firstname' readonly="true" /><br>&nbsp;	 --%>
@@ -118,7 +124,7 @@ window.onload = function(){
 										      <td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
 										   	  <td>
 										   	  		<form:input path="o_status" id="o_status" /><br>&nbsp;
-										   	  		<form:errors path="o_status" />
+										   	  		<form:errors path="o_status"  cssClass="error" />
 										   	  </td>
 										   	  <td>(10) 訂單日期(o_date)：<br>&nbsp;</td>
 										   	  <td>
@@ -131,7 +137,7 @@ window.onload = function(){
 										       <td>(11) 訂單小計(o_amt)：<br>&nbsp;</td>
 										   	   <td>
 											   	  	 <form:input path="o_amt" id="o_amt" /><br>&nbsp;
-										   	  		 <form:errors path="o_amt" />
+										   	  		 <form:errors path="o_amt"  cssClass="error" />
 										   	   </td>
 										       <td colspan='4' align='center'><br>&nbsp;
 											       <input type='submit' value='送出資料'>

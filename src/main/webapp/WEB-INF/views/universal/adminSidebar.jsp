@@ -40,7 +40,7 @@
 							<li><a href="<c:url value='queryProduct' />">所有課程(後端)</a></li>
 						</ul>
 					</li>
-					<li><a href="<c:url value='/' />">購物車</a></li>
+					<li><a href="<c:url value='/cart.controller/cartAdminSelect' />">購物車</a></li>
 					<li><a href="<c:url value='/goSelectAllChatAdmin' />">討論區</a></li>
 					<li><a href="#">題庫</a></li>
 					<li><a href="<c:url value='/Eventindex' />">活動</a></li>

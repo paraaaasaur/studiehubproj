@@ -94,8 +94,8 @@ window.onload = function(){
 								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
 								<hr>
 								<form>
-									<button formmethod="GET" formaction="<c:url value='/' />">回首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/cart.controller/cartIndex' />">回購物車使用者首頁</button>
+									<button formmethod="GET" formaction="<c:url value='/gotoAdminIndex.controller' />">回管理者首頁</button>
+									<button formmethod="GET" formaction="<c:url value='/' />">回使用者首頁</button>
 								</form>
 								
 

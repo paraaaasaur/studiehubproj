@@ -46,7 +46,7 @@ public class CartViewController {
 		orderValidator.validate(orderInfo, result);
 		if (result.hasErrors()) {			
 			List<ObjectError> list = result.getAllErrors();
-			list.forEach(error -> System.out.println("有錯誤：" + error));
+			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
 			return "/cart/cartAdminInsert";
 		}
 		
@@ -71,7 +71,7 @@ public class CartViewController {
 		orderValidator.validate(orderInfo, result);
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
-			list.forEach(error -> System.out.println("有錯誤：" + error));
+			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
 			return "/cart/cartAdminUpdate";
 		}
 		

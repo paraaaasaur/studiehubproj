@@ -101,7 +101,7 @@ window.onload = function(){
 
 			</div>
 
-		<!-- Scripts -->
+			<!-- Scripts -->
 			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
@@ -128,7 +128,6 @@ window.onload = function(){
 						
 						// #parseCart() ✔
 						function parseCart(cart) {
-							console.log('parseCart方法開始');
 							products = JSON.parse(cart);
 							let segment = "";
 							let totalPrice = 0;
@@ -145,8 +144,6 @@ window.onload = function(){
 												+ "</tr>";
 								totalPrice += products[i].p_Price;
 							}
-							console.log(segment);
-							console.log('parseCart方法結束');
 							return segment;
 						};
 					

@@ -19,10 +19,8 @@ public class ChatDaoImpl implements ChatDao{
 	Chat_Info chat_Info;
 
 	@Override
-	public void insertChat(Chat_Info chat) {
-		if(chat_Info!=null) {
-			em.persist(chat_Info);
-		}
+	public void insertChat(Chat_Info chat_Info) {
+		em.persist(chat_Info);
 	}
 
 	@Override
@@ -31,7 +29,7 @@ public class ChatDaoImpl implements ChatDao{
 	}
 
 	@Override
-	public void updateChat(Chat_Info chat) {
+	public void updateChat(Chat_Info chat_Info) {
 		em.merge(chat_Info);
 	}
 

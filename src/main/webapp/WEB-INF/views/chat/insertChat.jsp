@@ -8,15 +8,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
 <title>發表文章</title>
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
 <script>
 var hasError = false;
 window.onload = function(){
 	var sendData = document.getElementById("sendData");
 	sendData.onclick = function(){
 		//抓欄位資料
-		var c_Date = null;
+		var today = new Date();
+		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+		if(today.getHours()<12){
+		var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "AM";
+		}else{
+			var time = today.getHours()-12 + ":" + today.getMinutes() + ":" + today.getSeconds() + "PM";
+		}
+		var dateTime = date+' '+time;
+		var c_Date = dateTime;
 		var c_Class = document.getElementById("c_Class").value;
 		var c_Title = document.getElementById("c_Title").value;
 		var c_Conts = document.getElementById("c_Conts").value;
@@ -29,11 +37,11 @@ window.onload = function(){
 		} else{
 			span1.innerHTML = "";
 		}
-		if(!c_Conts){
-			setErrorFor(span2, "請輸入內容");
-		} else{
-			span2.innerHTML = "";
-		}
+		//if(!c_Conts){
+		//	setErrorFor(span2, "請輸入內容");
+		//} else{
+		//	span2.innerHTML = "";
+		//}
 		
 		if (hasError){
 			return false;
@@ -103,12 +111,12 @@ window.onload = function(){
 								</tr>
 								<tr>
 									<td style="width:60px;">內容:</td>
-									<td style="width:650px;"><input type="text" name="c_Conts" id="c_Conts" style="width:650px;"><span id="result2c">&nbsp;</span></td>
-									
+									<td style="width:650px;"><input type="text" name="c_Conts" id="c_Conts" style="width:650px;" placeholder="請輸入文章內容..."><span id="result2c">&nbsp;</span></td>
 								</tr>
 								<tr>
 									<td style="width:60px;">內容:</td>
 									<td style="width:650px;"><textarea name="c_Contss" id="c_Contss" placeholder="請輸入文章內容..."></textarea>
+									<span id="result2c">&nbsp;</span>
 									</td>
 								</tr>
 								<tr>
@@ -131,13 +139,16 @@ window.onload = function(){
 	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
 	<script>
-	ClassicEditor.create( document.querySelector( '#c_Contss' ))
+	ClassicEditor.create( document.querySelector( '#c_Contss' ), {
+		// 這裡可以設定 plugin
+	})
 		.then( editor => {
-			console.log( editor );
+			console.log( 'Editor was initialized', editor );
 		 })
-		 .catch( error => {
-			 console.error( error );
+		 .catch( err => {
+			console.error( err.stack );
 		 });
 	</script>
 </body>

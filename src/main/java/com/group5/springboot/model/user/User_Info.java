@@ -67,6 +67,14 @@ public class User_Info {
 //	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
 //	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
 //	// 被ProductInfo參考 (※以後要和ProductInfo建立關聯時再開啟)
+	
+	// 被CartItem參考
+//	@JsonIgnore
+//	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")
+//	private Set<CartItem> cartItemSet = new HashSet<CartItem>();
+//	public Set<CartItem> getCartItemSet() {		return cartItemSet;	}
+//	public void setCartItemSet(Set<CartItem> cartItemSet) {		this.cartItemSet = cartItemSet;	}
+	
 	/*
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "user_Info")

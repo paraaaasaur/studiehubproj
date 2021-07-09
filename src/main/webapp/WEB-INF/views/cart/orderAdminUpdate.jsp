@@ -19,44 +19,24 @@
 	</style>
 
 <script>
-if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
 
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
-
-window.onload = function(){
-    var logout = document.getElementById("logout");
-    logout.onclick = function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                var result = JSON.parse(xhr.responseText);
-                if(result.success){
-                    alert(result.success);
-                    top.location = '<c:url value='/' />';
-                }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
-                }
-            }
-        }
-    }
-    
-    //如果有登入，隱藏登入標籤
-    var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
-    var logoutHref = document.getElementById('logoutHref');
-    var userPic = document.getElementById('userPic');
-    if(u_id){
-    	loginHref.hidden = true;
-    	signupHref.hidden = true;
-    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    }
-    
-}
+	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
+	
+	var adminId = "${adminId}";
+	window.onload = function(){
+	// console.log(adminId);
+		
+		//如果有登入，隱藏登入標籤
+		var loginHref = document.getElementById('loginHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		if(adminId){
+			loginHref.hidden = true;
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+		}
+		
+	}
 </script>
 
 </head>
@@ -127,10 +107,9 @@ window.onload = function(){
 												<td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
 												<td>
 													<form:select path="o_status" id="o_status">
-														<form:option value="DONE" label="DONE" />
-														<form:option value="PROCESSING" label="PROCESSING" />
-														<form:option value="REJECTED" label="REJECTED" />
-														<%-- <form:options items="statusList" itemLabel="o_status" itemValue="o_status" /> --%>
+														<form:option value="完成" label="完成" />
+														<form:option value="處理中" label="處理中" />
+														<form:option value="失效" label="失效" />
 													</form:select><br>&nbsp;
 													<form:errors path="o_status" cssClass="error" />
 												</td>

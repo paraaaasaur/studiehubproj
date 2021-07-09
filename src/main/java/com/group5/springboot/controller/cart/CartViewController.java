@@ -97,12 +97,6 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-//	@GetMapping(value = "/cart.controller/index")
-//	public String backToMainPage() {
-//		return "/index";
-//	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 //	@PostMapping("/cart.controller/pay")
 //	public String pay() {
 //
@@ -131,11 +125,6 @@ public class CartViewController {
 //	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@SuppressWarnings("unchecked")
-	@ModelAttribute("selectedRowNum")
-	public Integer getSelectedRowNum() {
-		return ((List<OrderInfo>)(orderService.selectTop100().get("list"))).size();
-	}
 	
 
 }

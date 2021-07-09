@@ -6,47 +6,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<title>購物車後台管理</title>
+<title>訂單後台管理</title>
 
 <script>
-if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
 
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
-
-window.onload = function(){
-    var logout = document.getElementById("logout");
-    logout.onclick = function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                var result = JSON.parse(xhr.responseText);
-                if(result.success){
-                    alert(result.success);
-                    top.location = '<c:url value='/' />';
-                }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
-                }
-            }
-        }
-    }
-    
-    //如果有登入，隱藏登入標籤
-    var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
-    var logoutHref = document.getElementById('logoutHref');
-    var userPic = document.getElementById('userPic');
-    if(u_id){
-    	loginHref.hidden = true;
-    	signupHref.hidden = true;
-    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    }
-    
-}
+	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
+	
+	var adminId = "${adminId}";
+	window.onload = function(){
+	// console.log(adminId);
+		
+		//如果有登入，隱藏登入標籤
+		var loginHref = document.getElementById('loginHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		if(adminId){
+			loginHref.hidden = true;
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+		}
+		
+	}
 </script>
 
 </head>
@@ -66,16 +46,17 @@ window.onload = function(){
 								
 								
 								<h1>訂單管理</h1>
-								<input type='text' id='searchBar'><label for='searchBar'>模糊搜尋：</label><button type="submit" id="searchBtn">查詢</button>
+								<input type='text' id='searchBar'><label for='searchBar'>搜尋</label><button type="submit" id="searchBtn">查詢</button>
 								<select id='searchBy'>
-									<option value='o_id' selected>以帳單編號(o_id)</option>
+									<option value='u_id'selected>以使用者帳號(u_id)</option>
+									<option value='o_id'>以帳單編號(o_id)</option>
 									<option value='p_id'>以課程代號(p_id)</option>
 									<option value='p_name'>以課程名稱(p_name)</option>
-									<option value='u_id'>以使用者帳號(u_id)</option>
 									<option value='u_lastname'>以使用者姓氏(u_lastname)</option>
 									<option value='u_firstname'>以使用者名字(u_firstname)</option>
 									<option value='o_status'>以訂單狀態(o_status)</option>
-									<option value='o_date'>以訂單日期(o_date)</option>
+									<option value='o_amt'>以訂單小計(o_amt)</option>
+									<!-- <option value='o_date'>以訂單日期(o_date)</option> -->
 								</select>
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref">

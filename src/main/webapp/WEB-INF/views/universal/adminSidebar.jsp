@@ -39,7 +39,12 @@
 							<li><a href="/studiehub/queryProduct">所有課程</a></li>
 						</ul>
 					</li>
-					<li><a href="<c:url value='/cart.controller/cartAdminSelect' />">購物車</a></li>
+					<li><span class="opener">交易管理</span>
+						<ul>
+							<li><a href="<c:url value='/order.controller/adminSelect' />">訂單</a></li>
+							<li><a href="<c:url value='/cart.controller/adminSelect' />">購物車</a></li>
+						</ul>
+					</li>
 					<li><a href="<c:url value='/goSelectAllChatAdmin' />">討論區</a></li>
 					<li><a href="#">題庫</a></li>
 					<li><a href="<c:url value='/Eventindex' />">活動</a></li>

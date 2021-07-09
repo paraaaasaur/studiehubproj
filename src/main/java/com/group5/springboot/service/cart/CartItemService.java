@@ -37,6 +37,7 @@ public class CartItemService implements ICartItemService{
 		return cartItemDao.deleteByUserId(u_id);
 	}
 	
+	@Override
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
 		return cartItemDao.deleteASingleProduct(u_id, p_id);
 	}

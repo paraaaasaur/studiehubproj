@@ -23,7 +23,17 @@ import com.group5.springboot.model.user.User_Info;
 public class OrderDao implements IOrderDao {
 	@Autowired 
 	private EntityManager em;
+//	@Autowired
+//	private JdbcTemplate jdbcTemplate;
 	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<OrderInfo> test() {
+		Query query = em.createNativeQuery("SELECT * FROM order_info WHERE o_date < '2021-07-08' AND o_date > :value ", OrderInfo.class); // ❓❗
+		query.setParameter("value", "2021-07-05 18:00:00");
+		List list = query.getResultList();
+		return list; 
+	}
 	
 	@Override
 	public Map<String, Object> selectAll() {
@@ -33,27 +43,30 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 	
-	public Map<String, Object>test() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE o.o_id = :value", OrderInfo.class);
-//		query.setParameter("condition", "o." + "o_id");
-		query.setParameter("value", 1);
-		List<OrderInfo> result = query.getResultList();
-		map.put("list", result);
-		System.out.println(result);
-		return map;
-	}
-	
 	public Map<String, Object> selectLikeOperator(String condition, String value) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean isString = !( "o_id".equals(condition) || "p_id".equals(condition));
+		boolean isString = !( "o_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
 		condition = (isString)? "o." + condition : "STR(o." + condition + ")";
 		System.out.println("condition = " + condition + "; value = " + value);
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " LIKE :value", OrderInfo.class);
 		query.setParameter("value", "%" + value + "%");
-		List<OrderInfo> result = query.getResultList();
-		map.put("list", result);
-		System.out.println(result);
+		List<OrderInfo> resultList = query.getResultList();
+		System.out.println(resultList);
+		map.put("list", resultList);
+		return map;
+	}
+	
+	public Map<String, Object> selectBy(String condition, String value) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean isString = !( "o_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
+		condition = (isString)? "o." + condition : "STR(o." + condition + ")";
+		System.out.println("condition = " + condition + "; value = " + value);
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " = :value", OrderInfo.class);
+		query.setParameter("value", value);
+		
+		List<OrderInfo> resultList = query.getResultList();
+		System.out.println(resultList);
+		map.put("list", resultList);
 		return map;
 	}
 	
@@ -77,13 +90,13 @@ public class OrderDao implements IOrderDao {
 	}
 	
 	// Admin - 1
-	public Map<String, Object> selectTop20() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
-		List<OrderInfo> resultList = query.getResultList();
-		map.put("list", resultList);
-		return map;
-	}
+//	public Map<String, Object> selectTop20() {
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
+//		List<OrderInfo> resultList = query.getResultList();
+//		map.put("list", resultList);
+//		return map;
+//	}
 	
 	public Map<String, Object> selectTop100() {
 		Map<String, Object> map = new HashMap<String, Object>();

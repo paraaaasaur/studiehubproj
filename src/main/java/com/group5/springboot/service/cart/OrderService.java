@@ -1,5 +1,6 @@
 package com.group5.springboot.service.cart;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,10 @@ public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
 	
+	public List<OrderInfo> test() {
+		return orderDao.test();
+	}
+
 	public Map<String, Object> insert(OrderInfo order) {
 		return orderDao.insert(order);
 	}
@@ -27,6 +32,10 @@ public class OrderService implements IOrderService{
 		return orderDao.selectLikeOperator(condition, value);
 	}
 	
+	public Map<String, Object> selectBy(String condition, String value) {
+		return orderDao.selectBy(condition, value);
+	}
+	
 	public Map<String, Object> select(OrderInfo orderBean) {
 		return orderDao.select(orderBean);
 	}
@@ -36,9 +45,9 @@ public class OrderService implements IOrderService{
 	}
 	
 	// Admin - 1
-	public Map<String, Object> selectTop20() {
-		return orderDao.selectTop20();
-	}
+//	public Map<String, Object> selectTop20() {
+//		return orderDao.selectTop20();
+//	}
 	
 	
 	public Map<String, Object> selectTop100() {
@@ -53,9 +62,5 @@ public class OrderService implements IOrderService{
 	// Admin - 3
 	public boolean delete(OrderInfo orderBean) {
 		return orderDao.delete(orderBean);
-	}
-	
-	public Map<String, Object>test() {
-		return orderDao.test();
 	}
 }

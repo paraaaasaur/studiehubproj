@@ -62,7 +62,7 @@ window.onload = function(){
 
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
-								<%@include file="../universal/header.jsp" %>
+								<%@include file="../universal/adminHeader.jsp" %>
 								
 								
 								<h1>管理者頁面</h1>
@@ -90,7 +90,7 @@ window.onload = function(){
 									
 								</form>
 								<button name="todo" id="insert" value="insertAdmin" 
-								onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/cartAdminInsert'">新增</button>
+								onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
 								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
 								<hr>
 								<form>
@@ -106,7 +106,7 @@ window.onload = function(){
 
 				<!-- Sidebar -->
 				<!-- 這邊把side bar include進來 -->
-				<%@include file="../universal/sidebar.jsp" %>  
+				<%@include file="../universal/adminSidebar.jsp" %>  
 
 			</div>
 
@@ -141,7 +141,7 @@ window.onload = function(){
 					// 【自訂函數 1】go to UPDATE page
 					function toUpdatePage(oid){
 						// let url = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid; // ❓
-						let url = "http://localhost:8080/studiehub/cart.controller/cartAdminUpdate/" + oid;
+						let url = "http://localhost:8080/studiehub/order.controller/adminUpdate/" + oid;
 						console.log(url);
 						top.location = url;
 					}
@@ -163,7 +163,7 @@ window.onload = function(){
 						let xhr = new XMLHttpRequest();
 						let queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + searchBar.val();
 						console.log(queryString);
-						xhr.open('POST', "<c:url value='/cart.controller/adminSearchBar' />", true);
+						xhr.open('POST', "<c:url value='/order.controller/adminSearchBar' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
@@ -200,7 +200,7 @@ window.onload = function(){
 					// 【自訂函數 4】顯示資料庫最新100筆訂單 (SELECT TOP(100)) + 掛資料
 					function showTop100() {
 						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/adminSelectTop100' />";
+						let url = "<c:url value='/order.controller/adminSelectTop100' />";
 						xhr.open("GET", url, true);
 						xhr.send();
 						xhr.onreadystatechange = function() {
@@ -233,7 +233,7 @@ window.onload = function(){
 													"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
-													"<td width='120'><a href='http://localhost:8080/studiehub/cart.controller/cartAdminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+													"<td width='120'><a href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
 													"</tr>";
 								segments.push(temp0);
 							}
@@ -252,7 +252,7 @@ window.onload = function(){
 								let o_id = $('.old' + i + '0').attr('data-val');
 								
 								let xhr = new XMLHttpRequest();
-								xhr.open("POST", "<c:url value='/cart.controller/deleteAdmin' />", true);
+								xhr.open("POST", "<c:url value='/order.controller/deleteAdmin' />", true);
 								xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 								xhr.send('o_id=' + o_id);
 								xhr.onreadystatechange = function() {
@@ -264,7 +264,7 @@ window.onload = function(){
 											pageHref.html("");
 											tbodyArea.html("");
 											mainFunc();
-											// top.location = "http://localhost:8080/studiehub/cart.controller/cartAdminSelect"
+											
 											// if(result.status == "true"){
 											// 	logo.text('已刪除勾選之項目！'); // ❗
 											// } else {
@@ -292,7 +292,7 @@ window.onload = function(){
 						)
 
 						let xhr0 = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/adminSelectTop100' />";
+						let url = "<c:url value='/order.controller/adminSelectTop100' />";
 						xhr0.open("GET", url, true);
 						xhr0.send();
 						xhr0.onreadystatechange = function() {

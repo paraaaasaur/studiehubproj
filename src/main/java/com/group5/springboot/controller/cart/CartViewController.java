@@ -12,16 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.cart.OrderInfo;
-import com.group5.springboot.model.product.ProductInfo;
-import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.validate.OrderValidator;
 
-@SessionAttributes(names = "cart")
 @Controller
 public class CartViewController {
 	@Autowired
@@ -30,15 +26,15 @@ public class CartViewController {
 	private OrderValidator orderValidator;
 
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/cart.controller/cartAdminInsert"})
-	public String toCartAdminInsert(Model model) {
+	@GetMapping(value = {"/order.controller/adminInsert"})
+	public String toOrderAdminInsert(Model model) {
 		model.addAttribute("emptyOrderInfo", new OrderInfo());
-		return "/cart/cartAdminInsert";
+		return "/cart/orderAdminInsert";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/cart.controller/cartAdminInsert"})
-	public String cartAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
+	@PostMapping(value = {"/order.controller/adminInsert"})
+	public String orderAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
 			BindingResult result, 
 			RedirectAttributes ra) {
 		
@@ -46,24 +42,26 @@ public class CartViewController {
 		if (result.hasErrors()) {			
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "/cart/cartAdminInsert";
+			return "/cart/orderAdminInsert";
+//			return "redirect:/order.controller/adminInsert"; // ❓
 		}
 		
 		orderService.insert(orderInfo);
 		ra.addFlashAttribute("successMessage", "訂單編號 = " + orderInfo.getO_id() + "新增成功！");
-		return "redirect:/cart.controller/cartAdminSelect";
+		return "redirect:/order.controller/adminSelect";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/cart.controller/cartAdminUpdate/{oid}"})
-	public String toCartAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
+	@GetMapping(value = {"/order.controller/adminUpdate/{oid}"})
+	public String toOrderAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
 		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)).get("orderInfo"));
-		return "/cart/cartAdminUpdate";
+		return "/cart/orderAdminUpdate";
+//		return "redirect:/order.controller/adminUpdate"; // ❓
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/cart.controller/cartAdminUpdate/{oid}"})
-	public String cartAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
+	@PostMapping(value = {"/order.controller/adminUpdate/{oid}"})
+	public String orderAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
 			BindingResult result, 
 			RedirectAttributes ra) {
 		
@@ -71,12 +69,12 @@ public class CartViewController {
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "/cart/cartAdminUpdate";
+			return "/cart/orderAdminUpdate";
 		}
 		
 		orderService.update(orderInfo);
 		ra.addFlashAttribute("successMessage", "o_id = " + orderInfo.getO_id() + "修改成功");
-		return "redirect:/cart.controller/cartAdminSelect";
+		return "redirect:/order.controller/adminSelect";
 		
 	}
 	
@@ -93,22 +91,16 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/cart.controller/cartAdminSelect"})
+	@GetMapping(value = {"/order.controller/adminSelect"})
 	public String toCartAdminSelect() {
-		return "cart/cartAdminSelect";
+		return "cart/orderAdminSelect";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/test01"})
-	public String toCartAdminTest() {
-		return "cart/cartAdminTest";
-	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = "/cart.controller/index")
-	public String backToMainPage() {
-		return "/index";
-	}
+//	@GetMapping(value = "/cart.controller/index")
+//	public String backToMainPage() {
+//		return "/index";
+//	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 //	@PostMapping("/cart.controller/pay")

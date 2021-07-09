@@ -72,7 +72,7 @@ window.onload = function(){
 
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
-								<%@include file="../universal/header.jsp" %>  
+								<%@include file="../universal/adminHeader.jsp" %>  
 
 								<fieldset>
 									<legend style="text-align: center;">維護訂單資料</legend> 
@@ -158,13 +158,13 @@ window.onload = function(){
 									
 								</fieldset>
 								
-								<a href="<c:url value='/cart.controller/cartAdminSelect' />" >回上一頁</a>
+								<a href="<c:url value='/order.controller/adminSelect' />" >回上一頁</a>
 						</div>
 					</div>
 
 				<!-- Sidebar -->
 				<!-- 這邊把side bar include進來 -->
-				<%@include file="../universal/sidebar.jsp" %>  
+				<%@include file="../universal/adminSidebar.jsp" %>  
 
 			</div>
 
@@ -192,7 +192,7 @@ window.onload = function(){
 
 				$(p_id).on('focusout', function(){
 					let xhr = new XMLHttpRequest();
-					xhr.open("POST", "<c:url value='/cart.controller/adminSelectProduct' />", true);
+					xhr.open("POST", "<c:url value='/order.controller/adminSelectProduct' />", true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					xhr.send("p_id=" + p_id.val());
 					$(xhr).on('readystatechange', function(){
@@ -211,7 +211,7 @@ window.onload = function(){
 				
 				$(u_id).on('focusout', function(){
 					let xhr = new XMLHttpRequest();
-					xhr.open("POST", "<c:url value='/cart.controller/adminSelectUser' />", true);
+					xhr.open("POST", "<c:url value='/order.controller/adminSelectUser' />", true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					xhr.send("u_id=" + u_id.val());
 					$(xhr).on('readystatechange', function(){

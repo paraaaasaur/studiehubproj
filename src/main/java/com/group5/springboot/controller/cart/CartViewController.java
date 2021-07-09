@@ -28,7 +28,6 @@ public class CartViewController {
 	private OrderService orderService;
 	@Autowired
 	private OrderValidator orderValidator;
-	public List<ProductInfo> cart = new ArrayList<ProductInfo>(); // ❗❓
 
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/cartAdminInsert"})
@@ -84,8 +83,6 @@ public class CartViewController {
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/cartIndex"})
 	public String toCartIndex() {
-		System.out.print("現在你的購物車 = \n");
-		cart.forEach(System.out::println);
 		return "cart/cartIndex";
 	}
 	
@@ -114,32 +111,32 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping("/cart.controller/pay")
-	public String pay() {
-
-		User_Info fakeUserInfo00 = new User_Info();
-		fakeUserInfo00.setU_id("fbk001");
-		
-		// 取得O_Amt
-		 Integer O_Amt = 0;
-		 for (int i = 0; i < this.cart.size(); i++) {
-			O_Amt += this.cart.get(i).getP_Price();
-		}
-		 
-		// 把OrderBean的資料寫進去Database
-		for(int i = 0; i < cart.size(); i++) {
-			OrderInfo orderBean = new OrderInfo();
-			orderBean.setO_id(1000); // PK // 會受IDENTITY(1, 1)的影響被複寫掉，值是多少都無所謂 // ❗
-			orderBean.setP_id(cart.get(i).getP_ID()); // FK
-			orderBean.setU_id(fakeUserInfo00.getU_id()); // FK // fake
-			orderBean.setO_amt(O_Amt);
-			orderService.insert(orderBean);
-		}
-
-		this.cart = new ArrayList<ProductInfo>();
-		System.out.println("購買成功，感謝您！");
-		return "/cart/cartThanks";
-	}
+//	@PostMapping("/cart.controller/pay")
+//	public String pay() {
+//
+//		User_Info fakeUserInfo00 = new User_Info();
+//		fakeUserInfo00.setU_id("fbk001");
+//		
+//		// 取得O_Amt
+//		 Integer O_Amt = 0;
+//		 for (int i = 0; i < this.cart.size(); i++) {
+//			O_Amt += this.cart.get(i).getP_Price();
+//		}
+//		 
+//		// 把OrderBean的資料寫進去Database
+//		for(int i = 0; i < cart.size(); i++) {
+//			OrderInfo orderBean = new OrderInfo();
+//			orderBean.setO_id(1000); // PK // 會受IDENTITY(1, 1)的影響被複寫掉，值是多少都無所謂 // ❗
+//			orderBean.setP_id(cart.get(i).getP_ID()); // FK
+//			orderBean.setU_id(fakeUserInfo00.getU_id()); // FK // fake
+//			orderBean.setO_amt(O_Amt);
+//			orderService.insert(orderBean);
+//		}
+//
+//		this.cart = new ArrayList<ProductInfo>();
+//		System.out.println("購買成功，感謝您！");
+//		return "/cart/cartThanks";
+//	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@SuppressWarnings("unchecked")

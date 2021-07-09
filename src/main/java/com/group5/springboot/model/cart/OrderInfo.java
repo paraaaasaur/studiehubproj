@@ -1,6 +1,5 @@
 package com.group5.springboot.model.cart;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,18 +16,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 
-
 @Entity @Table(name = "order_info") 
 @Component
 public class OrderInfo {
 	
+	// ❗ 沒有什麼實質意義
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer o_id ; // PK
-	@Column(name = "P_ID", insertable = false, updatable = false) 
+	@Column(name = "P_ID", insertable = false, updatable = false)
 	private Integer p_id; // FK
 	private String p_name; 
 	private Integer p_price; 
-	@Column(name = "U_ID", insertable = false, updatable = false) 
+	@Column(name = "U_ID", insertable = false, updatable = false)
 	private String u_id; // FK
 	private String u_firstname; 
 	private String u_lastname; 
@@ -38,7 +37,7 @@ public class OrderInfo {
 	private String o_status;
 	@Column(insertable = false, updatable = false, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
 	
-	private String o_date; // ❗Date()會不會更好？
+	private String o_date; 
 	private Integer o_amt;
 	/*********************************************************************/
 	// 去參考User_Info

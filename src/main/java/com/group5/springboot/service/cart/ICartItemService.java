@@ -10,4 +10,6 @@ public interface ICartItemService {
 
 	Map<String, Object> selectByUserId(String u_id);
 
+	boolean deleteASingleProduct(String u_id, Integer p_id);
+
 }

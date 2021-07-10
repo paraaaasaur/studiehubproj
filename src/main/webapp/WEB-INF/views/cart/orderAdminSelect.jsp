@@ -46,41 +46,31 @@
 								<%@include file="../universal/adminHeader.jsp" %>
 								
 								<h1>訂單管理</h1>
-								<ul class="actions fit stacked">
-									<li id="searchBarHanger"><input class="" type='search' id='searchBar' placeholder='搜尋'></li>
-									<li><button type="submit" class="fit" id="searchBtn">查詢</button></li>
-									<li>
+								<!-- <ul class="actions special"> -->
+								<ul class="actions fit">
+									<li style="width: 70%;" id="searchBarHanger1"><input type="search" id="searchBar" placeholder='搜尋'></li>
+									<li style="width: 35%;" id="searchBarHanger2" hidden><input class="" type='search' id='searchBar' placeholder='搜尋'></li>
+									<li style="width: 30%;">
 										<select class="fit" id='searchBy'>
-											<option value='u_id'selected>以使用者帳號(u_id)</option>
-											<option value='o_id'>以帳單編號(o_id)</option>
-											<option value='p_id'>以課程代號(p_id)</option>
-											<option value='p_name'>以課程名稱(p_name)</option>
-											<option value='u_lastname'>以使用者姓氏(u_lastname)</option>
-											<option value='u_firstname'>以使用者名字(u_firstname)</option>
-											<option value='o_status'>以訂單狀態(o_status)</option>
-											<option value='o_amt'>以訂單小計(o_amt)</option>
-											<option value='o_date'>以訂單日期(o_date)</option>
+											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
+											<option value='u_id'>會員帳號</option>
+											<option value='o_id'>訂單編號</option>
+											<option value='p_id'>課程代號</option>
+											<option value='p_name'>課程名稱</option>
+											<option value='u_lastname'>會員姓氏</option>
+											<option value='u_firstname'>會員名字</option>
+											<option value='o_status'>訂單狀態</option>
+											<option value='o_amt'>訂單小計</option>
+											<option value='o_date'>訂單日期</option>
 										</select>
 									</li>
+									<li style="width: 10%;" class=""><button type="submit" class="fit" id="searchBtn" disabled>查詢</button></li>
 								</ul>
-								<!-- <input type='search' id='searchBar' placeholder="搜尋"><label id='searchBarHanger'></label>
-								<button type="submit" class="" id="searchBtn">查詢</button>
-								<select id='searchBy'>
-									<option value='u_id'selected>以使用者帳號(u_id)</option>
-									<option value='o_id'>以帳單編號(o_id)</option>
-									<option value='p_id'>以課程代號(p_id)</option>
-									<option value='p_name'>以課程名稱(p_name)</option>
-									<option value='u_lastname'>以使用者姓氏(u_lastname)</option>
-									<option value='u_firstname'>以使用者名字(u_firstname)</option>
-									<option value='o_status'>以訂單狀態(o_status)</option>
-									<option value='o_amt'>以訂單小計(o_amt)</option>
-									<option value='o_date'>以訂單日期(o_date)</option>
-								</select> -->
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref" class="">
 								<form>
 									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
-									<table border="2px">
+									<table class="alt" style="border: 2px " >
 										<thead id="theadArea"></thead>
 										<tbody id="tbodyArea"></tbody>
 									</table>
@@ -132,27 +122,32 @@
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
 					let pageHref = $('#pageHref');
-					let searchBarHanger = $('#searchBarHanger');
+					let searchBarHanger1 = $('#searchBarHanger1');
+					let searchBarHanger2 = $('#searchBarHanger2');
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
 					/*********************************************************************************************************/
 					// 【自訂函數 #】searchBar樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
+						$('#searchBtn').attr('disabled', false);
 						if(this.value == 'o_date'){
-							$(searchBarHanger).html(
-								"<input type='datetime-local' step='1' id='searchDateStart'>起始時間" + 
-								"<input type='datetime-local' step='1' id='searchDateEnd'>結束時間<br>搜尋"
-							);
-						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'){
-							$(searchBarHanger).html("<input type='search' id='searchBar' placeholder='搜尋'>");
+							searchBarHanger1.css('width', '35%');
+							searchBarHanger2.attr('hidden', false);
+							$(searchBarHanger1).html("<input type='datetime-local' step='1' id='searchDateStart'>起始時間");
+							$(searchBarHanger2).html("<input type='datetime-local' step='1' id='searchDateEnd'>結束時間");
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' || this.value == 'p_name'){
+							searchBarHanger1.css('width', '70%');
+							searchBarHanger2.attr('hidden', true);
+							$(searchBarHanger1).html("<input type='search' id='searchBar' placeholder='搜尋'>");
 						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
-							$(searchBarHanger).html(
-								"<input type='search' id='searchMin' placeholder='最小值'>" +
-								"</li><li>" +
-								"<input type='search' id='searchMax' placeholder='最大值'><br>"  
-							);
+							searchBarHanger1.css('width', '35%');
+							searchBarHanger2.attr('hidden', false);
+							$(searchBarHanger1).html("<input type='search' id='searchMin' placeholder='最小值'>");
+							$(searchBarHanger2).html("<input type='search' id='searchMax' placeholder='最大值'>");
 						} else if(this.value == 'o_status'){
-							$(searchBarHanger).html(
+							searchBarHanger1.css('width', '70%');
+							searchBarHanger2.attr('hidden', true);
+							$(searchBarHanger1).html(
 								"<select id='searchBar'>" +
 								"<option value='完成' selected>完成</option>" +
 								"<option value='處理中'>處理中</option>" +

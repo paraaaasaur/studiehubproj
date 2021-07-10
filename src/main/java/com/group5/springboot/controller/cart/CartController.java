@@ -1,9 +1,7 @@
 package com.group5.springboot.controller.cart;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -89,8 +87,8 @@ public class CartController {
 		} else if ("p_name".equals(searchBy) || "u_firstname".equals(searchBy) || "u_lastname".equals(searchBy)) {
 			return orderService.selectLikeOperator(searchBy, searchBar);
 		} else if ("o_date".equals(searchBy)) {
-			System.out.println("o_date查詢還沒寫好");
-			return null;
+			String[] dates = searchBar.split(",");
+			return orderService.selectWithTimeRange(dates[0], dates[1]);
 		} else if ("o_amt".equals(searchBy)) {
 			System.out.println("o_amt查詢還沒寫好");
 			return null;

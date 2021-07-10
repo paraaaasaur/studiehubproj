@@ -36,6 +36,10 @@ public class OrderService implements IOrderService{
 		return orderDao.selectBy(condition, value);
 	}
 	
+	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
+		return orderDao.selectWithTimeRange(startTime, endTime);
+	}
+	
 	public Map<String, Object> select(OrderInfo orderBean) {
 		return orderDao.select(orderBean);
 	}

@@ -44,9 +44,18 @@
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
 								
-								
+								<!-- <input type="date"> -->
+								<!-- <input type="datetime"> -->
+								<input type="datetime-local" step="-1" id="test05">
+								<input type="datetime-local" step="0" id="test01">
+								<input type="datetime-local" step="1" id="test03">
+								<input type="datetime-local" step="10" id="test04">
+								<button type="button" id="test02">click me!</button>
+
 								<h1>訂單管理</h1>
-								<input type='text' id='searchBar'><label for='searchBar'>搜尋</label><button type="submit" id="searchBtn">查詢</button>
+								
+								<label id='searchBarLabel'><input type='search' id='searchBar'>搜尋</label>
+								<button type="submit" id="searchBtn">查詢</button>
 								<select id='searchBy'>
 									<option value='u_id'selected>以使用者帳號(u_id)</option>
 									<option value='o_id'>以帳單編號(o_id)</option>
@@ -56,7 +65,7 @@
 									<option value='u_firstname'>以使用者名字(u_firstname)</option>
 									<option value='o_status'>以訂單狀態(o_status)</option>
 									<option value='o_amt'>以訂單小計(o_amt)</option>
-									<!-- <option value='o_date'>以訂單日期(o_date)</option> -->
+									<option value='o_date' id='o_date_option'>以訂單日期(o_date)</option>
 								</select>
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref">
@@ -112,14 +121,31 @@
 				
 				$(function(){
 					let topLogo = $('#topLogo');
+					let o_date_option = $('#o_date_option');
 					let logo = $('#logo');
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
 					let pageHref = $('#pageHref');
+					let searchBarLabel = $('#searchBarLabel');
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
 					/*********************************************************************************************************/
-					
+					$(searchBy).on('change', function(){
+						if(this.value == 'o_date'){
+							console.log('yes!');
+
+							topLogo.html();
+						} else {
+							$(searchBarLabel).html("<input type='search' id='searchBar'>搜尋");
+						}
+					});
+					$('#test02').on('click', function(){
+						console.log('datetime-local(step-1) value = ' + $('#test05').val());
+						console.log('datetime-local(step0) value = ' + $('#test01').val());
+						console.log('datetime-local(step1) value = ' + $('#test03').val());
+						console.log('datetime-local(step10) value = ' + $('#test04').val());
+					});
+
 					// 【自訂函數 1】go to UPDATE page
 					function toUpdatePage(oid){
 						// let url = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid; // ❓
@@ -143,7 +169,7 @@
 					// 【自訂函數 3】模糊搜尋
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
-						let queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + searchBar.val();
+						let queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + $('#searchBar').val();
 						console.log(queryString);
 						xhr.open('POST', "<c:url value='/order.controller/adminSearchBar' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓

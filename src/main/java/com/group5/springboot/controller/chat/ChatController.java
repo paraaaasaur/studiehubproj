@@ -16,17 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.group5.springboot.controller.user.UserController;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.service.chat.ChatService;
 
 @Controller
-@SessionAttributes(names = "chat")
+@SessionAttributes(names = {"loginBean","adminBean"})
 public class ChatController {
 	
 	@Autowired
 	ChatService chatService;
 	@Autowired
 	Chat_Info chat_Info;
+	@Autowired
+	UserController uc;
 	
 	@GetMapping(path = "/chatIndex")
 	public String chatIndex() {
@@ -44,8 +47,13 @@ public class ChatController {
 	}
 	
 	@GetMapping("/goInsertChat")
-	public String insertChat(){
-		return "chat/insertChat";
+	public String insertChat(Model model){
+		boolean loginResult = uc.checkIfLogin(model);
+		if (loginResult) {
+			return "chat/insertChat";
+		}else {
+			return "user/login";
+		}
 	}
 	
 	@GetMapping("/goDeleteChat/{c_ID}")

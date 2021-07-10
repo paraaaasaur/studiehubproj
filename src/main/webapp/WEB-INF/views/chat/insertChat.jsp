@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
 <title>發表文章</title>
 <script>
+var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 var hasError = false;
 window.onload = function(){
 	var sendData = document.getElementById("sendData");
@@ -28,7 +30,7 @@ window.onload = function(){
 		var c_Class = document.getElementById("c_Class").value;
 		var c_Title = document.getElementById("c_Title").value;
 		var c_Conts = document.getElementById("c_Conts").value;
-		var u_ID = null;
+		var u_ID = "${loginBean.u_id}";
 		var span1 = document.getElementById('result1c');
 		var span2 = document.getElementById('result2c');
 		
@@ -76,6 +78,40 @@ window.onload = function(){
 		input.innerHTML = "<font color='red' size='-2'>" + message + "</font>";
 		hasError = true;
 	}
+	
+	var logout = document.getElementById("logout");
+    logout.onclick = function(){
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "<c:url value='/logout.controller' />", true);
+        xhr.send();
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == 4 && xhr.status == 200){
+                var result = JSON.parse(xhr.responseText);
+                if(result.success){
+                    alert(result.success);
+                    top.location = '<c:url value='/' />';
+                }else if(result.fail){
+                    alert(result.fail);                    
+                    top.location = '<c:url value='/' />';
+                }
+            }
+        }
+    }
+	
+	var adminId = "${adminId}";
+    //如果有登入，隱藏登入標籤
+    var loginHref = document.getElementById('loginHref');
+    var signupHref = document.getElementById('signupHref');
+    var logoutHref = document.getElementById('logoutHref');
+    var userId = document.getElementById('userId');
+    var userPic = document.getElementById('userPic');
+    if(u_id){
+    	loginHref.hidden = true;
+    	signupHref.hidden = true;
+    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+    	userPic.src = userPicString;	//有登入就秀大頭貼
+    	userId.innerHTML = u_id;
+    }
 
 		
 }

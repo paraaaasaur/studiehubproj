@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class ChatDaoImpl implements ChatDao{
@@ -20,6 +21,8 @@ public class ChatDaoImpl implements ChatDao{
 
 	@Override
 	public void insertChat(Chat_Info chat_Info) {
+		User_Info user_Info = em.find(User_Info.class, chat_Info.getU_ID());
+		chat_Info.setUser_Info(user_Info);
 		em.persist(chat_Info);
 	}
 

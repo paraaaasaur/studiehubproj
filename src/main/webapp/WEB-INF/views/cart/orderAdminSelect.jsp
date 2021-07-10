@@ -74,11 +74,8 @@
 								<button name="todo" id="insert" value="insertAdmin" 
 								onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
 								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
-								<hr>
-								<form>
-									<button formmethod="GET" formaction="<c:url value='/gotoAdminIndex.controller' />">回管理者首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/' />">回使用者首頁</button>
-								</form>
+								<button id='toAdminIndexBtn'>回管理者首頁</button>
+								<button id='toClientIndexBtn'>回使用者首頁</button>
 								
 
 								
@@ -145,6 +142,14 @@
 							);
 						}
 					})
+					// 重新導向
+					$('#toAdminIndexBtn').on('click', function(){
+						top.location = "<c:url value='/gotoAdminIndex.controller' />";
+					})
+					$('#toClientIndexBtn').on('click', function(){
+						top.location = "<c:url value='/' />";
+					})
+
 
 					// 【自訂函數 1】go to UPDATE page
 					function toUpdatePage(oid){

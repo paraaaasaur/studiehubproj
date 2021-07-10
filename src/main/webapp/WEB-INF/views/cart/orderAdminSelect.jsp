@@ -44,14 +44,6 @@
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
 								
-								<!-- <input type="date"> -->
-								<!-- <input type="datetime"> -->
-								<input type="datetime-local" step="-1" id="test05">
-								<input type="datetime-local" step="0" id="test01">
-								<input type="datetime-local" step="1" id="test03">
-								<input type="datetime-local" step="10" id="test04">
-								<button type="button" id="test02">click me!</button>
-
 								<h1>訂單管理</h1>
 								
 								<label id='searchBarLabel'><input type='search' id='searchBar'>搜尋</label>
@@ -65,7 +57,7 @@
 									<option value='u_firstname'>以使用者名字(u_firstname)</option>
 									<option value='o_status'>以訂單狀態(o_status)</option>
 									<option value='o_amt'>以訂單小計(o_amt)</option>
-									<option value='o_date' id='o_date_option'>以訂單日期(o_date)</option>
+									<option value='o_date'>以訂單日期(o_date)</option>
 								</select>
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref">
@@ -121,7 +113,6 @@
 				
 				$(function(){
 					let topLogo = $('#topLogo');
-					let o_date_option = $('#o_date_option');
 					let logo = $('#logo');
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
@@ -130,21 +121,24 @@
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
 					/*********************************************************************************************************/
+					// 【自訂函數 #】searchBar樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
 						if(this.value == 'o_date'){
 							console.log('yes!');
-
+							$(searchBarLabel).html(
+								"<input type='datetime-local' step='1' id='searchDateStart'>起始時間" + 
+								"<input type='datetime-local' step='1' id='searchDateEnd'>結束時間<br>搜尋"
+							);
 							topLogo.html();
-						} else {
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'){
 							$(searchBarLabel).html("<input type='search' id='searchBar'>搜尋");
+						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
+							$(searchBarLabel).html(
+								"<input type='search' id='searchMin'>最小值" +
+								"<input type='search' id='searchMax'>最大值<br>搜尋"  
+							);
 						}
-					});
-					$('#test02').on('click', function(){
-						console.log('datetime-local(step-1) value = ' + $('#test05').val());
-						console.log('datetime-local(step0) value = ' + $('#test01').val());
-						console.log('datetime-local(step1) value = ' + $('#test03').val());
-						console.log('datetime-local(step10) value = ' + $('#test04').val());
-					});
+					})
 
 					// 【自訂函數 1】go to UPDATE page
 					function toUpdatePage(oid){
@@ -169,7 +163,17 @@
 					// 【自訂函數 3】模糊搜尋
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
-						let queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + $('#searchBar').val();
+						let queryString = "";
+						if(searchBy.val() == 'o_date') {
+							// 日期範圍查詢
+							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchDateStart').val() + ',' + $('#searchDateEnd').val());
+						} else if(searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' || searchBy.val() == 'p_name') {
+							// 數值範圍查詢
+							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + $('#searchBar').val();
+						} else if(searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id') {
+							// 單值查詢
+							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchMin').val() + ',' + $('#searchMax').val());
+						}
 						console.log(queryString);
 						xhr.open('POST', "<c:url value='/order.controller/adminSearchBar' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
@@ -231,7 +235,7 @@
 						parsedMap = JSON.parse(map);
 						let orders = parsedMap.list;
 							let totalPrice = 0;
-							rowNum = orders.length;
+							rowNum = (orders)? orders.length : 0;
 							segments = [];
 							for (let i = 0; i < orders.length; i++) {
 								totalPrice += orders[i].p_price;

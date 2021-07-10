@@ -40,6 +40,10 @@ public class OrderService implements IOrderService{
 		return orderDao.selectWithTimeRange(startTime, endTime);
 	}
 	
+	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
+		return orderDao.selectWithNumberRange(condition, minValue, maxValue);
+	}
+	
 	public Map<String, Object> select(OrderInfo orderBean) {
 		return orderDao.select(orderBean);
 	}
@@ -47,12 +51,6 @@ public class OrderService implements IOrderService{
 	public Map<String, Object> selectCustom(String hql) {
 		return orderDao.selectCustom(hql);
 	}
-	
-	// Admin - 1
-//	public Map<String, Object> selectTop20() {
-//		return orderDao.selectTop20();
-//	}
-	
 	
 	public Map<String, Object> selectTop100() {
 		return orderDao.selectTop100();

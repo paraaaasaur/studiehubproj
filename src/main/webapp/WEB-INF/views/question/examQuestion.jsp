@@ -52,18 +52,23 @@ var size = 0;
 // 總題數
 var counter = 0; 
 // 目前題目
+var userChoice = [];
+// 存使用者答案
 
 window.addEventListener('load', function(){
 	
 	var dataArea = document.getElementById("dataArea");
 	var next = document.getElementById("next");
 	var back = document.getElementById("back");
+	var submit =document.getElementById("submit");
+	
+	
 	let xhr = new XMLHttpRequest();
 	xhr.open('GET', "<c:url value='/question.controller/sendRandomExam' />", true);
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4 && xhr.status == 200 ){
 			console.log(xhr.responseText);
-			dataArea.innerHTML = showFirstData(xhr.responseText);
+			dataArea.innerHTML = showData(xhr.responseText);
 		}
 	};
 	xhr.send();
@@ -71,35 +76,171 @@ window.addEventListener('load', function(){
 	
 
 	next.addEventListener('click', function(){
-		if(counter < size-1){
+		if(counter < size-2){
+			back.style.display = '';
+			
+			var userAnswers = document.getElementsByName("userAnswer"); 
+			// 建立用來判斷是否有選擇資料
+			var userAnswer0 = userAnswers;
+			//抓取陣列中,被使用者所選取的項目
+			for(var i = 0; i < userAnswers.length; i ++){ 
+				if(userAnswers[i].checked){ 
+					var userAnswer = userAnswers[i].value;
+					userAnswers = 'userAnswer is Checked'; 
+					}
+				}
+			userChoice.splice(counter, 1, userAnswer);
 			counter += 1;
-			back.style.display = '';
-			dataArea.innerHTML = showFirstData(xhr.responseText);
-		}else{
-			alert("已經是最後一頁了!");
+			alert("userAnswer=" + userAnswer );
+			alert("userChoice=" + userChoice );
+			
+			dataArea.innerHTML = showData(xhr.responseText);
 
-// 		next.style.display = 'none';
-			}
+		}else if(counter = size-2){
+			next.style.display = 'none';
+			submit.style.display = '';
+
+			var userAnswers = document.getElementsByName("userAnswer"); 
+			// 建立用來判斷是否有選擇資料
+			var userAnswer0 = userAnswers;
+			//抓取陣列中,被使用者所選取的項目
+			for(var i = 0; i < userAnswers.length; i ++){ 
+				if(userAnswers[i].checked){ 
+					var userAnswer = userAnswers[i].value;
+					userAnswers = 'userAnswer is Checked'; 
+					}
+				}
+			userChoice.splice(counter, 1, userAnswer);
+			
+			alert("userAnswer=" + userAnswer );
+			alert("userChoice=" + userChoice );
+			counter += 1;
+			dataArea.innerHTML = showData(xhr.responseText);
+
+			}		
 		});
 		
+	
 	back.addEventListener('click', function(){
-		if(counter > 1){
+		alert("Nowcounter=" + counter );
+		
+		if(counter = size-1){
+			next.style.display = '';
+			submit.style.display = 'none';
+
+			var userAnswers = document.getElementsByName("userAnswer"); 
+			// 建立用來判斷是否有選擇資料
+			var userAnswer0 = userAnswers;
+			//抓取陣列中,被使用者所選取的項目
+			for(var i = 0; i < userAnswers.length; i ++){ 
+				if(userAnswers[i].checked){ 
+					var userAnswer = userAnswers[i].value;
+					userAnswers = 'userAnswer is Checked'; 
+					}
+				}
+		
+			
+			userChoice.splice(counter, 1, userAnswer);
 			counter -= 1;
-			back.style.display = '';
-			dataArea.innerHTML = showFirstData(xhr.responseText);
+			alert("ONEcounter=" + counter );
+			alert("userAnswer=" + userAnswer );
+			alert("userChoice=" + userChoice );
+			dataArea.innerHTML = showData(xhr.responseText);
+			
+		 }else if(counter > 1 && counter < size-1){
+				var userAnswers = document.getElementsByName("userAnswer"); 
+				// 建立用來判斷是否有選擇資料
+				var userAnswer0 = userAnswers;
+				//抓取陣列中,被使用者所選取的項目
+				for(var i = 0; i < userAnswers.length; i ++){ 
+					if(userAnswers[i].checked){ 
+						var userAnswer = userAnswers[i].value;
+						userAnswers = 'userAnswer is Checked'; 
+						}
+					}
+			
+				userChoice.splice(counter, 1, userAnswer);
+				alert("2counter=" + counter );
+				alert("userAnswer=" + userAnswer );
+				alert("userChoice=" + userChoice );
+
+				counter -= 1;
+				dataArea.innerHTML = showData(xhr.responseText);
+				
+			
 		}else if(counter == 1){
-			counter -= 1;
 			back.style.display = 'none';
-			dataArea.innerHTML = showFirstData(xhr.responseText);
+			
+			var userAnswers = document.getElementsByName("userAnswer"); 
+			// 建立用來判斷是否有選擇資料
+			var userAnswer0 = userAnswers;
+			//抓取陣列中,被使用者所選取的項目
+			for(var i = 0; i < userAnswers.length; i ++){ 
+				if(userAnswers[i].checked){ 
+					var userAnswer = userAnswers[i].value;
+					userAnswers = 'userAnswer is Checked'; 
+					}
+				}
+		
+			userChoice.splice(counter, 1, userAnswer);
+
+			alert("3counter=" + counter );
+			alert("userAnswer=" + userAnswer );
+			alert("userChoice=" + userChoice );
+
+			counter -= 1;
+			dataArea.innerHTML = showData(xhr.responseText);
+			
+			
 		}else{
 			back.style.display = 'none';
-			dataArea.innerHTML = showFirstData(xhr.responseText);
+			userChoice.splice(counter, 1, userAnswer);
+			dataArea.innerHTML = showData(xhr.responseText);
+			
 			}
-		
 		});
-	})
+	
+//判斷題目
+		submit.addEventListener('click', function(){
+			
+			if(counter = size-1){
+	
+				var userAnswers = document.getElementsByName("userAnswer"); 
+				// 建立用來判斷是否有選擇資料
+				var userAnswer0 = userAnswers;
+				//抓取陣列中,被使用者所選取的項目
+				for(var i = 0; i < userAnswers.length; i ++){ 
+					if(userAnswers[i].checked){ 
+						var userAnswer = userAnswers[i].value;
+						userAnswers = 'userAnswer is Checked'; 
+						}
+					}
+				
+				userChoice.push(userAnswer);
 
- function showFirstData(textObj){
+				alert("ONEcounter=" + counter );
+				alert("userAnswer=" + userAnswer );
+				alert("userChoice=" + userChoice );
+			}
+		});
+		
+//倒數計時
+		
+	
+});
+
+ // ,userChoice[counter]
+ function showData(textObj,userAnswer){
+	let status=["","","",""];
+	if(userAnswer == "A"){
+		status[0]="checked";
+	}else if (userChoice == "B"){
+		status[1]="checked";
+	}else if (userChoice == "C"){
+		status[2]="checked";
+	}else if (userChoice == "D"){
+		status[3]="checked";
+	}
 	
 	obj = JSON.parse(textObj);
 	size = obj.size;
@@ -119,15 +260,18 @@ window.addEventListener('load', function(){
 			segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 	
 	
 			segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
-			segment += "<div><input type='radio' value='A' name='userAnswer' id='A' /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
-			segment += "<input type='radio' value='B' name='userAnswer' id='B' /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
-			segment += "<input type='radio' value='C' name='userAnswer' id='C' /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
-			segment += "<input type='radio' value='D' name='userAnswer' id='D' /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
+			
+			segment += "<div><input type='radio' value='A' name='userAnswer' id='A'" + "status[0]" + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+			segment += "<input type='radio' value='B' name='userAnswer' id='B'" + "status[1]" + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+			segment += "<input type='radio' value='C' name='userAnswer' id='C'" + "status[2]" + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+			segment += "<input type='radio' value='D' name='userAnswer' id='D'" + "status[3]" + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
 
 	   }
 			return segment;
-	}
+	};
 	
+
+
 
 
 </script>
@@ -159,8 +303,8 @@ window.addEventListener('load', function(){
 
 <div>
 <button id='back' style="display: none">上一題</button>
-<button id='next'>下一題</button>
-&emsp;<button id='submit'>提交</button>
+<button id='next' style="display: ''">下一題</button>
+&emsp;<button id='submit' style="display: none">提交</button>
 </div><br>
 <!-- <br> -->
 <%-- <br><a href="<c:url value='/question.controller/turnQuestionIndex'/> " >回前頁</a> --%>

@@ -200,6 +200,9 @@ public class QuestionController {
 		MultipartFile multipartFilePic = question_Info.getMultipartFilePic();
 		MultipartFile multipartFileAudio = question_Info.getMultipartFileAudio();
 		
+		System.out.println("multipartFilePic=" + multipartFilePic);
+		System.out.println("size=" + multipartFilePic.getSize());
+
 		if (multipartFilePic != null && multipartFilePic.getSize() > 0) {
 			try {
 				InputStream is = multipartFilePic.getInputStream();
@@ -208,7 +211,6 @@ public class QuestionController {
 				mimeTypePic = context.getMimeType(namePic);
 				question_Info.setQ_picture(blob);
 				question_Info.setMimeTypePic(mimeTypePic);
-			
 			String extPic = SystemUtils.getExtFilename(namePic);
 			// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 			try {

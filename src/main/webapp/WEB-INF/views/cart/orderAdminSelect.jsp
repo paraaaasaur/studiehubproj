@@ -38,16 +38,33 @@
 
 				<!-- Main -->
 					<div id="main">
-						<div class="inner">
+						<div class="inner mini-posts">
+
 
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
 								
 								<h1>訂單管理</h1>
-								
-								<label id='searchBarLabel'><input type='search' id='searchBar'>搜尋</label>
-								<button type="submit" id="searchBtn">查詢</button>
+								<ul class="actions fit stacked">
+									<li id="searchBarHanger"><input class="" type='search' id='searchBar' placeholder='搜尋'></li>
+									<li><button type="submit" class="fit" id="searchBtn">查詢</button></li>
+									<li>
+										<select class="fit" id='searchBy'>
+											<option value='u_id'selected>以使用者帳號(u_id)</option>
+											<option value='o_id'>以帳單編號(o_id)</option>
+											<option value='p_id'>以課程代號(p_id)</option>
+											<option value='p_name'>以課程名稱(p_name)</option>
+											<option value='u_lastname'>以使用者姓氏(u_lastname)</option>
+											<option value='u_firstname'>以使用者名字(u_firstname)</option>
+											<option value='o_status'>以訂單狀態(o_status)</option>
+											<option value='o_amt'>以訂單小計(o_amt)</option>
+											<option value='o_date'>以訂單日期(o_date)</option>
+										</select>
+									</li>
+								</ul>
+								<!-- <input type='search' id='searchBar' placeholder="搜尋"><label id='searchBarHanger'></label>
+								<button type="submit" class="" id="searchBtn">查詢</button>
 								<select id='searchBy'>
 									<option value='u_id'selected>以使用者帳號(u_id)</option>
 									<option value='o_id'>以帳單編號(o_id)</option>
@@ -58,9 +75,9 @@
 									<option value='o_status'>以訂單狀態(o_status)</option>
 									<option value='o_amt'>以訂單小計(o_amt)</option>
 									<option value='o_date'>以訂單日期(o_date)</option>
-								</select>
+								</select> -->
 								<h1 id='topLogo'></h1>
-								<hr id="pageHref">
+								<hr id="pageHref" class="">
 								<form>
 									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
 									<table border="2px">
@@ -95,6 +112,7 @@
 			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>
@@ -114,26 +132,27 @@
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
 					let pageHref = $('#pageHref');
-					let searchBarLabel = $('#searchBarLabel');
+					let searchBarHanger = $('#searchBarHanger');
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
 					/*********************************************************************************************************/
 					// 【自訂函數 #】searchBar樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
 						if(this.value == 'o_date'){
-							$(searchBarLabel).html(
+							$(searchBarHanger).html(
 								"<input type='datetime-local' step='1' id='searchDateStart'>起始時間" + 
 								"<input type='datetime-local' step='1' id='searchDateEnd'>結束時間<br>搜尋"
 							);
 						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'){
-							$(searchBarLabel).html("<input type='search' id='searchBar'>搜尋");
+							$(searchBarHanger).html("<input type='search' id='searchBar' placeholder='搜尋'>");
 						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
-							$(searchBarLabel).html(
-								"<input type='search' id='searchMin'>最小值" +
-								"<input type='search' id='searchMax'>最大值<br>搜尋"  
+							$(searchBarHanger).html(
+								"<input type='search' id='searchMin' placeholder='最小值'>" +
+								"</li><li>" +
+								"<input type='search' id='searchMax' placeholder='最大值'><br>"  
 							);
 						} else if(this.value == 'o_status'){
-							$(searchBarLabel).html(
+							$(searchBarHanger).html(
 								"<select id='searchBar'>" +
 								"<option value='完成' selected>完成</option>" +
 								"<option value='處理中'>處理中</option>" +
@@ -142,7 +161,7 @@
 							);
 						}
 					})
-					// 重新導向
+					// 【自訂函數 #】重新導向頁面
 					$('#toAdminIndexBtn').on('click', function(){
 						top.location = "<c:url value='/gotoAdminIndex.controller' />";
 					})
@@ -267,7 +286,7 @@
 													"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
 													"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
-													"<td width='120'><a href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+													"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
 													"</tr>";
 								segments.push(temp0);
 							}

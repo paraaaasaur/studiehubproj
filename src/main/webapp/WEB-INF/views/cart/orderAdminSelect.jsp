@@ -124,18 +124,24 @@
 					// 【自訂函數 #】searchBar樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
 						if(this.value == 'o_date'){
-							console.log('yes!');
 							$(searchBarLabel).html(
 								"<input type='datetime-local' step='1' id='searchDateStart'>起始時間" + 
 								"<input type='datetime-local' step='1' id='searchDateEnd'>結束時間<br>搜尋"
 							);
-							topLogo.html();
 						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'){
 							$(searchBarLabel).html("<input type='search' id='searchBar'>搜尋");
 						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
 							$(searchBarLabel).html(
 								"<input type='search' id='searchMin'>最小值" +
 								"<input type='search' id='searchMax'>最大值<br>搜尋"  
+							);
+						} else if(this.value == 'o_status'){
+							$(searchBarLabel).html(
+								"<select id='searchBar'>" +
+								"<option value='完成' selected>完成</option>" +
+								"<option value='處理中'>處理中</option>" +
+								"<option value='失效'>失效</option>" +
+								"</select>"
 							);
 						}
 					})
@@ -160,18 +166,21 @@
 						tbodyArea.html(htmlStuff);
 					}
 									
-					// 【自訂函數 3】模糊搜尋
+					// 【自訂函數 3】查詢功能
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
 						let queryString = "";
-						if(searchBy.val() == 'o_date') {
-							// 日期範圍查詢
+
+						let forDate = (searchBy.val() == 'o_date');
+						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
+												searchBy.val() == 'p_name' || searchBy.val() == 'o_status');
+						let forRange = (searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id');
+
+						if(forDate) {// 日期範圍查詢
 							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchDateStart').val() + ',' + $('#searchDateEnd').val());
-						} else if(searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' || searchBy.val() == 'p_name') {
-							// 數值範圍查詢
+						} else if(forSingle) {// 單值查詢
 							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + $('#searchBar').val();
-						} else if(searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id') {
-							// 單值查詢
+						} else if(forRange) {// 數值範圍查詢
 							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchMin').val() + ',' + $('#searchMax').val());
 						}
 						console.log(queryString);
@@ -197,11 +206,17 @@
 								pageNum = Math.ceil((segments.length)/rowPerPage); // 57 / 10 => 6 個頁籤
 								let temp0 = "";
 								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum; // 資料再多也只會顯示10個頁籤
-								console.log('tempPageNum = ' + tempPageNum);
 								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn primary' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
 								pageHref.html(temp0);
+								for(let i = 0; i < tempPageNum; i++){
+									$('#btnPage' + i).on('click', function(){
+										$('.pageBtn').removeClass('primary');
+										$('#btnPage' + i).addClass('primary');
+									})
+								}
+								$('#btnPage0').addClass('primary');
 								$('.pageBtn').on('click', function(){
 									let pageIndex = $(this).attr('data-index');
 									switchPage(pageIndex);
@@ -322,14 +337,22 @@
 									htmlStuff += segments[i]
 								}
 								tbodyArea.html(htmlStuff);
-								// 掛分頁按鈕
+								// 掛頁籤
 								pageNum = Math.ceil((segments.length)/rowPerPage);
 								let temp0 = "";
 								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
 								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
 								pageHref.html(temp0);
+								for(let i = 0; i < tempPageNum; i++){
+									$('#btnPage' + i).on('click', function(){
+										$('.pageBtn').removeClass('primary');
+										$('#btnPage' + i).addClass('primary');
+									})
+								}
+								$('#btnPage0').addClass('primary');
+								
 								$('.pageBtn').on('click', function(){
 									let pageIndex = $(this).attr('data-index');
 									switchPage(pageIndex);

@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.IUserService;
+import com.group5.springboot.utils.EmailSenderService;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 
@@ -42,6 +43,8 @@ public class UserController {
 	UserValidator userValidator;
 	@Autowired
 	ServletContext context;
+	@Autowired
+	EmailSenderService emailService;
 
 	// 到會員的index
 	@GetMapping(path = "/gotoUserIndex.controller")
@@ -153,11 +156,27 @@ public class UserController {
 	@ResponseBody
 	public Map<String, String> signup(@RequestBody User_Info user_Info){
 		Map<String, String> map = new HashMap<>();
+		// 檢查信箱格式
+		try {
+			if(!(user_Info.getU_email().trim().contains("@"))) {
+				map.put("formatError", "信箱格式錯誤!");
+				return map;
+			}
+		} catch (Exception e) {
+			map.put("fail", e.getMessage());
+		}
+		
+		
 		int n = 0;
 		try {
 			n = iUserService.saveUser(user_Info);
 			if(n == 1) {
 				map.put("success", "註冊成功");
+				//寄成功註冊的信件
+				String body = "用戶: " + user_Info.getU_id() + " 您好，歡迎註冊成為Studie Hub的會員，祝您使用愉快!";
+				emailService.sendSimpleEmail(user_Info.getU_email(),
+											 body,
+											 "Studie Hub 會員註冊成功通知");
 			}else if(n == -1) {
 				map.put("fail", "帳號重複");
 			}

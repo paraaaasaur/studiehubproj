@@ -88,6 +88,14 @@ public class ProductInfo {
 	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
 	public Set<OrderInfo> getOrderInfoSet() {		return orderInfoSet;	}
 	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
+	
+	// 被CartItem參考
+//	@JsonIgnore
+//	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
+//	private Set<CartItem> cartItemSet = new HashSet<CartItem>();
+//	public Set<CartItem> getCartItemSet() {		return cartItemSet;	}
+//	public void setCartItemSet(Set<CartItem> cartItemSet) {		this.cartItemSet = cartItemSet;	}
+	
 	// 去參考User_Info (※以後要和User_Info建立關聯時再開啟)
 	/*
 	@JsonIgnore

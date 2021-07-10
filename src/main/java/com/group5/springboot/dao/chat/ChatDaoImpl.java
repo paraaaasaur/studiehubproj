@@ -19,20 +19,17 @@ public class ChatDaoImpl implements ChatDao{
 	Chat_Info chat_Info;
 
 	@Override
-	public void insertChat(Chat_Info chat) {
-		if(chat_Info!=null) {
-			em.persist(chat_Info);
-		}
+	public void insertChat(Chat_Info chat_Info) {
+		em.persist(chat_Info);
 	}
 
 	@Override
 	public void deleteChat(int c_ID) {
-		chat_Info.setC_ID(c_ID);
-		em.remove(chat_Info);
+		em.remove(em.find(Chat_Info.class, c_ID));
 	}
 
 	@Override
-	public void updateChat(Chat_Info chat) {
+	public void updateChat(Chat_Info chat_Info) {
 		em.merge(chat_Info);
 	}
 

@@ -36,12 +36,18 @@
 					<li><a href="<c:url value='/gotoShowAllUser.controller' />">會員資訊</a></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="<c:url value='queryProductForUser' />">所有課程</a></li>
-							<li><a href="<c:url value='queryProduct' />">所有課程(後端)</a></li>
+							<li><a href="/studiehub/queryProduct">所有課程</a></li>
 						</ul>
 					</li>
-					<li><a href="<c:url value='/' />">購物車</a></li>
-					<li><a href="#">討論區</a></li>
+
+
+					<li><span class="opener">交易管理</span>
+						<ul>
+							<li><a href="<c:url value='/order.controller/adminSelect' />">訂單</a></li>
+							<li><a href="<c:url value='/cart.controller/adminSelect' />">購物車</a></li>
+						</ul>
+					</li>
+					<li><a href="<c:url value='/goSelectAllChatAdmin' />">討論區</a></li>
 					<li><span class="opener">題庫</span>
 						<ul>
 							<li><a href="<c:url value='/question.controller/guestQueryQuestion' />">所有試題</a></li>

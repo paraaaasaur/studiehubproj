@@ -11,10 +11,10 @@
 
 <script>
 var hasError = false;
+var pswHasError = false;
 window.onload = function(){
 	var alink = document.getElementById("accountCheck");
 	var sendData = document.getElementById("sendData");
-
 	//檢查帳號是否重複
 	alink.onclick = function(){
 		var u_id = document.getElementById("u_id").value;
@@ -45,7 +45,6 @@ window.onload = function(){
 			}
 		}
 	}
-
     
 	//確認送出資料
 	sendData.onclick = function(){
@@ -64,7 +63,6 @@ window.onload = function(){
 		var spanCheckPsw = document.getElementById('checkPsw'); //確認密碼
 		
 // 		var spanResult = document.getElementById('resultMsg');
-
 		if(!u_id){
 			setErrorFor(span0, "請輸入帳號");
 		} else{
@@ -95,15 +93,23 @@ window.onload = function(){
 		} else{
 			span4.innerHTML = "";
 		}
+		//檢查email格式
+// 		if(!(u_email.includes('@'))){
+// 			setErrorFor(span4, "信箱格式錯誤");
+// // 			hasError = true;
+// 		} else{
+// 			span4.innerHTML = "";
+// 		}
+		
 		// 檢查密碼是否一致
 		if(u_psw==ck_psw && ck_psw!=""){
 			spanCheckPsw.innerHTML = "";
-			hasError = false;
+			pswHasError = false;
 		}else{
 			spanCheckPsw.innerHTML = "<font color='red' size='-2'>密碼不同，請再次確認!</font>";
-			hasError = true;
+			pswHasError = true;
 		}
-		if (hasError){
+		if (hasError || pswHasError){
 			return false;
 		}
 		var xhr1 = new XMLHttpRequest();
@@ -125,19 +131,38 @@ window.onload = function(){
 // 					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
 					span0.innerHTML = "<font color='red' >" + result.fail + "</font>";
 				}else if(result.success){
-					alert(result.success + "! 為您導到登入頁面, 請盡早修改會員資料...");
+					alert(result.success + "! 系統已寄送註冊成功之信件至您的信箱, 請盡早完成會員資料...");
 					top.location='<c:url value='/gotologin.controller' />';
+				}else if(result.formatError){
+					alert(result.formatError);
 				}
 			}
 		}
 	}
-
 	
 	function setErrorFor(input, message){
 		input.innerHTML = "<font color='red' size='-2'>" + message + "</font>";
 		hasError = true;
 	}
-
+	
+	//一鍵帶入
+// 	var thisAutoInput = document.getElementById('autoInput');
+// 	var thisId = document.getElementById('u_id');
+// 	var thisPsw = document.getElementById('u_psw');
+// 	var thisCkPsw = document.getElementById('ck_psw');
+// 	var thisLastname = document.getElementById('u_lastname');
+// 	var thisFirstname = document.getElementById('u_firstname');
+// 	var thisEmail = document.getElementById('u_email');
+	$('#autoInput').on('click', function(){
+		$('#u_id').val("demoid");
+		$('#u_psw').val("demopsw");
+		$('#ck_psw').val("demopsw");
+		$('#u_lastname').val("孫");
+		$('#u_firstname').val("若安");
+		$('#u_email').val("ji1997819@gmail.com");
+	})
+	
+	
 		
 }
 </script>
@@ -193,7 +218,8 @@ window.onload = function(){
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">
 										<button type="button" class="primary" id="sendData">送出</button> &nbsp;
-										<input type="reset" value="清除">
+										<input type="reset" value="清除"> &nbsp;
+										<button type="button" id="autoInput">一鍵</button>
 									</td>
 								</tr>
 							</table>

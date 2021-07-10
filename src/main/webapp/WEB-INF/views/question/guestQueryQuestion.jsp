@@ -7,11 +7,7 @@
 <html>
 <head>
 
-<style type="text/css">
-/*  td {white-space:nowrap;overflow:hidden;text-overflow: ellipsis;} */
-/* table{table-layout:fixed;word-wrap:break-word;} */ */
- 
-</style>
+
 <meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -72,40 +68,30 @@ window.addEventListener('load', function(){
 	let segment = "<table >";
 	
 	if (size == 0){
-		segment += "<tr><th colspan='1'>查無資料</th><tr>";
+		segment += "<tr><th colspan='8'>查無資料</th><tr>";
 	} else {
 		segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
-	    segment += "<tr><th>編輯</th><th>刪除</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
+	    segment += "<tr><th>查看試題</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
 	    
 	    for(n = 0; n < questions.length ; n++){
 		   	let question = questions[n];
 	   		
-// 			console.log("<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' /></td>")
 
-
-		   	let tmp1 = "<c:url value='/question.controller/modifyQuestion/'  />" + question.q_id;
-	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/edit.png' />'" + "</a>";
-	     	
-		   	let tmp3 = "<c:url value='/question.controller/queryQuestion/'  />" ;
-// 	     	let tmp4 = "<a href='" + tmp3 + "'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
-// 	     	井號:無作用連結
-	     	let tmp4 = "<a href='#' onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
-
+		   	let tmp1 = "<c:url value='/question.controller/guestOneQuestion/'  />" + question.q_id;
+	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/check.png' />'" + "</a>";
 	     	
 	     	
 			segment += "<tr>";
-			segment += "<td>" + tmp0 + "</td>"; 	
-			
-// 			segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' /></td>"
-			segment += "<td>" + tmp4 + "</td>"; 	
-			
+			segment += "<td width='7%'>" + tmp0 + "</td>"; 	
+
 			segment += "<td width='7%'>" + question.q_id + "</td>"; 	
 			segment += "<td width='7%'>" + question.q_class + "</td>"; 	
 			segment += "<td width='7%'>" + question.q_type + "</td>"; 	
-			segment += "<td>" + question.q_question + "</td>"; 	
-
+			segment += "<td>" + question.q_question + "</td>";
+			
 			segment += "<td><img  width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
 			segment += "<td><audio controls src='" + question.q_audioString + "' ></td>"; 	
+			
 			segment += "</tr>"; 	
 	   }
 	}
@@ -126,10 +112,8 @@ window.addEventListener('load', function(){
 				<%@include file="../universal/header.jsp"%>
 
 <div align='center'>
-<h2>所有試題資料</h2>
-<hr>
-<font color='red'>${successMessage}</font>&nbsp;
-<hr>
+<h2>所有試題資料</h2><br>
+
 
 
 試題搜尋：<input type='text' id="questionName"  placeholder="請輸入部分問題內容" />

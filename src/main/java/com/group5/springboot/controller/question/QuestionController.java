@@ -124,8 +124,25 @@ public class QuestionController {
 		return "redirect:/question.controller/queryQuestion";  
 	}
 	
+
+////送出顯示所有試題的表單 //使用者
+	@GetMapping("/question.controller/guestQueryQuestion")
+	public String sendGuestQueryQuestion() {
+		return "question/guestQueryQuestion";
+	}	
+////單筆詳細資料 //使用者
+	@GetMapping("/question.controller/guestOneQuestion/{q_id}")
+    public String guestOneQuestion(
+    		@PathVariable Long q_id, Model model
+    ) {
+		Question_Info question_Info = questionService.findById(q_id);
+		model.addAttribute("Q1", question_Info);
+		return "question/guestOneQuestion";
+	}	
 	
-////送出顯示所有試題的表單
+	
+	
+////送出顯示所有試題的表單 //後台
 	@GetMapping("/question.controller/queryQuestion")
 	public String sendQueryQuestion() {
 		return "question/queryQuestion";
@@ -183,6 +200,9 @@ public class QuestionController {
 		MultipartFile multipartFilePic = question_Info.getMultipartFilePic();
 		MultipartFile multipartFileAudio = question_Info.getMultipartFileAudio();
 		
+		System.out.println("multipartFilePic=" + multipartFilePic);
+		System.out.println("size=" + multipartFilePic.getSize());
+
 		if (multipartFilePic != null && multipartFilePic.getSize() > 0) {
 			try {
 				InputStream is = multipartFilePic.getInputStream();
@@ -191,7 +211,6 @@ public class QuestionController {
 				mimeTypePic = context.getMimeType(namePic);
 				question_Info.setQ_picture(blob);
 				question_Info.setMimeTypePic(mimeTypePic);
-			
 			String extPic = SystemUtils.getExtFilename(namePic);
 			// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 			try {

@@ -170,6 +170,11 @@
 				let o_amt = $('#o_amt');
 
 				$(p_id).on('focusout', function(){
+					if (!(p_id.val())) {
+							p_name.val('【自動代入】');
+							p_price.val('【自動代入】');
+							return;
+					}
 					let xhr = new XMLHttpRequest();
 					xhr.open("POST", "<c:url value='/order.controller/adminSelectProduct' />", true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -189,6 +194,12 @@
 				});
 				
 				$(u_id).on('focusout', function(){
+					if (!(u_id.val())) {
+							u_firstname.val('【自動代入】');
+							u_lastname.val('【自動代入】');
+							u_email.val('【自動代入】');
+							return;
+					}
 					let xhr = new XMLHttpRequest();
 					xhr.open("POST", "<c:url value='/order.controller/adminSelectUser' />", true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

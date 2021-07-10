@@ -1,9 +1,7 @@
 package com.group5.springboot.controller.cart;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -82,18 +80,31 @@ public class CartController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/adminSearchBar")
-	public Map<String, Object> adminOrderSearchBar(@RequestParam String searchBy, @RequestParam String searchBar) {
-		
-		if ("o_id".equals(searchBy) || "p_id".equals(searchBy) || "o_status".equals(searchBy) || "u_id".equals(searchBy)) {
-			return orderService.selectBy(searchBy, searchBar);
-		} else if ("p_name".equals(searchBy) || "u_firstname".equals(searchBy) || "u_lastname".equals(searchBy)) {
-			return orderService.selectLikeOperator(searchBy, searchBar);
-		} else if ("o_date".equals(searchBy)) {
-			System.out.println("o_date查詢還沒寫好");
-			return null;
-		} else if ("o_amt".equals(searchBy)) {
-			System.out.println("o_amt查詢還沒寫好");
-			return null;
+	public Map<String, Object> adminOrderSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
+		if ("o_status".equals(condition) || "u_id".equals(condition)) {
+			// 準確查詢
+			return orderService.selectBy(condition, value);
+		} else if ("p_name".equals(condition) || "u_firstname".equals(condition) || "u_lastname".equals(condition)) {
+			// 模糊查詢
+			return orderService.selectLikeOperator(condition, value);
+		} else if ("o_date".equals(condition)) {
+			// 日期範圍查詢
+			// 隨時可換
+			String regex = ","; 
+			String[] dates = value.split(regex);
+			String startDateString = dates[0].split("T")[0] + " " + dates[0].split("T")[1];
+			String endDateString = dates[1].split("T")[0] + " " + dates[1].split("T")[1];
+			// ❗ ❓ 這邊寫得頗爛，感覺要用更通用的方法拆(轉)格式
+			return orderService.selectWithTimeRange(startDateString, endDateString);
+		} else if ("o_id".equals(condition) || "p_id".equals(condition) || "o_amt".equals(condition)) {
+			// 數值範圍查詢
+			// 隨時可換
+			String regex = ",";
+			String[] numberStrings = value.split(regex);
+			Integer minValue = Integer.parseInt(numberStrings[0]);
+			Integer maxValue = Integer.parseInt(numberStrings[1]);
+			System.out.println("min = " + minValue + " ;max = " + maxValue);
+			return orderService.selectWithNumberRange(condition, minValue, maxValue);
 		}
 		
 		return null;

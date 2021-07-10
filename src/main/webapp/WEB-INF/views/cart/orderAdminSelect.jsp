@@ -44,9 +44,10 @@
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
 								
-								
 								<h1>訂單管理</h1>
-								<input type='text' id='searchBar'><label for='searchBar'>搜尋</label><button type="submit" id="searchBtn">查詢</button>
+								
+								<label id='searchBarLabel'><input type='search' id='searchBar'>搜尋</label>
+								<button type="submit" id="searchBtn">查詢</button>
 								<select id='searchBy'>
 									<option value='u_id'selected>以使用者帳號(u_id)</option>
 									<option value='o_id'>以帳單編號(o_id)</option>
@@ -56,7 +57,7 @@
 									<option value='u_firstname'>以使用者名字(u_firstname)</option>
 									<option value='o_status'>以訂單狀態(o_status)</option>
 									<option value='o_amt'>以訂單小計(o_amt)</option>
-									<!-- <option value='o_date'>以訂單日期(o_date)</option> -->
+									<option value='o_date'>以訂單日期(o_date)</option>
 								</select>
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref">
@@ -116,10 +117,35 @@
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
 					let pageHref = $('#pageHref');
+					let searchBarLabel = $('#searchBarLabel');
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
 					/*********************************************************************************************************/
-					
+					// 【自訂函數 #】searchBar樣式隨使用者的選擇變化
+					$(searchBy).on('change', function(){
+						if(this.value == 'o_date'){
+							$(searchBarLabel).html(
+								"<input type='datetime-local' step='1' id='searchDateStart'>起始時間" + 
+								"<input type='datetime-local' step='1' id='searchDateEnd'>結束時間<br>搜尋"
+							);
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'){
+							$(searchBarLabel).html("<input type='search' id='searchBar'>搜尋");
+						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
+							$(searchBarLabel).html(
+								"<input type='search' id='searchMin'>最小值" +
+								"<input type='search' id='searchMax'>最大值<br>搜尋"  
+							);
+						} else if(this.value == 'o_status'){
+							$(searchBarLabel).html(
+								"<select id='searchBar'>" +
+								"<option value='完成' selected>完成</option>" +
+								"<option value='處理中'>處理中</option>" +
+								"<option value='失效'>失效</option>" +
+								"</select>"
+							);
+						}
+					})
+
 					// 【自訂函數 1】go to UPDATE page
 					function toUpdatePage(oid){
 						// let url = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid; // ❓
@@ -140,10 +166,23 @@
 						tbodyArea.html(htmlStuff);
 					}
 									
-					// 【自訂函數 3】模糊搜尋
+					// 【自訂函數 3】查詢功能
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
-						let queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + searchBar.val();
+						let queryString = "";
+
+						let forDate = (searchBy.val() == 'o_date');
+						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
+												searchBy.val() == 'p_name' || searchBy.val() == 'o_status');
+						let forRange = (searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id');
+
+						if(forDate) {// 日期範圍查詢
+							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchDateStart').val() + ',' + $('#searchDateEnd').val());
+						} else if(forSingle) {// 單值查詢
+							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + $('#searchBar').val();
+						} else if(forRange) {// 數值範圍查詢
+							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchMin').val() + ',' + $('#searchMax').val());
+						}
 						console.log(queryString);
 						xhr.open('POST', "<c:url value='/order.controller/adminSearchBar' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
@@ -167,11 +206,17 @@
 								pageNum = Math.ceil((segments.length)/rowPerPage); // 57 / 10 => 6 個頁籤
 								let temp0 = "";
 								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum; // 資料再多也只會顯示10個頁籤
-								console.log('tempPageNum = ' + tempPageNum);
 								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn primary' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
 								pageHref.html(temp0);
+								for(let i = 0; i < tempPageNum; i++){
+									$('#btnPage' + i).on('click', function(){
+										$('.pageBtn').removeClass('primary');
+										$('#btnPage' + i).addClass('primary');
+									})
+								}
+								$('#btnPage0').addClass('primary');
 								$('.pageBtn').on('click', function(){
 									let pageIndex = $(this).attr('data-index');
 									switchPage(pageIndex);
@@ -205,7 +250,7 @@
 						parsedMap = JSON.parse(map);
 						let orders = parsedMap.list;
 							let totalPrice = 0;
-							rowNum = orders.length;
+							rowNum = (orders)? orders.length : 0;
 							segments = [];
 							for (let i = 0; i < orders.length; i++) {
 								totalPrice += orders[i].p_price;
@@ -292,14 +337,22 @@
 									htmlStuff += segments[i]
 								}
 								tbodyArea.html(htmlStuff);
-								// 掛分頁按鈕
+								// 掛頁籤
 								pageNum = Math.ceil((segments.length)/rowPerPage);
 								let temp0 = "";
 								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
 								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
 								}
 								pageHref.html(temp0);
+								for(let i = 0; i < tempPageNum; i++){
+									$('#btnPage' + i).on('click', function(){
+										$('.pageBtn').removeClass('primary');
+										$('#btnPage' + i).addClass('primary');
+									})
+								}
+								$('#btnPage0').addClass('primary');
+								
 								$('.pageBtn').on('click', function(){
 									let pageIndex = $(this).attr('data-index');
 									switchPage(pageIndex);

@@ -2,6 +2,9 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +31,11 @@ public class OrderDao implements IOrderDao {
 //	private JdbcTemplate jdbcTemplate;
 	
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public List<OrderInfo> test() {
 		Query query = em.createNativeQuery("SELECT * FROM order_info WHERE o_date < '2021-07-08' AND o_date > :value ", OrderInfo.class); // ❓❗
 		query.setParameter("value", "2021-07-05 18:00:00");
-		List list = query.getResultList();
+		List<OrderInfo> list = query.getResultList();
 		return list; 
 	}
 	
@@ -58,15 +62,49 @@ public class OrderDao implements IOrderDao {
 	
 	public Map<String, Object> selectBy(String condition, String value) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean isString = !( "o_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
-		condition = (isString)? "o." + condition : "STR(o." + condition + ")";
-		System.out.println("condition = " + condition + "; value = " + value);
+		Boolean isInteger = ( "o_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
+		Object parsedValue = (isInteger)? Integer.parseInt(value) : value;
+		System.out.println("condition = " + condition + "; value = " + parsedValue);
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " = :value", OrderInfo.class);
-		query.setParameter("value", value);
+		query.setParameter("value", parsedValue);
 		
 		List<OrderInfo> resultList = query.getResultList();
 		System.out.println(resultList);
 		map.put("list", resultList);
+		return map;
+	}
+	
+	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC";
+		Query query = em.createNativeQuery(sql, OrderInfo.class);
+		// ❗❓ 總覺得下面的轉法只要換個國家就會出錯...
+		try {
+			Date parsedStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+			Date parsedEndTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endTime);
+			System.out.println("From : " + parsedStartTime);
+			System.out.println("To : " + parsedEndTime);
+			query.setParameter("startTime", parsedStartTime, TemporalType.TIME);
+			query.setParameter("endTime", parsedEndTime, TemporalType.TIME);
+		} catch (ParseException e) {
+			System.out.println("轉時間出錯了");
+			e.printStackTrace();
+		}
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> list = (List<OrderInfo>) (query.getResultList());
+		map.put("list", list);
+		return map;
+	}
+	
+	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "SELECT * FROM order_info WHERE " + condition + " >= :minValue AND " + condition + "<= :maxValue ORDER BY " + condition + " DESC";
+		Query query = em.createNativeQuery(sql, OrderInfo.class);
+		query.setParameter("minValue", minValue);
+		query.setParameter("maxValue", maxValue);
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> list = query.getResultList();
+		map.put("list", list);
 		return map;
 	}
 	
@@ -88,20 +126,13 @@ public class OrderDao implements IOrderDao {
 		map.put("list", resultList);
 		return map;
 	}
-	
-	// Admin - 1
-//	public Map<String, Object> selectTop20() {
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
-//		List<OrderInfo> resultList = query.getResultList();
-//		map.put("list", resultList);
-//		return map;
-//	}
-	
+
 	public Map<String, Object> selectTop100() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(100);
-		List<OrderInfo> resultList = query.getResultList();
+//		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(100);
+//		List<OrderInfo> resultList = query.getResultList();
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> resultList = (List<OrderInfo>) (em.createNativeQuery("SELECT * FROM order_info ORDER BY o_id DESC", OrderInfo.class).setMaxResults(100).getResultList());
 		map.put("list", resultList);
 		return map;
 	}

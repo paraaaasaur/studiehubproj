@@ -2,13 +2,14 @@ package com.group5.springboot.validate;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.SmartValidator;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.group5.springboot.model.cart.OrderInfo;
 @Component
-public class OrderValidator implements Validator {
-
+public class OrderValidator implements SmartValidator {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return OrderInfo.class.isAssignableFrom(clazz);
@@ -24,6 +25,12 @@ public class OrderValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "u_id", "orderInfoLUL.u_id.notempty", "會員帳號(u_id)必須填寫(DefaultMsg)");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "o_status", "orderInfoLUL.o_status.notempty", "訂單狀態(o_status)必須填寫(DefaultMsg)");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "o_amt", "orderInfoLUL.o_amt.notempty", "訂單小計(o_amt)必須填寫(DefaultMsg)");
+	}
+
+	@Override
+	public void validate(Object target, Errors errors, Object... validationHints) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

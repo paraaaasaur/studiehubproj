@@ -13,6 +13,12 @@
 	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
 	
 	var adminId = "${adminId}";
+	// 踢除非管理員
+	if(!adminId){
+		alert('您不具有管理者權限，請登入後再試。');
+		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	}
+	
 	window.onload = function(){
 	// console.log(adminId);
 		
@@ -50,7 +56,7 @@
 								<ul class="actions fit">
 									<li style="width: 70%;" id="searchBarHanger1"><input type="search" id="searchBar" placeholder='搜尋'></li>
 									<li style="width: 35%;" id="searchBarHanger2" hidden><input class="" type='search' id='searchBar' placeholder='搜尋'></li>
-									<li style="width: 30%;">
+									<li style="width: 20%;">
 										<select class="fit" id='searchBy'>
 											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
 											<option value='u_id'>會員帳號</option>
@@ -64,7 +70,7 @@
 											<option value='o_date'>訂單日期</option>
 										</select>
 									</li>
-									<li style="width: 10%;" class=""><button type="submit" class="fit" id="searchBtn" disabled>查詢</button></li>
+									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
 								</ul>
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref" class="">
@@ -135,6 +141,7 @@
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='datetime-local' step='1' id='searchDateStart'>起始時間");
 							$(searchBarHanger2).html("<input type='datetime-local' step='1' id='searchDateEnd'>結束時間");
+							$('input[type="datetime-local"]').setNow();
 						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' || this.value == 'p_name'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);

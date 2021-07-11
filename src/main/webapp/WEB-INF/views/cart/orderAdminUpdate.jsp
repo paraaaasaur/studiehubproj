@@ -14,7 +14,7 @@
 	   span.error {
 		color: red;
 		display: inline-block;
-		font-size: 5pt;
+		font-size: 100%;
 	}
 	</style>
 
@@ -23,6 +23,12 @@
 	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
 	
 	var adminId = "${adminId}";
+	// 踢除非管理員
+	if(!adminId){
+	alert('您不具有管理者權限，請登入後再試。');
+	top.location = "<c:url value='/gotoAdminIndex.controller' />";
+}
+
 	window.onload = function(){
 	// console.log(adminId);
 		
@@ -55,48 +61,48 @@
 								<%@include file="../universal/adminHeader.jsp" %>  
 
 								<fieldset>
-									<legend style="text-align: center;">維護訂單資料</legend> 
+									<h1 style="text-align: center;">維護訂單資料</h1>
 									<form:form method="POST" modelAttribute="orderInfo" enctype='multipart/form-data'>
 										<Table>
 											<tr>
-												<td>(1) 訂單代號(o_id)：<br>&nbsp;</td>
+												<td>(1) 訂單代號：<br>&nbsp;</td>
 												<td width='360'>
 													<form:input path="o_id" id="o_id" readonly="true" /><br>&nbsp;
 												</td>
-												<td>(2) 課程代號(p_id)：<br>&nbsp;</td>
+												<td>(2) 課程代號：<br>&nbsp;</td>
 												<td width='360'>
 													<form:input path='p_id' id="p_id" /><br>&nbsp;
-													<form:errors path='p_id' cssClass="error" />
+													<form:errors path='p_id' cssClass="error" id='p_idError' />
 												</td>
 											</tr>
 											<tr>
-												<td>(3) 課程名稱(p_name)：<br>&nbsp;</td>
+												<td>(3) 課程名稱：<br>&nbsp;</td>
 												<td width='360'>
 													<form:input path="p_name" readonly="true" id="p_name" placeholder="【自動代入】" /><br>&nbsp;
 												</td>
-												<td>(4) 課程價格(p_price)：<br>&nbsp;</td>
+												<td>(4) 課程價格：<br>&nbsp;</td>
 												<td>
 													<form:input path="p_price" readonly="true" id="p_price" placeholder="【自動代入】" /><br>&nbsp;
 												</td>
 											</tr>
 											<tr>
-												<td>(5) 會員帳號(u_id)：<br>&nbsp;</td>
+												<td>(5) 會員帳號：<br>&nbsp;</td>
 												<td width='360'>
 													<form:input path="u_id" id="u_id" /><br>&nbsp;
 													<form:errors path='u_id' cssClass="error" />
 												</td>
-												<td>(6) 會員名字(u_firstname)：<br>&nbsp;</td>
+												<td>(6) 會員名字：<br>&nbsp;</td>
 												<td width='360'>
 													<form:input path='u_firstname' readonly="true" id="u_firstname" placeholder="【自動代入】" /><br>&nbsp;
 												</td>
 											</tr>
 									
 											<tr>
-												<td>(7) 會員姓氏(u_lastname)：<br>&nbsp;</td>
+												<td>(7) 會員姓氏：<br>&nbsp;</td>
 												<td>
 													<form:input path="u_lastname" readonly="true" id="u_lastname" placeholder="【自動代入】" /><br>&nbsp;
 												</td>
-												<td>(8) 會員信箱(u_email)：<br>&nbsp;</td>
+												<td>(8) 會員信箱：<br>&nbsp;</td>
 												<td>
 													<form:input path="u_email" readonly="true" id="u_email" inputmode="email" placeholder="【自動代入】" />
 													<br>&nbsp;
@@ -104,7 +110,7 @@
 											</tr>
 									
 											<tr>
-												<td>(9) 訂單狀態(o_status)：<br>&nbsp;</td>
+												<td>(9) 訂單狀態：<br>&nbsp;</td>
 												<td>
 													<form:select path="o_status" id="o_status">
 														<form:option value="完成" label="完成" />
@@ -113,7 +119,7 @@
 													</form:select><br>&nbsp;
 													<form:errors path="o_status" cssClass="error" />
 												</td>
-												<td>(10) 訂單日期(o_date)：<br>&nbsp;</td>
+												<td>(10) 訂單日期：<br>&nbsp;</td>
 												<td>
 													<form:input path="o_date" readonly="true" id="o_date" placeholder="【自動產生】" /><br>&nbsp;
 													<!-- ❗ -->
@@ -121,12 +127,13 @@
 											</tr>
 									
 											<tr>
-												<td>(11) 訂單小計(o_amt)：<br>&nbsp;</td>
+												<td>(11) 訂單小計：<br>&nbsp;</td>
 												<td>
 													<form:input path="o_amt" id="o_amt" /><br>&nbsp;
 													<form:errors path="o_amt" cssClass="error" />
 												</td>
 												<td colspan='4' align='center'><br>&nbsp;
+													<a class='button' href="<c:url value='/order.controller/adminSelect' />" >回上一頁</a>
 													<input type='submit' value='送出資料'>
 													<!-- <input type='button' id='cheat' value='一鍵生成'> -->
 												</td>
@@ -137,7 +144,6 @@
 									
 								</fieldset>
 								
-								<a href="<c:url value='/order.controller/adminSelect' />" >回上一頁</a>
 						</div>
 					</div>
 
@@ -153,6 +159,7 @@
 			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 		<script>
@@ -218,6 +225,7 @@
 							}
 						}
 					})
+					return;
 				});
 
 

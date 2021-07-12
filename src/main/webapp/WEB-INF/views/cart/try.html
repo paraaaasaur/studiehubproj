@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <br><br><br><br><br><br><br><br><br><br>
+
+    <button style="width: 150px; height: 150px;" type="button" id="btn">YO</button>
+
+    <section id='section'>
+        <span id='span'><input style="width: 150px; height: 150px;" type="checkbox" id="ckb">click me!/
+        </span>
+        <div>
+            <input style="width: 150px; height: 150px;" type="checkbox" value='good'>click me!/<h1></h1><h2 id="h2"></h2><h3></h3>
+        </div>
+        <div>
+            <input style="width: 150px; height: 150px;" type="checkbox" value='good'>click me!/<h1></h1><h2 id="h22"></h2><h3></h3>
+        </div>
+        <div>
+            <input style="width: 150px; height: 150px;" type="checkbox" value='lul'>click me!/<h1></h1><h2 id="h23"></h2><h3></h3>
+        </div>
+        <div>
+            <input style="width: 150px; height: 150px;" type="checkbox" value='good'>click me!/<h1></h1><h2 id="h24"></h2><h3></h3>
+        </div>
+        <div>
+            <input style="width: 150px; height: 150px;" type="checkbox" value='good'>click me!/<h1></h1><h2 id="h25"></h2><h3></h3>
+        </div>
+
+    </section>
+
+    <hr>
+    <hr>
+    <hr>
+
+
+    <script src="../../../../resources/static/assets/js/jquery.min.js"></script>
+    <script>
+        
+        $('#btn').on('click', function(){
+            let ckb = document.querySelector('#ckb');
+            let span = document.querySelector('#span');
+            let section = document.querySelector('#section');
+            // console.log(ckb);
+            // console.log(ckb.parentElement.nextElementSibling.childNodes[3]);
+            ckb.parentElement.nextSibling.firstChild
+            console.log(section[0]);
+            // section
+            
+
+            
+        });
+
+    </script>
+</body>
+</html>

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.SmartValidator;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-
 import com.group5.springboot.model.cart.OrderInfo;
 @Component
 public class OrderValidator implements SmartValidator {

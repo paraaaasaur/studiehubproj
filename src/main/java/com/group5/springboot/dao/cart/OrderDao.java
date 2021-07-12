@@ -4,6 +4,7 @@ package com.group5.springboot.dao.cart;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -231,17 +232,17 @@ public class OrderDao implements IOrderDao {
 	}
 	
 	public boolean delete(OrderInfo orderBean) {
-		// 方法⓵ > 執行SELECT + DELETE
-/**		Order resultBean = em.find(Order.class, orderBean.getO_id());
-		if (resultBean != null) {
-			session.delete(orderBean); 
-		}*/
-		// 方法⓶ > HQL
 		Query query = em.createQuery("DELETE OrderInfo WHERE o_id = :oid");
 		query.setParameter("oid", orderBean.getO_id());
 		int deletedNum = query.executeUpdate();
 		System.out.println("You deleted " + deletedNum + " row(s) from order_info table.");
 		return (deletedNum == 0)? false : true;
+	}
+	
+	public Integer deleteMore(Integer[] o_ids) {
+		return em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)")
+				.setParameter("oids", Arrays.asList(o_ids))
+				.executeUpdate();
 	}
 
 }

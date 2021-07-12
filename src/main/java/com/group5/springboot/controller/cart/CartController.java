@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +20,6 @@ import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
-import com.group5.springboot.validate.ProductValidator;
-import com.group5.springboot.validate.UserValidator;
 
 @RestController
 public class CartController {
@@ -34,10 +31,6 @@ public class CartController {
 	private UserService userService;
 	@Autowired // SDI ✔
 	private CartItemService cartItemService;
-	@Autowired // SDI ✔
-	private ProductValidator productValidator;
-	@Autowired // SDI ✔
-	private UserValidator userValidator;
 
 
 	/***************************************************************************** */
@@ -161,6 +154,15 @@ public class CartController {
 		resultMap.put("status", deleteStatus.toString());
 		
 		return resultMap;
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/order.controller/deleteAdminMore")
+	public Map<String, String> adminOrderDeleteMore(@RequestParam Integer[] o_ids) {
+		orderService.deleteMore(o_ids);
+		HashMap<String, String> map = new HashMap<>();
+		map.put("state", new StringBuilder().append("資料刪除完成。").toString());
+		return map;
 	}
 	
 	/***************************************************************************** */

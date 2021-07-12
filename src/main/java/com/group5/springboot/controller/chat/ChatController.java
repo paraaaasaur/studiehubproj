@@ -46,6 +46,12 @@ public class ChatController {
 		return "chat/selectAllChatAdmin";
 	}
 	
+	@GetMapping("/goSelectOneChat/{c_ID}")
+	public String goSelectOneChat(@PathVariable int c_ID, Model model){
+		model.addAttribute("c_ID", c_ID);
+		return "chat/selectOneChat";
+	}
+	
 	@GetMapping("/goInsertChat")
 	public String insertChat(Model model){
 		boolean loginResult = uc.checkIfLogin(model);
@@ -100,6 +106,7 @@ public class ChatController {
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.insertChat(chat_Info);
+			chatService.createChatTable("chat_Reply" + chat_Info.getC_ID());
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
@@ -128,6 +135,7 @@ public class ChatController {
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.deleteChat(c_ID);
+			chatService.deleteChatTable("chat_Reply" + c_ID);
 			map.put("success", "刪除成功");
 		} catch (Exception e) {
 			map.put("fail", "刪除失敗，請再試一次...");

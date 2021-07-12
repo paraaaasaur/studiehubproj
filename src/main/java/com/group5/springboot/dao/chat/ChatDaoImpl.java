@@ -50,4 +50,25 @@ public class ChatDaoImpl implements ChatDao{
 		return chat_Info;
 	}
 
+	@Override
+	public void createChatTable(String table_Name) {
+		String sql = "CREATE TABLE [dbo].[" + table_Name + "](\r\n"
+				+ "	[c_ID] [int] NOT NULL,\r\n"
+				+ "	[c_Conts] [varchar](max) NULL,\r\n"
+				+ "	[c_Date] [varchar](255) NULL,\r\n"
+				+ "	[u_ID] [varchar](255) NULL,\r\n"
+				+ " CONSTRAINT [PK_Table_1] PRIMARY KEY CLUSTERED \r\n"
+				+ "(\r\n"
+				+ "	[c_ID] ASC\r\n"
+				+ ")WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\r\n"
+				+ ") ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]";
+		em.createNativeQuery(sql).executeUpdate();
+	}
+
+	@Override
+	public void deleteChatTable(String table_Name) {
+		String sql = "DROP TABLE [dbo].[" + table_Name + "]";
+		em.createNativeQuery(sql).executeUpdate();
+	}
+
 }

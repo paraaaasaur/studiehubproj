@@ -42,4 +42,14 @@ public class ChatServiceImpl implements ChatService{
 		return chatDao.selectChatById(c_ID);
 	}
 
+	@Override
+	public void createChatTable(String table_Name) {
+		chatDao.createChatTable(table_Name);
+	}
+
+	@Override
+	public void deleteChatTable(String table_Name) {
+		chatDao.deleteChatTable(table_Name);
+	}
+
 }

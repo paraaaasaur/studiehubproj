@@ -18,5 +18,9 @@ public interface ChatService {
 	public List<Chat_Info> findAllChat();
 	
 	public Chat_Info selectChatById(int c_ID);
+	
+	public void createChatTable(String table_Name);
+	
+	public void deleteChatTable(String table_Name);
 
 }

@@ -33,4 +33,8 @@ public interface IUserDao {
 	// 修改會員資料
 	public void updateUser(User_Info user_Info);
 
+	public User_Info getUserInfoForForgetPassword(String userEmail);
+
+	public boolean setNewPasswordForForgetPsw(String email, String newPassword);
+
 }

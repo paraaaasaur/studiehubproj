@@ -60,11 +60,7 @@ public class OrderService implements IOrderService{
 		return orderDao.update(newBean);
 	}
 	
-	public boolean delete(OrderInfo orderBean) {
-		return orderDao.delete(orderBean);
-	}
-	
 	public Integer deleteMore(Integer[] o_ids) {
-		return orderDao.deleteMore(o_ids);
+		return orderDao.delete(o_ids);
 	}
 }

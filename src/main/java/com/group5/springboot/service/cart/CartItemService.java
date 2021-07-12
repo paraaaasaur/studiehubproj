@@ -31,6 +31,10 @@ public class CartItemService implements ICartItemService{
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		return cartItemDao.insert(p_id, u_id);
 	}
+	
+	public Integer updateCartItem(String newU_id, Integer newP_id, Integer cart_id) {
+		return cartItemDao.updateCartItem(newU_id, newP_id, cart_id);
+	}
 
 	@Override
 	public boolean deleteByUserId(String u_id) {

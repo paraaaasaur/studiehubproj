@@ -55,6 +55,12 @@ public class CartItemDao implements ICartItemDao{
 		
 		// 綁定關聯
 		CartItem cartBean = new CartItem();
+		// 補完非FK值
+		cartBean.setU_firstname(uBean.getU_firstname());
+		cartBean.setU_lastname(uBean.getU_lastname());
+		cartBean.setP_name(pBean.getP_Name());
+		cartBean.setP_price(pBean.getP_Price());
+		// 綁定關聯物件
 		cartBean.setProductInfo(pBean);
 		cartBean.setUser_Info(uBean);
 		
@@ -63,6 +69,45 @@ public class CartItemDao implements ICartItemDao{
 		map.put("cartBean", cartBean);
 		return map;
 	}
+	
+	public Integer updateCartItem(String newU_id, Integer newP_id, Integer cart_id) {
+		
+		CartItem cartBean = em.find(CartItem.class, cart_id);
+		
+		if (cartBean != null) {
+			// FK驗證
+			User_Info uBean = em.find(User_Info.class, cartBean.getU_id());
+			if(uBean == null) {
+				System.out.println("********** 錯誤：以 o_id (" + cartBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
+				return -1;	
+			}
+			ProductInfo pBean = em.find(ProductInfo.class, cartBean.getP_id());
+			if(pBean == null) {
+				System.out.println("********** 錯誤：以 p_id (" + cartBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
+				return -1;
+			} 
+			// 補完非FK值
+			cartBean.setU_firstname(uBean.getU_firstname());
+			cartBean.setU_lastname(uBean.getU_lastname());
+			cartBean.setP_name(pBean.getP_Name());
+			cartBean.setP_price(pBean.getP_Price());
+			// 更新關聯物件的值
+			uBean.setU_id(newU_id);
+			pBean.setP_ID(newP_id);
+			// 綁定關聯物件
+			cartBean.setUser_Info(uBean);
+			cartBean.setProductInfo(pBean);
+			
+			em.merge(cartBean);
+			
+			return 1;
+		} else {
+			System.out.println("*** CartItem with CART_ID = " + cart_id + "doesn't exist in the database :^) ***");
+			return -1;			
+		}
+		
+	}
+	
 	
 	@Override
 	public boolean deleteByUserId(String u_id) {
@@ -75,11 +120,13 @@ public class CartItemDao implements ICartItemDao{
 	
 	@Override
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
+		
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid AND p_id = :pid");
 		query.setParameter("uid", u_id);
 		query.setParameter("pid", p_id);
 		int deletedNum = query.executeUpdate();
 		System.out.println("You deleted a product (p_id = " + p_id + " ) from user (u_id = " + u_id + " )'s cart_item table.");
+		
 		return (deletedNum == 0)? false : true;
 	}
 	

@@ -143,22 +143,7 @@ public class CartController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/deleteAdmin")
-	public Map<String, String> adminOrderDelete(@RequestParam String o_id) {
-		
-		OrderInfo order = new OrderInfo();
-		order.setO_id(Integer.parseInt(o_id));
-		Boolean deleteStatus = (orderService.delete(order))? true : false;
-		String msg = "oid = " + o_id + ((deleteStatus)?  "：刪除成功✔" : "：刪除失敗❌");
-		HashMap<String, String> resultMap = new HashMap<>();
-		resultMap.put("state", msg);
-		resultMap.put("status", deleteStatus.toString());
-		
-		return resultMap;
-	}
-	
-	/***************************************************************************** */
-	@PostMapping(value = "/order.controller/deleteAdminMore")
-	public Map<String, String> adminOrderDeleteMore(@RequestParam Integer[] o_ids) {
+	public Map<String, String> adminOrderDelete(@RequestParam Integer[] o_ids) {
 		orderService.deleteMore(o_ids);
 		HashMap<String, String> map = new HashMap<>();
 		map.put("state", new StringBuilder().append("資料刪除完成。").toString());

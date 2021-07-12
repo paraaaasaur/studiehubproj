@@ -192,16 +192,17 @@ public class OrderDao implements IOrderDao {
 		ProductInfo pBean = em.find(ProductInfo.class, newOBean.getP_id());
 		User_Info uBean = em.find(User_Info.class, newOBean.getU_id());
 		
-		if(pBean == null) {
-			System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
-			return updateStatus;
-		} else if(uBean == null) {
-			System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
-			return updateStatus;	
-		}
 		
 		if (oBean != null) {
-//			resultBean.setO_id         (newBean.getO_id()       ); // 無意義  
+			
+			if(pBean == null) {
+				System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
+				return updateStatus;
+			} else if(uBean == null) {
+				System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
+				return updateStatus;	
+			}
+//			oBean.setO_id         (newBean.getO_id()       ); // 無意義  
 			oBean.setP_id         (newOBean.getP_id()       );  
 			oBean.setP_name       (newOBean.getP_name()     );  
 			oBean.setP_price      (newOBean.getP_price()    );  
@@ -230,19 +231,13 @@ public class OrderDao implements IOrderDao {
 		updateStatus = true;
 		return updateStatus;
 	}
+
 	
-	public boolean delete(OrderInfo orderBean) {
-		Query query = em.createQuery("DELETE OrderInfo WHERE o_id = :oid");
-		query.setParameter("oid", orderBean.getO_id());
-		int deletedNum = query.executeUpdate();
-		System.out.println("You deleted " + deletedNum + " row(s) from order_info table.");
-		return (deletedNum == 0)? false : true;
-	}
-	
-	public Integer deleteMore(Integer[] o_ids) {
-		return em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)")
-				.setParameter("oids", Arrays.asList(o_ids))
-				.executeUpdate();
+	public Integer delete(Integer[] o_ids) {
+		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)");
+		deleteQuery.setParameter("oids", Arrays.asList(o_ids));
+		Integer result = deleteQuery.executeUpdate();
+		return result;
 	}
 
 }

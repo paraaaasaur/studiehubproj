@@ -75,7 +75,7 @@
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref" class="">
 								<form>
-									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
+									<!-- 秀出所有Order_Info -->
 									<table class="alt" style="border: 2px " >
 										<thead id="theadArea"></thead>
 										<tbody id="tbodyArea"></tbody>
@@ -84,9 +84,8 @@
 									<hr>
 									
 								</form>
-								<button name="todo" id="insert" value="insertAdmin" 
-								onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
-								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
+								<button id="insert"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
+								<button id="delete">刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
 								
@@ -121,7 +120,7 @@
 				let rowPerPage = 10;
 				let maxPageNum = 10;
 
-				// 【自訂函數 0】掛頁籤函數
+				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
 					let o_id = checkboxObj.value;
 					// let o_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
@@ -158,7 +157,7 @@
 					})
 				}
 
-				// 【自訂函數 2】分頁掛資料
+				// 【自訂函數 2】頁籤掛資料
 
 				function switchPage(pageIndex){
 					let htmlStuff = "";
@@ -230,7 +229,7 @@
 					// 【自訂函數 6】查詢功能
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
-						let queryString = "";
+						let queryString = '';
 
 						let forDate = (searchBy.val() == 'o_date');
 						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
@@ -276,6 +275,8 @@
 								parseSelectedRows(xhr.responseText);
 								switchPage(0);
 								appendPegination();
+								console.log('(2)' + segments.length);
+								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
 							}
 						}
 					} 
@@ -302,6 +303,7 @@
 													"</tr>";
 								segments.push(temp0);
 							}
+							console.log(segments.length);
 					};
 					
 					// 【自訂函數 9】NEW DELETE
@@ -315,7 +317,7 @@
 						console.log(queryString);
 
 						let xhr = new XMLHttpRequest();
-						xhr.open("POST", "<c:url value='/order.controller/deleteAdminMore' />", true);
+						xhr.open("POST", "<c:url value='/order.controller/deleteAdmin' />", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
@@ -345,7 +347,8 @@
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤
 						showTop100();
 						// 掛topLogo
-						topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+						console.log('(m) ' + segments.length);
+						
 
 
 					}

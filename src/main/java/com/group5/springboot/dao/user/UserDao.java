@@ -153,7 +153,53 @@ public class UserDao implements IUserDao {
 	}
 	
 	
+	@Override
+	//忘記密碼 修改前查詢
+	public User_Info getUserInfoForForgetPassword(String userEmail) {
+		user_info = null;
+		String hql = "from User_Info where u_email=:email";
+		try {
+			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)
+			.setParameter("email", userEmail);
+			User_Info result = query.uniqueResult();
+			if(result != null && !(result.getU_id().length() == 0)) {
+				//測試
+				System.out.println("********************************");
+				System.out.println("忘記密碼的id: " + result.getU_id() + ", 信箱: " + result.getU_email());
+				System.out.println("********************************");
+				user_info = result;
+			}else {
+				user_info = null;
+			}
+		} catch (Exception e) {
+			System.out.println("********************************");
+			System.out.println("厚唷 有錯誤訊息，在\'忘記密碼的DAO\'");
+			System.out.println("********************************");
+		}
+		return user_info;
+	}
 	
+	
+	@Override
+	//忘記密碼 修改
+	public boolean setNewPasswordForForgetPsw(String email, String newPassword) {
+		boolean result = false;
+		try {
+			javax.persistence.Query query = em.createNativeQuery("UPDATE user_info SET u_psw = :password WHERE u_email = :inputEmail", User_Info.class);
+			query.setParameter("password", newPassword);
+			query.setParameter("inputEmail", email);
+			int executeUpdate = query.executeUpdate();
+			if(executeUpdate>0) {
+				result = true;
+			}else {
+				result = false;
+			}
+		} catch (Exception e) {
+			result = false;
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
 	
 	

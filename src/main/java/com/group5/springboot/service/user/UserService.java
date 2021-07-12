@@ -65,6 +65,18 @@ public class UserService implements IUserService {
 	public void updateUser(User_Info user_Info) {
 		iUserDao.updateUser(user_Info);
 	}
+
+	@Override
+	public User_Info getUserInfoForForgetPassword(String userEmail) {
+		return iUserDao.getUserInfoForForgetPassword(userEmail);
+	}
+	
+	@Override
+	public boolean setNewPasswordForForgetPsw(String email, String newPassword){
+		return iUserDao.setNewPasswordForForgetPsw(email, newPassword);
+	}
+	
+	
 	
 
 }

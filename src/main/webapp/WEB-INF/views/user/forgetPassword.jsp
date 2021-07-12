@@ -13,9 +13,11 @@
 var hasError = false;
 window.onload = function(){
 	var sendBtn = document.getElementById("send");
+	var loading = document.getElementById("loadingGif");
 	
 	sendBtn.onclick = function(){
 		var email = document.getElementById("userEmail").value;
+		var emailInputBox = document.getElementById("userEmail");
 		
 		if(!isEmail(email)){
 			if(!email){
@@ -37,17 +39,19 @@ window.onload = function(){
 		}
 		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.send(JSON.stringify(jsonData));
+		loading.src = "<c:url value='images/user/loading.gif' />";
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200){
-				result = JSON.parse(xhr.responseText);
 				//判斷回傳
-// 				if(result.fail){
-// 					alert("發生錯誤, 請再試一次!");
-// 				}else if(result.success){
-// 					alert("新的密碼已寄送到您的信箱, 請使用新密碼登入後立即修改!");
-// 					top.location='<c:url value='/gotologin.controller' />';	//按下後，回登入畫面
-// 				}
-				alert(result.result);
+				result = JSON.parse(xhr.responseText);
+				if(result.success){
+				loading.src = "";
+				alert(result.success);
+				top.location='<c:url value='/gotologin.controller' />';
+				} else{
+					alert(result.fail);
+					top.location='<c:url value='/gotoForgetPassword.controller' />';
+				}
 			}
 		}
 	}
@@ -69,19 +73,18 @@ window.onload = function(){
 <div class="inner">
 <%@include file="../universal/header.jsp" %>
 
-<!-- <div align='center'> -->
-<!--   <h3>登入</h3> -->
-<!--   <div id='resultMsg' style="height: 18px; font-weight: bold;"></div> -->
-<!--   <hr> -->
-<!-- </div> -->
 
 <div style="text-align: center;">
   <div style="display: inline-block; text-align: left;">
   <br>
   <br>
-  <br>
+<!--   <br> -->
       <input type="text" id="userEmail" style="display: inline; width: 500px; float: none;border-radius: 10px;" placeholder="請輸註冊信箱..." autofocus="autofocus">
 	  <button id="send" style="display: inline;">送出</button>
+	  <div style="text-align: center">
+	  <br>
+	  <img id="loadingGif" alt="" src="" width='80px'>
+	  </div>
   </div>
 
 </div>

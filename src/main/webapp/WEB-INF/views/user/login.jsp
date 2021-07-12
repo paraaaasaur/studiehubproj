@@ -105,7 +105,7 @@ window.onload = function(){
 	  <div class="form-check">
 		  <input type="checkbox" value="rememberMe" id="rememberMe">
 		  <label for="rememberMe"> 記住帳號 </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		  <span><a href="????????">忘記密碼</a></span>
+		  <span><a href="<c:url value='/gotoForgetPassword.controller' />">忘記密碼</a></span>
 	  </div>
 	  <button id="login" class='primary' style="width: 210px;">登入</button>
 	  <hr>

@@ -15,6 +15,7 @@ var pswHasError = false;
 window.onload = function(){
 	var alink = document.getElementById("accountCheck");
 	var sendData = document.getElementById("sendData");
+	var loading = document.getElementById("loadingGif");
 	//檢查帳號是否重複
 	alink.onclick = function(){
 		var u_id = document.getElementById("u_id").value;
@@ -123,17 +124,25 @@ window.onload = function(){
 		}
 		xhr1.setRequestHeader("Content-Type", "application/json");
 		xhr1.send(JSON.stringify(jsonSignupData));
+		// loading GIF 秀出來
+		loading.src = "<c:url value='images/user/loading.gif' />";
 		xhr1.onreadystatechange = function() {
 			if (xhr1.readyState == 4 && xhr1.status == 200){
 				result = JSON.parse(xhr1.responseText);
 				//判斷回傳
 				if(result.fail){
+					loading.src = ""; //loading GIF 隱藏
+					loading.hidden = true;
 // 					spanResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
 					span0.innerHTML = "<font color='red' >" + result.fail + "</font>";
 				}else if(result.success){
+					loading.src = ""; //loading GIF 隱藏
+					loading.hidden = true;
 					alert(result.success + "! 系統已寄送註冊成功之信件至您的信箱, 請盡早完成會員資料...");
 					top.location='<c:url value='/gotologin.controller' />';
 				}else if(result.formatError){
+					loading.src = ""; //loading GIF 隱藏
+					loading.hidden = true;
 					alert(result.formatError);
 				}
 			}
@@ -159,7 +168,7 @@ window.onload = function(){
 		$('#ck_psw').val("demopsw");
 		$('#u_lastname').val("孫");
 		$('#u_firstname').val("若安");
-		$('#u_email').val("ji1997819@gmail.com");
+		$('#u_email').val("iiidemo0723@gmail.com");
 	})
 	
 	
@@ -217,13 +226,15 @@ window.onload = function(){
 								</tr>
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">
-										<button type="button" class="primary" id="sendData">送出</button> &nbsp;
-										<input type="reset" value="清除"> &nbsp;
-										<button type="button" id="autoInput">一鍵</button>
+										<button type="button" id="autoInput">一鍵</button>&nbsp;
+										<input type="reset" value="清除">&nbsp;
+										<button type="button" class="primary" id="sendData">送出</button>
+<%-- 										<img style="visibility:hidden;" id="loadingGif" alt="" src="<c:url value='images/user/loading.gif' />" width='80px'> --%>
 									</td>
 								</tr>
 							</table>
 						</form>
+										<img id="loadingGif" alt="" src="" width='100px'>
 					</div>
 				</div>
 

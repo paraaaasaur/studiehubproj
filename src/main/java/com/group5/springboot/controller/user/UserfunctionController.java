@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
@@ -20,6 +22,13 @@ public class UserfunctionController {
 	
 	@Autowired
 	IUserService iUserService;
+	
+
+	//到忘記密碼頁面
+	@GetMapping(path = "/gotoForgetPassword.controller")
+	public String gotoForgetPassword() {
+		return "user/forgetPassword";
+	}
 
 	//登出
 	@GetMapping(path = "/logout.controller", produces = {"application/json"})
@@ -39,6 +48,17 @@ public class UserfunctionController {
 			map.put("fail", "發生問題，請重新操作...");
 		}
 		return map;
+	}
+	
+	//送隨機密碼至信箱(忘記密碼)
+	@PostMapping(path = "/sendRandomPasswordToRegisteredEmail.controller", produces = {"application/json"})
+	@ResponseBody
+	public Map<String, String> resetPasswordAndSendEmail(@RequestBody User_Info userInfo) {
+		Map<String, String> maps = new HashMap<>();
+		maps.put("result", userInfo.getU_email());
+		System.out.println(userInfo.getU_email());
+		System.out.println(maps.get("result"));
+		return maps;
 	}
 	
 //	//查看全部會員資料

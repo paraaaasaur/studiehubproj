@@ -106,6 +106,7 @@ public class UserController {
 		return returnPage;
 	}
 	
+	
 	//讀取單筆會員資料(全部會員資料到刪除單筆資料)
 	@GetMapping("/showSingleUser.controller/{u_id}")
 	public @ResponseBody User_Info showSingleUser(@PathVariable String u_id) {

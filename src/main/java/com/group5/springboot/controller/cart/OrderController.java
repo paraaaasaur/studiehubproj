@@ -1,9 +1,7 @@
 package com.group5.springboot.controller.cart;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;

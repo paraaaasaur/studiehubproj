@@ -8,7 +8,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<title>Studie Hub</title>
+<title>訂單後台管理系統</title>
 	<style type="text/css">
 	   span.error {
 		color: red;

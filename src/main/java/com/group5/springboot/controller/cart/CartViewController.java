@@ -55,13 +55,13 @@ public class CartViewController {
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
 	public String toCartAdminUpdate(@PathVariable("cartid") Integer cartid, Model model) {
-		model.addAttribute("cartItem", cartItemService.select(cartid));
+		model.addAttribute("cartItem", cartItemService.select(cartid).get("cartItem"));
 		return "/cart/cartAdminUpdate";
 //		return "redirect:/cart.controller/adminUpdate"; // ❓
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/cart.controller/adminUpdate/{oid}"})
+	@PostMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
 	public String cartAdminUpdate(@ModelAttribute(name = "cartItem") CartItem cartItem,
 			BindingResult result, 
 			RedirectAttributes ra) {
@@ -72,7 +72,7 @@ public class CartViewController {
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
 			return "/cart/cartAdminUpdate";
 		}
-		
+		System.out.println(cartItem);
 		Integer updateStatus = cartItemService.update(cartItem.getU_id(), cartItem.getP_id(), cartItem.getCart_id());
 		String successMessage = (updateStatus == 1)? "o_id = " + cartItem.getCart_id() + "修改成功" : "修改失敗";
 		ra.addFlashAttribute("successMessage", successMessage);

@@ -21,14 +21,14 @@ import com.group5.springboot.model.user.User_Info;
 @Component
 public class CartItem {
 	
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	// ❗ 沒有什麼實質意義
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer cart_id ; // PK
-	@Column(insertable = false, updatable = false)
+	@Column(name = "P_ID", insertable = false, updatable = false)
 	private Integer p_id; // FK
 	private String p_name; 
 	private Integer p_price; 
-	@Column(insertable = false, updatable = false)
+	@Column(name = "U_ID", insertable = false, updatable = false)
 	private String u_id; // FK //  ⚠注意：這裡的u_id不是課程授課老師、而是購買者帳號
 	private String u_firstname; 
 	private String u_lastname; 
@@ -89,8 +89,8 @@ public class CartItem {
 	public void setU_firstname(String u_firstname) {		this.u_firstname = u_firstname;	}
 	public void setU_lastname(String u_lastname) {		this.u_lastname = u_lastname;	}
 	public void setCart_id(Integer cart_id) {		this.cart_id = cart_id;	}
-	public void setP_id(Integer p_ID) {p_id = p_ID;}
-	public void setU_id(String u_ID) {u_id = u_ID;}
+	public void setP_id(Integer p_id) {this.p_id = p_id;}
+	public void setU_id(String u_id) {this.u_id = u_id;}
 	public void setCart_date(String cart_date) {		this.cart_date = cart_date;	}
 	
 	@Override

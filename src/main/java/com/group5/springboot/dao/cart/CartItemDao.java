@@ -27,8 +27,11 @@ public class CartItemDao implements ICartItemDao{
 	private EntityManager em;
 	
 	public Map<String, Object> select(Integer cart_id) {
+		System.out.println(cart_id);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("cartItem", em.find(CartItem.class, cart_id));
+		CartItem cartItem = em.find(CartItem.class, cart_id);
+		System.out.println(cartItem);
+		map.put("cartItem", cartItem);
 		return map;
 	}
 	
@@ -50,7 +53,7 @@ public class CartItemDao implements ICartItemDao{
 		@SuppressWarnings("unchecked")
 		List<CartItem> list = (List<CartItem>) sqlQuery.getResultList();
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("cartItems", list);
+		map.put("list", list);
 		return map;
 	}
 	/**********************************************************************************************************/
@@ -156,7 +159,7 @@ public class CartItemDao implements ICartItemDao{
 	}
 	
 	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
-		
+		System.out.println(cart_id);
 		CartItem cartBean = em.find(CartItem.class, cart_id);
 		
 		if (cartBean != null) {
@@ -180,10 +183,13 @@ public class CartItemDao implements ICartItemDao{
 			uBean.setU_id(newU_id);
 			pBean.setP_ID(newP_id);
 			// 綁定關聯物件
+//			User_Info uBean2 = uBean;
+//			ProductInfo pBean2 = pBean;
 			cartBean.setUser_Info(uBean);
 			cartBean.setProductInfo(pBean);
-			
+			System.out.println("1111111111111111111111111");
 			em.merge(cartBean);
+			System.out.println("222222222222222222222");
 			
 			return 1;
 		} else {

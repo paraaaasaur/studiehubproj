@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<title>訂單後台管理</title>
+<title>訂單後台管理系統</title>
 
 <script>
 
@@ -219,13 +219,6 @@
 						top.location = "<c:url value='/' />";
 					})
 
-					// 【自訂函數 5】go to UPDATE page
-					function toUpdatePage(oid){
-						// let url = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid; // ❓
-						let url = "http://localhost:8080/studiehub/order.controller/adminUpdate/" + oid;
-						console.log(url);
-						top.location = url;
-					}
 					// 【自訂函數 6】查詢功能
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
@@ -299,27 +292,28 @@
 
 					// 【自訂函數 8】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
 					function parseSelectedRows(map) {
-						parsedMap = JSON.parse(map);
+						let parsedMap = JSON.parse(map);
+						console.log(parsedMap);
 						let orders = parsedMap.list;
-							let totalPrice = 0;
-							rowNum = (orders)? orders.length : 0;
-							segments = [];
-							for (let i = 0; i < orders.length; i++) {
-								totalPrice += orders[i].p_price;
-								let temp0 =	 "<tr>" + 
-													"<td><input onclick='memorize(this)' id='ckbox" + i + "' " +
-														"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + i + "'></label></td>" +
-													"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
-													"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
-													"</tr>";
-								segments.push(temp0);
-							}
-							console.log(segments.length);
+						let totalPrice = 0;
+						rowNum = (orders)? orders.length : 0;
+						segments = [];
+						for (let i = 0; i < orders.length; i++) {
+							totalPrice += orders[i].p_price;
+							let temp0 =	 "<tr>" + 
+												"<td><input onclick='memorize(this)' id='ckbox" + i + "' " +
+													"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + i + "'></label></td>" +
+												"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
+												"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
+												"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
+												"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
+												"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
+												"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
+												"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+												"</tr>";
+							segments.push(temp0);
+						}
+						console.log(segments.length);
 					};
 					
 					// 【自訂函數 9】NEW DELETE

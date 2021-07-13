@@ -259,6 +259,20 @@
 								switchPage(0);
 								// 掛頁籤
 								appendPegination();
+								// 掛th
+								theadArea.html(
+									"<th>DELETE BUTTON</th>"
+									+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
+									+ "<th>課程代號<br>(p_id)</th>"
+									+ "<th>用戶帳號<br>(u_id)</th>"
+									+ "<th>訂單狀態<br>(o_status)</th>"
+									+ "<th>訂單時間<br>(o_date)</th>"
+									+ "<th>訂單總額<br>(o_amt)</th>"
+									+ "<th>操作</th>"
+								);
+								if (segments.length == 0) {
+									theadArea.html('');
+								}
 							}
 
 						}
@@ -275,8 +289,10 @@
 								parseSelectedRows(xhr.responseText);
 								switchPage(0);
 								appendPegination();
-								console.log('(2)' + segments.length);
 								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								if (segments.length != 0) {
+									theadArea.html("");
+								}
 							}
 						}
 					} 
@@ -291,14 +307,14 @@
 							for (let i = 0; i < orders.length; i++) {
 								totalPrice += orders[i].p_price;
 								let temp0 =	 "<tr>" + 
-													"<td><input name='ckbox' onclick='memorize(this)' class='ckbox ckbox" + i + "' id='ckbox" + i + "' " +
-													"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + i + "'></label></td>" +
-													"<td><label data-val='" + orders[i].o_id + "' class='old" + i + "0' >" + orders[i].o_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].p_id + "' class='old" + i + "1' >" + orders[i].p_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].u_id + "' class='old" + i + "2' >" + orders[i].u_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
+													"<td><input onclick='memorize(this)' id='ckbox" + i + "' " +
+														"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + i + "'></label></td>" +
+													"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
+													"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
+													"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
+													"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
+													"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
+													"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
 													"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
 													"</tr>";
 								segments.push(temp0);
@@ -324,7 +340,7 @@
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								result = JSON.parse(xhr.responseText);
 								console.log(result.state);
-								showTop100();
+								mainFunc();
 								isCheckedList = [];
 							}
 						}
@@ -346,8 +362,6 @@
 						);
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤
 						showTop100();
-						// 掛topLogo
-						console.log('(m) ' + segments.length);
 						
 
 

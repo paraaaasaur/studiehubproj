@@ -275,7 +275,6 @@
 								parseSelectedRows(xhr.responseText);
 								switchPage(0);
 								appendPegination();
-								console.log('(2)' + segments.length);
 								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
 							}
 						}
@@ -285,22 +284,19 @@
 					// !!!
 					function parseSelectedRows(map) {
 						parsedMap = JSON.parse(map);
-						let orders = parsedMap.list;
+						let cartItems = parsedMap.list;
 							let totalPrice = 0;
-							rowNum = (orders)? orders.length : 0;
+							rowNum = (cartItems)? cartItems.length : 0;
 							segments = [];
-							for (let i = 0; i < orders.length; i++) {
-								totalPrice += orders[i].p_price;
+							for (let i = 0; i < cartItems.length; i++) {
 								let temp0 =	 "<tr>" + 
-													"<td><input name='ckbox' onclick='memorize(this)' class='ckbox ckbox" + i + "' id='ckbox" + i + "' " +
-													"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + i + "'></label></td>" +
-													"<td><label data-val='" + orders[i].o_id + "' class='old" + i + "0' >" + orders[i].o_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].p_id + "' class='old" + i + "1' >" + orders[i].p_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].u_id + "' class='old" + i + "2' >" + orders[i].u_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
-													"<td><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+													"<td><input onclick='memorize(this)' id='ckbox" + i + "' " +
+														"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + i + "'></label></td>" +
+													"<td><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
+													"<td><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
+													"<td><label data-val='" + cartItems[i].u_id + "'" + cartItems[i].u_id + "</label></td>" +
+													"<td><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
+													"<td><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].o_id + "'>修改</a></td>" +
 													"</tr>";
 								segments.push(temp0);
 							}
@@ -334,14 +330,12 @@
 
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
-						// console.log('Start of mainFunc()');
 						theadArea.html(
 								"<th>DELETE BUTTON</th>"
-								+ "<th>品項編號(cart_id)<br>(READ-ONLY)</th>"
-								+ "<th>課程代號<br>(p_id)</th>"
-								+ "<th>用戶帳號<br>(u_id)</th>"
-								+ "<th>訂單狀態<br>(o_status)</th>"
-								+ "<th>品項添入時間<br>(_date)</th>"
+								+ "<th>品項編號</th>"
+								+ "<th>課程代號</th>"
+								+ "<th>用戶帳號</th>"
+								+ "<th>品項添入時間</th>"
 								+ "<th>操作</th>"
 						);
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤

@@ -47,6 +47,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 var obj = null; 
+var questions = null;
 // 全部值
 var size = 0; 
 // 總題數
@@ -54,6 +55,8 @@ var counter = 0;
 // 目前題目
 var userChoice = [];
 // 存使用者答案
+var examResult = [];
+// 考試結果
 
 window.addEventListener('load', function(){
 	
@@ -91,12 +94,15 @@ window.addEventListener('load', function(){
 				}
 			userChoice.splice(counter, 1, userAnswer);
 			counter += 1;
-			alert("userAnswer=" + userAnswer );
-			alert("userChoice=" + userChoice );
+// 			alert("userAnswer=" + userAnswer );
+// 			alert("userChoice=" + userChoice );
 			
-			dataArea.innerHTML = showData(xhr.responseText);
+			var userLastAnswer = userChoice[counter];
+			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
 
-		}else if(counter = size-2){
+
+
+		}else if(counter == size-2){
 			next.style.display = 'none';
 			submit.style.display = '';
 
@@ -112,19 +118,20 @@ window.addEventListener('load', function(){
 				}
 			userChoice.splice(counter, 1, userAnswer);
 			
-			alert("userAnswer=" + userAnswer );
-			alert("userChoice=" + userChoice );
+// 			alert("userAnswer=" + userAnswer );
+// 			alert("userChoice=" + userChoice );
 			counter += 1;
-			dataArea.innerHTML = showData(xhr.responseText);
+			var userLastAnswer = userChoice[counter];
+			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
 
 			}		
 		});
 		
 	
 	back.addEventListener('click', function(){
-		alert("Nowcounter=" + counter );
+// 		alert("Nowcounter=" + counter );
 		
-		if(counter = size-1){
+		if(counter == size-1){
 			next.style.display = '';
 			submit.style.display = 'none';
 
@@ -142,10 +149,11 @@ window.addEventListener('load', function(){
 			
 			userChoice.splice(counter, 1, userAnswer);
 			counter -= 1;
-			alert("ONEcounter=" + counter );
-			alert("userAnswer=" + userAnswer );
-			alert("userChoice=" + userChoice );
-			dataArea.innerHTML = showData(xhr.responseText);
+// 			alert("ONEcounter=" + counter );
+// 			alert("userAnswer=" + userAnswer );
+// 			alert("userChoice=" + userChoice );
+			var userLastAnswer = userChoice[counter];
+			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
 			
 		 }else if(counter > 1 && counter < size-1){
 				var userAnswers = document.getElementsByName("userAnswer"); 
@@ -160,12 +168,14 @@ window.addEventListener('load', function(){
 					}
 			
 				userChoice.splice(counter, 1, userAnswer);
-				alert("2counter=" + counter );
-				alert("userAnswer=" + userAnswer );
-				alert("userChoice=" + userChoice );
-
+// 				alert("2counter=" + counter );
+// 				alert("userAnswer=" + userAnswer );
+// 				alert("userChoice=" + userChoice );
+				
+				
 				counter -= 1;
-				dataArea.innerHTML = showData(xhr.responseText);
+				var userLastAnswer = userChoice[counter];
+				dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
 				
 			
 		}else if(counter == 1){
@@ -184,18 +194,19 @@ window.addEventListener('load', function(){
 		
 			userChoice.splice(counter, 1, userAnswer);
 
-			alert("3counter=" + counter );
-			alert("userAnswer=" + userAnswer );
-			alert("userChoice=" + userChoice );
+// 			alert("3counter=" + counter );
+// 			alert("userAnswer=" + userAnswer );
+// 			alert("userChoice=" + userChoice );
 
 			counter -= 1;
-			dataArea.innerHTML = showData(xhr.responseText);
+			var userLastAnswer = userChoice[counter];
+			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
 			
 			
 		}else{
 			back.style.display = 'none';
 			userChoice.splice(counter, 1, userAnswer);
-			dataArea.innerHTML = showData(xhr.responseText);
+			dataArea.innerHTML = showData(xhr.responseTex);
 			
 			}
 		});
@@ -203,7 +214,7 @@ window.addEventListener('load', function(){
 //判斷題目
 		submit.addEventListener('click', function(){
 			
-			if(counter = size-1){
+			if(counter == size-1){
 	
 				var userAnswers = document.getElementsByName("userAnswer"); 
 				// 建立用來判斷是否有選擇資料
@@ -216,12 +227,45 @@ window.addEventListener('load', function(){
 						}
 					}
 				
-				userChoice.push(userAnswer);
+				userChoice.splice(counter, 1, userAnswer);
 
-				alert("ONEcounter=" + counter );
-				alert("userAnswer=" + userAnswer );
-				alert("userChoice=" + userChoice );
+// 				alert("ONEcounter=" + counter );
+// 				alert("userAnswer=" + userAnswer );
+// 				alert("userChoice=" + userChoice );
+				
+
 			}
+			
+				
+// 				for(var i=0 ; i<size ; i++){
+// 			 	if(userChoice[i] == questions[i].q_answer ){
+// 					alert("恭喜第" +  Number(i+1) + "題答對" );
+// 			 	}
+// 			 	else if(userChoice[i] != questions[i].q_answer){
+// 					alert("嫩! 第" + Number(i+1) + "題答錯" );
+// 						}
+// 				 }
+
+			for(var i=0 ; i<size ; i++){
+			 	if(userChoice[i] == questions[i].q_answer ){
+// 					examResult.push(true);
+					examResult.push("O");
+
+			 	}
+			 	else if(userChoice[i] != questions[i].q_answer){
+// 			 		examResult.push(false);
+			 		examResult.push("X");
+
+						}
+				 }
+		
+// 				alert(examResult);
+		
+				dataArea.innerHTML = showResult(examResult);
+			
+			
+			
+			
 		});
 		
 //倒數計時
@@ -229,22 +273,21 @@ window.addEventListener('load', function(){
 	
 });
 
- // ,userChoice[counter]
- function showData(textObj,userAnswer){
+ function showData(textObj,userLastAnswer){
 	let status=["","","",""];
-	if(userAnswer == "A"){
+	if(userLastAnswer == "A"){
 		status[0]="checked";
-	}else if (userChoice == "B"){
+	}else if (userLastAnswer == "B"){
 		status[1]="checked";
-	}else if (userChoice == "C"){
+	}else if (userLastAnswer == "C"){
 		status[2]="checked";
-	}else if (userChoice == "D"){
+	}else if (userLastAnswer == "D"){
 		status[3]="checked";
 	}
 	
 	obj = JSON.parse(textObj);
 	size = obj.size;
-	let questions = obj.list;
+	questions = obj.list;
 	let segment = "";
 	
 	if (size == 0){
@@ -256,20 +299,64 @@ window.addEventListener('load', function(){
 	   		let number = counter+1;
 	     	
 		   	segment += "<h4>第&ensp;" + number + "&ensp;題</h4>";
-			segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
-			segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 	
 	
+			
+		   	segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
+		   	
+		   	segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 	
 			segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
 			
-			segment += "<div><input type='radio' value='A' name='userAnswer' id='A'" + "status[0]" + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
-			segment += "<input type='radio' value='B' name='userAnswer' id='B'" + "status[1]" + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
-			segment += "<input type='radio' value='C' name='userAnswer' id='C'" + "status[2]" + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
-			segment += "<input type='radio' value='D' name='userAnswer' id='D'" + "status[3]" + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
+			segment += "<div><input type='radio' value='A' name='userAnswer' id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+			segment += "<input type='radio' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+			segment += "<input type='radio' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+			segment += "<input type='radio' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
+
 
 	   }
 			return segment;
 	};
-	
+
+	 //考試結果
+	 function showResult(examResult){
+			back.style.display = 'none';
+			next.style.display = 'none';
+			submit.style.display = 'none';
+
+			var correct = 0;
+			var wrong = 0;
+
+		   
+			for(var i=0 ; i<size ; i++){
+			 	if(userChoice[i] == questions[i].q_answer ){
+			 		correct += 1
+			 	}
+			 	else if(userChoice[i] != questions[i].q_answer){
+			 	 	wrong += 1
+						}
+				 }
+
+			
+			let correctPercent = correct/size*100 ;
+			let	segment2  = "<h4>＜測驗結果＞</h4><br>";
+			    segment2 += "<div><h5>&emsp;測驗共" + size + "題</h5></div>";
+				segment2 += "<div><h5>&emsp;答錯題數："+ wrong +"題，" + "答對率：" + correctPercent + "%</h5></div><br>";
+				segment2 += "<table>";
+			
+				segment2 += "<tr>" ;
+////待改成每五題換行				
+			    for(n = 0; n < examResult.length ; n++){
+				    segment2 += "<th>第"+ Number(n+1) +"題</th>"
+			    }
+				    segment2 += "</tr><tr>";
+			    
+			    for(m = 0; m < examResult.length ; m++){
+					segment2 += "<td>" + examResult[m] + "</td>"; 
+			    }
+			 	    segment2 += "</tr></table>";
+			 	    
+					return segment2; 
+	 } 	 
+	 
 
 
 

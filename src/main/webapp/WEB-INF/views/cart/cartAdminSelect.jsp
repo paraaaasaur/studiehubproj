@@ -117,6 +117,7 @@
 				let rowNum = 0;
 				let rowPerPage = 10;
 				let maxPageNum = 10;
+				let cartItems = [];
 
 				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
@@ -152,6 +153,12 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
+						for (let i = 0; i < isCheckedList.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + isCheckedList[i]);
+							if(thisCkbox){
+								thisCkbox.checked = true;
+							}
+						}
 					})
 				}
 
@@ -267,14 +274,14 @@
 					// !!!
 					function parseSelectedRows(map) {
 						let parsedMap = JSON.parse(map);
-						let cartItems = parsedMap.list;
 						let totalPrice = 0;
+						cartItems = parsedMap.list;
 						rowNum = (cartItems)? cartItems.length : 0;
 						segments = [];
 						for (let i = 0; i < cartItems.length; i++) {
 							let temp0 =	 "<tr>" + 
-												"<td><input onclick='memorize(this)' id='ckbox" + i + "' " +
-													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + i + "'></label></td>" +
+												"<td><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
+													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + cartItems[i].cart_id + "'></label></td>" +
 												"<td><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
 												"<td><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
 												"<td><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +

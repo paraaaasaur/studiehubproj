@@ -35,6 +35,27 @@ public class CartItemService implements ICartItemService{
 		return cartItemDao.selectTop100();
 	}
 	
+	/**********************************************************************************************************/
+	
+	
+	public Map<String, Object> selectLikeOperator(String condition, String value) {
+		return cartItemDao.selectLikeOperator(condition, value);
+	}
+	
+	public Map<String, Object> selectBy(String condition, String value) {
+		return cartItemDao.selectBy(condition, value);
+	}
+	
+	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
+		return cartItemDao.selectWithTimeRange(startTime, endTime);
+	}
+	
+	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
+		return cartItemDao.selectWithNumberRange(condition, minValue, maxValue);
+	}	
+	
+	/**********************************************************************************************************/
+	
 	@Override
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		return cartItemDao.insert(p_id, u_id);
@@ -52,6 +73,10 @@ public class CartItemService implements ICartItemService{
 	@Override
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
 		return cartItemDao.deleteASingleProduct(u_id, p_id);
+	}
+	
+	public Integer delete(Integer[] cart_ids) {
+		return cartItemDao.delete(cart_ids);
 	}
 	
 	@SuppressWarnings("unchecked")

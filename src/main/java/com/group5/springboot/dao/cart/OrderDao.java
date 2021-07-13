@@ -77,7 +77,7 @@ public class OrderDao implements IOrderDao {
 	
 	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC";
+		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC, u_id DESC";
 		Query query = em.createNativeQuery(sql, OrderInfo.class);
 		// ❗❓ 總覺得下面的轉法只要換個國家就會出錯...
 		try {

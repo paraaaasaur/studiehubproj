@@ -13,18 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.group5.springboot.model.cart.OrderInfo;
+import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
-import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
 
 @RestController
 public class CartController {
-	@Autowired // SDI ✔
-	private OrderService orderService;
 	@Autowired // SDI ✔
 	private ProductServiceImpl productService;
 	@Autowired // SDI ✔
@@ -57,19 +54,12 @@ public class CartController {
 	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/adminSelectProduct")
 	public ProductInfo adminCartSelectProduct(@RequestParam("p_id") String p_id) {
-//		productValidator.validate(productService.findByProductID(p_id), result);
-//		if (result.hasErrors()) {			
-//			List<ObjectError> list = result.getAllErrors();
-//			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-//			return "/cart/orderAdminInsert";
-//			return "redirect:/order.controller/adminInsert"; // ❓
-//		}
 		return productService.findByProductID(Integer.parseInt(p_id));
 	}
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/adminSelectUser")
-	public User_Info adminOrderSelectUser(@RequestParam("u_id") String u_id) {
+	public User_Info adminCartSelectUser(@RequestParam("u_id") String u_id) {
 		return userService.getSingleUser(u_id);
 	}
 	
@@ -80,10 +70,10 @@ public class CartController {
 			
 			if ("u_id".equals(condition)) {
 				// (1) 準確查詢
-				return orderService.selectBy(condition, value);
+				return cartItemService.selectBy(condition, value);
 			} else if ("p_name".equals(condition) || "u_firstname".equals(condition) || "u_lastname".equals(condition)) {
 				// (2) 模糊查詢
-				return orderService.selectLikeOperator(condition, value);
+				return cartItemService.selectLikeOperator(condition, value);
 			} else if ("cart_date".equals(condition)) {
 				// (3) 日期範圍查詢
 				// 隨時可換
@@ -92,8 +82,8 @@ public class CartController {
 				String startDateString = dates[0].split("T")[0] + " " + dates[0].split("T")[1];
 				String endDateString = dates[1].split("T")[0] + " " + dates[1].split("T")[1];
 				// ❗ ❓ 這邊寫得頗爛，感覺要用更通用的方法拆(轉)格式
-				return orderService.selectWithTimeRange(startDateString, endDateString);
-			} else if ("o_id".equals(condition) || "p_id".equals(condition) || "o_amt".equals(condition)) {
+				return cartItemService.selectWithTimeRange(startDateString, endDateString);
+			} else if ("cart_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition)) {
 				// (4) 數值範圍查詢
 				// 隨時可換
 				String regex = ",";
@@ -103,7 +93,7 @@ public class CartController {
 				minValue = Integer.parseInt(numberStrings[0]);
 				maxValue = Integer.parseInt(numberStrings[1]);
 				System.out.println("min = " + minValue + " ;max = " + maxValue);
-				return orderService.selectWithNumberRange(condition, minValue, maxValue);
+				return cartItemService.selectWithNumberRange(condition, minValue, maxValue);
 			}
 			
 		} catch (Exception e) {
@@ -112,27 +102,26 @@ public class CartController {
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("errorMessage", "查詢出錯");
-		map.put("list", new ArrayList<OrderInfo>());
+		map.put("list", new ArrayList<CartItem>());
 		return map;
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/order.controller/insertAdmin")
-	public Map<String, Object> adminOrderInsert(@RequestBody OrderInfo order) {
-		Map<String, Object> map = orderService.insert(order);
-		boolean insertStatus = (map != null)? true : false;
-		String msg = (insertStatus)? "新增成功！" : "新增失敗 :^)";
+	@PostMapping(value = "/cart.controller/insertAdmin")
+	public Map<String, Object> adminCartInsert(@RequestBody CartItem cartItem) {
+		Map<String, Object> map = cartItemService.insert(cartItem.getP_id(), cartItem.getU_id());
+		String msg = (map.get("errorMessage") == null)? "新增成功！" : "新增失敗 :^)";
 		map.put("state", msg);
 		
 		return map;
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/order.controller/deleteAdmin")
-	public Map<String, String> adminOrderDelete(@RequestParam Integer[] o_ids) {
-		orderService.deleteMore(o_ids);
+	@PostMapping(value = "/cart.controller/deleteAdmin")
+	public Map<String, String> adminCartDelete(@RequestParam Integer[] cart_ids) {
+		cartItemService.delete(cart_ids);
 		HashMap<String, String> map = new HashMap<>();
-		map.put("state", new StringBuilder().append("資料刪除完成。").toString());
+		map.put("state", "資料刪除完成。");
 		return map;
 	}
 	

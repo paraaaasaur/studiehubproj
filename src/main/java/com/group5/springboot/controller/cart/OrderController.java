@@ -29,33 +29,8 @@ public class OrderController {
 	private ProductServiceImpl productService;
 	@Autowired // SDI ✔
 	private UserService userService;
-	@Autowired // SDI ✔
-	private CartItemService cartItemService;
-
-
-	/***************************************************************************** */
-	@GetMapping(value="/test00")
-	public List<OrderInfo> test00() {
-		List<OrderInfo> list = orderService.test();
-		list.forEach(System.out::println);
-		return list;
-	}
 	
-	/***************************************************************************** */
-	@PostMapping(value="/cart.controller/clientShowCart")
-	public List<Map<String, Object>> clientShowCart(@RequestParam String u_id) {
-		List<Map<String, Object>> cart = cartItemService.getCart(u_id);
-		cart.forEach(System.out::println);
-		return cart;
-	}
 	
-	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8")
-	public List<Map<String, Object>> clientRemoveProductFromCart(@RequestParam Integer[] p_ids, @RequestParam String u_id) {
-		Arrays.asList(p_ids).forEach(p_id -> cartItemService.deleteASingleProduct(u_id, p_id));
-		return cartItemService.getCart(u_id);
-	}
-
 	/***************************************************************************** */
 	@GetMapping(value = "/order.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
 	public Map<String, Object> adminOrderSelectTop100(){
@@ -92,7 +67,7 @@ public class OrderController {
 	public Map<String, Object> adminOrderSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
 		try {
 			
-			if ("o_status".equals(condition) || "u_id".equals(condition)) {
+			if ("o_status".equals(condition) || "u_id".equals(condition) || "u_email".equals(condition)) {
 				// (1) 準確查詢
 				return orderService.selectBy(condition, value);
 			} else if ("p_name".equals(condition) || "u_firstname".equals(condition) || "u_lastname".equals(condition)) {
@@ -107,7 +82,7 @@ public class OrderController {
 				String endDateString = dates[1].split("T")[0] + " " + dates[1].split("T")[1];
 				// ❗ ❓ 這邊寫得頗爛，感覺要用更通用的方法拆(轉)格式
 				return orderService.selectWithTimeRange(startDateString, endDateString);
-			} else if ("o_id".equals(condition) || "p_id".equals(condition) || "o_amt".equals(condition)) {
+			} else if ("o_id".equals(condition) || "p_id".equals(condition) || "o_amt".equals(condition) || "p_price".equals(condition)) {
 				// (4) 數值範圍查詢
 				// 隨時可換
 				String regex = ",";
@@ -134,8 +109,7 @@ public class OrderController {
 	@PostMapping(value = "/order.controller/insertAdmin")
 	public Map<String, Object> adminOrderInsert(@RequestBody OrderInfo order) {
 		Map<String, Object> map = orderService.insert(order);
-		boolean insertStatus = (map != null)? true : false;
-		String msg = (insertStatus)? "新增成功！" : "新增失敗 :^)";
+		String msg = (map.get("errorMessage") == null)? "新增成功！" : "新增失敗 :^)";
 		map.put("state", msg);
 		
 		return map;
@@ -144,9 +118,9 @@ public class OrderController {
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/deleteAdmin")
 	public Map<String, String> adminOrderDelete(@RequestParam Integer[] o_ids) {
-		orderService.deleteMore(o_ids);
+		orderService.delete(o_ids);
 		HashMap<String, String> map = new HashMap<>();
-		map.put("state", new StringBuilder().append("資料刪除完成。").toString());
+		map.put("state", "資料刪除完成。");
 		return map;
 	}
 	

@@ -358,7 +358,7 @@
 					function mainFunc(){
 						// console.log('Start of mainFunc()');
 						theadArea.html(
-								"<th>DELETE BUTTON</th>"
+								"<th>刪除</th>"
 								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
 								+ "<th>課程代號<br>(p_id)</th>"
 								+ "<th>用戶帳號<br>(u_id)</th>"

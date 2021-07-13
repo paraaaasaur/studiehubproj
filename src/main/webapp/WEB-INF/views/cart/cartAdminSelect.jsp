@@ -327,7 +327,7 @@
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
 						theadArea.html(
-								"<th>DELETE BUTTON</th>"
+								"<th>刪除</th>"
 								+ "<th>品項編號</th>"
 								+ "<th>課程代號</th>"
 								+ "<th>用戶帳號</th>"

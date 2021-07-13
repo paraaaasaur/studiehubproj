@@ -56,13 +56,11 @@ public class OrderService implements IOrderService{
 		return orderDao.selectTop100();
 	}
 	
-	// Admin - 2
 	public boolean update(OrderInfo newBean) {
 		return orderDao.update(newBean);
 	}
 	
-	// Admin - 3
-	public boolean delete(OrderInfo orderBean) {
-		return orderDao.delete(orderBean);
+	public Integer delete(Integer[] o_ids) {
+		return orderDao.delete(o_ids);
 	}
 }

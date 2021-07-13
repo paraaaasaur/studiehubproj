@@ -4,6 +4,7 @@ package com.group5.springboot.dao.cart;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,7 +77,7 @@ public class OrderDao implements IOrderDao {
 	
 	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC";
+		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC, u_id DESC";
 		Query query = em.createNativeQuery(sql, OrderInfo.class);
 		// ❗❓ 總覺得下面的轉法只要換個國家就會出錯...
 		try {
@@ -191,16 +192,17 @@ public class OrderDao implements IOrderDao {
 		ProductInfo pBean = em.find(ProductInfo.class, newOBean.getP_id());
 		User_Info uBean = em.find(User_Info.class, newOBean.getU_id());
 		
-		if(pBean == null) {
-			System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
-			return updateStatus;
-		} else if(uBean == null) {
-			System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
-			return updateStatus;	
-		}
 		
 		if (oBean != null) {
-//			resultBean.setO_id         (newBean.getO_id()       ); // 無意義  
+			
+			if(pBean == null) {
+				System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
+				return updateStatus;
+			} else if(uBean == null) {
+				System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
+				return updateStatus;	
+			}
+//			oBean.setO_id         (newBean.getO_id()       ); // 無意義  
 			oBean.setP_id         (newOBean.getP_id()       );  
 			oBean.setP_name       (newOBean.getP_name()     );  
 			oBean.setP_price      (newOBean.getP_price()    );  
@@ -229,19 +231,13 @@ public class OrderDao implements IOrderDao {
 		updateStatus = true;
 		return updateStatus;
 	}
+
 	
-	public boolean delete(OrderInfo orderBean) {
-		// 方法⓵ > 執行SELECT + DELETE
-/**		Order resultBean = em.find(Order.class, orderBean.getO_id());
-		if (resultBean != null) {
-			session.delete(orderBean); 
-		}*/
-		// 方法⓶ > HQL
-		Query query = em.createQuery("DELETE OrderInfo WHERE o_id = :oid");
-		query.setParameter("oid", orderBean.getO_id());
-		int deletedNum = query.executeUpdate();
-		System.out.println("You deleted " + deletedNum + " row(s) from order_info table.");
-		return (deletedNum == 0)? false : true;
+	public Integer delete(Integer[] o_ids) {
+		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)");
+		deleteQuery.setParameter("oids", Arrays.asList(o_ids));
+		Integer result = deleteQuery.executeUpdate();
+		return result;
 	}
 
 }

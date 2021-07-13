@@ -6,13 +6,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<title>訂單後台管理</title>
+<title>訂單後台管理系統</title>
 
 <script>
 
 	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
 	
 	var adminId = "${adminId}";
+	// 踢除非管理員
+	if(!adminId){
+		alert('您不具有管理者權限，請登入後再試。');
+		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	}
+	
 	window.onload = function(){
 	// console.log(adminId);
 		
@@ -40,30 +46,37 @@
 					<div id="main">
 						<div class="inner">
 
+
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
 								
-								<h1>訂單管理</h1>
-								
-								<label id='searchBarLabel'><input type='search' id='searchBar'>搜尋</label>
-								<button type="submit" id="searchBtn">查詢</button>
-								<select id='searchBy'>
-									<option value='u_id'selected>以使用者帳號(u_id)</option>
-									<option value='o_id'>以帳單編號(o_id)</option>
-									<option value='p_id'>以課程代號(p_id)</option>
-									<option value='p_name'>以課程名稱(p_name)</option>
-									<option value='u_lastname'>以使用者姓氏(u_lastname)</option>
-									<option value='u_firstname'>以使用者名字(u_firstname)</option>
-									<option value='o_status'>以訂單狀態(o_status)</option>
-									<option value='o_amt'>以訂單小計(o_amt)</option>
-									<option value='o_date'>以訂單日期(o_date)</option>
-								</select>
+								<h1>訂單管理系統</h1>
+								<!-- <ul class="actions special"> -->
+								<ul class="actions fit">
+									<li style="width: 70%;" id="searchBarHanger1"><input type="search" id="searchBar" placeholder='搜尋'></li>
+									<li style="width: 35%;" id="searchBarHanger2" hidden><input class="" type='search' id='searchBar' placeholder='搜尋'></li>
+									<li style="width: 20%;">
+										<select class="fit" id='searchBy'>
+											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
+											<option value='u_id'>會員帳號</option>
+											<option value='o_id'>訂單編號</option>
+											<option value='p_id'>課程代號</option>
+											<option value='p_name'>課程名稱</option>
+											<option value='u_lastname'>會員姓氏</option>
+											<option value='u_firstname'>會員名字</option>
+											<option value='o_status'>訂單狀態</option>
+											<option value='o_amt'>訂單小計</option>
+											<option value='o_date'>訂單日期</option>
+										</select>
+									</li>
+									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
+								</ul>
 								<h1 id='topLogo'></h1>
-								<hr id="pageHref">
+								<hr id="pageHref" class="">
 								<form>
-									<!-- 秀出所有Order_Info (希望之後能每20項分一頁) -->
-									<table border="2px">
+									<!-- 秀出所有Order_Info -->
+									<table class="alt" style="border: 2px " >
 										<thead id="theadArea"></thead>
 										<tbody id="tbodyArea"></tbody>
 									</table>
@@ -71,14 +84,10 @@
 									<hr>
 									
 								</form>
-								<button name="todo" id="insert" value="insertAdmin" 
-								onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
-								<button name="todo" id="delete" value="deleteAdmin">刪除勾選資料</button>
-								<hr>
-								<form>
-									<button formmethod="GET" formaction="<c:url value='/gotoAdminIndex.controller' />">回管理者首頁</button>
-									<button formmethod="GET" formaction="<c:url value='/' />">回使用者首頁</button>
-								</form>
+								<button id="insert"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
+								<button id="delete">刪除勾選資料</button>
+								<button id='toAdminIndexBtn'>回管理者首頁</button>
+								<button id='toClientIndexBtn'>回使用者首頁</button>
 								
 
 								
@@ -98,45 +107,109 @@
 			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>
 				// 不用等DOM就可以先宣告的變數們
 				let segments = [];
+				let isCheckedList = [];
 				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
 				let rowPerPage = 10;
 				let maxPageNum = 10;
-				// let dateFormat = /^(((199\d)|(20[0-1]\d)|(20(2[0-1])))\-((0\d)|(1[0-2]))\-(([0-2]\d)|(3[0-1])))( )((([0-1]\d)|(2[0-3])):[0-5]\d:[0-5]\d\.\d)$/;
-				// 從1990-01-01到2021-12-31 // 沒有防大小月和２月
-				
+				let orders = [];
+
+				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
+				var memorize = function(checkboxObj){
+					let o_id = checkboxObj.value;
+					// let o_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
+					let idx = isCheckedList.indexOf(o_id);
+					if(idx > -1) {
+						isCheckedList.splice(idx, 1);
+					} else {
+						isCheckedList.push(o_id);
+					}
+					console.log('isCheckedList = ' + isCheckedList);
+					return;
+				}
+
+				// 【自訂函數 1】掛頁籤函數
+				let appendPegination = function(){
+					pageNum = Math.ceil((segments.length)/rowPerPage);
+					let temp0 = "";
+					let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
+					for(let i = 0; i < tempPageNum; i++){
+						temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+					}
+					$(pageHref).html(temp0);
+					for(let i = 0; i < tempPageNum; i++){
+						$('#btnPage' + i).on('click', function(){
+							$('.pageBtn').removeClass('primary');
+							$('#btnPage' + i).addClass('primary');
+						})
+					}
+					$('#btnPage0').addClass('primary');
+					
+					$('.pageBtn').on('click', function(){
+						let pageIndex = $(this).attr('data-index');
+						switchPage(pageIndex);
+						for (let i = 0; i < isCheckedList.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + isCheckedList[i]);
+							if(thisCkbox){
+								thisCkbox.checked = true;
+							}
+						}
+					})
+				}
+
+				// 【自訂函數 2】頁籤掛資料
+
+				function switchPage(pageIndex){
+					let htmlStuff = "";
+					counter = pageIndex * rowPerPage;
+					let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
+					for(let i = counter; i < tempCounter0; i++){
+						htmlStuff += segments[i];
+					}
+					$('#tbodyArea').html(htmlStuff);
+				}
+
+				// DOM載入完成後
 				$(function(){
 					let topLogo = $('#topLogo');
 					let logo = $('#logo');
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
 					let pageHref = $('#pageHref');
-					let searchBarLabel = $('#searchBarLabel');
+					let searchBarHanger1 = $('#searchBarHanger1');
+					let searchBarHanger2 = $('#searchBarHanger2');
 					let searchBy = $('#searchBy');
 					let searchBar = $('#searchBar');
 					/*********************************************************************************************************/
-					// 【自訂函數 #】searchBar樣式隨使用者的選擇變化
+					// 【自訂函數 3】查詢框(#searchBar)樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
+						$('#searchBtn').attr('disabled', false);
 						if(this.value == 'o_date'){
-							$(searchBarLabel).html(
-								"<input type='datetime-local' step='1' id='searchDateStart'>起始時間" + 
-								"<input type='datetime-local' step='1' id='searchDateEnd'>結束時間<br>搜尋"
-							);
-						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'){
-							$(searchBarLabel).html("<input type='search' id='searchBar'>搜尋");
+							searchBarHanger1.css('width', '35%');
+							searchBarHanger2.attr('hidden', false);
+							$(searchBarHanger1).html("<input type='datetime-local' step='1' id='searchDateStart'>起始時間");
+							$(searchBarHanger2).html("<input type='datetime-local' step='1' id='searchDateEnd'>結束時間");
+							$('input[type="datetime-local"]').setNow();
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' || this.value == 'p_name'){
+							searchBarHanger1.css('width', '70%');
+							searchBarHanger2.attr('hidden', true);
+							$(searchBarHanger1).html("<input type='search' id='searchBar' placeholder='搜尋'>");
 						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
-							$(searchBarLabel).html(
-								"<input type='search' id='searchMin'>最小值" +
-								"<input type='search' id='searchMax'>最大值<br>搜尋"  
-							);
+							searchBarHanger1.css('width', '35%');
+							searchBarHanger2.attr('hidden', false);
+							$(searchBarHanger1).html("<input type='search' id='searchMin' placeholder='最小值'>");
+							$(searchBarHanger2).html("<input type='search' id='searchMax' placeholder='最大值'>");
 						} else if(this.value == 'o_status'){
-							$(searchBarLabel).html(
+							searchBarHanger1.css('width', '70%');
+							searchBarHanger2.attr('hidden', true);
+							$(searchBarHanger1).html(
 								"<select id='searchBar'>" +
 								"<option value='完成' selected>完成</option>" +
 								"<option value='處理中'>處理中</option>" +
@@ -145,31 +218,18 @@
 							);
 						}
 					})
+					// 【自訂函數 4】重新導向頁面
+					$('#toAdminIndexBtn').on('click', function(){
+						top.location = "<c:url value='/gotoAdminIndex.controller' />";
+					})
+					$('#toClientIndexBtn').on('click', function(){
+						top.location = "<c:url value='/' />";
+					})
 
-					// 【自訂函數 1】go to UPDATE page
-					function toUpdatePage(oid){
-						// let url = "<c:url value='/cart.controller/cartAdminUpdate/' />" + oid; // ❓
-						let url = "http://localhost:8080/studiehub/order.controller/adminUpdate/" + oid;
-						console.log(url);
-						top.location = url;
-					}
-					
-					// 【自訂函數 2】分頁掛資料
-					
-					function switchPage(pageIndex){
-						let htmlStuff = "";
-						counter = pageIndex * rowPerPage;
-						let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
-						for(let i = counter; i < tempCounter0; i++){
-							htmlStuff += segments[i];
-						}
-						tbodyArea.html(htmlStuff);
-					}
-									
-					// 【自訂函數 3】查詢功能
+					// 【自訂函數 6】查詢功能
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
-						let queryString = "";
+						let queryString = '';
 
 						let forDate = (searchBy.val() == 'o_date');
 						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
@@ -195,38 +255,30 @@
 								parseSelectedRows(xhr.responseText);
 								// 掛topLogo
 								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
-								// 掛資料
-								let htmlStuff = "";
-								let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
-								for(let i = counter; i < tempCounter0; i++){
-									htmlStuff += segments[i]
-								}
-								tbodyArea.html(htmlStuff);
+								// 掛資料(index = 0 即第 1 頁)
+								switchPage(0);
 								// 掛頁籤
-								pageNum = Math.ceil((segments.length)/rowPerPage); // 57 / 10 => 6 個頁籤
-								let temp0 = "";
-								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum; // 資料再多也只會顯示10個頁籤
-								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
+								appendPegination();
+								// 掛th
+								theadArea.html(
+									"<th>DELETE BUTTON</th>"
+									+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
+									+ "<th>課程代號<br>(p_id)</th>"
+									+ "<th>用戶帳號<br>(u_id)</th>"
+									+ "<th>訂單狀態<br>(o_status)</th>"
+									+ "<th>訂單時間<br>(o_date)</th>"
+									+ "<th>訂單總額<br>(o_amt)</th>"
+									+ "<th>操作</th>"
+								);
+								if (segments.length == 0) {
+									theadArea.html('');
 								}
-								pageHref.html(temp0);
-								for(let i = 0; i < tempPageNum; i++){
-									$('#btnPage' + i).on('click', function(){
-										$('.pageBtn').removeClass('primary');
-										$('#btnPage' + i).addClass('primary');
-									})
-								}
-								$('#btnPage0').addClass('primary');
-								$('.pageBtn').on('click', function(){
-									let pageIndex = $(this).attr('data-index');
-									switchPage(pageIndex);
-								})
 							}
 
 						}
 					})
 						
-					// 【自訂函數 4】顯示資料庫最新100筆訂單 (SELECT TOP(100)) + 掛資料
+					// 【自訂函數 7】顯示資料庫最新100筆訂單 (SELECT TOP(100)) + 掛資料 + 掛頁籤
 					function showTop100() {
 						let xhr = new XMLHttpRequest();
 						let url = "<c:url value='/order.controller/adminSelectTop100' />";
@@ -235,78 +287,68 @@
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								parseSelectedRows(xhr.responseText);
-								let htmlStuff = "";
-								let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
-								for(let i = counter; i < tempCounter0; i++){
-									htmlStuff += segments[i]
+								switchPage(0);
+								appendPegination();
+								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								if (segments.length != 0) {
+									theadArea.html("");
 								}
-								tbodyArea.html(htmlStuff);
 							}
 						}
 					} 
 
-					// 【自訂函數 5】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
+					// 【自訂函數 8】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
 					function parseSelectedRows(map) {
-						parsedMap = JSON.parse(map);
-						let orders = parsedMap.list;
-							let totalPrice = 0;
-							rowNum = (orders)? orders.length : 0;
-							segments = [];
-							for (let i = 0; i < orders.length; i++) {
-								totalPrice += orders[i].p_price;
-								let temp0 =	 "<tr>" + 
-													"<td><input name='ckbox' class='ckbox" + i + "' id='ckbox" + i + "' type='checkbox' value=' + " + i + "'><label for='ckbox" + i + "'></label></td>" +
-													"<td><label data-val='" + orders[i].o_id + "' class='old" + i + "0' >" + orders[i].o_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].p_id + "' class='old" + i + "1' >" + orders[i].p_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].u_id + "' class='old" + i + "2' >" + orders[i].u_id + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_status + "' class='old" + i + "3' >" + orders[i].o_status + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_date + "' class='old" + i + "4' >" + orders[i].o_date + "</label></td>" +
-													"<td><label data-val='" + orders[i].o_amt + "' class='old" + i + "5' id='num' >" + orders[i].o_amt + "</label></td>" +
-													"<td width='120'><a href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
-													"</tr>";
-								segments.push(temp0);
-							}
+						let parsedMap = JSON.parse(map);
+						console.log(parsedMap);
+						orders = parsedMap.list;
+						let totalPrice = 0;
+						rowNum = (orders)? orders.length : 0;
+						segments = [];
+						for (let i = 0; i < orders.length; i++) {
+							totalPrice += orders[i].p_price;
+							let temp0 =	 "<tr>" + 
+												"<td><input onclick='memorize(this)' id='ckbox" + orders[i].o_id + "' " +
+													"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + orders[i].o_id + "'></label></td>" +
+												"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
+												"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
+												"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
+												"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
+												"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
+												"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
+												"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+												"</tr>";
+							segments.push(temp0);
+						}
+						console.log(segments.length);
 					};
-
-					// 【自訂函數 6】DELETE
+					
+					// 【自訂函數 9】NEW DELETE
 					$('#delete').on('click', function(){
-						let tempCounter1 = 0;
-						let result = null;
-						for(let i = 0; i < rowNum; i++) {
-							let ckboxIsChecked = $('.ckbox' + i).is(':checked');
-							tempCounter1 ++;
-							
-							if(ckboxIsChecked) { 
-								let ckboxValue = $('.ckbox' + i).val();
-								let o_id = $('.old' + i + '0').attr('data-val');
-								
-								let xhr = new XMLHttpRequest();
-								xhr.open("POST", "<c:url value='/order.controller/deleteAdmin' />", true);
-								xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
-								xhr.send('o_id=' + o_id);
-								xhr.onreadystatechange = function() {
-									if (xhr.readyState == 4 && xhr.status == 200) {
-										result = JSON.parse(xhr.responseText);
-										console.log(result.state);
-										// showTop100();
-										if(tempCounter1 == rowNum){ // ❗
-											pageHref.html("");
-											tbodyArea.html("");
-											mainFunc();
-											
-											// if(result.status == "true"){
-											// 	logo.text('已刪除勾選之項目！'); // ❗
-											// } else {
-											// 	logo.text('刪除未成功！');
-											// }
-										}
-									}
-								}
+						let queryString = 'o_ids=';
+						for (let i = 0; i < isCheckedList.length; i++) {
+							queryString += isCheckedList[i];
+							queryString += ((i + 1) != isCheckedList.length)? ',' : '';
+						}
+
+						console.log(queryString);
+
+						let xhr = new XMLHttpRequest();
+						xhr.open("POST", "<c:url value='/order.controller/deleteAdmin' />", true);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
+						xhr.send(queryString);
+						xhr.onreadystatechange = function() {
+							if (xhr.readyState == 4 && xhr.status == 200) {
+								result = JSON.parse(xhr.responseText);
+								console.log(result.state);
+								mainFunc();
+								isCheckedList = [];
 							}
 						}
+												
 					})
 
-					//【自訂函數 7】主程式函數
+					//【自訂函數 10】主程式函數
 					function mainFunc(){
 						// console.log('Start of mainFunc()');
 						theadArea.html(
@@ -319,86 +361,18 @@
 								+ "<th>訂單總額<br>(o_amt)</th>"
 								+ "<th>操作</th>"
 						);
+						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤
+						showTop100();
+						
 
-						let xhr0 = new XMLHttpRequest();
-						let url = "<c:url value='/order.controller/adminSelectTop100' />";
-						xhr0.open("GET", url, true);
-						xhr0.send();
-						xhr0.onreadystatechange = function() {
-							if (xhr0.readyState == 4 && xhr0.status == 200) {
-								// 解析&暫存回傳資料
-								parseSelectedRows(xhr0.responseText);
-								// 掛topLogo
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
-								// 掛資料
-								let htmlStuff = "";
-								let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
-								for(let i = counter; i < tempCounter0; i++){
-									htmlStuff += segments[i]
-								}
-								tbodyArea.html(htmlStuff);
-								// 掛頁籤
-								pageNum = Math.ceil((segments.length)/rowPerPage);
-								let temp0 = "";
-								let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
-								for(let i = 0; i < tempPageNum; i++){
-									temp0 += "<button class='pageBtn' data-index='" + i + "' type='button' id='btnPage" + i + "'>" + (i + 1) + "</button>&nbsp;&nbsp;&nbsp;";
-								}
-								pageHref.html(temp0);
-								for(let i = 0; i < tempPageNum; i++){
-									$('#btnPage' + i).on('click', function(){
-										$('.pageBtn').removeClass('primary');
-										$('#btnPage' + i).addClass('primary');
-									})
-								}
-								$('#btnPage0').addClass('primary');
-								
-								$('.pageBtn').on('click', function(){
-									let pageIndex = $(this).attr('data-index');
-									switchPage(pageIndex);
-								})
-							}
-						}
-						// console.log('End of mainFunc()');
+
 					}
 					
 				/*********************************************************************************************************/
 					// 主程式
 					mainFunc();
 					
- 					
 
-/* 
-					$('input#num').on('focusout', function(){
-						if(!isNaN($(this).val())){
-							console.log('if')
-							return;
-						} else {
-							console.log('else')
-							logo.text('Only numbers are allowed.')
-							$(this).val('')
-						}
-					})
-	
-	
-					// func.04 
-					
-					$('i#gcIcon', 'button#gcBtn').on('click', function(event){
-						event.preventDefault();
-					})
-	
-					// func.05 刪除功能防呆 ❌施工中
-					$('input#ckbox').on('click', function(){
-						let ckboxes = $('input#ckbox:checked');
-						$('#delete').attr('disabled', true);
-							if($(ckboxes).length == 0 || $(ckboxes).length == null) {
-								console.log('(if)' + $(ckboxes).length);
-							} else {
-								$('#delete').attr('disabled', false);
-								console.log('(else)' + $(ckboxes).length);		
-							}
-					})
-	 */
 				})
 				</script>		
 		

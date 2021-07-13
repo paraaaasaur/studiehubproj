@@ -14,67 +14,69 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.group5.springboot.model.cart.OrderInfo;
-import com.group5.springboot.service.cart.OrderService;
-import com.group5.springboot.validate.OrderValidator;
+import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.validate.CartValidator;
 
 @Controller
 public class CartViewController {
 	@Autowired
-	private OrderService orderService;
+	private CartItemService cartItemService;
 	@Autowired
-	private OrderValidator orderValidator;
-
+	private CartValidator cartValidator;
+	
+	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/order.controller/adminInsert"})
-	public String toOrderAdminInsert(Model model) {
-		model.addAttribute("emptyOrderInfo", new OrderInfo());
-		return "/cart/orderAdminInsert";
+	@GetMapping(value = {"/cart.controller/adminInsert"})
+	public String toCartAdminInsert(Model model) {
+		model.addAttribute("emptyCartItem", new CartItem());
+		return "/cart/cartAdminInsert";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/order.controller/adminInsert"})
-	public String orderAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
+	@PostMapping(value = {"/cart.controller/adminInsert"})
+	public String cartAdminInsert(@ModelAttribute("emptyCartInfo") CartItem cartItem,
 			BindingResult result, 
 			RedirectAttributes ra) {
 		
-		orderValidator.validate(orderInfo, result);
+		cartValidator.validate(cartItem, result);
 		if (result.hasErrors()) {			
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "/cart/orderAdminInsert";
-//			return "redirect:/order.controller/adminInsert"; // ❓
+			return "/cart/cartAdminInsert";
+//			return "redirect:/cart.controller/adminInsert"; // ❓
 		}
 		
-		orderService.insert(orderInfo);
-		ra.addFlashAttribute("successMessage", "訂單編號 = " + orderInfo.getO_id() + "新增成功！");
-		return "redirect:/order.controller/adminSelect";
+		cartItemService.insert(cartItem.getP_id(), cartItem.getU_id());
+		ra.addFlashAttribute("successMessage", "購物車項目編號 = " + cartItem.getCart_id() + "新增成功！");
+		return "redirect:/cart.controller/adminSelect";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/order.controller/adminUpdate/{oid}"})
-	public String toOrderAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
-		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)).get("orderInfo"));
-		return "/cart/orderAdminUpdate";
-//		return "redirect:/order.controller/adminUpdate"; // ❓
+	@GetMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
+	public String toCartAdminUpdate(@PathVariable("cartid") Integer cartid, Model model) {
+		model.addAttribute("cartItem", cartItemService.select(cartid).get("cartItem"));
+		return "/cart/cartAdminUpdate";
+//		return "redirect:/cart.controller/adminUpdate"; // ❓
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/order.controller/adminUpdate/{oid}"})
-	public String orderAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
+	@PostMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
+	public String cartAdminUpdate(@ModelAttribute(name = "cartItem") CartItem cartItem,
 			BindingResult result, 
 			RedirectAttributes ra) {
 		
-		orderValidator.validate(orderInfo, result);
+		cartValidator.validate(cartItem, result);
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "/cart/orderAdminUpdate";
+			return "/cart/cartAdminUpdate";
 		}
-		
-		orderService.update(orderInfo);
-		ra.addFlashAttribute("successMessage", "o_id = " + orderInfo.getO_id() + "修改成功");
-		return "redirect:/order.controller/adminSelect";
+		System.out.println(cartItem);
+		Integer updateStatus = cartItemService.update(cartItem.getU_id(), cartItem.getP_id(), cartItem.getCart_id());
+		String successMessage = (updateStatus == 1)? "o_id = " + cartItem.getCart_id() + "修改成功" : "修改失敗";
+		ra.addFlashAttribute("successMessage", successMessage);
+		return "redirect:/cart.controller/adminSelect";
 		
 	}
 	
@@ -91,40 +93,11 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/order.controller/adminSelect"})
+	@GetMapping(value = {"/cart.controller/adminSelect"})
 	public String toCartAdminSelect() {
-		return "cart/orderAdminSelect";
+		return "cart/cartAdminSelect";
 	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-//	@PostMapping("/cart.controller/pay")
-//	public String pay() {
-//
-//		User_Info fakeUserInfo00 = new User_Info();
-//		fakeUserInfo00.setU_id("fbk001");
-//		
-//		// 取得O_Amt
-//		 Integer O_Amt = 0;
-//		 for (int i = 0; i < this.cart.size(); i++) {
-//			O_Amt += this.cart.get(i).getP_Price();
-//		}
-//		 
-//		// 把OrderBean的資料寫進去Database
-//		for(int i = 0; i < cart.size(); i++) {
-//			OrderInfo orderBean = new OrderInfo();
-//			orderBean.setO_id(1000); // PK // 會受IDENTITY(1, 1)的影響被複寫掉，值是多少都無所謂 // ❗
-//			orderBean.setP_id(cart.get(i).getP_ID()); // FK
-//			orderBean.setU_id(fakeUserInfo00.getU_id()); // FK // fake
-//			orderBean.setO_amt(O_Amt);
-//			orderService.insert(orderBean);
-//		}
-//
-//		this.cart = new ArrayList<ProductInfo>();
-//		System.out.println("購買成功，感謝您！");
-//		return "/cart/cartThanks";
-//	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+
 	
 
 }

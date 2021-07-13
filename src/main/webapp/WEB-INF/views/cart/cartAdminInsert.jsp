@@ -5,11 +5,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<title>訂單後台管理系統</title>
+<title>購物車後台管理系統</title>
 	<style type="text/css">
 	   span.error {
 		color: red;
@@ -17,17 +16,16 @@
 		font-size: 100%;
 	}
 	</style>
-
 <script>
 
 	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
 	
 	var adminId = "${adminId}";
-	// 踢除非管理員
-	if(!adminId){
-	alert('您不具有管理者權限，請登入後再試。');
-	top.location = "<c:url value='/gotoAdminIndex.controller' />";
-}
+		// 踢除非管理員
+		if(!adminId){
+		alert('您不具有管理者權限，請登入後再試。');
+		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	}
 
 	window.onload = function(){
 	// console.log(adminId);
@@ -61,18 +59,18 @@
 								<%@include file="../universal/adminHeader.jsp" %>  
 
 								<fieldset>
-									<h1 style="text-align: center;">維護訂單資料</h1>
-									<form:form method="POST" modelAttribute="orderInfo" enctype='multipart/form-data'>
+									<h1 style="text-align: center;">新增購物車品項資料</h1>
+									<form:form method="POST" modelAttribute="emptyCartItem" enctype='multipart/form-data'>
 										<Table>
 											<tr>
-												<td>(1) 訂單代號：<br>&nbsp;</td>
+												<td>(1) 品項代號：<br>&nbsp;</td>
 												<td width='360'>
-													<form:input path="o_id" id="o_id" readonly="true" /><br>&nbsp;
+													<form:input path="cart_id" disabled="true" id="cart_id" value="[由系統自動產生]" /><br>&nbsp;
 												</td>
 												<td>(2) 課程代號：<br>&nbsp;</td>
 												<td width='360'>
 													<form:input path='p_id' id="p_id" /><br>&nbsp;
-													<form:errors path='p_id' cssClass="error" id='p_idError' />
+													<form:errors path='p_id' cssClass="error" />
 												</td>
 											</tr>
 											<tr>
@@ -96,52 +94,29 @@
 													<form:input path='u_firstname' readonly="true" id="u_firstname" placeholder="【自動代入】" /><br>&nbsp;
 												</td>
 											</tr>
-									
+								
 											<tr>
 												<td>(7) 會員姓氏：<br>&nbsp;</td>
 												<td>
 													<form:input path="u_lastname" readonly="true" id="u_lastname" placeholder="【自動代入】" /><br>&nbsp;
 												</td>
-												<td>(8) 會員信箱：<br>&nbsp;</td>
+												<td>(8) 品項加入日期：<br>&nbsp;</td>
 												<td>
-													<form:input path="u_email" readonly="true" id="u_email" inputmode="email" placeholder="【自動代入】" />
-													<br>&nbsp;
+													<form:input path="cart_date" readonly="true" id="cart_date" placeholder="【自動產生】" /><br>&nbsp; 
 												</td>
 											</tr>
-									
+								
 											<tr>
-												<td>(9) 訂單狀態：<br>&nbsp;</td>
-												<td>
-													<form:select path="o_status" id="o_status">
-														<form:option value="完成" label="完成" />
-														<form:option value="處理中" label="處理中" />
-														<form:option value="失效" label="失效" />
-													</form:select><br>&nbsp;
-													<form:errors path="o_status" cssClass="error" />
-												</td>
-												<td>(10) 訂單日期：<br>&nbsp;</td>
-												<td>
-													<form:input path="o_date" readonly="true" id="o_date" placeholder="【自動產生】" /><br>&nbsp;
-													<!-- ❗ -->
-												</td>
-											</tr>
-									
-											<tr>
-												<td>(11) 訂單小計：<br>&nbsp;</td>
-												<td>
-													<form:input path="o_amt" id="o_amt" /><br>&nbsp;
-													<form:errors path="o_amt" cssClass="error" />
-												</td>
 												<td colspan='4' align='center'><br>&nbsp;
-													<a class='button' href="<c:url value='/order.controller/adminSelect' />" >回上一頁</a>
+													<a class="button" href="http:\/\/localhost:8080/studiehub/cart.controller/adminSelect" >回上一頁</a>
 													<input type='submit' value='送出資料'>
-													<!-- <input type='button' id='cheat' value='一鍵生成'> -->
+													<input type='button' id='cheat' value='一鍵生成'>
 												</td>
 											</tr>
 										</Table>
-									
+								
 									</form:form>
-									
+								
 								</fieldset>
 								
 						</div>
@@ -162,74 +137,86 @@
 			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
-		<script>
-			$(function(){
-				let o_id = $('#o_id');
-				let p_id = $('#p_id');
-				let p_name = $('#p_name');
-				let p_price = $('#p_price');
-				let u_id = $('#u_id');
-				let u_firstname = $('#u_firstname');
-				let u_lastname = $('#u_lastname');
-				let u_email = $('#u_email');
-				let o_status = $('#o_status');
-				let o_date = $('#o_date');
-				let o_amt = $('#o_amt');
+			<script>
+				$(function(){
+					let cart_id = $('#cart_id');
+					let p_id = $('#p_id');
+					let p_name = $('#p_name');
+					let p_price = $('#p_price');
+					let u_id = $('#u_id');
+					let u_firstname = $('#u_firstname');
+					let u_lastname = $('#u_lastname');
+					let cart_date = $('#cart_date');
 
-				$(p_id).on('focusout', function(){
-					if (!(p_id.val())) {
+					let cheat = $('#cheat');
+					
+
+					function autoFillInProductStuff(){
+						if (!(p_id.val())) {
 							p_name.val('【自動代入】');
 							p_price.val('【自動代入】');
 							return;
-					}
-					let xhr = new XMLHttpRequest();
-					xhr.open("POST", "<c:url value='/order.controller/adminSelectProduct' />", true);
-					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-					xhr.send("p_id=" + p_id.val());
-					$(xhr).on('readystatechange', function(){
-						if(xhr.readyState == 4 && xhr.status == 200){
-							let json = (!xhr.responseText)? null : JSON.parse(xhr.responseText);
-							if(json){
-								p_name.val(json.p_Name);
-								p_price.val(json.p_Price);
-							} else {
-								p_name.val('該課程編號(p_id)尚未存在！');
-								p_price.val('該課程編號(p_id)尚未存在！');
-							}
 						}
-					})
-				});
-				
-				$(u_id).on('focusout', function(){
-					if (!(u_id.val())) {
+						let xhr = new XMLHttpRequest();
+						xhr.open("POST", "<c:url value='/cart.controller/adminSelectProduct' />", true);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						xhr.send("p_id=" + p_id.val());
+						$(xhr).on('readystatechange', function(){
+							if(xhr.readyState == 4 && xhr.status == 200){
+								let json = (!xhr.responseText)? null : JSON.parse(xhr.responseText);
+								if(json){
+									p_name.val(json.p_Name);
+									p_price.val(json.p_Price);
+								} else {
+									p_name.val('該課程編號(p_id)尚未存在！');
+									p_price.val('該課程編號(p_id)尚未存在！');
+								}
+							}
+						})
+					}
+
+					$(p_id).on('focusout', function(){
+						autoFillInProductStuff();
+					});
+					
+					function autoFillInUserStuff(){
+						if (!(u_id.val())) {
 							u_firstname.val('【自動代入】');
 							u_lastname.val('【自動代入】');
-							u_email.val('【自動代入】');
 							return;
-					}
-					let xhr = new XMLHttpRequest();
-					xhr.open("POST", "<c:url value='/order.controller/adminSelectUser' />", true);
-					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-					xhr.send("u_id=" + u_id.val());
-					$(xhr).on('readystatechange', function(){
-						if(xhr.readyState == 4 && xhr.status == 200){
-							let json = (!xhr.responseText)? null : JSON.parse(xhr.responseText);
-							if(json){
-								u_firstname.val(json.u_firstname);
-								u_lastname.val(json.u_lastname);
-								u_email.val(json.u_email);
-							} else {
-								u_firstname.val('該會員帳號(u_id)尚未存在！');
-								u_lastname.val('該會員帳號(u_id)尚未存在！');
-								u_email.val('該會員帳號(u_id)尚未存在！');
-							}
 						}
+						let xhr = new XMLHttpRequest();
+						xhr.open("POST", "<c:url value='/cart.controller/adminSelectUser' />", true);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						xhr.send("u_id=" + u_id.val());
+						$(xhr).on('readystatechange', function(){
+							if(xhr.readyState == 4 && xhr.status == 200){
+								let json = (!xhr.responseText)? null : JSON.parse(xhr.responseText);
+								if(json){
+									u_firstname.val(json.u_firstname);
+									u_lastname.val(json.u_lastname);
+								} else {
+									u_firstname.val('該會員帳號(u_id)尚未存在！');
+									u_lastname.val('該會員帳號(u_id)尚未存在！');
+								}
+							}
+						})
+					}
+
+					$(u_id).on('focusout', function(){
+						autoFillInUserStuff();
+					});
+
+					$(cheat).on('click', function(){
+						p_id.val(1);
+						u_id.val('fbk001');
+						o_amt.val(Math.round(Math.random() * 100000));
+						autoFillInProductStuff();
+						autoFillInUserStuff();
 					})
-					return;
-				});
 
+				})
+			</script>
 
-			})
-		</script>
 		</body>
 </html>

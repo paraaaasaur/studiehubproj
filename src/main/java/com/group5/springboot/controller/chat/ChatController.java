@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.group5.springboot.controller.user.UserController;
 import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.service.chat.ChatService;
 
 @Controller
@@ -100,13 +101,20 @@ public class ChatController {
 		return chat_Info;
 	}
 	
+	@GetMapping(path = "/selectOneChat/{c_ID}", produces = {"application/json"})
+	@ResponseBody
+	public List<Chat_Reply> findOneChat(@PathVariable(required = true) int c_ID) {
+		List<Chat_Reply> chat_Reply = chatService.findAllChatReply(c_ID);
+		return chat_Reply;
+	}
+	
 	@PostMapping(path = "/insertChat", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info){
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.insertChat(chat_Info);
-			chatService.createChatTable("chat_Reply" + chat_Info.getC_ID());
+			chatService.insertFirstChatReply(chat_Info);
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
@@ -135,7 +143,7 @@ public class ChatController {
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.deleteChat(c_ID);
-			chatService.deleteChatTable("chat_Reply" + c_ID);
+			chatService.deleteChatReply(c_ID);
 			map.put("success", "刪除成功");
 		} catch (Exception e) {
 			map.put("fail", "刪除失敗，請再試一次...");

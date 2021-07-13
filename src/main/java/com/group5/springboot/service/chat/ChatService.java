@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
 
 @Service
 public interface ChatService {
@@ -19,8 +20,12 @@ public interface ChatService {
 	
 	public Chat_Info selectChatById(int c_ID);
 	
-	public void createChatTable(String table_Name);
+	public List<Chat_Reply> findAllChatReply(int c_ID);
 	
-	public void deleteChatTable(String table_Name);
+	public void insertFirstChatReply(Chat_Info chat_Info);
+	
+	public void insertChatReply(Chat_Reply chat_Reply);
+	
+	public void deleteChatReply(int c_ID);
 
 }

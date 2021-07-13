@@ -73,7 +73,7 @@
 								<h1 id='topLogo'></h1>
 								<hr id="pageHref" class="">
 								<form>
-									<!-- 秀出所有Cart_Info -->
+									<!-- 秀出所有CartItem -->
 									<table class="alt" style="border: 2px " >
 										<thead id="theadArea"></thead>
 										<tbody id="tbodyArea"></tbody>
@@ -132,7 +132,9 @@
 					console.log('checkedCartids = ' + checkedCartids);
 					// 改變#deleteBtn外觀和disabled值
 					document.querySelector('#deleteBtn').disabled = (checkedCartids.length == 0)? true : false;
-					document.querySelector('#deleteBtn').innerHTML = '刪除 ' + checkedCartids.length + ' 筆資料';  // ❗ 超過10筆資料時button會變胖
+					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
+									'刪除<font color="cornflowerblue"> ' + checkedCartids.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
+									'刪除勾選資料';
 					return;
 				}
 

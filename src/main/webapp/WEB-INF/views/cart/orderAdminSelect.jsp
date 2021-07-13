@@ -134,7 +134,9 @@
 					console.log('checkedOids = ' + checkedOids);
 					// 改變#deleteBtn外觀和disabled值
 					document.querySelector('#deleteBtn').disabled = (checkedOids.length == 0)? true : false;
-					document.querySelector('#deleteBtn').innerHTML = '刪除 ' + checkedOids.length + ' 筆資料'; // ❗ 超過10筆資料時button會變胖
+					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
+									'刪除<font color="cornflowerblue"> ' + checkedCartids.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
+									'刪除勾選資料';
 					return;
 				}
 

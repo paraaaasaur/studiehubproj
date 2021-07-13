@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
 
 @Repository
 public interface ChatDao {
@@ -19,8 +20,12 @@ public interface ChatDao {
 	
 	public Chat_Info selectChatById(int c_ID);
 	
-	public void createChatTable(String table_Name);
+	public List<Chat_Reply> findAllChatReply(int c_ID);
 	
-	public void deleteChatTable(String table_Name);
+	public void insertFirstChatReply(Chat_Info chat);
+	
+	public void insertChatReply(Chat_Reply chat);
+	
+	public void deleteChatReply(int c_ID);
 
 }

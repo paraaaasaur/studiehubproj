@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.group5.springboot.dao.chat.ChatDao;
 import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
 
 @Service
 @Transactional
@@ -43,13 +44,23 @@ public class ChatServiceImpl implements ChatService{
 	}
 
 	@Override
-	public void createChatTable(String table_Name) {
-		chatDao.createChatTable(table_Name);
+	public List<Chat_Reply> findAllChatReply(int c_ID) {
+		return chatDao.findAllChatReply(c_ID);
+	}
+	
+	@Override
+	public void insertFirstChatReply(Chat_Info chat_Info) {
+		chatDao.insertFirstChatReply(chat_Info);
 	}
 
 	@Override
-	public void deleteChatTable(String table_Name) {
-		chatDao.deleteChatTable(table_Name);
+	public void insertChatReply(Chat_Reply chat_Reply) {
+		chatDao.insertChatReply(chat_Reply);
+	}
+
+	@Override
+	public void deleteChatReply(int c_ID) {
+		chatDao.deleteChatReply(c_ID);
 	}
 
 }

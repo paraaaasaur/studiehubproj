@@ -15,32 +15,35 @@
 	var c_ID = "${c_ID}";
 	
 	window.onload = function() {
+		
 		var xhr = new XMLHttpRequest();
-		xhr.open("GET", "<c:url value='/selectSingleChat/" + c_ID + "' />", true);
+		xhr.open("GET", "<c:url value='/selectOneChat/" + c_ID + "' />", true);
 		xhr.send();
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200) {
-				var content = "<table border='1'>";
+				var user_content = "<tablestyle='width: 20%;'>";
 				var users = JSON.parse(xhr.responseText);
 				for (var i = 0; i < users.length; i++) {
-					content += "<tr><td style='vertical-align: middle;'>"
-							+ users[i].c_Class
-							+ "</td>"
-							+ "<td style='text-align: left;'>"
-							+ "<a href=\"#\">" + users[i].c_Title + "</a>"
-							+ "</td>"
-							+ "<td style='vertical-align: middle;'>"
+					user_content += "<tr><td>"
 							+ users[i].u_ID
-							+ "</td>"
-							+ "<td style='vertical-align: middle;'>"
-							+ users[i].c_Date
-							+ "</td>"
-							+ "</tr>";
+							+ "</td></tr>";
 				}
-				content += "</table>";
+				user_content += "</table>";
+				
+				var content = "<table align='right' style='width: 80%;'>";
+				for (var i = 0; i < users.length; i++) {
+					content += "<tr><td style='text-align: left;'><div style='min-height: 200px;'>"
+							+ users[i].c_Conts
+							+ "</div></td></tr>";
+				}
+				content += "<tr><td><textarea style='min-height: 100px;' placeholder='請輸入文章內容...'></textarea></td></tr>"
+						+ "<tr><td><button type='button' class='primary' id='sendData'>送出</button> &nbsp;"
+						+ "<input type='reset' value='清除'></td></tr>"
+						+ "</table>";
 				var selectAll = document.getElementById("selectAll");
-				selectAll.innerHTML = content;
+				selectAll.innerHTML = user_content + content;
 			}
+			
 		}
 		
 		var logout = document.getElementById("logout");
@@ -87,6 +90,7 @@
 				<div align='center'>
 					<%@include file="../universal/header.jsp"%>
 					<br>
+					<h2><span id='selectSingle' style='display: block; text-align: left;'></span></h2>
 					<div align='center' id='selectAll'></div>
 				</div>
 				<p />

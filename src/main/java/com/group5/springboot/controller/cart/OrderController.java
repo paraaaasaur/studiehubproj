@@ -22,7 +22,7 @@ import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
 
 @RestController
-public class CartController {
+public class OrderController {
 	@Autowired // SDI ✔
 	private OrderService orderService;
 	@Autowired // SDI ✔
@@ -31,7 +31,15 @@ public class CartController {
 	private UserService userService;
 	@Autowired // SDI ✔
 	private CartItemService cartItemService;
-	
+
+
+	/***************************************************************************** */
+	@GetMapping(value="/test00")
+	public List<OrderInfo> test00() {
+		List<OrderInfo> list = orderService.test();
+		list.forEach(System.out::println);
+		return list;
+	}
 	
 	/***************************************************************************** */
 	@PostMapping(value="/cart.controller/clientShowCart")
@@ -49,14 +57,20 @@ public class CartController {
 	}
 
 	/***************************************************************************** */
-	@GetMapping(value = "/cart.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
-	public Map<String, Object> adminCartSelectTop100(){
-		return cartItemService.selectTop100();
+	@GetMapping(value = "/order.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> adminOrderSelectTop100(){
+		return orderService.selectTop100();
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/adminSelectProduct")
-	public ProductInfo adminCartSelectProduct(@RequestParam("p_id") String p_id) {
+	@GetMapping(value = "/order.controller/adminSelectAll", produces = "application/json; charset=UTF-8")
+	public Map<String, Object> adminOrderSelectAll(){
+		return orderService.selectAll();
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/order.controller/adminSelectProduct")
+	public ProductInfo adminOrderSelectProduct(@RequestParam("p_id") String p_id) {
 //		productValidator.validate(productService.findByProductID(p_id), result);
 //		if (result.hasErrors()) {			
 //			List<ObjectError> list = result.getAllErrors();
@@ -68,23 +82,23 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/adminSelectUser")
+	@PostMapping(value = "/order.controller/adminSelectUser")
 	public User_Info adminOrderSelectUser(@RequestParam("u_id") String u_id) {
 		return userService.getSingleUser(u_id);
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/adminSearchBar")
-	public Map<String, Object> adminCartSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
+	@PostMapping(value = "/order.controller/adminSearchBar")
+	public Map<String, Object> adminOrderSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
 		try {
 			
-			if ("u_id".equals(condition)) {
+			if ("o_status".equals(condition) || "u_id".equals(condition)) {
 				// (1) 準確查詢
 				return orderService.selectBy(condition, value);
 			} else if ("p_name".equals(condition) || "u_firstname".equals(condition) || "u_lastname".equals(condition)) {
 				// (2) 模糊查詢
 				return orderService.selectLikeOperator(condition, value);
-			} else if ("cart_date".equals(condition)) {
+			} else if ("o_date".equals(condition)) {
 				// (3) 日期範圍查詢
 				// 隨時可換
 				String regex = ","; 

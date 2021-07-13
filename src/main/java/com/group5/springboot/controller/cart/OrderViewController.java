@@ -24,6 +24,8 @@ public class OrderViewController {
 	private OrderService orderService;
 	@Autowired
 	private OrderValidator orderValidator;
+	
+	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/order.controller/adminInsert"})
 	public String toOrderAdminInsert(Model model) {
@@ -75,18 +77,6 @@ public class OrderViewController {
 		ra.addFlashAttribute("successMessage", "o_id = " + orderInfo.getO_id() + "修改成功");
 		return "redirect:/order.controller/adminSelect";
 		
-	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/cart.controller/cartIndex"})
-	public String toCartIndex() {
-		return "cart/cartIndex";
-	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/cart.controller/cartCheckout"})
-	public String toCartCheckout() {
-		return "cart/cartCheckout";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */

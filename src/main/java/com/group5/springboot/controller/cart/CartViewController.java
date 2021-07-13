@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.service.cart.CartItemService;
-import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.validate.CartValidator;
-import com.group5.springboot.validate.OrderValidator;
 
 @Controller
 public class CartViewController {
@@ -28,11 +25,6 @@ public class CartViewController {
 	@Autowired
 	private CartValidator cartValidator;
 	
-	/**
-	 * ****************************************  Order ************************************************************
-	 * 
-	 * ****************************************  CartItem ************************************************************
-	 * */
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/adminInsert"})
@@ -81,8 +73,9 @@ public class CartViewController {
 			return "/cart/cartAdminUpdate";
 		}
 		
-		cartItemService.update(cartItem);
-		ra.addFlashAttribute("successMessage", "o_id = " + cartItem.getO_id() + "修改成功");
+		Integer updateStatus = cartItemService.update(cartItem.getU_id(), cartItem.getP_id(), cartItem.getCart_id());
+		String successMessage = (updateStatus == 1)? "o_id = " + cartItem.getCart_id() + "修改成功" : "修改失敗";
+		ra.addFlashAttribute("successMessage", successMessage);
 		return "redirect:/cart.controller/adminSelect";
 		
 	}

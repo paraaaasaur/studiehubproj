@@ -2,17 +2,22 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 
@@ -48,7 +53,71 @@ public class CartItemDao implements ICartItemDao{
 		map.put("cartItems", list);
 		return map;
 	}
+	/**********************************************************************************************************/
 	
+	
+	public Map<String, Object> selectLikeOperator(String condition, String value) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean isString = !( "cart_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
+		condition = (isString)? "cart." + condition : "STR(cart." + condition + ")";
+		System.out.println("condition = " + condition + "; value = " + value);
+		TypedQuery<CartItem> query = em.createQuery("FROM CartItem cart WHERE " + condition + " LIKE :value", CartItem.class);
+		query.setParameter("value", "%" + value + "%");
+		List<CartItem> resultList = query.getResultList();
+		System.out.println(resultList);
+		map.put("list", resultList);
+		return map;
+	}
+	// 從這裡繼續
+	public Map<String, Object> selectBy(String condition, String value) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Boolean isInteger = ( "cart_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
+		Object parsedValue = (isInteger)? Integer.parseInt(value) : value;
+		System.out.println("condition = " + condition + "; value = " + parsedValue);
+		TypedQuery<CartItem> query = em.createQuery("FROM CartItem cart WHERE " + condition + " = :value", CartItem.class);
+		query.setParameter("value", parsedValue);
+		
+		List<OrderInfo> resultList = query.getResultList();
+		System.out.println(resultList);
+		map.put("list", resultList);
+		return map;
+	}
+	
+	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC";
+		Query query = em.createNativeQuery(sql, OrderInfo.class);
+		// ❗❓ 總覺得下面的轉法只要換個國家就會出錯...
+		try {
+			Date parsedStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+			Date parsedEndTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endTime);
+			System.out.println("From : " + parsedStartTime);
+			System.out.println("To : " + parsedEndTime);
+			query.setParameter("startTime", parsedStartTime, TemporalType.TIME);
+			query.setParameter("endTime", parsedEndTime, TemporalType.TIME);
+		} catch (ParseException e) {
+			System.out.println("轉時間出錯了");
+			e.printStackTrace();
+		}
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> list = (List<OrderInfo>) (query.getResultList());
+		map.put("list", list);
+		return map;
+	}
+	
+	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "SELECT * FROM order_info WHERE " + condition + " >= :minValue AND " + condition + "<= :maxValue ORDER BY " + condition + " DESC";
+		Query query = em.createNativeQuery(sql, OrderInfo.class);
+		query.setParameter("minValue", minValue);
+		query.setParameter("maxValue", maxValue);
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> list = query.getResultList();
+		map.put("list", list);
+		return map;
+	}	
+	
+	/**********************************************************************************************************/
 	@Override
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -86,7 +155,7 @@ public class CartItemDao implements ICartItemDao{
 		return map;
 	}
 	
-	public Integer updateCartItem(String newU_id, Integer newP_id, Integer cart_id) {
+	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
 		
 		CartItem cartBean = em.find(CartItem.class, cart_id);
 		

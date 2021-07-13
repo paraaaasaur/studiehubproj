@@ -40,8 +40,8 @@ public class CartItemService implements ICartItemService{
 		return cartItemDao.insert(p_id, u_id);
 	}
 	
-	public Integer updateCartItem(String newU_id, Integer newP_id, Integer cart_id) {
-		return cartItemDao.updateCartItem(newU_id, newP_id, cart_id);
+	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
+		return cartItemDao.update(newU_id, newP_id, cart_id);
 	}
 
 	@Override

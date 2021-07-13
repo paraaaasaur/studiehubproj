@@ -22,9 +22,17 @@ public class CartItemService implements ICartItemService{
 	@Autowired // SDI✔
 	private ProductDaoImpl productDao;
 	
+	public Map<String, Object> select(Integer cart_id) {
+		return cartItemDao.select(cart_id);
+	}
+	
 	@Override
 	public Map<String, Object> selectByUserId(String u_id) {
 		return cartItemDao.selectByUserId(u_id);
+	}
+	
+	public Map<String, Object> selectTop100() {
+		return cartItemDao.selectTop100();
 	}
 	
 	@Override

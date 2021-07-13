@@ -24,11 +24,11 @@ public class CartItem {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	// ❗ 沒有什麼實質意義
 	private Integer cart_id ; // PK
-	@Column(name = "P_ID", insertable = false, updatable = false)
+	@Column(insertable = false, updatable = false)
 	private Integer p_id; // FK
 	private String p_name; 
 	private Integer p_price; 
-	@Column(name = "U_ID", insertable = false, updatable = false)
+	@Column(insertable = false, updatable = false)
 	private String u_id; // FK //  ⚠注意：這裡的u_id不是課程授課老師、而是購買者帳號
 	private String u_firstname; 
 	private String u_lastname; 

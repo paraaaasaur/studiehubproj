@@ -3,6 +3,7 @@ package com.group5.springboot.dao.cart;
 // 要考慮做DAO Factory嗎？
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -20,6 +21,12 @@ public class CartItemDao implements ICartItemDao{
 	@Autowired 
 	private EntityManager em;
 	
+	public Map<String, Object> select(Integer cart_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cartItem", em.find(CartItem.class, cart_id));
+		return map;
+	}
+	
 	@Override
 	public Map<String, Object> selectByUserId(String u_id) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -30,6 +37,15 @@ public class CartItemDao implements ICartItemDao{
 		TypedQuery<CartItem> query = em.createQuery("FROM CartItem WHERE u_id = :uid", CartItem.class);
 		query.setParameter("uid", u_id);
 		map.put("cartItems", query.getResultList());
+		return map;
+	}
+	
+	public Map<String, Object> selectTop100() {
+		Query sqlQuery = em.createNativeQuery("SELECT TOP(100) * FROM cart_item ORDER BY cart_id DESC, u_id DESC;", CartItem.class);
+		@SuppressWarnings("unchecked")
+		List<CartItem> list = (List<CartItem>) sqlQuery.getResultList();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cartItems", list);
 		return map;
 	}
 	

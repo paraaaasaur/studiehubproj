@@ -164,12 +164,12 @@ public class CartItemDao implements ICartItemDao{
 		
 		if (cartBean != null) {
 			// FK驗證
-			User_Info uBean = em.find(User_Info.class, cartBean.getU_id());
+			User_Info uBean = em.find(User_Info.class, newU_id);
 			if(uBean == null) {
 				System.out.println("********** 錯誤：以 o_id (" + cartBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
 				return -1;	
 			}
-			ProductInfo pBean = em.find(ProductInfo.class, cartBean.getP_id());
+			ProductInfo pBean = em.find(ProductInfo.class, newP_id);
 			if(pBean == null) {
 				System.out.println("********** 錯誤：以 p_id (" + cartBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
 				return -1;
@@ -179,12 +179,7 @@ public class CartItemDao implements ICartItemDao{
 			cartBean.setU_lastname(uBean.getU_lastname());
 			cartBean.setP_name(pBean.getP_Name());
 			cartBean.setP_price(pBean.getP_Price());
-			// 更新關聯物件的值
-			uBean.setU_id(newU_id);
-			pBean.setP_ID(newP_id);
 			// 綁定關聯物件
-//			User_Info uBean2 = uBean;
-//			ProductInfo pBean2 = pBean;
 			cartBean.setUser_Info(uBean);
 			cartBean.setProductInfo(pBean);
 			System.out.println("1111111111111111111111111");

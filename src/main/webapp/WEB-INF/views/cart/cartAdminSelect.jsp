@@ -58,16 +58,14 @@
 									<li style="width: 35%;" id="searchBarHanger2" hidden><input class="" type='search' id='searchBar' placeholder='搜尋'></li>
 									<li style="width: 20%;">
 										<select class="fit" id='searchBy'>
-											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
+											<option selected disabled hidden>選擇查詢參數...</option>
+											<option value='cart_id'>品項代號</option>
 											<option value='u_id'>會員帳號</option>
-											<option value='o_id'>訂單編號</option>
 											<option value='p_id'>課程代號</option>
 											<option value='p_name'>課程名稱</option>
 											<option value='u_lastname'>會員姓氏</option>
 											<option value='u_firstname'>會員名字</option>
-											<option value='o_status'>訂單狀態</option>
-											<option value='o_amt'>訂單小計</option>
-											<option value='o_date'>訂單日期</option>
+											<option value='cart_date'>品項加入日期</option>
 										</select>
 									</li>
 									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
@@ -123,7 +121,7 @@
 				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
 					let cart_id = checkboxObj.value;
-					// let o_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
+					// let cart_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
 					let idx = isCheckedList.indexOf(cart_id);
 					if(idx > -1) {
 						isCheckedList.splice(idx, 1);
@@ -184,7 +182,7 @@
 					// 【自訂函數 3】查詢框(#searchBar)樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
 						$('#searchBtn').attr('disabled', false);
-						if(this.value == 'o_date'){
+						if(this.value == 'cart_date'){
 							searchBarHanger1.css('width', '35%');
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='datetime-local' step='1' id='searchDateStart'>起始時間");
@@ -194,22 +192,13 @@
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
 							$(searchBarHanger1).html("<input type='search' id='searchBar' placeholder='搜尋'>");
-						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
+						} else if(this.value == 'cart_id' || this.value == 'p_id'){
 							searchBarHanger1.css('width', '35%');
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='search' id='searchMin' placeholder='最小值'>");
 							$(searchBarHanger2).html("<input type='search' id='searchMax' placeholder='最大值'>");
-						} else if(this.value == 'o_status'){
-							searchBarHanger1.css('width', '70%');
-							searchBarHanger2.attr('hidden', true);
-							$(searchBarHanger1).html(
-								"<select id='searchBar'>" +
-								"<option value='完成' selected>完成</option>" +
-								"<option value='處理中'>處理中</option>" +
-								"<option value='失效'>失效</option>" +
-								"</select>"
-							);
-						}
+						} 
+						
 					})
 					// 【自訂函數 4】重新導向頁面
 					$('#toAdminIndexBtn').on('click', function(){
@@ -225,10 +214,10 @@
 						let xhr = new XMLHttpRequest();
 						let queryString = '';
 
-						let forDate = (searchBy.val() == 'o_date');
+						let forDate = (searchBy.val() == 'cart_date');
 						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
-												searchBy.val() == 'p_name' || searchBy.val() == 'o_status');
-						let forRange = (searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id');
+												searchBy.val() == 'p_name');
+						let forRange = (searchBy.val() == 'cart_id' || searchBy.val() == 'p_id');
 
 						if(forDate) {// 日期範圍查詢
 							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchDateStart').val() + ',' + $('#searchDateEnd').val());
@@ -299,7 +288,7 @@
 					
 					// 【自訂函數 9】DELETE
 					$('#delete').on('click', function(){
-						let queryString = 'o_ids=';
+						let queryString = 'cart_ids=';
 						for (let i = 0; i < isCheckedList.length; i++) {
 							queryString += isCheckedList[i];
 							queryString += ((i + 1) != isCheckedList.length)? ',' : '';

@@ -84,8 +84,8 @@
 									<hr>
 									
 								</form>
-								<button id="insert"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
-								<button id="delete">刪除勾選資料</button>
+								<button id="insertBtn"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
+								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
 								
@@ -113,7 +113,7 @@
 			<script>
 				// 不用等DOM就可以先宣告的變數們
 				let segments = [];
-				let isCheckedList = [];
+				let checkedOids = [];
 				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
@@ -121,17 +121,20 @@
 				let maxPageNum = 10;
 				let orders = [];
 
-				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
+				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedOids陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
 					let o_id = checkboxObj.value;
 					// let o_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
-					let idx = isCheckedList.indexOf(o_id);
+					let idx = checkedOids.indexOf(o_id);
 					if(idx > -1) {
-						isCheckedList.splice(idx, 1);
+						checkedOids.splice(idx, 1);
 					} else {
-						isCheckedList.push(o_id);
+						checkedOids.push(o_id);
 					}
-					console.log('isCheckedList = ' + isCheckedList);
+					console.log('checkedOids = ' + checkedOids);
+					// 改變#deleteBtn外觀和disabled值
+					document.querySelector('#deleteBtn').disabled = (checkedOids.length == 0)? true : false;
+					document.querySelector('#deleteBtn').innerHTML = '刪除 ' + checkedOids.length + ' 筆資料'; // ❗ 超過10筆資料時button會變胖
 					return;
 				}
 
@@ -155,8 +158,9 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
-						for (let i = 0; i < isCheckedList.length; i++) {
-							let thisCkbox = document.querySelector('#ckbox' + isCheckedList[i]);
+						// 換頁時自動重新勾上已勾過的checkbox (登記在checkedOids)
+						for (let i = 0; i < checkedOids.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + checkedOids[i]);
 							if(thisCkbox){
 								thisCkbox.checked = true;
 							}
@@ -324,11 +328,11 @@
 					};
 					
 					// 【自訂函數 9】NEW DELETE
-					$('#delete').on('click', function(){
+					$('#deleteBtn').on('click', function(){
 						let queryString = 'o_ids=';
-						for (let i = 0; i < isCheckedList.length; i++) {
-							queryString += isCheckedList[i];
-							queryString += ((i + 1) != isCheckedList.length)? ',' : '';
+						for (let i = 0; i < checkedOids.length; i++) {
+							queryString += checkedOids[i];
+							queryString += ((i + 1) != checkedOids.length)? ',' : '';
 						}
 
 						console.log(queryString);
@@ -342,7 +346,7 @@
 								result = JSON.parse(xhr.responseText);
 								console.log(result.state);
 								mainFunc();
-								isCheckedList = [];
+								checkedOids = [];
 							}
 						}
 												

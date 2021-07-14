@@ -7,11 +7,15 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.utils.SystemUtils;
 
 @Entity
@@ -37,9 +42,13 @@ public class EventInfo {
 	Timestamp a_startTime;           // 活動開始時間
 	@JsonFormat(pattern = "yyyy/MM/dd/HH:mm",timezone="GMT+8" )
 	Timestamp a_endTime;             // 活動結束時間
+	@JsonFormat(pattern = "yyyy/MM/dd/HH:mm",timezone="GMT+8" )
 	Timestamp creationTime;          // 創建活動的時間戳
 	Clob comment;                    // 活動說明欄位  getcomment 已轉換成String 可以回傳給 json了~
-	
+	String verification ;
+	 @JsonIgnore
+	 @OneToMany(mappedBy = "eventInfo" , cascade = {CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE} , fetch = FetchType.EAGER)
+	 private  List<Entryform>entryforms;
 	
 	
 //===========暫時存放區===========	
@@ -188,7 +197,7 @@ public class EventInfo {
 	//開始時間
 	public String getTransienta_startTime() {
 		
-		System.out.println("a_endTime="+a_startTime);
+//		System.out.println("a_endTime="+a_startTime);
 		if(a_startTime!=null) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//定义格式，不显示毫秒
 		String new_a_endTime = df.format(a_startTime);
@@ -220,7 +229,7 @@ public class EventInfo {
 	//結束時間
 	public String getTransienta_endTime() {
 		
-		System.out.println("a_endTime="+a_endTime);
+//		System.out.println("a_endTime="+a_endTime);
 		if(a_endTime!=null) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//定义格式，不显示毫秒
 		String new_a_endTime = df.format(a_endTime);
@@ -248,6 +257,26 @@ public class EventInfo {
 			}
 		
 	}
+
+	public String getVerification() {
+		return verification;
+	}
+
+	public void setVerification(String verification) {
+		this.verification = verification;
+	}
+	
+	
+
+	public List<Entryform> getEntryforms() {
+		return entryforms;
+	}
+
+	public void setEntryforms(List<Entryform> entryforms) {
+		this.entryforms = entryforms;
+	}
+
+
 
 
 

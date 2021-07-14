@@ -25,16 +25,78 @@
 	let dataArea = null; //變數放在外面 空值(原始狀態)  放在方法裡 別的方法要用它會找不到 不要讓他被綁住 
 	let restname = null;
 	let query = null;
+	var u_id = "${loginBean.u_id}";
+	var userPicString = "${loginBean.pictureString}";   
+
 	window.addEventListener("load", function() {
 		//window.addEvenListener 網頁監聽器 
 		//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
 
+		
+		var logout = document.getElementById("logout");
+			logout.onclick = function() {
+				var xhr1 = new XMLHttpRequest();
+				xhr.open("GET", "<c:url value='/logout.controller' />", true);
+				xhr.send();
+				xhr.onreadystatechange = function() {
+					if (xhr1.readyState == 4 && xhr1.status == 200) {
+						var result = JSON.parse(xhr1.responseText);
+						if (result.success) {
+							alert(result.success);
+							top.location = '<c:url value='/' />';
+						} else if (result.fail) {
+							alert(result.fail);
+							top.location = '<c:url value='/' />';
+						}
+					}
+				}
+			}
+
+			var loginHref = document.getElementById('loginHref');
+		    var signupHref = document.getElementById('signupHref');
+		    var logoutHref = document.getElementById('logoutHref');
+		    var userId = document.getElementById('userId');
+		    var userPic = document.getElementById('userPic');
+		    
+		    if(u_id){
+		    	loginHref.hidden = true;
+		    	signupHref.hidden = true;
+		    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+		    	userPic.src = userPicString;	//有登入就秀大頭貼
+		    	userId.innerHTML = u_id;
+		    	loginEvent.style.display = "block";
+		    	loginALLEvent.style.display = "block";
+
+		    }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		dataArea = document.getElementById("dataArea");
 		restname = document.getElementById("restname");
 		query = document.getElementById("query");
 		//抓到 Id 叫 dataArea 能對這個地方做修改 或 對他做監聽事件
 		let xhr = new XMLHttpRequest();
-		xhr.open("GET", "<c:url value='/EventfindAll' />", true);
+		xhr.open("GET", "<c:url value='/signupEventjson/' />"+${signupEvent.a_aid}, true);
 		//他會送出請求去/findAll 然後 controller 去接收 /findAll 執行方法
 		//說明請求的內容 fales 就是同步 true 就是非同步 
 		xhr.send();
@@ -42,7 +104,7 @@
 		xhr.onreadystatechange = function() {
 			//當屬性發生變化的時候執行方法	
 			if (xhr.readyState == 4 && xhr.status === 200) {
-				//             console.log(xhr.responseText);
+				console.log(xhr.responseText);
 
 				dataArea.innerHTML = showData(xhr.responseText);
 				//執行方法 將 jsoe字串  轉為 jsoe物件 
@@ -75,62 +137,46 @@
 	});
 
 	function showData(textobj) {
-		// 	改成map回傳 obj裡面變成 物件 有size 跟 list 陣列物件
-		// 	let places = JSON.parse(textData);
-		// 	將 jsoe字串  轉為 jsoe物件 
+
 		let obj = JSON.parse(textobj)
-		let size = obj.size;
-		//  分別把物件裡的 size 跟 list 拆開
-		let events = obj.list
+		
+		let events = obj 
 
 		let segment = "<table >";
 
-		if (size == 0) {
-			segment += "<tr><th colspan='1'>'查無此筆資料'</th><tr>"
-		} else {
-			segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
-			segment += "<tr><th>活動編號</th><th>活動類型</th><th>活動名稱</th><th>活動開始時間</th><th>活動結束時間</th><th>活動地址</th><th>活動照片</th></tr>"
+		
+		
+		
+			
+			segment += "<tr><th>會員帳號</th><th>會員電話</th><th>Email</th><th>姓名</th><th>物件裡的物件測試</th></tr>"
 
 			for (n = 0; n < events.length; n++) {
 				let event = events[n];
-// 				console.log("<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/updateProduct/"+event.a_aid+"'/>' /></td>")
-						
-
-				let tmp0 = "<c:url value = '/updateEvent/'/>" + event.a_aid;
-				let tmp1 = "<c:url value = '/deleteEvent/'/>" + event.a_aid;
-				// 		let tmp1 = "<a href= '"+tmp1+"'>"+place.name+"</a>";
-
-				// 		let tmp1 = "<c:url value='/modifyRestaurant/'   />" + place.placeId;
-				//修改的時候傳帶place.placeId參數的超連結 
-				// 		let tmp0 = "<a href= '"+tmp1+"'>"+place.name+"</a>";
-				// 		let tmp0 = "<a href= '....'>"+place.name+"</a>";
-
-				//JSON物件 第0個開始
-				// 		console.log("tmp0="+tmp0) ; 
+				let tmp0 = event.id+"/"+${signupEvent.a_aid};
 
 				segment += "<tr>"
-				segment += "<td>" + event.a_aid + "</td>"
-				segment += "<td>" + event.a_type + "</td>"
-				segment += "<td>" + event.a_name + "</td>"
-				segment += "<td>" + event.a_startTime + "</td>"
-				segment += "<td>" + event.a_endTime + "</td>"
-				segment += "<td>" + event.a_address + "</td>"
-				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
+			    segment += "<td>" + event.e_id + "</td>"
+				segment += "<td>" + event.e_tel + "</td>"
+				segment += "<td>" + event.e_email + "</td>"
+				segment += "<td>" + event.e_lastname + event.e_firstname + "</td>"
+				segment += "<td>" + event.eventInfo.a_uid + "</td>"
+				
+				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.e_lastname + event.e_firstname + ")'))location='<c:url value = '/deletesignupEvent/"+tmp0+"'/>' /></td>"
+				
+// 				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
 						
-						
-				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
+// 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
 
-				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.aid+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
 						
-
+			}
 						
 				segment += "</tr>"
-			}
-		}
-		segment += "</table>";
+			
+		
+		        segment += "</table>";
 
 		return segment;
-	}
+	} 
 </script>
 
 <body class="is-preload">
@@ -140,14 +186,10 @@
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
-				<h2 align='center'>活動內容後台</h2>
+				<h2 align='center'>${signupEvent.a_name}的報名表單</h2>
 				
 				<div align="center">
 					
-					<font color='red'>${successMessage}</font>
-					<!--   修改成功的重定向帶值 -->
-					搜尋活動名稱:<input type='text' id='restname' />
-					<button id='query'>提交</button>
 					
 				</div>
 					

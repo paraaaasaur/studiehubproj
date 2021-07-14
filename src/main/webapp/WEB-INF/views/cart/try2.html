@@ -1,31 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    .wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        grid-auto-rows: minmax(100px, auto);
+        border: 2px red solid;
+    }
+
+    .one {
+        grid-column: 1 / 3;
+        grid-row: 1;
+        border: 2px orange solid;
+    }
+
+    .two {
+        grid-column: 2 / 3;
+        grid-row: 1 / 3;
+        border: 2px yellow solid;
+    }
+
+    .three {
+        grid-column: 1;
+        grid-row: 2 / 5;
+    }
+
+    .four {
+        grid-column: 3;
+        grid-row: 3;
+    }
+
+    .five {
+        grid-column: 2;
+        grid-row: 4;
+    }
+
+    .six {
+        grid-column: 3;
+        grid-row: 4;
+    }
+</style>
+
 <body>
 
-    <div id='aa' class="modal" style="border-width: 3px;">
-        <p  style="border-width: 3px;"> A dialog! </p>
+    <div class="wrapper">
+        <div class="one">One</div>
+        <div class="two">Two</div>
+<!--         <div class="three">Three</div>
+        <div class="four">Four</div>
+        <div class="five">Five</div>
+        <div class="six">Six</div> -->
     </div>
-
-    <hr>
-    <hr>
-    <hr>
 
 
     <script src="../../../../resources/static/assets/js/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(function(){
+        $(function () {
 
-            $(document).one('click', function(){
-                console.log('yes!');
-                $('#aa').dialog();
-            })
 
 
 
@@ -33,4 +73,5 @@
 
     </script>
 </body>
+
 </html>

@@ -71,17 +71,18 @@
 									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
 								</ul>
 								<h1 id='topLogo'></h1>
-								<hr id="pageHref" class="">
-								<form>
-									<!-- 秀出所有CartItem -->
-									<table class="alt" style="border: 2px " >
-										<thead id="theadArea"></thead>
-										<tbody id="tbodyArea"></tbody>
-									</table>
-									<h1 id='logo' style="background-color: red"></h1>
-									<hr>
+								<div id="pageHref" class="" style="display: flex; justify-content: center;"></div>
+								<br>
+
+								<!-- 秀出所有CartItem -->
+								<table class="alt" style="border: 2px " >
+									<thead id="theadArea"></thead>
+									<tbody id="tbodyArea"></tbody>
+								</table>
+
+								<h1 id='logo' style="background-color: red"></h1>
+								<hr>
 									
-								</form>
 								<button id="insertBtn" onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/adminInsert'">新增</button>
 								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
@@ -158,12 +159,9 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
-						// 換頁時自動重新勾上已勾過的checkbox (登記在checkedCartids)
 						for (let i = 0; i < checkedCartids.length; i++) {
 							let thisCkbox = document.querySelector('#ckbox' + checkedCartids[i]);
-							if(thisCkbox){
-								thisCkbox.checked = true;
-							}
+							if(thisCkbox) thisCkbox.checked = true;
 						}
 					})
 				}
@@ -250,7 +248,7 @@
 								// 解析&暫存回傳資料
 								parseSelectedRows(xhr.responseText);
 								// 掛topLogo
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								topLogo.text("以下是資料庫最新" + segments.length + "筆購物車品項");
 								// 掛資料(index = 0 即第 1 頁)
 								switchPage(0);
 								// 掛頁籤
@@ -260,7 +258,7 @@
 						}
 					})
 						
-					// 【自訂函數 7】顯示資料庫最新100筆訂單 (SELECT TOP(100)) + 掛資料 + 掛頁籤
+					// 【自訂函數 7】顯示資料庫最新100筆購物車品項 (SELECT TOP(100)) + 掛資料 + 掛頁籤
 					function showTop100() {
 						let xhr = new XMLHttpRequest();
 						let url = "<c:url value='/cart.controller/adminSelectTop100' />";
@@ -271,7 +269,10 @@
 								parseSelectedRows(xhr.responseText);
 								switchPage(0);
 								appendPegination();
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								topLogo.text("以下是資料庫最新" + segments.length + "筆購物車品項");
+								if (segments.length == 0) {
+									theadArea.html("");
+								}
 							}
 						}
 					} 
@@ -319,6 +320,7 @@
 								console.log(result.state);
 								showTop100();
 								checkedCartids = [];
+								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
 							}
 						}
 												

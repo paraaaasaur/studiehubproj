@@ -73,17 +73,17 @@
 									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
 								</ul>
 								<h1 id='topLogo'></h1>
-								<hr id="pageHref" class="">
-								<form>
-									<!-- 秀出所有Order_Info -->
-									<table class="alt" style="border: 2px " >
-										<thead id="theadArea"></thead>
-										<tbody id="tbodyArea"></tbody>
-									</table>
-									<h1 id='logo' style="background-color: red"></h1>
-									<hr>
+								<div id="pageHref" class="" style="display: flex; justify-content: center;"></div>
+								<br>
+
+								<!-- 秀出所有Order_Info -->
+								<table class="alt" style="border: 2px " >
+									<thead id="theadArea"></thead>
+									<tbody id="tbodyArea"></tbody>
+								</table>
+								<h1 id='logo' style="background-color: red"></h1>
+								<hr>
 									
-								</form>
 								<button id="insertBtn"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
 								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
@@ -160,12 +160,9 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
-						// 換頁時自動重新勾上已勾過的checkbox (登記在checkedOids)
-						for (let i = 0; i < checkedOids.length; i++) {
-							let thisCkbox = document.querySelector('#ckbox' + checkedOids[i]);
-							if(thisCkbox){
-								thisCkbox.checked = true;
-							}
+						for (let i = 0; i < checkedCartids.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + checkedCartids[i]);
+							if(thisCkbox) thisCkbox.checked = true;
 						}
 					})
 				}
@@ -296,7 +293,7 @@
 								switchPage(0);
 								appendPegination();
 								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
-								if (segments.length != 0) {
+								if (segments.length == 0) {
 									theadArea.html("");
 								}
 							}
@@ -349,6 +346,7 @@
 								console.log(result.state);
 								mainFunc();
 								checkedOids = [];
+								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
 							}
 						}
 												
@@ -356,7 +354,7 @@
 
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
-						// console.log('Start of mainFunc()');
+						console.log('Start of mainFunc()');
 						theadArea.html(
 								"<th>刪除</th>"
 								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"

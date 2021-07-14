@@ -1,5 +1,6 @@
 package com.group5.springboot.service.cart;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,10 @@ public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
 	
+	public List<OrderInfo> test() {
+		return orderDao.test();
+	}
+
 	public Map<String, Object> insert(OrderInfo order) {
 		return orderDao.insert(order);
 	}
@@ -23,8 +28,20 @@ public class OrderService implements IOrderService{
 		return orderDao.selectAll();
 	}
 	
-	public Map<String, Object> selectLikeOperator(Object condition, Object value) {
+	public Map<String, Object> selectLikeOperator(String condition, String value) {
 		return orderDao.selectLikeOperator(condition, value);
+	}
+	
+	public Map<String, Object> selectBy(String condition, String value) {
+		return orderDao.selectBy(condition, value);
+	}
+	
+	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
+		return orderDao.selectWithTimeRange(startTime, endTime);
+	}
+	
+	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
+		return orderDao.selectWithNumberRange(condition, minValue, maxValue);
 	}
 	
 	public Map<String, Object> select(OrderInfo orderBean) {
@@ -35,18 +52,15 @@ public class OrderService implements IOrderService{
 		return orderDao.selectCustom(hql);
 	}
 	
-	// Admin - 1
-	public Map<String, Object> selectTop20() {
-		return orderDao.selectTop20();
+	public Map<String, Object> selectTop100() {
+		return orderDao.selectTop100();
 	}
 	
-	// Admin - 2
 	public boolean update(OrderInfo newBean) {
 		return orderDao.update(newBean);
 	}
 	
-	// Admin - 3
-	public boolean delete(OrderInfo orderBean) {
-		return orderDao.delete(orderBean);
+	public Integer delete(Integer[] o_ids) {
+		return orderDao.delete(o_ids);
 	}
 }

@@ -20,6 +20,13 @@ window.onload = function(){
 		var result0c = document.getElementById("result0c");
 		var result1c = document.getElementById("result1c");
 		var resultMsg = document.getElementById("resultMsg");
+		var rememberMeButton = document.getElementById("rememberMe");
+		var rememberMe;
+		if(rememberMeButton.checked){
+			rememberMe = "rememberMe";
+		}else{
+			rememberMe = null;
+		}
 // 		alert("alert測試");
 		if(!u_id){
 			setErrorFor(result0c, "請輸入帳號");
@@ -38,7 +45,8 @@ window.onload = function(){
 		xhr.open("POST", "<c:url value='/login.controller' />");
 		var jsonLoginData = {
 			"u_id" : u_id,
-			"u_psw" : u_psw
+			"u_psw" : u_psw,
+			"rememberMe" : rememberMe
 		}
 		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.send(JSON.stringify(jsonLoginData));
@@ -94,10 +102,15 @@ window.onload = function(){
       <div id='result1c' style="height: 10px;"></div><br>
   </div>
   <div align='center'>
-    <button id="login" class='primary'>登入</button>
-    <hr>
-<%--     <a href="<c:url value='/gotoUserIndex.controller' />">上一頁</a> --%>
-  </div>
+	  <div class="form-check">
+		  <input type="checkbox" value="rememberMe" id="rememberMe">
+		  <label for="rememberMe"> 記住帳號 </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  <span><a href="<c:url value='/gotoForgetPassword.controller' />">忘記密碼</a></span>
+	  </div>
+	  <button id="login" class='primary' style="width: 210px;">登入</button>
+	  <hr>
+	<%--     <a href="<c:url value='/gotoUserIndex.controller' />">上一頁</a> --%>
+</div>
 </div>
 
 

@@ -16,17 +16,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.group5.springboot.controller.user.UserController;
 import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.service.chat.ChatService;
 
 @Controller
-@SessionAttributes(names = "chat")
+@SessionAttributes(names = {"loginBean","adminBean"})
 public class ChatController {
 	
 	@Autowired
 	ChatService chatService;
 	@Autowired
 	Chat_Info chat_Info;
+	@Autowired
+	UserController uc;
 	
 	@GetMapping(path = "/chatIndex")
 	public String chatIndex() {
@@ -38,15 +42,37 @@ public class ChatController {
 		return "chat/selectAllChat";
 	}
 	
+	@GetMapping("/goSelectAllChatAdmin")
+	public String goSelectAllChatAdmin(){
+		return "chat/selectAllChatAdmin";
+	}
+	
+	@GetMapping("/goSelectOneChat/{c_ID}")
+	public String goSelectOneChat(@PathVariable int c_ID, Model model){
+		model.addAttribute("c_ID", c_ID);
+		return "chat/selectOneChat";
+	}
+	
 	@GetMapping("/goInsertChat")
-	public String insertChat(){
-		return "chat/InsertChat";
+	public String insertChat(Model model){
+		boolean loginResult = uc.checkIfLogin(model);
+		if (loginResult) {
+			return "chat/insertChat";
+		}else {
+			return "user/login";
+		}
 	}
 	
 	@GetMapping("/goDeleteChat/{c_ID}")
 	public String goDeleteChat(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
 		return "chat/DeleteChat";
+	}
+	
+	@GetMapping("/goDeleteChatAdmin/{c_ID}")
+	public String goDeleteChatAdmin(@PathVariable int c_ID, Model model){
+		model.addAttribute("c_ID", c_ID);
+		return "chat/deleteChatAdmin";
 	}
 	
 	@GetMapping("/goUpdateChat")
@@ -68,12 +94,27 @@ public class ChatController {
 		return chat_Info;
 	}
 	
+	@GetMapping(path = "/selectAllChatAdmin", produces = {"application/json"})
+	@ResponseBody
+	public List<Chat_Info> findAllChatAdmin() {
+		List<Chat_Info> chat_Info = chatService.findAllChat();
+		return chat_Info;
+	}
+	
+	@GetMapping(path = "/selectOneChat/{c_ID}", produces = {"application/json"})
+	@ResponseBody
+	public List<Chat_Reply> findOneChat(@PathVariable(required = true) int c_ID) {
+		List<Chat_Reply> chat_Reply = chatService.findAllChatReply(c_ID);
+		return chat_Reply;
+	}
+	
 	@PostMapping(path = "/insertChat", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info){
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.insertChat(chat_Info);
+			chatService.insertFirstChatReply(chat_Info);
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
@@ -88,6 +129,21 @@ public class ChatController {
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.deleteChat(c_ID);
+			map.put("success", "刪除成功");
+		} catch (Exception e) {
+			map.put("fail", "刪除失敗，請再試一次...");
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	@DeleteMapping("/deleteChatAdmin/{c_ID}")
+	@ResponseBody
+	public Map<String, String> deleteChatAdmin(@PathVariable(required = true) int c_ID){
+		Map<String, String> map = new HashMap<>();
+		try {
+			chatService.deleteChat(c_ID);
+			chatService.deleteChatReply(c_ID);
 			map.put("success", "刪除成功");
 		} catch (Exception e) {
 			map.put("fail", "刪除失敗，請再試一次...");

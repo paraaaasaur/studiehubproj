@@ -1,10 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>  
 <!DOCTYPE html>
 <html>
 <head>
-<%-- <link  rel='stylesheet' href="<c:url value='/css/style.css'  />" /> --%>
+
+<style type="text/css">
+/*  td {white-space:nowrap;overflow:hidden;text-overflow: ellipsis;} */
+/* table{table-layout:fixed;word-wrap:break-word;} */ */
+ 
+</style>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel='stylesheet'
+	href="${pageContext.request.contextPath}/assets/css/main.css">
+
+<title>所有試題資料</title>
+
+</head>
+
+
+
 <script>
 let dataArea = null; 
 let questionName = null; 
@@ -50,13 +69,13 @@ window.addEventListener('load', function(){
 	let obj = JSON.parse(textObj);
 	let size = obj.size;
 	let questions = obj.list;
-	let segment = "<table border='1' style='width:1200px;'>";
+	let segment = "<table >";
 	
 	if (size == 0){
-		segment += "<tr><th colspan='9'>查無資料</th><tr>";
+		segment += "<tr><th colspan='1'>查無資料</th><tr>";
 	} else {
-		segment += "<tr><th colspan='13'>共計" + size + "筆資料</th><tr>";
-	    segment += "<tr><th>編輯</th><th>刪除</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>選項A</th><th>選項B</th><th>選項C</th><th>選項D</th><th>正解</th><th>題目照片</th><th>題目音檔</th></tr>";
+		segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
+	    segment += "<tr><th>編輯</th><th>刪除</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
 	    
 	    for(n = 0; n < questions.length ; n++){
 		   	let question = questions[n];
@@ -80,17 +99,12 @@ window.addEventListener('load', function(){
 // 			segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' /></td>"
 			segment += "<td>" + tmp4 + "</td>"; 	
 			
-			segment += "<td>" + question.q_id + "</td>"; 	
-			segment += "<td>" + question.q_class + "</td>"; 	
-			segment += "<td>" + question.q_type + "</td>"; 	
+			segment += "<td width='7%'>" + question.q_id + "</td>"; 	
+			segment += "<td width='7%'>" + question.q_class + "</td>"; 	
+			segment += "<td width='7%'>" + question.q_type + "</td>"; 	
 			segment += "<td>" + question.q_question + "</td>"; 	
-			segment += "<td>" + question.q_selectionA + "</td>"; 	
-			segment += "<td>" + question.q_selectionB + "</td>"; 	
-			segment += "<td>" + question.q_selectionC + "</td>";
-			segment += "<td>" + question.q_selectionD + "</td>"; 	
-			segment += "<td>" + question.q_answer     + "</td>"; 	
 
-			segment += "<td><img width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
+			segment += "<td><img  width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
 			segment += "<td><audio controls src='" + question.q_audioString + "' ></td>"; 	
 			segment += "</tr>"; 	
 	   }
@@ -99,25 +113,53 @@ window.addEventListener('load', function(){
 	return segment;
 }
 </script>
-<meta charset="UTF-8">
-<title>Check All Questions</title>
-</head>
-<body>
+
+
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Main -->
+		<div id="main">
+			<div class="inner">
+				<%@include file="../universal/header.jsp"%>
+
 <div align='center'>
 <h2>所有試題資料</h2>
 <hr>
 <font color='red'>${successMessage}</font>&nbsp;
-
 <hr>
 
 
-試題搜尋：<input id="questionName" type='text' placeholder="請輸入部分問題內容" />
+試題搜尋：<input type='text' id="questionName"  placeholder="請輸入部分問題內容" />
 <button id='query'>提交</button>
 
 
 <div  id='dataArea'>
 </div>
-<a href="<c:url value='/question.controller/turnQuestionIndex'/> " >回前頁</a>
-</div>
+
+<%-- <a href="<c:url value='/question.controller/turnQuestionIndex'/> " >回前頁</a> --%>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Sidebar -->
+		<!-- 這邊把side bar include進來 -->
+		<%@include file="../universal/sidebar.jsp"%>
+
+	</div>
+
+	<!-- Scripts -->
+	<script
+		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
+	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
+	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	
 </body>
 </html>

@@ -10,6 +10,8 @@ import com.group5.springboot.model.user.User_Info;
 @Service
 public interface IUserService {
 
+
+
 	// 檢查帳號是否可用
 	public String checkUserId(String u_id);
 
@@ -33,5 +35,9 @@ public interface IUserService {
 
 	// 修改會員資料
 	public void updateUser(User_Info user_Info);
+	
+	public User_Info getUserInfoForForgetPassword(String userEmail);
+
+	public boolean setNewPasswordForForgetPsw(String email, String newPassword);
 
 }

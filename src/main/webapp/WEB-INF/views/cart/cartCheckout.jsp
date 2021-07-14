@@ -105,6 +105,7 @@ window.onload = function(){
 			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>

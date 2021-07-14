@@ -2,6 +2,10 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +28,17 @@ import com.group5.springboot.model.user.User_Info;
 public class OrderDao implements IOrderDao {
 	@Autowired 
 	private EntityManager em;
+//	@Autowired
+//	private JdbcTemplate jdbcTemplate;
 	
+	
+	@SuppressWarnings({ "unchecked" })
+	public List<OrderInfo> test() {
+		Query query = em.createNativeQuery("SELECT * FROM order_info WHERE o_date < '2021-07-08' AND o_date > :value ", OrderInfo.class); // ❓❗
+		query.setParameter("value", "2021-07-05 18:00:00");
+		List<OrderInfo> list = query.getResultList();
+		return list; 
+	}
 	
 	@Override
 	public Map<String, Object> selectAll() {
@@ -33,14 +48,64 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 	
-	public Map<String, Object> selectLikeOperator(Object condition, Object value) {
+	public Map<String, Object> selectLikeOperator(String condition, String value) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE :condition LIKE :value", OrderInfo.class);
-		query.setParameter("condition", (String) condition);
-		boolean isString = (value instanceof String);
-		Object parsedValue = (isString)? (String) value : (Integer) value;
-		query.setParameter("value", "%" + parsedValue + "%");
-		map.put("list", query.getResultList());
+		boolean isString = !( "o_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
+		condition = (isString)? "o." + condition : "STR(o." + condition + ")";
+		System.out.println("condition = " + condition + "; value = " + value);
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " LIKE :value", OrderInfo.class);
+		query.setParameter("value", "%" + value + "%");
+		List<OrderInfo> resultList = query.getResultList();
+		System.out.println(resultList);
+		map.put("list", resultList);
+		return map;
+	}
+	
+	public Map<String, Object> selectBy(String condition, String value) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Boolean isInteger = ( "o_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition));
+		Object parsedValue = (isInteger)? Integer.parseInt(value) : value;
+		System.out.println("condition = " + condition + "; value = " + parsedValue);
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " = :value", OrderInfo.class);
+		query.setParameter("value", parsedValue);
+		
+		List<OrderInfo> resultList = query.getResultList();
+		System.out.println(resultList);
+		map.put("list", resultList);
+		return map;
+	}
+	
+	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "SELECT * FROM order_info WHERE o_date >= :startTime AND o_date <= :endTime ORDER BY o_date DESC, u_id DESC";
+		Query query = em.createNativeQuery(sql, OrderInfo.class);
+		// ❗❓ 總覺得下面的轉法只要換個國家就會出錯...
+		try {
+			Date parsedStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+			Date parsedEndTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endTime);
+			System.out.println("From : " + parsedStartTime);
+			System.out.println("To : " + parsedEndTime);
+			query.setParameter("startTime", parsedStartTime, TemporalType.TIME);
+			query.setParameter("endTime", parsedEndTime, TemporalType.TIME);
+		} catch (ParseException e) {
+			System.out.println("轉時間出錯了");
+			e.printStackTrace();
+		}
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> list = (List<OrderInfo>) (query.getResultList());
+		map.put("list", list);
+		return map;
+	}
+	
+	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "SELECT * FROM order_info WHERE " + condition + " >= :minValue AND " + condition + "<= :maxValue ORDER BY " + condition + " DESC";
+		Query query = em.createNativeQuery(sql, OrderInfo.class);
+		query.setParameter("minValue", minValue);
+		query.setParameter("maxValue", maxValue);
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> list = query.getResultList();
+		map.put("list", list);
 		return map;
 	}
 	
@@ -62,12 +127,13 @@ public class OrderDao implements IOrderDao {
 		map.put("list", resultList);
 		return map;
 	}
-	
-	// Admin - 1
-	public Map<String, Object> selectTop20() {
+
+	public Map<String, Object> selectTop100() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(20);
-		List<OrderInfo> resultList = query.getResultList();
+//		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(100);
+//		List<OrderInfo> resultList = query.getResultList();
+		@SuppressWarnings("unchecked")
+		List<OrderInfo> resultList = (List<OrderInfo>) (em.createNativeQuery("SELECT * FROM order_info ORDER BY o_id DESC", OrderInfo.class).setMaxResults(100).getResultList());
 		map.put("list", resultList);
 		return map;
 	}
@@ -126,16 +192,17 @@ public class OrderDao implements IOrderDao {
 		ProductInfo pBean = em.find(ProductInfo.class, newOBean.getP_id());
 		User_Info uBean = em.find(User_Info.class, newOBean.getU_id());
 		
-		if(pBean == null) {
-			System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
-			return updateStatus;
-		} else if(uBean == null) {
-			System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
-			return updateStatus;	
-		}
 		
 		if (oBean != null) {
-//			resultBean.setO_id         (newBean.getO_id()       ); // 無意義  
+			
+			if(pBean == null) {
+				System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
+				return updateStatus;
+			} else if(uBean == null) {
+				System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
+				return updateStatus;	
+			}
+//			oBean.setO_id         (newBean.getO_id()       ); // 無意義  
 			oBean.setP_id         (newOBean.getP_id()       );  
 			oBean.setP_name       (newOBean.getP_name()     );  
 			oBean.setP_price      (newOBean.getP_price()    );  
@@ -164,19 +231,13 @@ public class OrderDao implements IOrderDao {
 		updateStatus = true;
 		return updateStatus;
 	}
+
 	
-	public boolean delete(OrderInfo orderBean) {
-		// 方法⓵ > 執行SELECT + DELETE
-/**		Order resultBean = em.find(Order.class, orderBean.getO_id());
-		if (resultBean != null) {
-			session.delete(orderBean); 
-		}*/
-		// 方法⓶ > HQL
-		Query query = em.createQuery("DELETE OrderInfo WHERE o_id = :oid");
-		query.setParameter("oid", orderBean.getO_id());
-		int deletedNum = query.executeUpdate();
-		System.out.println("You deleted " + deletedNum + " row(s) from order_info table.");
-		return (deletedNum == 0)? false : true;
+	public Integer delete(Integer[] o_ids) {
+		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)");
+		deleteQuery.setParameter("oids", Arrays.asList(o_ids));
+		Integer result = deleteQuery.executeUpdate();
+		return result;
 	}
 
 }

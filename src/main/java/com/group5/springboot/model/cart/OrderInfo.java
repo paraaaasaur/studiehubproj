@@ -1,6 +1,5 @@
 package com.group5.springboot.model.cart;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,29 +16,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 
-// Cart = ArrayList<ProductBean> = ArrayList<CartItem>
-// OrderBean = cart +- 一些額外資訊
 @Entity @Table(name = "order_info") 
 @Component
 public class OrderInfo {
 	
+	// ❗ 沒有什麼實質意義
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer o_id ; // PK
-	@Column(name = "P_ID", insertable = false, updatable = false) 
+	@Column(name = "P_ID", insertable = false, updatable = false)
 	private Integer p_id; // FK
 	private String p_name; 
 	private Integer p_price; 
-	@Column(name = "U_ID", insertable = false, updatable = false) 
+	@Column(name = "U_ID", insertable = false, updatable = false)
 	private String u_id; // FK
 	private String u_firstname; 
 	private String u_lastname; 
 	private String u_email; 
-	@Column(columnDefinition = "NVARCHAR(100)  DEFAULT 'DONE'", insertable = false, updatable = false)
+	@Column(columnDefinition = "NVARCHAR(100)  DEFAULT '完成'")
 	//直接指定SQL的條件限制 
 	private String o_status;
 	@Column(insertable = false, updatable = false, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
 	
-	private String o_date; // ❗Date()會不會更好？
+	private String o_date; 
 	private Integer o_amt;
 	/*********************************************************************/
 	// 去參考User_Info
@@ -62,7 +60,8 @@ public class OrderInfo {
 	
 	// constructors
 	public OrderInfo() {};
-	/** 不要用這個，因為o_id現在是用IDENTITY(1, 1)去產生的，所以不想要手動指定 */
+	public OrderInfo(Integer o_id) {		setO_id(o_id);	}
+	public OrderInfo(String o_status) {		setO_status(o_status);	}
 	public OrderInfo(Integer o_ID, Integer p_ID, String p_Name, Integer p_Price, String u_ID, String u_FirstName,
 			String u_LastName, String u_Email, String o_Status, String o_Date, Integer o_Amt) {
 		setO_id         (o_ID       );

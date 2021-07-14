@@ -2,12 +2,18 @@ package com.group5.springboot.model.chat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.group5.springboot.model.user.User_Info;
 
 @Entity
 @Table(name = "chat_Info")
@@ -15,19 +21,21 @@ import org.springframework.stereotype.Component;
 public class Chat_Info {
 	
 	@Id
-	@Column(name = "c_ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer c_ID;
-	@Column(name = "c_Date")
 	private String c_Date;
-	@Column(name = "c_Class")
 	private String c_Class;
-	@Column(name = "c_Title")
 	private String c_Title;
-	@Column(name = "c_Conts")
 	private String c_Conts;
-	@Column(name = "u_ID")
+	@Column(name = "U_ID", insertable = false, updatable = false)
 	private String u_ID;
+	
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY) 	
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true )
+	private User_Info user_Info;
+	public User_Info getUser_Info() {return user_Info;}
+	public void setUser_Info(User_Info user_Info) {this.user_Info = user_Info;}
 	
 	public Integer getC_ID() {
 		return c_ID;

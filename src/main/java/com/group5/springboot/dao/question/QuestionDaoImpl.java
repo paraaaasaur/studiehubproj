@@ -75,7 +75,7 @@ public class QuestionDaoImpl implements QuestionDao {
 	public Map<String, Object> sendRandomExam() {
 		Map<String, Object> map = new HashMap<>();
 		String hql = "FROM Question_Info ORDER BY NEWID()";
-		List<Question_Info> list = em.createQuery(hql).setMaxResults(3).getResultList();
+		List<Question_Info> list = em.createQuery(hql).setMaxResults(4).getResultList();
 		//設定隨機抽樣數量:setMaxResults()
 		System.out.println("list.get(0)=" + list.get(0));
 		map.put("size", list.size()); 

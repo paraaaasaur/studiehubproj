@@ -13,6 +13,7 @@ span.error {
 	display: inline-block;
 	font-size: 5pt;
 }
+
 </style>
 <meta charset="UTF-8">
 <meta name="viewport"
@@ -20,7 +21,51 @@ span.error {
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
+<script>
+let div1 = null;
+var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
+window.addEventListener("load", function() {
+	//window.addEvenListener 網頁監聽器 
+	//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
+	var logout = document.getElementById("logout");
+		logout.onclick = function() {
+			var xhr1 = new XMLHttpRequest();
+			xhr.open("GET", "<c:url value='/logout.controller' />", true);
+			xhr.send();
+			xhr.onreadystatechange = function() {
+				if (xhr1.readyState == 4 && xhr1.status == 200) {
+					var result = JSON.parse(xhr1.responseText);
+					if (result.success) {
+						alert(result.success);
+						top.location = '<c:url value='/' />';
+					} else if (result.fail) {
+						alert(result.fail);
+						top.location = '<c:url value='/' />';
+					}
+				}
+			}
+		}
 
+		var loginHref = document.getElementById('loginHref');
+	    var signupHref = document.getElementById('signupHref');
+	    var logoutHref = document.getElementById('logoutHref');
+	    var userId = document.getElementById('userId');
+	    var userPic = document.getElementById('userPic');
+	    
+	    if(u_id){
+	    	loginHref.hidden = true;
+	    	signupHref.hidden = true;
+	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+	    	userPic.src = userPicString;	//有登入就秀大頭貼
+	    	userId.innerHTML = u_id;
+	    	loginEvent.style.display = "block";
+	    	loginALLEvent.style.display = "block";
+
+	    }
+	
+})
+</script>
 
 
 
@@ -68,8 +113,13 @@ span.error {
 
 						</tr>
 						<tr>
-							<td>活動類別:</td>
-							<td><form:input  path="a_type" /></td>
+				   <td>活動類型：<br>&nbsp;</td>
+				   <td>
+				   <form:select path="a_type" >
+                   <form:option label="請挑選" value="" />
+                   <form:options  items="${eventtype}" />
+                   </form:select>
+                   </td> 
 						</tr>
 						<tr>
 							<td>活動開始時間:</td>

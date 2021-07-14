@@ -68,8 +68,13 @@ span.error {
 
 						</tr>
 						<tr>
-							<td>活動類別:</td>
-							<td><form:input path="a_type" /></td>
+							<td>活動類型：<br>&nbsp;</td>
+				            <td>
+				            <form:select path="a_type" >
+                            <form:option label="請挑選" value="" />
+                            <form:options  items="${eventtype}" />
+                            </form:select>
+                            </td>
 						</tr>
 						<tr>
 							<td>活動開始時間:</td>

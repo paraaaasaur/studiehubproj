@@ -18,10 +18,57 @@ text-overflow: ellipsis;
 
 <script>
 let div1 = null;
+var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 window.addEventListener("load", function() {
 	//window.addEvenListener 網頁監聽器 
 	//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
 
+	
+	
+	var logout = document.getElementById("logout");
+		logout.onclick = function() {
+			var xhr1 = new XMLHttpRequest();
+			xhr.open("GET", "<c:url value='/logout.controller' />", true);
+			xhr.send();
+			xhr.onreadystatechange = function() {
+				if (xhr1.readyState == 4 && xhr1.status == 200) {
+					var result = JSON.parse(xhr1.responseText);
+					if (result.success) {
+						alert(result.success);
+						top.location = '<c:url value='/' />';
+					} else if (result.fail) {
+						alert(result.fail);
+						top.location = '<c:url value='/' />';
+					}
+				}
+			}
+		}
+
+		var loginHref = document.getElementById('loginHref');
+	    var signupHref = document.getElementById('signupHref');
+	    var logoutHref = document.getElementById('logoutHref');
+	    var userId = document.getElementById('userId');
+	    var userPic = document.getElementById('userPic');
+	    if(u_id){
+	    	loginHref.hidden = true;
+	    	signupHref.hidden = true;
+	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+	    	userPic.src = userPicString;	//有登入就秀大頭貼
+	    	userId.innerHTML = u_id;
+	    	loginEvent.style.display = "block";
+	    	loginALLEvent.style.display = "block";
+
+	    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	dataArea = document.getElementById("div1");
 // 	restname = document.getElementById("restname");
 // 	query = document.getElementById("query");
@@ -59,9 +106,11 @@ function showData(textobj) {
 		for (n = 0; n < events.length; n++) {
 			let event = events[n];
 					
+           if(event.verification=="Y"){
 			
                 let tmp0 = "<c:url value='/' />"  + event.a_picturepath;
-                let tmpx = "<c:url value='/modifyRestaurant/' />" + event.a_aid;
+                let tmpx = "<c:url value='/Selecteventcontent/' />" + event.a_aid;
+//              let tmpx = "<c:url value='/Selecteventcontent' />";
                 let tmpxx = "<a href= '"+tmpx+"'>"+event.a_name+"</a>";
                 let tmp1 = event.a_name ;
                 let tmp2 = event.a_startTime;
@@ -69,18 +118,20 @@ function showData(textobj) {
                 let tmp4 = event.a_address;
                 let tmp5 = "https://www.google.com/maps?q="+event.a_address ;
 				console.log(tmp5);
-
-//                 width='460' height='345'
+// 				class='image'
 			    segment += "<article  class='container'>";
-			    segment += "<a href='"+tmpx+"' class='image'><img src='"+tmp0+"' alt='' class='thumbnail' /></a>"
+			    segment += "<a href='"+tmpx+"' class='image'><img src='"+tmp0+"' alt=''  height='300' /></a>"
 				segment += "<h3 class='ellipsis'>"+tmpxx+"</h3>"
-				segment += "<p>活動時間:"+tmp2+"<span>至"+tmp3+"</span>"+"</p>"
-				segment += "<p>活動地點:"+tmp4+"</p>"
+				segment += "<p  class='ellipsis'>活動時間:"+tmp2+"<span>至"+tmp3+"</span>"+"</p>"
+				segment += "<p  class='ellipsis'>活動地點:"+tmp4+"</p>"
 				segment += "<ul class='actions'>"
 				segment += "<li><a href="+tmpx+" class='button'>詳細資訊</a></li>"
 				segment += "<li><a href="+tmp5+" class='button'>詳細地址</a></li>"
 				segment += "</ul>"
 				segment += "</article>"
+           }else{
+        	   segment +=""
+           }
 
 // 					<article>
 // 				    <a href="#" class="image"><img src="images/pic05.jpg" alt="" /></a>

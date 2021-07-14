@@ -44,6 +44,18 @@
 					</li>
 					<li><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
 					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
+
+					
+					<li><span class="opener">活動</span>
+					    <ul>
+					        <li><a href="<c:url value='/eventindex' />">所有活動</a></li>
+					        <li style='display:none' id='loginEvent'><a href="<c:url value='/insertEvent' />">新增活動</a></li>
+					        <li style='display:none' id='loginALLEvent'><a href="<c:url value='/userAllEvent' />">使用者後臺</a></li>
+<%-- 					        <li><a href="<c:url value='/Eventindex' />">所有活動(測試)</a></li>			         --%>
+					        			        
+					    </ul>
+					</li>
+
 					<li><span class="opener">題庫</span>
 						<ul>
 							<li><a href="<c:url value='/question.controller/guestQueryQuestion' />">所有試題</a></li>
@@ -51,11 +63,11 @@
 						</ul>
 					</li>
 					<li><a href="<c:url value='/Eventindex' />">活動</a></li>
+
 					<li><a href="<c:url value='/gotoAdminIndex.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li>
 <%-- 					<li><a href="<c:url value='/gotoAdminLogin.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li> --%>
 				</ul>
 			</nav>
-
 			<!-- Section -->
 			<section>
 				<header class="major">

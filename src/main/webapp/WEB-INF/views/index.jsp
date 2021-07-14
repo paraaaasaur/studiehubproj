@@ -47,6 +47,9 @@ window.onload = function(){
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
+    	loginEvent.style.display = "block";
+    	loginALLEvent.style.display = "block";
+
     }
     
 }

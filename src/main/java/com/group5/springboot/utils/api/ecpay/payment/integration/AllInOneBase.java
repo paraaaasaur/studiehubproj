@@ -1,5 +1,6 @@
 package com.group5.springboot.utils.api.ecpay.payment.integration;
 
+import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -31,10 +32,12 @@ public class AllInOneBase {
 			Document doc;
 			/* when using web project*/
 //			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//			String configPath = URLDecoder.decode(classLoader.getResource("/api/ecpay/payment_conf.xml").getPath(), "UTF-8"); // ❗ added by nin
 //			String configPath = URLDecoder.decode(classLoader.getResource("/payment_conf.xml").getPath(), "UTF-8");
 //			doc = EcpayFunction.xmlParser(configPath);
 			/* when using testing code*/
-			String paymentConfPath = "./src/main/resources/payment_conf.xml";
+			String paymentConfPath = new ClassPathResource("/api/ecpay/payment_conf.xml").getPath(); // ❗ added by nin
+//			String paymentConfPath = "./src/main/resources/payment_conf.xml";
 			doc = EcpayFunction.xmlParser(paymentConfPath);
 			
 			doc.getDocumentElement().normalize();

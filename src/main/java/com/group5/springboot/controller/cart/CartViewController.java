@@ -1,7 +1,8 @@
 package com.group5.springboot.controller.cart;
 
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +13,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
 import com.group5.springboot.validate.CartValidator;
 
 @Controller
@@ -96,6 +106,37 @@ public class CartViewController {
 	@GetMapping(value = {"/cart.controller/adminSelect"})
 	public String toCartAdminSelect() {
 		return "cart/cartAdminSelect";
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO 
+	 * @throws JsonProcessingException 
+	 * @throws JsonMappingException */
+	@PostMapping(value = {"/test04"}, consumes = "application/json; charset=UTF-8", produces = "application/json; charset=UTF-8")
+	@ResponseBody
+	public JsonNode test04(@RequestBody JsonNode b) {
+		System.out.println(b.toString());
+		System.out.println(b.toPrettyString());
+		return b;
+	}
+	
+	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@GetMapping(value = {"/test04"})
+	public String test04() {
+		return "cart/here";
+	}
+	
+	@ResponseBody
+	@GetMapping(value = {"/test05"})
+	public CartItem test05() {
+		CartItem a = cartItemService.test05();
+		return a;
+	}
+	
+	
+	
+	public void payViaEcpay() {
+		AllInOne aio = new AllInOne("");
+		
 	}
 
 	

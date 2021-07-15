@@ -22,6 +22,10 @@ public class CartItemService implements ICartItemService{
 	@Autowired // SDI✔
 	private ProductDaoImpl productDao;
 	
+	public CartItem test05() {
+		return cartItemDao.test05();
+	}
+	
 	public Map<String, Object> select(Integer cart_id) {
 		return cartItemDao.select(cart_id);
 	}

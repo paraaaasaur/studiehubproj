@@ -1,10 +1,10 @@
 <?xml  version="1.0" encoding="utf-8"?>
 <Conf>
-    <OperatingMode>Test</OperatingMode> <!--Test or Production-->
-    <MercProfile>Stage_Account</MercProfile>
-    <IsProjectContractor>N</IsProjectContractor>
+    <OperatingMode>Test</OperatingMode> <!-- (1) Test or Production-->
+    <MercProfile>Stage_Account</MercProfile> <!-- (2) -->
+    <IsProjectContractor>N</IsProjectContractor> <!-- (3) Y/N -->
     
-    <MerchantInfo>
+    <MerchantInfo> <!-- (4) -->
         <MInfo name="Production_Account">
             <MerchantID></MerchantID>
             <HashKey></HashKey>
@@ -17,12 +17,12 @@
         </MInfo>
     </MerchantInfo>
     
-   <IgnorePayment>
-   <!-- <Method>Credit</Method>
+   <IgnorePayment> <!-- (5) 當使用 AioCheckOutALL 時欲排除的付款方式。 -->
+<!--         <Method>Credit</Method> -->
         <Method>WebATM</Method>
-        <Method>ATM</Method>
-        <Method>CVS</Method>
-        <Method>BARCODE</Method>-->
+<!--         <Method>ATM</Method> -->
+<!--         <Method>CVS</Method> -->
+<!--         <Method>BARCODE</Method> -->
     </IgnorePayment>
 
 </Conf>

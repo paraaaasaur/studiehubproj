@@ -9,12 +9,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -29,10 +31,13 @@ import com.group5.springboot.utils.SystemUtils;
 @Table(name = "ProductInfo")
 @Component
 public class ProductInfo {
+	
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer p_ID;
+	@Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	private String p_Name;
 	private String p_Class;
 	private Integer p_Price;
@@ -40,20 +45,13 @@ public class ProductInfo {
 	private Date p_createDate;
 //	@JsonIgnore
 	private Clob p_DESC;
-	@JsonIgnore
-	private Blob p_Img;
-	@JsonIgnore
-	private Blob p_Video;
-	// ❗ 下面兩者，之後和 User 建關聯時應該會需要要關成false
-	// ❗ @Column(insertable = true, updatable = true) 
+	@Column(columnDefinition = "NVARCHAR(255)")
+	private String p_Img;
+	@Column(columnDefinition = "NVARCHAR(255)")
+	private String p_Video;
 	private String u_ID;
-	private String img_mimeType;
-	private String video_mimeType;
-	// 以下為轉檔用
-	@Transient
-	private String pictureString;
-	@Transient
-	private String videoString;
+	//0 = 審核中 1 = 審核通過
+	private Integer p_Status;
 	@Transient
 	private MultipartFile imgFile;
 	@Transient
@@ -61,15 +59,29 @@ public class ProductInfo {
 	@Transient
 	private String descString;
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "prodcuInfo", cascade = CascadeType.REFRESH)
+	private Set<Rating> p_Rating = new HashSet<Rating>();
+	
 	
 
 	
-	public String getVideoString() {
-		return SystemUtils.blobToDataProtocol(video_mimeType, p_Video);
+	
+
+
+	public Set<Rating> getP_Rating() {
+		return p_Rating;
 	}
 
-	public void setVideoString(String videoString) {
-		this.videoString = videoString;
+	public void setP_Rating(Set<Rating> p_Rating) {
+		this.p_Rating = p_Rating;
+	}
+
+	public Integer getP_Status() {
+		return p_Status;
+	}
+
+	public void setP_Status(Integer p_Status) {
+		this.p_Status = p_Status;
 	}
 
 	public String getDescString() {
@@ -162,19 +174,19 @@ public class ProductInfo {
 		this.p_DESC = p_DESC;
 	}
 
-	public Blob getP_Img() {
+	public String getP_Img() {
 		return p_Img;
 	}
 
-	public void setP_Img(Blob p_Img) {
+	public void setP_Img(String p_Img) {
 		this.p_Img = p_Img;
 	}
 
-	public Blob getP_Video() {
+	public String getP_Video() {
 		return p_Video;
 	}
 
-	public void setP_Video(Blob p_Video) {
+	public void setP_Video(String p_Video) {
 		this.p_Video = p_Video;
 	}
 
@@ -186,30 +198,6 @@ public class ProductInfo {
 		this.u_ID = u_ID;
 	}
 
-	public String getImg_mimeType() {
-		return img_mimeType;
-	}
-
-	public void setImg_mimeType(String img_mimeType) {
-		this.img_mimeType = img_mimeType;
-	}
-
-	public String getVideo_mimeType() {
-		return video_mimeType;
-	}
-
-	public void setVideo_mimeType(String video_mimeType) {
-		this.video_mimeType = video_mimeType;
-	}
-
-	public String getPictureString() {
-		return SystemUtils.blobToDataProtocol(img_mimeType, p_Img);
-
-	}
-
-	public void setPictureString(String pictureString) {
-		this.pictureString = pictureString;
-	}
 
 	public MultipartFile getImgFile() {
 		return imgFile;
@@ -227,39 +215,5 @@ public class ProductInfo {
 		this.videoFile = videoFile;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("ProductInfo [p_ID=");
-		builder.append(p_ID);
-		builder.append(", p_Name=");
-		builder.append(p_Name);
-		builder.append(", p_Class=");
-		builder.append(p_Class);
-		builder.append(", p_Price=");
-		builder.append(p_Price);
-		builder.append(", p_createDate=");
-		builder.append(p_createDate);
-		builder.append(", p_DESC=");
-		builder.append(p_DESC);
-		builder.append(", p_Img=");
-		builder.append(p_Img);
-		builder.append(", p_Video=");
-		builder.append(p_Video);
-		builder.append(", u_ID=");
-		builder.append(u_ID);
-		builder.append(", img_mimeType=");
-		builder.append(img_mimeType);
-		builder.append(", video_mimeType=");
-		builder.append(video_mimeType);
-		builder.append(", pictureString=");
-		builder.append(pictureString);
-		builder.append(", imgFile=");
-		builder.append(imgFile);
-		builder.append(", videoFile=");
-		builder.append(videoFile);
-		builder.append("]");
-		return builder.toString();
-	}
 
 }

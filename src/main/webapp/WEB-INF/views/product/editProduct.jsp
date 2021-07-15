@@ -122,7 +122,7 @@ textarea {
 						</tr>
 						<tr>
 							<td>課程介紹:</td>
-							<td><form:textarea path="descString" rows="10" cols="100" />
+							<td><form:textarea path="descString" style="resize:none" rows="10" cols="100" />
 								<form:errors path='descString' cssClass="error" /></td>
 						</tr>
 						<tr>

@@ -35,6 +35,16 @@ public class SystemUtils {
 		}
 		// return filename.substring(filename.lastIndexOf("."));
 	}
+	public static String getFilename(String filename) {
+		// System.out.println("filename= " + filename);
+		int n = filename.lastIndexOf(".");
+		if (n >= 0) {
+			return filename.substring(0, n);
+		} else {
+			return null;
+		}
+		// return filename.substring(filename.lastIndexOf("."));
+	}
 
 	// db抓圖片轉base64
 	public static String blobToDataProtocol(String mimeType, Blob image) {

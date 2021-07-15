@@ -10,6 +10,7 @@
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
+	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
 <title>Studie Hub</title>
 <style type="text/css">
 
@@ -97,56 +98,74 @@ window.onload = function(){
 			}
 		}
 	})
-    
 }
 
-function showData(textObj) {
-    let obj = JSON.parse(JSON.stringify(textObj));
-    let size = obj.size;
-    let products = obj.list;
-	console.log(obj);
-	console.log(size);
-	console.log(products);
-    let segment = "";
-        if (size == 0) {
-			segment += "<tr><th colspan='8'>查無資料</th></tr>";
+function setResultStars(p_ID){
+			let star = "";
+
+			let xhr = new XMLHttpRequest();
+			xhr.open("GET","<c:url value='/findRatingById'/>?p_ID="+p_ID,true);
+			xhr.send();
+			xhr.onreadystatechange = function(){
+
+				if(xhr.readyState == 4 && xhr.status ==200){
+					
+					let result = JSON.parse(xhr.responseText);
+					let rating = result.list;
+					let size = result.size;
+
+					if(size == 0){
+						star += "<span>尚無評論</span>";
+					}else{
+						let ratingIndex = rating[0];
+						let ratedIndex = ratingIndex.ratedIndex;
+						for(n=0;n<ratedIndex;n++){
+							star += "<i class='fa fa-star fa-x' style='color: gold;'></i>";
+						}
+						return 0;
+						console.log(star);
+					}
+				}
+			}
+					
+		}
+		
+		function showData(textObj) {
+		let obj = JSON.parse(JSON.stringify(textObj));
+		let size = obj.size;
+		let products = obj.list;
+		let segment = "";
+		if (size == 0) {
+			segment += "<tr><th colspan='5'>查無資料</th></tr>";
 		} else {
 			
 			for(n=0;n<products.length;n++){
 				let product = products[n];
-				segment += "<div class='product'>";
-				segment += "<a href='"+ "<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'class='image'style='height:270px'>";
-				segment += "<img src='"+ product.pictureString +"' width='230px' height='120px'>";
-				segment += "<br>";
-				segment += "<h3>"+ product.p_Name +"</h3>"
-			    segment += "</a>";
-			    segment += "</div>";
-			}
-			
-			
-			
-//             segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
+				let resultStars = setResultStars(product.p_ID);
+				console.log(product.p_ID);
+				console.log(resultStars);
+					segment += "<div class='product'>";
+					segment += "<a href='"+ "<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'class='image'style='height:270px'>";
+					segment += "<img src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"' width='230px' height='120px'>";
+					segment += "<br>";
+					segment += "<h3>"+ product.p_Name +"</h3>"
+					segment += "<span>NT"+product.p_Price+"</span>"
+					segment += "<br>"
+					segment += setResultStars(product.p_ID);
+					segment += "</a>";
+					segment += "</div>";
 
-// 			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th width:50px;>功能</th></tr>";
-// 			for (n = 0; n < products.length; n++) {
-// 				let product = products[n];
-//     			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
-//     			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
-//     			console.log(tmp0);
-// 				segment += "<tr>";
-//                 segment += "<td><img width='100' height='60' src='" + product.pictureString + "' ></td>";
-// 				segment += "<td>" + product.p_Name + "</td>";
-// 				segment += "<td>" + product.p_Class + "</td>";
-// 				segment += "<td>" + product.p_Price + "</td>";
-// 				segment += "<td>" + product.p_DESC + "</td>";
-// 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\"'/>";
-// 				segment += "<input type='button'value='刪除'onclick=\"window.location.href='"+tmp1+"'\" /></td>";
-// 				segment += "</tr>";
-//                 }
-        }
-       
-        return segment;
-}
+					
+				}
+				
+				
+				
+			}
+		
+			return segment;
+	}
+
+
 </script>
 
 </head>
@@ -176,7 +195,87 @@ function showData(textObj) {
 
 	</div>
 
+	<!--Rating JS-->
+	<script>
+		var ratedIndex =-1;
+		var stars = document.getElementById("stars");
+		var comment = document.getElementById("showComment");
+		
+
+		$(document).ready(function(){
+			resetStarColors();
+			
+			if(localStorage.getItem('ratedIndex') != null)
+			setStars(parseInt(localStorage.getItem('ratedIndex')));
+			
+			$('.commentStar').on('click',function(){
+				ratedIndex = parseInt($(this).data('index'));
+				localStorage.setItem('ratedIndex',ratedIndex);
+			});
+			
+			$('.commentStar').mouseover(function(){
+				resetStarColors();
+				
+				var currentIndex = parseInt($(this).data('index'));
+				setStars(currentIndex);
+			});
+			
+			$('.commentStar').mouseleave(function(){
+				resetStarColors();
+				
+				if(ratedIndex !=-1)
+				setStars(ratedIndex);
+			});
+			resetStarColors();
+
+			//show rating result
+		// var p_ID = $('#p_ID').val();
+		// let xhr0 = new XMLHttpRequest();
+		// xhr0.open("GET","<c:url value='/findRatingById'/>?p_ID="+p_ID,true)
+		// xhr0.send();
+		// xhr0.onreadystatechange = function(){
+		// if(xhr0.readyState == 4 && xhr0.status == 200){
+		// 	var result = JSON.parse(xhr0.responseText);
+		// 	comment.innerHTML = showComment(result);
+
+			
+		// 	}
+		// }
+		});
+	
+		
+		function setStars(max){
+				for(var i=0;i<=max;i++)
+					$('.commentStar:eq('+i+')').css('color','gold');
+		}
+		
+
+		function resetStarColors(){
+			$('.commentStar').css('color','gray');
+		}
+
+		$('#ratingSubmit').on('click',function(){
+			console.log(ratedIndex);
+			var text = $('#comment').val();
+			var p_ID = $('#p_ID').val();
+			console.log(text);
+			console.log(p_ID);
+
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "<c:url value='/saveRating' />",true);
+			xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			xhr.send("p_ID="+p_ID+"&ratedIndex="+ratedIndex+"&commentString="+text);
+			window.location.href="http://localhost:8080/studiehub/takeClass/"+p_ID;
+			
+
+		});
+
+		
+
+		</script>
+
 	<!-- Scripts -->
+	<script src="https://kit.fontawesome.com/c43b2fbf26.js"	crossorigin="anonymous"></script>
 	<script
 		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
 	<script

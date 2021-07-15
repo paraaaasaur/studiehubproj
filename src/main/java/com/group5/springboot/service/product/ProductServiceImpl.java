@@ -51,5 +51,12 @@ public class ProductServiceImpl {
 		public boolean isProductExist(ProductInfo productInfo) {
 			return false;
 		}
+		
+		public Map<String, Object> pendingAccess(){
+			return productDao.pendingAccess();
+		}
+		public Integer stars(Integer p_ID) {
+			return productDao.stars(p_ID);
+		}
 
 }

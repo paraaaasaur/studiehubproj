@@ -101,7 +101,7 @@ window.onload = function(){
                                     </tr>
                                     <tr>
                                         <td>課程介紹:</td>
-                                    	<td><textarea rows="10" cols="100" name="descString" id="descString"></textarea>
+                                    	<td><textarea style="resize:none" rows="10" cols="100" name="descString" id="descString"></textarea>
                                     		<form:errors path='descString' cssClass="error"/>
                                     	</td>
                                     </tr>

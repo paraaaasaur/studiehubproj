@@ -37,6 +37,7 @@
 					<li><span class="opener">課程資訊</span>
 						<ul>
 							<li><a href="/studiehub/queryProduct">所有課程</a></li>
+							<li><a href="/studiehub/findAllProductPending">待審核課程</a></li>
 						</ul>
 					</li>
 					<li><a href="<c:url value='/cart.controller/cartAdminSelect' />">購物車</a></li>

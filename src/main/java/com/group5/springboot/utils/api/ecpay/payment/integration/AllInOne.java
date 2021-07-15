@@ -356,7 +356,7 @@ public class AllInOne extends AllInOneBase{
 	/**
 	 * 產生訂單Html form的方法
 	 * @param aioCheckOutObj
-	 * @param invoice
+	 * @param invoice > 可以填入null表示不用發票
 	 * @param String
 	 */
 	public String aioCheckOut(Object obj, InvoiceObj invoice){

@@ -14,7 +14,8 @@ import com.group5.springboot.utils.api.ecpay.payment.integration.errorMsg.ErrorM
 import com.group5.springboot.utils.api.ecpay.payment.integration.exception.EcpayException;
 
 public class PaymentVerifyBase{
-	protected String confPath = "/ecpay/payment/integration/config/EcpayPayment.xml";
+//	protected String confPath = "/ecpay/payment/integration/config/EcpayPayment.xml"; 
+	protected String confPath = "/com/group5/springboot/utils/api/ecpay/payment/integration/config/EcpayPayment.xml"; // ❗ added by nin
 	protected Document doc;
 	public PaymentVerifyBase(){
 		URL fileURL = this.getClass().getResource(confPath);

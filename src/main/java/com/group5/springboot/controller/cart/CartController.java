@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
+import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
+import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
 
 @RestController
 public class CartController {
@@ -126,6 +129,34 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@GetMapping("/a1")
+	public String payViaEcpay() {
+		AioCheckOutALL aioObj = new AioCheckOutALL(); 
+		aioObj.setMerchantTradeNo("kiryuushiki8931");
+		aioObj.setMerchantTradeDate("2017/01/01 08:05:23");
+		aioObj.setTotalAmount("50");
+		aioObj.setTradeDesc("test Description");
+		aioObj.setItemName("TestItem");
+		aioObj.setReturnURL("http://localhost:8080/studiehub/");
+		aioObj.setNeedExtraPaidInfo("N");
+		String form = new AllInOne("").aioCheckOut(aioObj, null);
+		return form;
+	}
+	
+	@GetMapping("/a2")
+	public AioCheckOutALL genEcpayOrder(@RequestBody List<OrderInfo> orders) {
+		
+		
+		AioCheckOutALL aioObj = new AioCheckOutALL(); 
+		aioObj.setMerchantTradeNo("kiryuushiki8931");
+		aioObj.setMerchantTradeDate("2017/01/01 08:05:23");
+		aioObj.setTotalAmount("1");
+		aioObj.setTradeDesc("test Description");
+		aioObj.setItemName("TestItem");
+		aioObj.setReturnURL("http://localhost:8080/studiehub/");
+		aioObj.setNeedExtraPaidInfo("N");
+		return aioObj;
+	}
 	
 	
 }

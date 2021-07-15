@@ -24,6 +24,10 @@ public class ProductResultController {
 	public @ResponseBody Map<String, Object> findAll(){
 		return productService.findAll();
 	}
+	@GetMapping(value="/findAllProductPendingAccess", produces = "application/json; charset=UTF-8")
+	public @ResponseBody Map<String, Object> findAllProductPendingAccess(){
+		return productService.pendingAccess();
+	}
 	
 	@GetMapping(value = "/queryByProductName", produces ="application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object>queryByName(@RequestParam("pname")String pname) {

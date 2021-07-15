@@ -1,14 +1,10 @@
 package com.group5.springboot.controller.product;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
+import java.io.File;
 import java.sql.Clob;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +60,17 @@ public class ProductController {
 	public String sendQueryProduct() {
 		return "product/showProduct";
 	}
+	@GetMapping("/findAllProductPending")
+	public String findAllProductPending() {
+		return "product/pendingAccess";
+	}
+	@GetMapping("/accessResult/{p_ID}")
+	public String accessResult(@PathVariable Integer p_ID,Model model) {
+		ProductInfo productInfo = productService.findByProductID(p_ID);
+		productInfo.setP_Status(1);
+		productService.save(productInfo);
+		return "product/pendingAccess";
+	}
 	
 	@GetMapping("insertProduct")
 	public String addProduct() {
@@ -74,8 +81,6 @@ public class ProductController {
 								@ModelAttribute("productInfo") ProductInfo productInfo,
 								BindingResult result,
 								RedirectAttributes ra) {
-		System.out.println("post"+productInfo);
-		ProductInfo oldProduct = productService.findByProductID(productInfo.getP_ID());
 		
 		prodcutValidator.validate(productInfo, result);
 		if (result.hasErrors()) {
@@ -85,57 +90,51 @@ public class ProductController {
 			}
 			return "product/editProduct";
 		}
-		Blob blob = null;
-		String mimeType = "";
-		String name ="";
-		MultipartFile imgFile = productInfo.getImgFile();
-		MultipartFile videoFile = productInfo.getVideoFile();
-		if (imgFile != null && imgFile.getSize()>0) {
+		MultipartFile img = productInfo.getImgFile();
+		MultipartFile video = productInfo.getVideoFile();
+		if (img != null && img.getSize()>0) {
 			try {
-				InputStream is = imgFile.getInputStream();
-				name = imgFile.getOriginalFilename();
-				blob = SystemUtils.inputStreamToBlob(is);
-				mimeType = context.getMimeType(name);
-				productInfo.setP_Img(blob);
-				productInfo.setImg_mimeType(mimeType);
+				String imgext = SystemUtils.getExtFilename(img.getOriginalFilename());
+				File imageFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\images\\productImages");
+				if (!imageFolder.exists()) {
+					imageFolder.mkdirs();
+				}
+				File imgFile = new File(imageFolder,SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+				img.transferTo(imgFile);
+				productInfo.setP_Img(SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+
 				
 			}catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException("檔案上傳發生異常: "+ e.getMessage());
 			}
 			
-//		}else {
-//			productInfo.setImg_mimeType(oldProduct.getImg_mimeType());
-//			productInfo.setP_Img(oldProduct.getP_Img());
-//			productInfo.setPictureString(oldProduct.getPictureString());
 		}
 		
-		if (videoFile != null && videoFile.getSize() >0) {
+		if (video != null && video.getSize() >0) {
 			try {
 				
-				InputStream is = videoFile.getInputStream();
-				name = videoFile.getOriginalFilename();
-				mimeType = context.getMimeType(name);
-				blob = SystemUtils.inputStreamToBlob(is);
+
+				String videoext = SystemUtils.getExtFilename(video.getOriginalFilename());
+				File videoFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\video\\productVideo");
+				if (!videoFolder.exists()) {
+					videoFolder.mkdirs();
+				}
+				File videoFile = new File(videoFolder,SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+				video.transferTo(videoFile);
+				productInfo.setP_Video(SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
 				
-				productInfo.setVideo_mimeType(mimeType);
-				productInfo.setP_Video(blob);
+				
+				
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException("檔案上傳發生異常: "+ e.getMessage());
 			}
-//		}else {
-//			productInfo.setVideo_mimeType(oldProduct.getVideo_mimeType());
-//			productInfo.setVideoString(oldProduct.getVideoString());
-//			productInfo.setP_Video(oldProduct.getP_Video());
 		}
 		
 		
-//		Clob clob = SystemUtils.stringToClob(descString);
-//		productInfo.setP_DESC(clob);
-//		productService.save(productInfo);
-		System.out.println("beforeupdate"+productInfo);
+		productInfo.setP_Status(0);
 		productService.update(productInfo);
 		ra.addFlashAttribute("successMessage",productInfo.getP_Name()+"更新成功");
 		return "redirect:/queryProduct";
@@ -152,39 +151,42 @@ public class ProductController {
 			
 			return "product/insertProduct";
 		}
-		Blob blob = null;
-		String img_mimeType = "";
-		String video_mimeType = "";
-		String name = "";
 		MultipartFile img = productInfo.getImgFile();
 		MultipartFile video = productInfo.getVideoFile();
 		
-		try {
-			InputStream is = img.getInputStream();
-			name = img.getOriginalFilename();
-			blob = SystemUtils.inputStreamToBlob(is);
-			img_mimeType = context.getMimeType(name);
-			productInfo.setImg_mimeType(img_mimeType);
-			productInfo.setP_Img(blob);
-			is = video.getInputStream();
-			name = video.getOriginalFilename();
-			blob = SystemUtils.inputStreamToBlob(is);
-			video_mimeType = context.getMimeType(name);
-			productInfo.setP_Video(blob);
-			productInfo.setVideo_mimeType(video_mimeType);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		//建立時間
 		productInfo.setP_createDate(new Date());
 		//desc轉檔
 		Clob clob = SystemUtils.stringToClob(descString);
 		productInfo.setP_DESC(clob);
 		productService.save(productInfo);
+		try {
+			String imgext = SystemUtils.getExtFilename(img.getOriginalFilename());
+			String videoext = SystemUtils.getExtFilename(video.getOriginalFilename());
+			File imageFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\images\\productImages");
+			File videoFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\video\\productVideo");
+			if (!imageFolder.exists()) {
+				imageFolder.mkdirs();
+			}
+			if (!videoFolder.exists()) {
+				videoFolder.mkdirs();
+			}
+			File imgFile = new File(imageFolder,SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+			img.transferTo(imgFile);
+			productInfo.setP_Img(SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+			File videoFile = new File(videoFolder,SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+			video.transferTo(videoFile);
+			productInfo.setP_Video(SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+			productInfo.setP_Status(0);
+			productService.save(productInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		ra.addFlashAttribute("successMessage", productInfo.getP_Name() + "新增成功");
 		
-		return "redirect:/queryProduct";
+		return "redirect:/queryProductForUser";
 	}
 	
 	@GetMapping("/deleteProduct/{p_ID}")

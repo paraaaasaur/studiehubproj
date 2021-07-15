@@ -96,20 +96,20 @@ function showData(textObj) {
 		} else {
             segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
 
-			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th width:50px;>功能</th></tr>";
+			segment += "<tr><th style='text-align: center;'>課程圖片</th><th style='text-align: center;'>課程名稱</th><th>課程類別</th><th>課程價格</th><th style='text-align: center;'>課程介紹</th><th width:50px; style='text-align: center;'>功能</th></tr>";
 			for (n = 0; n < products.length; n++) {
 				let product = products[n];
     			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
     			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
     			console.log(tmp0);
 				segment += "<tr>";
-                segment += "<td><img width='100' height='60' src='" + product.pictureString + "' ></td>";
-				segment += "<td>" + product.p_Name + "</td>";
+                segment += "<td><img width='100' height='60' src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"'/ ></td>";
+				segment += "<td style='text-align: center;'>" + product.p_Name + "</td>";
 				segment += "<td style='width: 100px;'>" + product.p_Class + "</td>";
 				segment += "<td style='width: 100px;'>" + product.p_Price + "</td>";
 				segment += "<td>" + product.p_DESC + "</td>";
-				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\"'/>";
-				segment += "<input type='button'value='刪除'onclick=\"window.location.href='"+tmp1+"'\" /></td>";
+				segment += "<td><input type='button'value='更新' style='margin: 5px;' onclick=\"window.location.href='"+tmp0+"'\"'/>";
+				segment += "<input type='button'value='刪除' style='margin: 5px;' onclick=\"window.location.href='"+tmp1+"'\" /></td>";
 				segment += "</tr>";
                 }
         }
@@ -141,7 +141,7 @@ function showData(textObj) {
 		</div>
 		<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 
 	</div>
 

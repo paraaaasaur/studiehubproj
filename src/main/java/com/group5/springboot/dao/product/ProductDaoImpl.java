@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,7 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public Map<String, Object> findAll() {
 		HashMap<String, Object> map = new HashMap<>();
-		String hql = "from ProductInfo";
+		String hql = "from ProductInfo where p_Status = 1";
 		List list = em.createQuery(hql).getResultList();
 		map.put("size",list.size());
 		map.put("list", list);
@@ -65,6 +66,27 @@ public class ProductDaoImpl implements ProductDao {
 	public boolean isProductExist(ProductInfo productInfo) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Map<String, Object> pendingAccess() {
+		HashMap<String, Object> map = new HashMap<>();
+		String hql = "from ProductInfo where p_Status = 0";
+		List list = em.createQuery(hql).getResultList();
+		map.put("size",list.size());
+		map.put("list", list);
+		return map;
+	}
+
+	@Override
+	public Integer stars(Integer p_ID) {
+		
+		String id = String.valueOf(p_ID);
+		String hql = "select AVG(ratedIndex) from Rating where p_ID ="+id;
+		System.out.println(hql);
+		Integer star = (Integer) em.createNativeQuery(hql).getSingleResult();
+		
+		return star;
 	}
 
 }

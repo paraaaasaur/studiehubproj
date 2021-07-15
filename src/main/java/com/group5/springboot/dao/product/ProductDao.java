@@ -26,5 +26,9 @@ public interface ProductDao {
 
 	// check if product is exist
 	public boolean isProductExist(ProductInfo productInfo);
+	//等待審核
+	public Map<String, Object> pendingAccess();
+	
+	public Integer stars(Integer p_ID);
 
 }

@@ -44,8 +44,8 @@ public class ChatServiceImpl implements ChatService{
 	}
 
 	@Override
-	public List<Chat_Reply> findAllChatReply(int c_ID) {
-		return chatDao.findAllChatReply(c_ID);
+	public List<Chat_Reply> findAllChatReply(int c_IDr) {
+		return chatDao.findAllChatReply(c_IDr);
 	}
 	
 	@Override
@@ -59,8 +59,8 @@ public class ChatServiceImpl implements ChatService{
 	}
 
 	@Override
-	public void deleteChatReply(int c_ID) {
-		chatDao.deleteChatReply(c_ID);
+	public void deleteChatReply(int c_IDr) {
+		chatDao.deleteChatReply(c_IDr);
 	}
 
 }

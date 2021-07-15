@@ -56,8 +56,8 @@ public class ChatDaoImpl implements ChatDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Chat_Reply> findAllChatReply(int c_ID) {
-		String sql = "from Chat_Reply where c_ID = " + c_ID;
+	public List<Chat_Reply> findAllChatReply(int c_IDr) {
+		String sql = "from Chat_Reply where c_IDr = " + c_IDr;
 		List<Chat_Reply> chat_Reply = em.createQuery(sql).getResultList();
 		return chat_Reply;
 	}
@@ -65,7 +65,7 @@ public class ChatDaoImpl implements ChatDao{
 	@Override
 	public void insertFirstChatReply(Chat_Info chat) {
 		String sql = "INSERT INTO [dbo].[chat_Reply]\r\n"
-				+ "           ([c_ID]\r\n"
+				+ "           ([c_IDr]\r\n"
 				+ "           ,[c_Conts]\r\n"
 				+ "           ,[c_Date]\r\n"
 				+ "           ,[u_ID])\r\n"
@@ -79,15 +79,17 @@ public class ChatDaoImpl implements ChatDao{
 
 	@Override
 	public void insertChatReply(Chat_Reply chat_Reply) {
+		Chat_Info chat_Info = em.find(Chat_Info.class, chat_Reply.getC_IDr());
 		User_Info user_Info = em.find(User_Info.class, chat_Reply.getU_ID());
+		chat_Reply.setChat_Info(chat_Info);
 		chat_Reply.setUser_Info(user_Info);
 		em.persist(chat_Reply);
 	}
 
 	@Override
-	public void deleteChatReply(int c_ID) {
+	public void deleteChatReply(int c_IDr) {
 		String sql = "DELETE FROM [dbo].[chat_Reply]\r\n"
-				+ "WHERE [c_ID] = " + c_ID;
+				+ "WHERE [c_IDr] = " + c_IDr;
 		em.createNativeQuery(sql).executeUpdate();
 	}
 

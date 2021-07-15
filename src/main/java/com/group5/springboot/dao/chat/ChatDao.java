@@ -20,12 +20,12 @@ public interface ChatDao {
 	
 	public Chat_Info selectChatById(int c_ID);
 	
-	public List<Chat_Reply> findAllChatReply(int c_ID);
+	public List<Chat_Reply> findAllChatReply(int c_IDr);
 	
 	public void insertFirstChatReply(Chat_Info chat);
 	
 	public void insertChatReply(Chat_Reply chat);
 	
-	public void deleteChatReply(int c_ID);
+	public void deleteChatReply(int c_IDr);
 
 }

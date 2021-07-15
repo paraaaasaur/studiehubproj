@@ -123,6 +123,20 @@ public class ChatController {
 		return map;
 	}
 	
+	@PostMapping(path = "/insertChatReply", produces = {"application/json"})
+	@ResponseBody
+	public Map<String, String> InsertChatReply(@RequestBody Chat_Reply chat_Reply){
+		Map<String, String> map = new HashMap<>();
+		try {
+			chatService.insertChatReply(chat_Reply);
+			map.put("success", "新增成功");
+		} catch (Exception e) {
+			map.put("fail", "新增失敗");
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
 	@DeleteMapping("/deleteChat/{c_ID}")
 	@ResponseBody
 	public Map<String, String> deleteChat(@PathVariable(required = true) int c_ID){

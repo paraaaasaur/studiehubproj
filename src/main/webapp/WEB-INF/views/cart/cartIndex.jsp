@@ -74,7 +74,7 @@ window.onload = function(){
 						<hr>
 						<!-- 按鈕導向各頁 -->
 						<button id="remove">移除</button>
-						<button id="toCheckoutPageBtn">去結帳</button>
+						<button id="checkoutBtn" onclick="checkoutViaEcpay()">去結帳</button>
 						<button id="toIndexBtn">回首頁</button>
 						<hr>
 		
@@ -93,6 +93,7 @@ window.onload = function(){
 		<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 		<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 		<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js" async></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
@@ -109,7 +110,35 @@ window.onload = function(){
 						  + "<th>課程老師(U_ID)</th>"
 						  + "</tr>";
 
-				$(function(){
+			// 【自訂函數 5】去結帳
+			function checkoutViaEcpay(){
+				let confirmAns = confirm('*** 您即將購買以下內容 *** \n Hi', );
+				if (confirmAns) {
+					console.log('ok!');
+					let queryString = '';
+					queryString = 'u_id=' + u_id;
+					queryString += '&p_ids=';
+					for (let i = 0; i < products.length; i++) {
+						queryString += products[i].p_id;
+						queryString += (i + 1 == products.length)? '' : ',';
+					}
+					console.log(queryString);
+					                    
+
+					let xhr = new XMLHttpRequest();
+					xhr.open('POST', '<c:url value="/cart.controller/checkout" />', true);
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					xhr.send(queryString);
+				} else {
+					console.log('nope!');
+				}
+			}
+			$('#toCheckoutPageBtn').on('click', function(){
+				post('<c:url value="/cart.controller/cartCheckout" />', {});
+			})
+
+			$(function(){
+
 					let welcomeMessage = $('#welcomeMessage');
 					let tbodyArea = $('#tbodyArea');
 					let theadArea = $('#theadArea');
@@ -117,6 +146,7 @@ window.onload = function(){
 						$(window).on('load', function(){
 							let x = (!u_id)? '' : u_id + '，您的購物車清單如下：';
 							welcomeMessage.text(x);
+						
 
 							if(!u_id){
 								theadArea.html("");
@@ -222,27 +252,16 @@ window.onload = function(){
 
 
 
-						// 【自訂函數 4】去結帳頁
-						$('#toCheckoutPageBtn').on('click', function(){
-							post('<c:url value="/cart.controller/cartCheckout" />', {});
-						})
-
-							// DELETE功能防呆
-						// let ckboxs = $('input.ckbox');
-						// let ckboxsChecked = $('input.ckbox:checked')
-						// $(ckboxs).on('click', function() {
-						// 	alert('YO!!!');
-						// 	let ckboxsChecked = $(ckboxsChecked);
-						// 	$('#remove').attr('disabled', true);
-						// 	if($(ckboxsChecked).length == 0 || $(ckboxsChecked).length == null || $(ckboxsChecked).length == undefined) {
-						// 	} else {
-						// 		$('#remove').attr('disabled', false);			
-						// 	}
+						// // 【自訂函數 4】去結帳頁
+						// $('#toCheckoutPageBtn').on('click', function(){
+						// 	post('<c:url value="/cart.controller/cartCheckout" />', {});
 						// })
-		
+
+
+
 				})
 
 				
-			</script>
+		</script>
 </body>
 </html>

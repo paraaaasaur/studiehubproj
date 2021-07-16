@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.group5.springboot.model.cart.OrderDetail;
 import com.group5.springboot.utils.SystemUtils;
 
 @Entity
@@ -81,6 +82,13 @@ public class ProductInfo {
 	}
 
 	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
+	// 被OrderDetail參考(先不用理會這個)
+//	@JsonIgnore
+//	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "productInfo")
+//	private Set<OrderDetail> orderDetailSet = new HashSet<OrderDetail>(); 
+//	public Set<OrderDetail> getOrderDetailSet() {		return orderDetailSet;	}
+//	public void setOrderDetailSet(Set<OrderDetail> orderDetailSet) {		this.orderDetailSet = orderDetailSet;	}
+	
 	// 被OrderInfo參考
 	/*/
 	@JsonIgnore

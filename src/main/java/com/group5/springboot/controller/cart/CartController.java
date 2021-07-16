@@ -1,7 +1,9 @@
 package com.group5.springboot.controller.cart;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
@@ -30,8 +33,18 @@ public class CartController {
 	@Autowired // SDI ✔
 	private UserService userService;
 	@Autowired // SDI ✔
+	private OrderService orderService;
+	@Autowired // SDI ✔
 	private CartItemService cartItemService;
 	
+//	/***************************************************************************** */
+//	@Autowired 
+//	private OrderServiceTest orderServiceTest;
+//	@GetMapping(value="/test07")
+//	public List test07() {
+//		List list = orderServiceTest.selectAllOOPU();
+//		return list; 
+//	}
 	
 	/***************************************************************************** */
 	@PostMapping(value="/cart.controller/clientShowCart")
@@ -145,6 +158,17 @@ public class CartController {
 	
 	@GetMapping("/a2")
 	public AioCheckOutALL genEcpayOrder(@RequestBody List<OrderInfo> orders) {
+		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid七位
+		Integer latestOid = orderService.selectLatestOid().getO_id();
+		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
+		String myMerchantTradeNo = String.format("studiehub%s%07d", thisMoment, latestOid);
+		// 【產生 MerchantTradeDate String(20)】
+		String myMerchantTradeDate = new SimpleDateFormat("yyMMdd").format(new Date());
+		// 【產生 TotalAmount Int】
+		String myTotalAmount = String.valueOf(orders.size());	
+		// 【產生 TradeDesc String(200)】
+		String myTradeDesc = "Thank you for joining StudieHub!"; // ❗有更有意義的內容嗎？
+		
 		
 		
 		AioCheckOutALL aioObj = new AioCheckOutALL(); 

@@ -25,7 +25,7 @@ import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 
 @Repository
-public class OrderDao implements IOrderDao {
+public class OrderDetailDao {
 	@Autowired 
 	private EntityManager em;
 //	@Autowired
@@ -40,13 +40,7 @@ public class OrderDao implements IOrderDao {
 		return list; 
 	}
 	
-	public OrderInfo selectLatestOid() {
-		TypedQuery<OrderInfo> query = em.createQuery("SELECT TOP(1) o_id FROM OrderInfo ORDER BY o_id DESC", OrderInfo.class);
-		OrderInfo result = query.getSingleResult();
-		return result;
-	}
 	
-	@Override
 	public Map<String, Object> selectAll() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo", OrderInfo.class);
@@ -115,7 +109,7 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 	
-	@Override
+	
 	public Map<String, Object> select(OrderInfo orderBean) {
 		// ‼ HQL不是用table名 ‼
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -125,7 +119,7 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 
-	@Override
+	
 	public Map<String, Object> selectCustom(String hql) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery(hql, OrderInfo.class);
@@ -144,7 +138,7 @@ public class OrderDao implements IOrderDao {
 		return map;
 	}
 	
-	@Override
+	
 	public Map<String, Object> insert(OrderInfo oBean) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		

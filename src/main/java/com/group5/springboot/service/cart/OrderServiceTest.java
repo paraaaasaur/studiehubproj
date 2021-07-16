@@ -8,24 +8,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.group5.springboot.dao.cart.OrderDao;
+import com.group5.springboot.dao.cart.OrderSheetDao;
 import com.group5.springboot.model.cart.OrderInfo;
 
 @Service
 @Transactional
-public class OrderService implements IOrderService{
+public class OrderServiceTest implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
+	@Autowired // SDI✔
+	private OrderSheetDao orderSheetDao;
 	
 	public List<OrderInfo> test() {
 		return orderDao.test();
 	}
+	
+	public List selectAllOOPU() {
+		return orderSheetDao.selectAllOOPU();
+	}
 
 	public Map<String, Object> insert(OrderInfo order) {
 		return orderDao.insert(order);
-	}
-	
-	public OrderInfo selectLatestOid() {
-		return orderDao.selectLatestOid();
 	}
 	
 	public Map<String, Object> selectAll() {

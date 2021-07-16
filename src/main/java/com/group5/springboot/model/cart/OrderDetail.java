@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
@@ -21,7 +20,9 @@ import com.group5.springboot.model.user.User_Info;
 @Component
 public class OrderDetail {
 	
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer od_id;
+	@Column(name = "o_id", insertable = false, updatable = false)
 	private Integer o_id ; // PK
 	@Column(name = "p_id", insertable = false, updatable = false)
 	private Integer p_id; // FK
@@ -31,7 +32,7 @@ public class OrderDetail {
 	// 去參考Order_Info
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY) 
-	@PrimaryKeyJoinColumn(name = "o_id", referencedColumnName = "o_id")
+	@JoinColumn(name = "o_id", referencedColumnName = "o_id", insertable = true, updatable = true)
 	private OrderSheet orderSheet;
 	public OrderSheet getOrderSheet() {return this.orderSheet;}
 	public void setOrderSheet(OrderSheet orderSheet) {this.orderSheet = orderSheet;}

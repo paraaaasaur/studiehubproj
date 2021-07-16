@@ -27,8 +27,11 @@ public interface QuestionDao {
 	////修改試題
 	public void update(Question_Info question_Info);
 
-	////送出隨機測驗題目
+	////送出隨機X筆測驗題目
 	public Map<String, Object> sendRandomExam();
+	
+	////送出隨機綜合題測驗題目
+	public Map<String, Object> sendRandomMixExam();
 
 
 }

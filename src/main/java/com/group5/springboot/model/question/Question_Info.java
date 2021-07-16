@@ -2,6 +2,7 @@ package com.group5.springboot.model.question;
 
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,12 +35,18 @@ import com.group5.springboot.utils.SystemUtils;
 	    private String q_selectionA;
 	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_selectionB;
-	    @Column(columnDefinition = "NVARCHAR(255)", nullable = true)
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_selectionC;
-	    @Column(columnDefinition = "NVARCHAR(255)", nullable = true)
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_selectionD;
+	    @Column(columnDefinition = "NVARCHAR(255)", nullable = true)
+	    private String q_selectionE;
 	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_answer;
+	    
+	    @Transient
+	    private String[] answers; //暫存多選答案陣列
+	    
 	    private String mimeTypePic;
 	    private String mimeTypeAudio;
 	    
@@ -71,8 +78,8 @@ import com.group5.springboot.utils.SystemUtils;
 		}
 
 		public Question_Info(String q_class, String q_type, String q_question, String q_selectionA,
-				String q_selectionB, String q_selectionC, String q_selectionD, String q_answer, String mimeTypePic,String mimeTypeAudio,
-				Blob q_pictureBlob, Blob q_audioBlob, MultipartFile multipartFilePic, MultipartFile multipartFileAudio,Timestamp createDate) {
+				String q_selectionB, String q_selectionC, String q_selectionD, String q_selectionE, String q_answer, String mimeTypePic,String mimeTypeAudio,
+				Blob q_pictureBlob, Blob q_audioBlob, MultipartFile multipartFilePic, MultipartFile multipartFileAudio,Timestamp createDate,String[] answers) {
 			super();
 			this.q_class = q_class;
 			this.q_type = q_type;
@@ -81,6 +88,7 @@ import com.group5.springboot.utils.SystemUtils;
 			this.q_selectionB = q_selectionB;
 			this.q_selectionC = q_selectionC;
 			this.q_selectionD = q_selectionD;
+			this.q_selectionE = q_selectionE;
 			this.q_answer = q_answer;
 			this.mimeTypePic = mimeTypePic;
 			this.mimeTypeAudio = mimeTypeAudio;
@@ -89,7 +97,7 @@ import com.group5.springboot.utils.SystemUtils;
 			this.multipartFilePic = multipartFilePic;
 			this.multipartFileAudio = multipartFileAudio;
 			this.createDate = createDate;
-			
+			this.answers = answers;
 		}
 
 		public Long getQ_id() {
@@ -154,6 +162,14 @@ import com.group5.springboot.utils.SystemUtils;
 
 		public void setQ_selectionD(String q_selectionD) {
 			this.q_selectionD = q_selectionD;
+		}
+
+		public String getQ_selectionE() {
+			return q_selectionE;
+		}
+
+		public void setQ_selectionE(String q_selectionE) {
+			this.q_selectionE = q_selectionE;
 		}
 
 		public String getQ_answer() {
@@ -236,34 +252,20 @@ import com.group5.springboot.utils.SystemUtils;
 		}
 		
 
+		public String[] getAnswers() {
+			return answers;
+		}
+
+		public void setAnswers(String[] answers) {
+			this.answers = answers;
+		}
+		
+		//複選答案陣列轉字串
 		@Override
 		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("Question_Info [q_id=");
-			builder.append(q_id);
-			builder.append(", q_class=");
-			builder.append(q_class);
-			builder.append(", q_type=");
-			builder.append(q_type);
-			builder.append(", q_question=");
-			builder.append(q_question);
-			builder.append(", q_selectionA=");
-			builder.append(q_selectionA);
-			builder.append(", q_selectionB=");
-			builder.append(q_selectionB);
-			builder.append(", q_selectionC=");
-			builder.append(q_selectionC);
-			builder.append(", q_selectionD=");
-			builder.append(q_selectionD);
-			builder.append(", q_answer=");
-			builder.append(q_answer);
-			builder.append(", q_picture=");
-			builder.append(q_picture);
-			builder.append(", q_audio=");
-			builder.append(q_audio);
-			builder.append("]"); //+ hashCode()); ?
-			return builder.toString();
+			return  Arrays.toString(answers) ;
 		}
+
 
 		
 		

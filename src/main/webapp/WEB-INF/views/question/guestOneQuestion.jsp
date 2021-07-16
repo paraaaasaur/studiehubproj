@@ -96,6 +96,11 @@
 	      <td>選項D：<br>&nbsp;</td>
 	      <td><form:hidden path="q_selectionD"/>${Q1.q_selectionD}</td>
 		</tr>
+		
+		<tr>
+	      <td>選項E：<br>&nbsp;</td>
+	      <td><form:hidden path="q_selectionE"/>${Q1.q_selectionE}</td>
+		</tr>
 		   
 	   	<tr>
 	      <td>正解：<br>&nbsp;</td>

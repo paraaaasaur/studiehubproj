@@ -173,6 +173,12 @@ public class QuestionController {
     		@PathVariable Long q_id, Model model
     ) {
 		Question_Info question_Info = questionService.findById(q_id);
+	    
+		//處理複選答案，把資料庫字串答案塞到暫存的answer陣列欄位
+		String q_answer = question_Info.getQ_answer();
+	    System.out.println(q_answer);
+	    question_Info.setAnswers(q_answer.split(","));
+		
 		model.addAttribute("Q1", question_Info);
 		return "question/editQuestion";
 	}	
@@ -256,7 +262,13 @@ public class QuestionController {
 				e.printStackTrace();
 			}
 	    }
-			
+		
+		
+        String a = question_Info.toString().replaceAll("\\s+","");  //陣列轉字串，將空白替處理掉
+        question_Info.setQ_answer(a.substring(1,a.length()-1));  //處理掉中框弧
+        System.out.println(a.substring(1,a.length()-1));
+		
+		
 		questionService.update(question_Info);
 		ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  修改成功!");
 		// 新增或修改成功，要用response.sendRedirect(newURL) 通知瀏覽器對newURL發出請求
@@ -294,13 +306,31 @@ public class QuestionController {
 		return "question/examQuestion";
 	}	
 	
-////回傳隨機試題 (JSON)
+////回傳隨機X筆試題 (JSON)
 	//produces:指定返回的內容類型，僅當request請求頭中的(Accept)類型中包含該指定類型才返回
 	@GetMapping(value="/question.controller/sendRandomExam", produces = "application/json; charset=UTF-8")	
 	public @ResponseBody Map<String, Object> sendRandomExam(){
 		return questionService.sendRandomExam();
 	}
 	
+////回傳隨機X筆綜合題 (JSON)
+	//produces:指定返回的內容類型，僅當request請求頭中的(Accept)類型中包含該指定類型才返回
+	@GetMapping(value="/question.controller/sendRandomMixExam", produces = "application/json; charset=UTF-8")	
+	public @ResponseBody Map<String, Object> sendRandomMixExam(){
+		return questionService.sendRandomMixExam();
+	}
+
+////test多選題表單
+	@GetMapping("/question.controller/tstartRandomExam")
+	public String tstartRandomExam() {
+		return "question/examMultipleQuestion";
+	}
+	
+////綜合題表單
+	@GetMapping("/question.controller/startRandomMixExam")
+	public String startRandomMixExam() {
+		return "question/examMixQuestion";
+	}
 	
 	
 //// ModelAttribute :  ////
@@ -334,6 +364,17 @@ public class QuestionController {
 		map.put("單選題", "單選題");
 		map.put("多選題", "多選題");
 		map.put("聽力題", "聽力題");
+		return map;
+    }
+	
+	@ModelAttribute("answerList")
+    public Map<String, String>  getAnswerList(){
+		Map<String, String> map = new HashMap<>();
+		map.put("A", "選項A");
+		map.put("B", "選項B");
+		map.put("C", "選項C");
+		map.put("D", "選項D");
+		map.put("E", "選項E");
 		return map;
     }
 	

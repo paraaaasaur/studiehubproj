@@ -33,7 +33,7 @@
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 				
 <div align="center">
 	<h2 align='center'>維護試題資料</h2>
@@ -68,7 +68,6 @@
                    <form:option label="請挑選" value="" />
                    <form:options  items="${classList}" />
                </form:select>
-                  <br>&nbsp;
                <form:errors path="q_class"  cssClass="error"/>		      
 		   </td>
 		   </tr>
@@ -80,7 +79,6 @@
                    <form:option label="請挑選" value="" />
                    <form:options  items="${typeList}" />
                </form:select>
-                  <br>&nbsp;
                <form:errors path="q_type"  cssClass="error"/>		      
 		   </td>
 	   		</tr>
@@ -88,7 +86,7 @@
 	   <tr>
 	      <td>問題：<br>&nbsp;</td>
 	      <td>
-	      	<form:input path="q_question"/><br>&nbsp;	
+	      	<form:input path="q_question"/>	
 		      <form:errors path='q_question' cssClass="error"/>
 		  </td>
 		</tr>
@@ -96,7 +94,7 @@
 		<tr>
 		   <td>選項A：<br>&nbsp;</td>
 	   	  <td>
-	      	<form:input path="q_selectionA"/><br>&nbsp;	
+	      	<form:input path="q_selectionA"/>
 		      <form:errors path='q_selectionA' cssClass="error"/>
 		  </td>
 	   </tr>	   
@@ -104,7 +102,7 @@
 	   	<tr>
 	      <td>選項B：<br>&nbsp;</td>
 	      <td>
-	      	<form:input path="q_selectionB"/><br>&nbsp;	
+	      	<form:input path="q_selectionB"/>
 		      <form:errors path='q_selectionB' cssClass="error"/>
 		  </td>
 		   </tr>
@@ -113,7 +111,7 @@
 		  <tr>
 		   <td>選項C：<br>&nbsp;</td>
 	   	  <td>
-	      	<form:input path="q_selectionC"/><br>&nbsp;	
+	      	<form:input path="q_selectionC"/>
 		      <form:errors path='q_selectionC' cssClass="error"/>
 		  </td>
 	   </tr>	
@@ -121,23 +119,30 @@
 	  <tr>
 	      <td>選項D：<br>&nbsp;</td>
 	      <td>
-	      	<form:input path="q_selectionD"/><br>&nbsp;	
+	      	<form:input path="q_selectionD"/>
 		      <form:errors path='q_selectionD' cssClass="error"/>
 		  </td>
-		  </tr>	
-	   
-		<tr>  
-		  <td>正解：<br>&nbsp;</td>
-	   	  <td>
-	      	<form:input path="q_answer"/><br>&nbsp;	
-		      <form:errors path='q_answer' cssClass="error"/>
+	 </tr>	
+	 
+   	<tr>
+	      <td>選項E：<br>&nbsp;</td>
+	      <td>
+	      	<form:input path="q_selectionE" placeholder="此欄位為多選題選項" />
 		  </td>
+	 </tr>	
+	   
+		<tr>   
+	     	<td>正解：<br>&nbsp;</td>
+	        <td>
+		       <form:checkboxes items="${answerList}"  path="answers" />
+		      <br><form:errors path='q_answer' cssClass="error"/>
+		   </td>
 	   </tr>	
 	   
 	   <tr>
 	      <td>題目照片：<br>&nbsp;</td>
 	      <td>
-	   	  	 <form:input path="multipartFilePic" type='file'/><br>&nbsp;
+	   	  	 <form:input path="multipartFilePic" type='file'/>
 		      <form:errors path='multipartFilePic' cssClass="error"/>
 		  </td>
 		  </tr>
@@ -145,7 +150,7 @@
 		 <tr> 
 		   <td>題目音檔：<br>&nbsp;</td>
 	   	  <td>
-	      	<form:input path="multipartFileAudio" type='file'/><br>&nbsp;	
+	      	<form:input path="multipartFileAudio" type='file'/>
 		      <form:errors path='multipartFileAudio' cssClass="error"/>
 		  </td>
 	   </tr>	
@@ -170,7 +175,7 @@
 
 	<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 
 	</div>
 

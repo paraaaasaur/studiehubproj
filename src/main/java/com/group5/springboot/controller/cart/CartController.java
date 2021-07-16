@@ -150,16 +150,13 @@ public class CartController {
 			) {
 		List<ProductInfo> cart = new ArrayList<ProductInfo>();
 		for(Integer p_id : p_ids) {
-			ProductInfo product = new ProductInfo();
-			product.setP_ID(p_id);
+			ProductInfo product = productService.findByProductID(p_id);
 			cart.add(product);
 		}
 		
 		AioCheckOutALL aioObj = genEcpayOrder(cart); 
-		
 		System.out.println(aioObj);
-		
-		return "";
+//		return "";
 		
 		// customize here if needed
 //		aioObj.setMerchantTradeNo("kiryuushiki8931");
@@ -169,22 +166,22 @@ public class CartController {
 //		aioObj.setItemName("TestItem");
 //		aioObj.setReturnURL("http://localhost:8080/studiehub/");
 //		aioObj.setNeedExtraPaidInfo("N");
-		// 參數 1 = 充滿EcpayOrder參數的aioObj，參數 2 = 是否要發票(invoice)
 		
-//		String htmlForm = new AllInOne("").aioCheckOut(aioObj, null);
-//		return htmlForm;
+		// 參數 1 = 充滿EcpayOrder參數的aioObj，參數 2 = 是否要發票(invoice)
+		String htmlForm = new AllInOne("").aioCheckOut(aioObj, null);
+		return htmlForm;
 	}
 
 
 	
 	
 	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart) {
-		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid七位
-		Integer latestOid = orderService.selectLatestOid().getO_id() - 20;
+		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
+		Integer latestOid = orderService.selectLatestOid().getO_id() + 10000 + (int)Math.ceil(Math.random()*60000);
 		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
-		String myMerchantTradeNo = String.format("studiehub%s%07d", thisMoment, latestOid);
+		String myMerchantTradeNo = String.format("studiehub%s%05d", thisMoment, latestOid);
 		// 【產生 MerchantTradeDate String(20)】
-		String myMerchantTradeDate = new SimpleDateFormat("yyMMdd").format(new Date());
+		String myMerchantTradeDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 		// 【產生 TotalAmount Int】
 		String myTotalAmount = String.valueOf(cart.size());	
 		// 【產生 TradeDesc String(200)】
@@ -194,9 +191,11 @@ public class CartController {
 		cart.forEach(product -> myItemNameBuilder.append("#").append(product.getP_Name()));
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
-		String myReturnURL = "http://localhost:8080/studiehub/cart.controller/receiveEcpayReturnInfo";
+		String ngrokhttps = "https://bdaf9f50fe18.ngrok.io";
+		String ngrokhttp = "http://c980edaf1406.ngrok.io";
+
+		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
 		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";
-		
 		
 		
 		AioCheckOutALL aioObj = new AioCheckOutALL(); 
@@ -208,6 +207,7 @@ public class CartController {
 		aioObj.setReturnURL(myReturnURL);
 		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
 		aioObj.setClientBackURL(myClientBackURL);
+//		aioObj.setOrderResultURL(myClientBackURL);
 		return aioObj;
 	}
 	

@@ -118,17 +118,21 @@ window.onload = function(){
 					let queryString = '';
 					queryString = 'u_id=' + u_id;
 					queryString += '&p_ids=';
+					let p_ids = [];
 					for (let i = 0; i < products.length; i++) {
 						queryString += products[i].p_id;
 						queryString += (i + 1 == products.length)? '' : ',';
+						p_ids.push(products[i].p_id);
 					}
 					console.log(queryString);
-					                    
-
-					let xhr = new XMLHttpRequest();
-					xhr.open('POST', '<c:url value="/cart.controller/checkout" />', true);
-					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-					xhr.send(queryString);
+					// post('/contact/', {name: 'Johnny Bravo'});
+					post('<c:url value="/cart.controller/checkout" />', {'u_id': u_id, 'p_ids': [p_ids]});
+					
+					
+					// let xhr = new XMLHttpRequest();
+					// xhr.open('POST', '<c:url value="/cart.controller/checkout" />', true);
+					// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					// xhr.send(queryString);
 				} else {
 					console.log('nope!');
 				}

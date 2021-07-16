@@ -1,9 +1,12 @@
 package com.group5.springboot.controller.cart;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
 import com.group5.springboot.validate.CartValidator;
 
 @Controller
@@ -114,20 +118,21 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = "/cart.controller/receiveEcpayReturnInfo")
+	@PostMapping(value = "/cart.controller/receiveEcpayReturnInfo")
 	public String toReceiveEcpayReturnInfo(
-			@RequestParam("someParam1") String someParam1, 
-			@RequestParam("someParam2") String someParam2,
-			@RequestParam("someParam3") String someParam3
+			@RequestParam Map<String, String> allRequestParams
+//			, ModelMap modelMap
 			) {
-		
-		return "cartReceiveEcpayReturnInfo";
+		System.out.println("*********************** 回傳結果： **************************");
+		allRequestParams.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
+		System.out.println("************************************************************");
+		return "cart/cartReceiveEcpayReturnInfo";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = "/cart.controller/clientResultPage")
 	public String toclientResultPage() {
-		return "cartClientResultPage";
+		return "cart/cartClientResultPage";
 	}
 	
 	

@@ -43,7 +43,6 @@ public class OrderDao implements IOrderDao {
 	public OrderInfo selectLatestOid() {
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ORDER BY o_id DESC", OrderInfo.class).setMaxResults(1);
 		OrderInfo result = query.getSingleResult();
-		System.out.println(result);
 		return result;
 	}
 	

@@ -1,9 +1,7 @@
 package com.group5.springboot.controller.cart;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +18,10 @@ import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
-import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
+import com.group5.springboot.utils.api.ecpay.payment.integration.MyEcpayUtils;
 import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
 
 @RestController
@@ -32,8 +30,6 @@ public class CartController {
 	private ProductServiceImpl productService;
 	@Autowired // SDI ✔
 	private UserService userService;
-	@Autowired // SDI ✔
-	private OrderService orderService;
 	@Autowired // SDI ✔
 	private CartItemService cartItemService;
 	
@@ -142,45 +138,24 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@GetMapping("/a1")
-	public String payViaEcpay() {
-		AioCheckOutALL aioObj = new AioCheckOutALL(); 
-		aioObj.setMerchantTradeNo("kiryuushiki8931");
-		aioObj.setMerchantTradeDate("2017/01/01 08:05:23");
-		aioObj.setTotalAmount("50");
-		aioObj.setTradeDesc("test Description");
-		aioObj.setItemName("TestItem");
-		aioObj.setReturnURL("http://localhost:8080/studiehub/");
-		aioObj.setNeedExtraPaidInfo("N");
-		String form = new AllInOne("").aioCheckOut(aioObj, null);
-		return form;
+	@PostMapping("/cart.controller/checkout")
+	public String payViaEcpay(@RequestBody List<OrderInfo> orders) {
+		
+		AioCheckOutALL aioObj = MyEcpayUtils.genEcpayOrder(orders); 
+		// customize here if needed
+//		aioObj.setMerchantTradeNo("kiryuushiki8931");
+//		aioObj.setMerchantTradeDate("2017/01/01 08:05:23");
+//		aioObj.setTotalAmount("50");
+//		aioObj.setTradeDesc("test Description");
+//		aioObj.setItemName("TestItem");
+//		aioObj.setReturnURL("http://localhost:8080/studiehub/");
+//		aioObj.setNeedExtraPaidInfo("N");
+		// 參數 1 = 充滿EcpayOrder參數的aioObj，參數 2 = 是否要發票(invoice)
+		String htmlForm = new AllInOne("").aioCheckOut(aioObj, null);
+		return htmlForm;
 	}
-	
-	@GetMapping("/a2")
-	public AioCheckOutALL genEcpayOrder(@RequestBody List<OrderInfo> orders) {
-		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid七位
-		Integer latestOid = orderService.selectLatestOid().getO_id();
-		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
-		String myMerchantTradeNo = String.format("studiehub%s%07d", thisMoment, latestOid);
-		// 【產生 MerchantTradeDate String(20)】
-		String myMerchantTradeDate = new SimpleDateFormat("yyMMdd").format(new Date());
-		// 【產生 TotalAmount Int】
-		String myTotalAmount = String.valueOf(orders.size());	
-		// 【產生 TradeDesc String(200)】
-		String myTradeDesc = "Thank you for joining StudieHub!"; // ❗有更有意義的內容嗎？
-		
-		
-		
-		AioCheckOutALL aioObj = new AioCheckOutALL(); 
-		aioObj.setMerchantTradeNo("kiryuushiki8931");
-		aioObj.setMerchantTradeDate("2017/01/01 08:05:23");
-		aioObj.setTotalAmount("1");
-		aioObj.setTradeDesc("test Description");
-		aioObj.setItemName("TestItem");
-		aioObj.setReturnURL("http://localhost:8080/studiehub/");
-		aioObj.setNeedExtraPaidInfo("N");
-		return aioObj;
-	}
+
+
 	
 	
 }

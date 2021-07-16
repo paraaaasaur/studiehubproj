@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -113,22 +114,22 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/test04"})
-	public String test04() {
-		return "cart/here";
-	}
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	
-	@ResponseBody
-	@GetMapping(value = {"/test05"})
-	public CartItem test05() {
-		CartItem a = cartItemService.test05();
-		return a;
+	@GetMapping(value = "/cart.controller/receiveEcpayReturnInfo")
+	public String toReceiveEcpayReturnInfo(
+			@RequestParam("someParam1") String someParam1, 
+			@RequestParam("someParam2") String someParam2,
+			@RequestParam("someParam3") String someParam3
+			) {
+		
+		return "cartReceiveEcpayReturnInfo";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-
-
+	@GetMapping(value = "/cart.controller/clientResultPage")
+	public String toclientResultPage() {
+		return "cartClientResultPage";
+	}
+	
 	
 
 }

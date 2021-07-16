@@ -71,12 +71,14 @@ window.onload = function(){
 							<tbody id='tbodyArea'></tbody>
 						</table>
 		
-						<hr>
 						<!-- 按鈕導向各頁 -->
-						<button id="remove">移除</button>
-						<button id="checkoutBtn" onclick="checkoutViaEcpay()">去結帳</button>
-						<button id="toIndexBtn">回首頁</button>
-						<hr>
+						<div id="btnAppender">
+							<hr>
+							<button id="removeBtn" hidden='true'>移除</button>
+							<button id="checkoutBtn" onclick="checkoutViaEcpay()" hidden='true'>去結帳</button>
+							<button id="toIndexBtn" hidden='true'>回首頁</button>
+							<hr>
+						</div>
 		
 				</div>
 			</div>
@@ -112,7 +114,8 @@ window.onload = function(){
 
 			// 【自訂函數 5】去結帳
 			function checkoutViaEcpay(){
-				let confirmAns = confirm('*** 您即將購買以下內容 *** \n Hi', );
+				let confirmArticle = '*** 您即將購買以下內容 *** \n Hi';
+				let confirmAns = confirm(confirmArticle, );
 				if (confirmAns) {
 					console.log('ok!');
 					let queryString = '';
@@ -125,14 +128,10 @@ window.onload = function(){
 						p_ids.push(products[i].p_id);
 					}
 					console.log(queryString);
-					// post('/contact/', {name: 'Johnny Bravo'});
+					// 用TaJenUtils.js的自訂函數送出隱藏版post表單
 					post('<c:url value="/cart.controller/checkout" />', {'u_id': u_id, 'p_ids': [p_ids]});
 					
-					
-					// let xhr = new XMLHttpRequest();
-					// xhr.open('POST', '<c:url value="/cart.controller/checkout" />', true);
-					// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-					// xhr.send(queryString);
+				
 				} else {
 					console.log('nope!');
 				}
@@ -142,21 +141,23 @@ window.onload = function(){
 			})
 
 			$(function(){
-
-					let welcomeMessage = $('#welcomeMessage');
-					let tbodyArea = $('#tbodyArea');
-					let theadArea = $('#theadArea');
-						// [AJAX] showCart ✔
-						$(window).on('load', function(){
-							let x = (!u_id)? '' : u_id + '，您的購物車清單如下：';
-							welcomeMessage.text(x);
-						
-
-							if(!u_id){
-								theadArea.html("");
-								tbodyArea.html("<h1>必須先登入才會顯示資料！</h1>"); // ❗
-								return;
-							}
+				console.log($('#removeBtn'));
+				console.log(document.querySelector('#removeBtn').hidden);
+				let removeBtn = $('#removeBtn');
+				
+				console.log('u_id = ' + u_id);
+				
+				let tbodyArea = $('#tbodyArea');
+				let theadArea = $('#theadArea');
+					// 【function 1】主程式
+					$(window).on('load', function(){
+						if (!u_id) {
+							$('#welcomeMessage').text('')
+							$('#btnAppender').html('');
+							theadArea.html("");
+							tbodyArea.html("<h1>必須先登入才會顯示資料！</h1>"); // ❗
+						} else {
+							$('#welcomeMessage').text(u_id + '，您的購物車清單如下：')
 							
 							let xhr = new XMLHttpRequest();
 							let url = "<c:url value='/cart.controller/clientShowCart' />";
@@ -172,95 +173,84 @@ window.onload = function(){
 									tbodyArea.html(parseCart(xhr.responseText));
 									for(let i = 0; i < cartSize; i++){
 										checkboxes.push($('#ckbox' + i));
-										// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 測試用 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-										// console.log($('#ckbox' + i).attr('data-test01'));
-										// console.log(checkboxes[i].attr('data-test01'));
-										// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 測試用 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-										}
+									}
 								}
 							}
-						});
+						}
 						
-						// #parseCart() ✔
-						function parseCart(cart) {
-							products = JSON.parse(cart);
-							let segment = "";
-							let totalPrice = 0;
-							cartSize = products.length;
-							
-							if(cartSize){
-								segment += "您的購物車內尚未有任何內容！";
-							}
-							for (let i = 0; i < cartSize; i++) {
-								segment += "<tr>"
-												+ "<td><input type='checkbox' id='ckbox" + i + "' data-test01='" + i*10 + "'>"
-												+ "<label for='ckbox" + i + "'>取消</label></td>"
-												+ "<td>" + products[i].p_name + "</td>"
-												+ "<td>" + products[i].p_id + "</td>"
-												+ "<td>" + products[i].p_price + "</td>"
-												+ "<td>" + products[i].p_desc + "</td>"
-												+ "<td>" + products[i].p_teacher + "</td>"
-												+ "</tr>";
-								totalPrice += products[i].p_price;
-								
-							}
-							return segment;
-						};
+					});
 					
-						// 2 Remove
-						$("#remove").click(function(){
-							let xhr = new XMLHttpRequest();
-							let url = "<c:url value='/cart.controller/clientRemoveProductFromCart' />";
-							let ckboxValues = [];
-							let queryString = 'p_ids=';
-							// 不勾選任何checkbox時 == -1，每多勾選一個checkbox都會 +1。用於下述防呆機制。
-							let counter = -1; 
-							for(let i = 0; i < products.length; i++){
-								if(checkboxes[i].is(':checked')){
-									ckboxValues.push(i);
-								} 
+					// 【function 2】parseCart() ✔
+					function parseCart(cart) {
+						products = JSON.parse(cart);
+						let segment = "";
+						let totalPrice = 0;
+						cartSize = products.length;
+						
+						if(cartSize){
+							segment += "您的購物車內尚未有任何內容！";
+						}
+						for (let i = 0; i < cartSize; i++) {
+							segment += "<tr>"
+											+ "<td><input type='checkbox' id='ckbox" + i + "' data-test01='" + i*10 + "'>"
+											+ "<label for='ckbox" + i + "'>取消</label></td>"
+											+ "<td>" + products[i].p_name + "</td>"
+											+ "<td>" + products[i].p_id + "</td>"
+											+ "<td>" + products[i].p_price + "</td>"
+											+ "<td>" + products[i].p_desc + "</td>"
+											+ "<td>" + products[i].p_teacher + "</td>"
+											+ "</tr>";
+							totalPrice += products[i].p_price;
+							
+						}
+						return segment;
+					};
+				
+					// 2 Remove
+					$("#removeBtn").click(function(){
+						let ckboxValues = [];
+						let queryString = 'p_ids=';
+						// 不勾選任何checkbox時 == -1，每多勾選一個checkbox都會 +1。用於下述防呆機制。
+						let counter = -1; 
+						for(let i = 0; i < products.length; i++){
+							if(checkboxes[i].is(':checked')){
+								ckboxValues.push(i);
+							} 
+						}
+						// 利用counter計數，來確保使用者至少要勾一件東西才能送出
+						for(let i = 0; i < products.length; i++) {
+							counter += (checkboxes[i].is(':checked'))? 1 : 0;
+						}
+						if(counter == -1) {
+							alert('必須至少勾選一項想要刪除的項目。');
+							return;
+						}
+						// 
+						for(let i = 0; i < products.length; i++) {
+							let checkOrNot = checkboxes[i].is(':checked');
+							if(checkOrNot) {
+								queryString += products[i].p_id;
+								queryString += (i == ckboxValues[counter])? '' : ',';
 							}
-							// 利用counter計數，來確保使用者至少要勾一件東西才能送出
-							for(let i = 0; i < products.length; i++) {
-								counter += (checkboxes[i].is(':checked'))? 1 : 0;
+						}
+						queryString +='&u_id=' + u_id;	
+
+						let xhr = new XMLHttpRequest();
+						let url = "<c:url value='/cart.controller/clientRemoveProductFromCart' />";
+						xhr.open("POST", url, true);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						xhr.send(queryString);
+						xhr.onreadystatechange = function() {
+							if (xhr.readyState == 4 && xhr.status == 200) {
+								tbodyArea.html(parseCart(xhr.responseText));
 							}
-							if(counter == -1) {
-								alert('必須至少勾選一項想要刪除的項目。');
-								return;
-							}
-							// 
-							for(let i = 0; i < products.length; i++) {
-								let checkOrNot = checkboxes[i].is(':checked');
-								if(checkOrNot) {
-									queryString += products[i].p_id;
-									queryString += (i == ckboxValues[counter])? '' : ',';
-								}
-							}
-							queryString +='&u_id=' + u_id;	
-
-
-							xhr.open("POST", url, true);
-							xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-							xhr.send(queryString);
-							xhr.onreadystatechange = function() {
-								if (xhr.readyState == 4 && xhr.status == 200) {
-									tbodyArea.html(parseCart(xhr.responseText));
-								}
-							}
-						});
-			
-						// 【自訂函數 3】回首頁
-						$('#toIndexBtn').on('click', function(){
-							top.location = "<c:url value='/' />";
-						})
-
-
-
-						// // 【自訂函數 4】去結帳頁
-						// $('#toCheckoutPageBtn').on('click', function(){
-						// 	post('<c:url value="/cart.controller/cartCheckout" />', {});
-						// })
-
+						}
+					});
+		
+					// 【自訂函數 3】回首頁
+					$('#toIndexBtn').on('click', function(){
+						top.location = "<c:url value='/' />";
+					})
 
 
 				})

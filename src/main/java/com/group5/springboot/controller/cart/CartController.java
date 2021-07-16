@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
@@ -24,7 +23,6 @@ import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
-import com.group5.springboot.utils.api.ecpay.payment.integration.MyEcpayUtils;
 import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
 
 @RestController
@@ -37,15 +35,6 @@ public class CartController {
 	private CartItemService cartItemService;
 	@Autowired // SDI ✔
 	private OrderService orderService;
-	
-//	/***************************************************************************** */
-//	@Autowired 
-//	private OrderServiceTest orderServiceTest;
-//	@GetMapping(value="/test07")
-//	public List test07() {
-//		List list = orderServiceTest.selectAllOOPU();
-//		return list; 
-//	}
 	
 	/***************************************************************************** */
 	@PostMapping(value="/cart.controller/clientShowCart")
@@ -177,13 +166,17 @@ public class CartController {
 	
 	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart) {
 		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
-		Integer latestOid = orderService.selectLatestOid().getO_id() + 10000 + (int)Math.ceil(Math.random()*60000);
+		Integer latestOid = orderService.selectLatestOid().getO_id() + 10000 + (int)Math.ceil(Math.random()*60000); // ❗
 		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
 		String myMerchantTradeNo = String.format("studiehub%s%05d", thisMoment, latestOid);
 		// 【產生 MerchantTradeDate String(20)】
 		String myMerchantTradeDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 		// 【產生 TotalAmount Int】
-		String myTotalAmount = String.valueOf(cart.size());	
+		Integer myTotalAmountInt = 0;
+		for(ProductInfo product : cart) {
+			myTotalAmountInt += product.getP_Price();
+		}
+		String myTotalAmount = String.valueOf(myTotalAmountInt);
 		// 【產生 TradeDesc String(200)】
 		String myTradeDesc = "Thank you for joining StudieHub!"; // ❗有更有意義的內容嗎？
 		// 【產生 ItemName String(400)】
@@ -191,8 +184,8 @@ public class CartController {
 		cart.forEach(product -> myItemNameBuilder.append("#").append(product.getP_Name()));
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
-		String ngrokhttps = "https://bdaf9f50fe18.ngrok.io";
-		String ngrokhttp = "http://c980edaf1406.ngrok.io";
+//		String ngrokhttps = "";
+		String ngrokhttp = "http://c980edaf1406.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
 
 		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
 		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";
@@ -207,7 +200,6 @@ public class CartController {
 		aioObj.setReturnURL(myReturnURL);
 		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
 		aioObj.setClientBackURL(myClientBackURL);
-//		aioObj.setOrderResultURL(myClientBackURL);
 		return aioObj;
 	}
 	

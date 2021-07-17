@@ -147,7 +147,7 @@ window.addEventListener('load', function(){
 
 	<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 
 	</div>
 

@@ -51,8 +51,6 @@
 					<li><a href="<c:url value='/goSelectAllChatAdmin' />">討論區</a></li>
 					<li><span class="opener">題庫</span>
 						<ul>
-							<li><a href="<c:url value='/question.controller/guestQueryQuestion' />">所有試題</a></li>
-							<li><a href="<c:url value='/question.controller/startRandomExam' />">線上測驗區</a></li>
 							<li><a href="<c:url value='/question.controller/queryQuestion' />">查詢、編輯試題資料(後端)</a></li>
 							<li><a href="<c:url value='/question.controller/insertQuestion' />">新增試題資料(後端)</a></li>
 						</ul>

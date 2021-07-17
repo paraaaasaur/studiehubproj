@@ -29,63 +29,6 @@
 	var userPicString = "${loginBean.pictureString}";   
 
 	window.addEventListener("load", function() {
-		//window.addEvenListener 網頁監聽器 
-		//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
-
-		
-		var logout = document.getElementById("logout");
-			logout.onclick = function() {
-				var xhr1 = new XMLHttpRequest();
-				xhr.open("GET", "<c:url value='/logout.controller' />", true);
-				xhr.send();
-				xhr.onreadystatechange = function() {
-					if (xhr1.readyState == 4 && xhr1.status == 200) {
-						var result = JSON.parse(xhr1.responseText);
-						if (result.success) {
-							alert(result.success);
-							top.location = '<c:url value='/' />';
-						} else if (result.fail) {
-							alert(result.fail);
-							top.location = '<c:url value='/' />';
-						}
-					}
-				}
-			}
-
-			var loginHref = document.getElementById('loginHref');
-		    var signupHref = document.getElementById('signupHref');
-		    var logoutHref = document.getElementById('logoutHref');
-		    var userId = document.getElementById('userId');
-		    var userPic = document.getElementById('userPic');
-		    
-		    if(u_id){
-		    	loginHref.hidden = true;
-		    	signupHref.hidden = true;
-		    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-		    	userPic.src = userPicString;	//有登入就秀大頭貼
-		    	userId.innerHTML = u_id;
-		    	loginEvent.style.display = "block";
-		    	loginALLEvent.style.display = "block";
-
-		    }
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		
@@ -203,7 +146,7 @@
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 				<h2 align='center'>活動驗證後台</h2>
 				
 				<div align="center">
@@ -226,7 +169,7 @@
 
 		<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 
 	</div>
 

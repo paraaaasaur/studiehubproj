@@ -14,7 +14,8 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="${pageContext.request.contextPath}/startbootstrap/css/styles.css" rel="stylesheet" />
         <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-        
+
+        <script src="https://cdn.bootcss.com/limonte-sweetalert2/7.20.5/sweetalert2.all.min.js"></script>
     </head>
     <style>
 .father{
@@ -33,6 +34,7 @@
     transform: translate(-50%, -50%);
     */
 }
+
 </style>
     <script>
     var u_id = "${loginBean.u_id}";
@@ -80,9 +82,7 @@ window.addEventListener("load", function() {
 		
 	
 	
-	
 
-	
 	
 
     	dataArea = document.getElementById("div1");
@@ -118,9 +118,21 @@ window.addEventListener("load", function() {
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
-					console.log(xhr2.responseText);
+// 					console.log(xhr2.responseText);
 					
-					dataArea.innerHTML = showData(xhr2.responseText);
+					result = JSON.parse(xhr2.responseText);
+					
+					if(result.succes){
+						console.log(result.succes);
+						swal(result.succes);
+					}else if(result.fail){
+						swal(result.fail);
+					}else if(result.Exceed){
+						swal(result.Exceed);
+					}else if(result.Time){
+						swal(result.Time);
+					}
+// 					dataArea.innerHTML = showData(xhr2.responseText);
 
 				}
 			}
@@ -161,14 +173,18 @@ function showData(textobj) {
 			    segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"</h1>";
 			    segment += "<div class='text-muted fst-italic mb-2'>發布者 :"+obj.a_uid+"</div>";
 				segment += "<div class='text-muted fst-italic mb-2'>建立時間 :"+obj.creationTime+"</div>";
+				segment += "<div class='text-muted fst-italic mb-2'>報名人數上限 :"+obj.applicants+"</div>";
+				segment += "<div class='text-muted fst-italic mb-2'>以報名人數 :"+obj.havesignedup+"</div>";
 				segment += "<a class='badge bg-secondary text-decoration-none link-light' href='#!'>"+obj.a_type+"</a>";
 				segment += "</header>"
-				segment += "<span style = 'font-size:18px;'>活動時間 : "+obj.a_startTime+"<span>至</span>"+obj.a_endTime+"<br/></span> "	
+				segment += "<span style = 'font-size:18px;'>報名活動時間 : "+obj.a_registration_starttime+"<span>至</span>"+obj.a_registration_endrttime+"<br/></span> "	
+				segment += "<br>"
+				segment += "<span style = 'font-size:18px;'>活動開始時間 : "+obj.a_startTime+"<span>至</span>"+obj.a_endTime+"<br/></span> "	
 				segment += "<br>"
 				segment += "<span style = 'font-size:18px;'>活動地點 : "+obj.a_address+"</span>"
 				segment += "<br>"
 				segment += "<br>"			   
-				segment += "<figure class='mb-4'><img width='350' height='350'src=" + '<c:url value="/" />' + obj.a_picturepath+"  /></figure>"				
+				segment += "<figure class='mb-4'><img width='500' height='500'src=" + '<c:url value="/" />' + obj.a_picturepath+"  /></figure>"				
 				segment += "<section class='mb-5'>"
 				segment += "<p class='fs-5 mb-4'>"+str4+"</p>"
 				segment += "</section>"
@@ -197,8 +213,12 @@ function showData(textobj) {
                 <div  id = "div1"class="col-lg-8">
 <!--                    插入活動內容的位置 -->
                 </div>
-         
+
             <button id='Signup'>我要報名</button>
+            
+
+
+
 
 			</div>
 		</div>

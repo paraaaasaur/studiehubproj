@@ -25,6 +25,7 @@ public class Entryform {
 	private String e_lastname; // 姓
 	private String e_firstname; // 名
 //	@JsonIgnore
+
 	@ManyToOne
 	private EventInfo eventInfo;
 

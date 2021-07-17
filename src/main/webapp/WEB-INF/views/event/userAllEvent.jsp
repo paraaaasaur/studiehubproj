@@ -4,11 +4,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <style type="text/css">
  td {white-space:nowrap;overflow:hidden;text-overflow: ellipsis;}
  table{table-layout:fixed;word-wrap:break-word;}
 </style>
+
 <meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -179,12 +179,11 @@
 				segment += "<td>" + event.a_endTime + "</td>"
 				segment += "<td>" + event.a_address + "</td>"
 				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
-						
+
+
 						
 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
-
 				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
-				
 				segment += "<td><input type='button'value='查詢報名'onclick=\"window.location.href='"+tmp2+"'\" /></td>";
 
 

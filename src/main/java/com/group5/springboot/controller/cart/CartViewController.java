@@ -1,5 +1,7 @@
 package com.group5.springboot.controller.cart;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,8 @@ public class CartViewController {
 	private CartItemService cartItemService;
 	@Autowired
 	private CartValidator cartValidator;
+	
+	public static ArrayList<?> cartInfo = new ArrayList<>();
 	
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
@@ -101,19 +105,33 @@ public class CartViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping(value = "/cart.controller/receiveEcpayReturnInfo")
-	public String toReceiveEcpayReturnInfo(
-			@RequestParam Map<String, String> allRequestParams
-//			, ModelMap modelMap
+	public void toReceiveEcpayReturnInfo(
+			@RequestParam Map<String, String> ecpayResult
+			, Model model
 			) {
 		System.out.println("*********************** 回傳結果如下 **************************");
-		allRequestParams.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
-		System.out.println("*********************** 回傳結果如下 **************************");
-		return "cart/cartReceiveEcpayReturnInfo";
+		ecpayResult.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
+		System.out.println("*********************** 回傳結果如上 **************************");
+		String rtnCode = ecpayResult.get("RtnCode");
+		String paymentType = ecpayResult.get("PaymentType");
+
+		Boolean success = ("Credit_CreditCard".equals(paymentType) && "1".equals(rtnCode))? true : false;
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ecpayResult", ecpayResult);
+		map.put("success", success);
+		// ❗
+		model.addAttribute("ecpayResultAttr", map);
+		
+		return;
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = "/cart.controller/clientResultPage")
-	public String toClientResultPage() {
+	public String toClientResultPage(@RequestParam Map<String, String> map) {
+		System.out.println("*********************** 回傳結果如下 **************************");
+		map.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
+		System.out.println("*********************** 回傳結果如上 **************************");
 		return "cart/cartClientResultPage";
 	}
 	

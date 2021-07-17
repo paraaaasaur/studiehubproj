@@ -11,15 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.group5.springboot.service.cart.FooService;
 
 @Controller
 public class FooController {
 
-    @Autowired
+	@Autowired
     private FooService fooService;
     /**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
     
@@ -47,6 +45,7 @@ public class FooController {
         }
         return aa;
     }
+	
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping(value = {"/test04"}, consumes = "application/json; charset=UTF-8", produces = "application/json; charset=UTF-8")

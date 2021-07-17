@@ -1,22 +1,25 @@
 package com.group5.springboot.controller.cart;
 
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
 public class Tttt {
 
 	public static void main(String[] args) {
+		Integer iii[] = {1, 2, 3};
+		List<Integer> aaa = Arrays.asList(iii);
+		System.out.println(aaa.getClass());
+		
 		// StringBuilder的replace()方法測試
-		StringBuilder myItemNameBuilder = new StringBuilder("");
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("you");
-		list.add("are");
-		list.add("amazing");
-		list.forEach(s -> myItemNameBuilder.append("#").append(s));
-		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
-		System.out.println(myItemName);
+//		StringBuilder myItemNameBuilder = new StringBuilder("");
+//		ArrayList<String> list = new ArrayList<String>();
+//		list.add("you");
+//		list.add("are");
+//		list.add("amazing");
+//		list.forEach(s -> myItemNameBuilder.append("#").append(s));
+//		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
+//		System.out.println(myItemName);
 		
 		// String format測試
 //		Integer latestOid = 15;

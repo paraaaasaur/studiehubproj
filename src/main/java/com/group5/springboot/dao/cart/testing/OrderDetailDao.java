@@ -1,6 +1,4 @@
-package com.group5.springboot.dao.cart;
-// 購物車的連線物件
-// 要考慮做DAO Factory嗎？
+package com.group5.springboot.dao.cart.testing;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

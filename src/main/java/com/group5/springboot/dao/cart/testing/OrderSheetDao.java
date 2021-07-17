@@ -1,4 +1,4 @@
-package com.group5.springboot.dao.cart;
+package com.group5.springboot.dao.cart.testing;
 
 import java.util.List;
 import javax.persistence.EntityManager;

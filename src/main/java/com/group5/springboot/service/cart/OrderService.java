@@ -1,6 +1,5 @@
 package com.group5.springboot.service.cart;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,8 @@ public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
 	
-	public List<OrderInfo> test() {
-		return orderDao.test();
+	public Integer getCurrentIdSeed() {
+		return orderDao.getCurrentIdSeed();
 	}
 
 	public Map<String, Object> insert(OrderInfo order) {

@@ -2,6 +2,7 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -32,12 +33,8 @@ public class OrderDao implements IOrderDao {
 //	private JdbcTemplate jdbcTemplate;
 	
 	
-	@SuppressWarnings({ "unchecked" })
-	public List<OrderInfo> test() {
-		Query query = em.createNativeQuery("SELECT * FROM order_info WHERE o_date < '2021-07-08' AND o_date > :value ", OrderInfo.class); // ❓❗
-		query.setParameter("value", "2021-07-05 18:00:00");
-		List<OrderInfo> list = query.getResultList();
-		return list; 
+	public Integer getCurrentIdSeed() {
+		return ((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue();
 	}
 	
 	public OrderInfo selectLatestOid() {

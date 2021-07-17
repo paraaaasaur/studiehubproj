@@ -20,6 +20,9 @@ span.error {
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
+	
+
+
 <title>Studie Hub</title>
 <script>
 let div1 = null;
@@ -109,8 +112,9 @@ window.addEventListener("load", function() {
 						<tr>
 						<tr>
 							<td>活動名稱:</td>
-							<td><form:input path="a_name" /></td>
-
+							<td><form:input path="a_name" />
+                            <form:errors path="a_name"  cssClass="error"/>	
+                            </td>	      
 						</tr>
 						<tr>
 				   <td>活動類型：<br>&nbsp;</td>
@@ -119,24 +123,55 @@ window.addEventListener("load", function() {
                    <form:option label="請挑選" value="" />
                    <form:options  items="${eventtype}" />
                    </form:select>
+                   <form:errors path="a_type"  cssClass="error"/>		      
+                   
                    </td> 
 						</tr>
 						<tr>
+							<td>活動報名開始時間:</td>
+							<td><form:input type="datetime-local" path="registration_starttime" />
+							<form:errors path="registration_starttime"  cssClass="error"/>	
+							
+							</td>
+						</tr>
+						<tr>
+							<td>活動報名結束時間</td>
+							<td><form:input type="datetime-local" path="registration_endrttime" />
+							<form:errors path="registration_endrttime"  cssClass="error"/>	
+							
+							</td>
+						</tr>
+						<tr>
 							<td>活動開始時間:</td>
-							<td><form:input type="datetime-local" path="Transienta_startTime" /></td>
+							<td><form:input type="datetime-local" path="Transienta_startTime" />
+							<form:errors path="Transienta_startTime"  cssClass="error"/>	
+							</td>
 						</tr>
 						<tr>
 							<td>活動結束時間</td>
-							<td><form:input type="datetime-local" path="Transienta_endTime" /></td>
+							<td><form:input type="datetime-local" path="Transienta_endTime" />
+							<form:errors path="Transienta_endTime"  cssClass="error"/>	
+							</td>
 						</tr>
+
 						<tr>
 							<td>活動地址:</td>
-							<td><form:input path="a_address" /></td>
+							<td><form:input path="a_address" />
+							<form:errors path="a_address"  cssClass="error"/>		      
+							</td>
 						</tr>
 						<tr>
 							<td>活動說明:</td>
-							<td><form:textarea path="transientcomment" cols="100"
-									rows="10" /></td>
+							<td><form:textarea path="transientcomment" cols="100" rows="10" />
+						    <form:errors path="transientcomment"  cssClass="error"/>		      
+							</td>		
+						</tr>
+						<tr>
+							<td>報名人數上限</td>
+							<td><form:input  path="applicants"  placeholder="請填寫數字"/>
+							<form:errors path="applicants"  cssClass="error"/>	
+								      
+							</td>
 						</tr>
 						<tr>
 							<td>活動圖片:</td>
@@ -146,7 +181,32 @@ window.addEventListener("load", function() {
 						<tr>
 							<td><input type="submit"></td>
 						</tr>
+						<tr>
+						<td><input
+						style="border: none; background-color: #555555; color: white; border-radius: 4px;"
+						type="submit" value="新增"> <input
+						style="border: none; background-color: #555555; color: white; border-radius: 4px;"
+						type="button" onclick="inport()" value="一鍵輸入"></td>
+
+						</tr>
+						
 					</table>
+					
+					             <script>
+									$(document).ready(function() {
+										$('#Taoyuan').DataTable();
+									});
+									function inport() {
+
+										document.getElementById("a_name").value = "77";
+										document.getElementById("a_address").value = "03-4945168";
+										document.getElementById("applicants").value = "元智大飯店";
+										document.getElementById("a_type").value = "分享會";
+										document.getElementById("Transienta_startTime").value = "2021-07-16T16:01";
+										document.getElementById("transientcomment").value = "AAAAAAAAAAAAAAAAAAA2021-07-16T16:01";
+
+									};
+								</script>
 				</form:form>
 
 			</div>

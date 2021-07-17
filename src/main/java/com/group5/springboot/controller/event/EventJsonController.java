@@ -39,8 +39,14 @@ public class EventJsonController {
 	//用id尋找 顯示活動內容 
 	@GetMapping(value = "/eventcontentjson/{a_aid}", produces = "application/json; charset=UTF8")
 	public @ResponseBody EventInfo eventcontentjson(@PathVariable Long a_aid ) {
+		//依照AID搜尋出一筆活動表
+		EventInfo eventInfo = eventserviceImpl.findByid(a_aid);
+		//用AID搜尋到的活動表 找出相關聯的 報名表 用.size 取得 跟 活動表相關聯的數量 代表有幾個報名人數
+		int size=eventserviceImpl.findentryformByaidreturnsize(eventInfo);
+		//把搜尋到的數量放進活動表
+		eventInfo.setHavesignedup(size);
 		
-		return eventserviceImpl.findByid(a_aid);
+		return eventInfo ;
 		
 	}
 	//用放在Session的uid尋找活動表 
@@ -56,9 +62,9 @@ public class EventJsonController {
 	public @ResponseBody List<Entryform> signupEventjson(@PathVariable Long a_aid ) {
 		EventInfo Event = eventserviceImpl.findByid(a_aid);
 		
-		List<Entryform> aaa = eventserviceImpl.findentryformByaid(Event);
+		List<Entryform> Entryform = eventserviceImpl.findentryformByaid(Event);
 
-		return aaa ;
+		return Entryform ;
 		
 	}
 

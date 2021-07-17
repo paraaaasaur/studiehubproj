@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 僅多選題，倒數計時器待修改 -->
+<!-- 僅多選題，倒數計時器待修改 其他未同步修正 -->
 <style type="text/css">
    span.error {
 	color: red;

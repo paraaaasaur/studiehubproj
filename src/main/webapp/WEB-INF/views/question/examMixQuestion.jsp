@@ -39,6 +39,17 @@
   	border-radius: 100% !important ;
   }
 
+	/* 卡套版待確 ---覆寫側邊目前題數 */
+	#countArea{
+	border:3px #cccccc solid ;
+	cellpadding:'10'; 
+	border:'1' ; 
+	width:500px ;
+	height:20% ;
+	align:left ;
+	display:'';
+  }
+
 </style>
 
 <meta charset="UTF-8">
@@ -96,11 +107,11 @@ window.addEventListener('load', function(){
 			userChoice.splice(counter, 1, userAnswerChecked.join(""));
 			counter += 1;
 			
-			alert("userChoice=" + userChoice );
+// 			alert("userChoice=" + userChoice );
 			
 			var userLastAnswer = userChoice[counter];
 			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
-
+			countArea.innerHTML = showCountData(xhr.responseText);
 
 
 		}else if(counter == size-2){
@@ -109,11 +120,12 @@ window.addEventListener('load', function(){
 
 			userChoice.splice(counter, 1, userAnswerChecked.join(""));
 			
-			alert("userAnswerChecked=" + userAnswerChecked );
-			alert("userChoice=" + userChoice );
+// 			alert("userAnswerChecked=" + userAnswerChecked );
+// 			alert("userChoice=" + userChoice );
 			counter += 1;
 			var userLastAnswer = userChoice[counter];
 			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
+			countArea.innerHTML = showCountData(xhr.responseText);
 
 			}
 	}else{
@@ -122,6 +134,8 @@ window.addEventListener('load', function(){
 		});
 		
 	
+	
+	
 	back.addEventListener('click', function(){
 
 		var userAnswers = document.getElementsByName("userAnswer"); 
@@ -129,11 +143,11 @@ window.addEventListener('load', function(){
 		
 		for(var i = 0; i < userAnswers.length; i ++){    //抓取陣列中,被使用者所選取的項目
 			if(userAnswers[i].checked){ 
-				alert(userAnswers[i].value);
+// 				alert(userAnswers[i].value);
 				userAnswerChecked.push(userAnswers[i].value);
 				}
 			}
-				alert("userAnswerChecked="+ userAnswerChecked);
+// 				alert("userAnswerChecked="+ userAnswerChecked);
 		
 		if(counter == size-1){
 			next.style.display = '';
@@ -143,6 +157,7 @@ window.addEventListener('load', function(){
 			counter -= 1;
 			var userLastAnswer = userChoice[counter];
 			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
+			countArea.innerHTML = showCountData(xhr.responseText);
 			
 		 }else if(counter > 1 && counter < size-1){
 
@@ -152,7 +167,8 @@ window.addEventListener('load', function(){
 				counter -= 1;
 				var userLastAnswer = userChoice[counter];
 				dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
-				
+				countArea.innerHTML = showCountData(xhr.responseText);
+			
 			
 		}else if(counter == 1){
 			back.style.display = 'none';
@@ -162,17 +178,20 @@ window.addEventListener('load', function(){
 			counter -= 1;
 			var userLastAnswer = userChoice[counter];
 			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
-			
+			countArea.innerHTML = showCountData(xhr.responseText);
+		
 			
 		}else{
 			back.style.display = 'none';
 			userChoice.splice(counter, 1, userAnswerChecked.join(""));
 			dataArea.innerHTML = showData(xhr.responseTex);
-			
+			countArea.innerHTML = showCountData(xhr.responseText);
+		
 			}
 		});
 	
-//判斷題目
+	
+//點擊提交後判斷試題
 		submit.addEventListener('click', function(){
 			
 			if(counter == size-1){
@@ -187,26 +206,20 @@ window.addEventListener('load', function(){
 						userAnswers = 'userAnswer is Checked'; 
 						}
 					}
-				
 				userChoice.splice(counter, 1, userAnswer);
-
-				
-
 			}
 			
 
 			for(var i=0 ; i<size ; i++){
 			 	if(userChoice[i] == questions[i].q_answer.replaceAll(",","") ){
 					examResult.push("O");
-
 			 	}
 			 	else if(userChoice[i] != questions[i].q_answer.replaceAll(",","")){
 			 		examResult.push("X");
-
 						}
 				 }
 		
-				dataArea.innerHTML = showResult(examResult);
+				dataArea.innerHTML = showResult(xhr.responseText,examResult);
 			
 			
 		});
@@ -220,56 +233,42 @@ window.addEventListener('load', function(){
 
 
 function showCountData(textObj){
-	let content = "<tr><th colspan='4'>聽力題</th><th colspan='3'>多選題</th><th colspan='3'>單選題</th></tr>";
-	    content += "<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>";
-
+	let status0=["","","","","","","","","",""];  	//顯示目前題數
+	for(var c = 0; c <= size ; c ++){    //抓取陣列中,被使用者所選取的項目
+		if(c == counter){ 
+			status0[c]="background-color:#cccccc;";
+			}
+		}
+	
+	let content =  "<tr><th colspan='4' style=' border:2px #cccccc solid; height:20%;'>聽力題</th><th colspan='3' style=' border:2px #cccccc solid;'>多選題</th><th colspan='3' style=' border:2px #cccccc solid;'>單選題</th></tr>";
+	    content += "<tr><td style='" + status0[0] + "'>1</td> <td  style='" + status0[1] + "'>2</td> <td  style='"+status0[2]+"'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"'>4</td>";
+	    content += "<td style='" + status0[4] + "'>5</td><td style='" + status0[5] + "'>6</td><td style=' border-right:2px #cccccc solid ;"+status0[6]+"'>7</td>";
+	    content += "<td style='" + status0[7] + "'>8</td><td style='" + status0[8] + "'>9</td><td style='"+ status0[9] +"'>10</td></tr>";
 	return content;
 };
 
 
 
  function showData(textObj,userLastAnswer){
-	let status=["","","",""];  	//先判斷使用者已勾選項
-	switch(userLastAnswer){
- 		case "A":
- 		case "AB":
- 		case "ABC":
- 		case "ABCD":
+	let status=["","","","",""];  	//先判斷使用者已勾選項
+	if(userLastAnswer != undefined){
+	if(userLastAnswer.search("A") != -1){
 			status[0]="checked";
-		break;
-	} 
-	switch(userLastAnswer){
- 		case "B":
- 		case "AB":
- 		case "ABC":
- 		case "BC":
- 		case "BCD":
- 			status[1]="checked";
-		break;
-	}
-	switch(userLastAnswer){
- 		case "C":
- 		case "AC":
-		case "ABC":
- 		case "ABCD":
-		case "BC":
-		case "BCD":
- 		case "CD":
+		}; 
+	if(userLastAnswer.search("B") != -1){
+			status[1]="checked";
+		};
+	if(userLastAnswer.search("C") != -1){
 			status[2]="checked";
-		break;
-	}
-	switch(userLastAnswer){
- 		case "D":
- 		case "ABCD":
- 		case "AD":
- 		case "ABD":
- 		case "ACD":
- 		case "BD":
- 		case "BCD":
- 		case "CD":
+		}; 
+	if(userLastAnswer.search("D") != -1){
 			status[3]="checked";
-		break;
-	}
+		};
+	if(userLastAnswer.search("E") != -1){
+			status[4]="checked";
+		};		
+	};	
+	
 	
 	obj = JSON.parse(textObj);
 	size = obj.size;
@@ -279,52 +278,62 @@ function showCountData(textObj){
 	if (size == 0){
 		segment += "<h4>很抱歉，目前系統無相關試題</h4>";
 	} else {
-		segment += "<h4>測驗共" + size + "題</h4><br>";
+// 		segment += "<h4>測驗共" + size + "題</h4><br>";
 	    
 		   	let question = questions[counter];
 	   		let number = counter+1;
 	     	
-		   	segment += "<h4>第&ensp;" + number + "&ensp;題</h4>";
+// 		   	segment += "<h4>第&ensp;" + number + "&ensp;題</h4>";
 	
 	   		if(question.mimeTypePic == null){
 		 	   }else{
-		   	segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
+		   		segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
 		   		};  	
 	  		if(question.mimeTypePic == null){
 		  	   }else{
-		   	segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 
+		  	 	segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 
 	   	   		}; 
+			
+	   	   	if(question.q_type == "聽力題" || question.q_type == "單選題"){
+	   		   	segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
+				segment += "<div><input type='radio' value='A' name='userAnswer'  id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+				segment += "<input type='radio' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+				segment += "<input type='radio' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+				segment += "<input type='radio' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
+	   	   	}
+	   	   	
+	   	   	if(question.q_type == "多選題"){
+				segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
+				segment += "<div><input type='checkbox' value='A' name='userAnswer'  id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+				segment += "<input type='checkbox' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+				segment += "<input type='checkbox' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+				segment += "<input type='checkbox' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label><br>";
+				segment += "<input type='checkbox' value='E' name='userAnswer' id='E'" + status[4] + " /><label for='E'>"+ "E &emsp; " + question.q_selectionE +"</label></div><hr><br>";
 
-			segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
-			segment += "<div><input type='checkbox' value='A' name='userAnswer'  id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
-			segment += "<input type='checkbox' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
-			segment += "<input type='checkbox' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
-			segment += "<input type='checkbox' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
-
-
+	   	   	}
 	   }
 			return segment;
 	};
 
+	
 	 //考試結果
-	 function showResult(examResult){
+	 function showResult(textObj,examResult){
 			back.style.display = 'none';
 			next.style.display = 'none';
 			submit.style.display = 'none';
+			countArea.style.display = 'none';
 
-			var correct = 0;
-			var wrong = 0;
-
-		   
+			var correct = 0;    //答對數
+			var wrong = 0;      //答對=錯數
 			for(var i=0 ; i<size ; i++){
 			 	if(userChoice[i] == questions[i].q_answer.replaceAll(",","") ){
-			 		alert("答對 使用者選擇="+ userChoice[i]);
-			 		alert("答案="+questions[i].q_answer.replaceAll(",",""));
+// 			 		alert("答對 使用者選擇="+ userChoice[i]);
+// 			 		alert("答案="+questions[i].q_answer.replaceAll(",",""));
 			 		correct += 1
 			 	}
 			 	else if(userChoice[i] != questions[i].q_answer.replaceAll(",","")){
-			 		alert("答錯 使用者選擇="+ userChoice[i]);
-			 		alert("答案="+questions[i].q_answer.replaceAll(",",""));
+// 			 		alert("答錯 使用者選擇="+ userChoice[i]);
+// 			 		alert("答案="+questions[i].q_answer.replaceAll(",",""));
 			 	 	wrong += 1
 						}
 				 }
@@ -332,8 +341,8 @@ function showCountData(textObj){
 			
 			let correctPercent = correct/size*100 ;
 			let	segment2  = "<h4>＜測驗結果＞</h4><br>";
-			    segment2 += "<div><h5>&emsp;測驗共" + size + "題</h5></div>";
-				segment2 += "<div><h5>&emsp;答錯題數："+ wrong +"題，" + "答對率：" + correctPercent + "%</h5></div><br>";
+			    segment2 += "<div><a>&emsp;測驗共" + size + "題</a></div>";
+				segment2 += "<div><a>&emsp;答錯題數："+ wrong +"題</a><a style='color:red;'>，答對率：" + correctPercent + "%</a></div><br>";
 				segment2 += "<table>";
 			
 				segment2 += "<tr>" ;
@@ -347,8 +356,69 @@ function showCountData(textObj){
 					segment2 += "<td>" + examResult[m] + "</td>"; 
 			    }
 			 	    segment2 += "</tr></table>";
-			 	    
-					return segment2; 
+			 	
+			
+////帶出所有測驗過試題			 	    
+			 	 for(p = 0; p < size ; p++){  	    
+				   	let question = questions[p];
+			   		let number = p+1;
+			   		
+			   		let status2=["","","","",""];  	//先判斷使用者已勾選項
+			   		if(userChoice[p] != undefined){
+			   		if(userChoice[p].search("A") != -1){
+			   				status2[0]="checked";
+			   			}; 
+			   		if(userChoice[p].search("B") != -1){
+			   				status2[1]="checked";
+			   			};
+			   		if(userChoice[p].search("C") != -1){
+			   				status2[2]="checked";
+			   			}; 
+			   		if(userChoice[p].search("D") != -1){
+			   				status2[3]="checked";
+			   			};
+			   		if(userChoice[p].search("E") != -1){
+			   				status2[4]="checked";
+			   			};		
+			   		};	
+			     	
+		 		   	segment2 += "<h4>第&ensp;" + number + "&ensp;題</h4>";
+			
+			   		if(question.mimeTypePic == null){
+				 	   }else{
+				   		segment2 += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
+				   		};  	
+			  		if(question.mimeTypePic == null){
+				  	   }else{
+				  	 	segment2 += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 
+			   	   		}; 
+					
+			   		   	segment2 += "<h3>問題：" + question.q_question + "</h3>"; 
+			   		   	
+			   		 if(userChoice[p] != questions[p].q_answer.replaceAll(",","")){
+			   			segment2 +="<h4 style='color:red;'>正確答案："+ questions[p].q_answer +"</h4>"
+			   			 }else{
+				   	   	segment2 += "<br>"; 
+			   		    };
+			   		   	
+			   		   	
+			   	   	if(question.q_type == "聽力題" || question.q_type == "單選題"){   //問題:若使用radio會無法對應status2
+						segment2 += "<div><input type='checkbox' value='A' name='userAnswer'  id='A'" + status2[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+						segment2 += "<input type='checkbox' value='B' name='userAnswer' id='B'" + status2[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+						segment2 += "<input type='checkbox' value='C' name='userAnswer' id='C'" + status2[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+						segment2 += "<input type='checkbox' value='D' name='userAnswer' id='D'" + status2[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
+			   	   	}
+			   	   	
+			   	   	if(question.q_type == "多選題"){
+						segment2 += "<div><input type='checkbox' value='A' name='userAnswer'  id='A'" + status2[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+						segment2 += "<input type='checkbox' value='B' name='userAnswer' id='B'" + status2[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
+						segment2 += "<input type='checkbox' value='C' name='userAnswer' id='C'" + status2[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
+						segment2 += "<input type='checkbox' value='D' name='userAnswer' id='D'" + status2[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label><br>";
+						segment2 += "<input type='checkbox' value='E' name='userAnswer' id='E'" + status2[4] + " /><label for='E'>"+ "E &emsp; " + question.q_selectionE +"</label></div><hr><br>";
+
+			   	   	}	
+				} 	
+			 	    return segment2; 
 	 } 	 
 
 //倒數計時器
@@ -395,8 +465,11 @@ function showCountData(textObj){
 <!-- <hr> -->
 <%-- <font color='red'>${successMessage}</font>&nbsp; --%>
 <!-- <hr> -->
-<table id='countArea' style=" border:3px #cccccc solid; cellpadding:'10'; border:'1'; width:500px; ">
-</table>   
+
+
+<table id='countArea' >
+</table>  
+
 
 <div align='left'  id='dataArea'>
 </div>

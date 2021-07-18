@@ -65,7 +65,7 @@
 											<tr>
 												<td>(1) 訂單代號：<br>&nbsp;</td>
 												<td width='360'>
-													<form:input path="o_id" disabled="true" id="o_id" value="[由系統自動產生]" /><br>&nbsp;
+													<form:input path="o_id" id="o_id" placeholder="【選填 / 由系統自動產生】"  /><br>&nbsp;
 												</td>
 												<td>(2) 課程代號：<br>&nbsp;</td>
 												<td width='360'>
@@ -236,7 +236,7 @@
 
 					$(cheat).on('click', function(){
 						p_id.val(1);
-						u_id.val('fbk001');
+						u_id.val('tajen');
 						o_amt.val(Math.round(Math.random() * 100000));
 						autoFillInProductStuff();
 						autoFillInUserStuff();

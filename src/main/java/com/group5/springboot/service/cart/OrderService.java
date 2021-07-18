@@ -1,6 +1,5 @@
 package com.group5.springboot.service.cart;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,18 @@ public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
 	
-	public List<OrderInfo> test() {
-		return orderDao.test();
+	public Boolean selectCheckOrderExistence(Integer oid) {
+		return orderDao.selectCheckOrderExistence(oid);
+	}
+	
+	public Integer getCurrentIdSeed() {
+		return orderDao.getCurrentIdSeed();
 	}
 
 	public Map<String, Object> insert(OrderInfo order) {
 		return orderDao.insert(order);
 	}
+	
 	
 	public Map<String, Object> selectAll() {
 		return orderDao.selectAll();
@@ -60,7 +64,7 @@ public class OrderService implements IOrderService{
 		return orderDao.update(newBean);
 	}
 	
-	public Integer delete(Integer[] o_ids) {
-		return orderDao.delete(o_ids);
+	public Integer delete(Integer[] identitySeeds) {
+		return orderDao.delete(identitySeeds);
 	}
 }

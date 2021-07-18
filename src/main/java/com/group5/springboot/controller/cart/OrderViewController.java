@@ -37,7 +37,8 @@ public class OrderViewController {
 	@PostMapping(value = {"/order.controller/adminInsert"})
 	public String orderAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
 			BindingResult result, 
-			RedirectAttributes ra) {
+			RedirectAttributes ra
+			) {
 		
 		orderValidator.validate(orderInfo, result);
 		if (result.hasErrors()) {			
@@ -47,24 +48,30 @@ public class OrderViewController {
 //			return "redirect:/order.controller/adminInsert"; // ❓
 		}
 		
+		if (orderInfo.getO_id() == null) {
+			orderInfo.setO_id(orderService.getCurrentIdSeed());
+		}
 		orderService.insert(orderInfo);
 		ra.addFlashAttribute("successMessage", "訂單編號 = " + orderInfo.getO_id() + "新增成功！");
 		return "redirect:/order.controller/adminSelect";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/order.controller/adminUpdate/{oid}"})
-	public String toOrderAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
-		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)).get("orderInfo"));
+	@GetMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
+	public String toOrderAdminUpdate(@PathVariable("identitySeed") Integer identitySeed, Model model) {
+		OrderInfo oBean = new OrderInfo();
+		oBean.setIdentity_seed(identitySeed);
+		model.addAttribute("orderInfo", orderService.select(oBean).get("orderInfo"));
 		return "/cart/orderAdminUpdate";
 //		return "redirect:/order.controller/adminUpdate"; // ❓
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/order.controller/adminUpdate/{oid}"})
+	@PostMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
 	public String orderAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
 			BindingResult result, 
-			RedirectAttributes ra) {
+			RedirectAttributes ra
+			) {
 		
 		orderValidator.validate(orderInfo, result);
 		if (result.hasErrors()) {
@@ -72,9 +79,13 @@ public class OrderViewController {
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
 			return "/cart/orderAdminUpdate";
 		}
+		if (orderInfo.getO_id() == null) {
+			System.out.println("oid = " + orderInfo.getO_id());
+			orderInfo.setO_id(orderService.getCurrentIdSeed());
+		}
 		
 		orderService.update(orderInfo);
-		ra.addFlashAttribute("successMessage", "o_id = " + orderInfo.getO_id() + "修改成功");
+		ra.addFlashAttribute("successMessage", "修改成功");
 		return "redirect:/order.controller/adminSelect";
 		
 	}
@@ -84,13 +95,6 @@ public class OrderViewController {
 	public String toCartAdminSelect() {
 		return "cart/orderAdminSelect";
 	}
-	
-	/**
-	 * ****************************************  Order ************************************************************
-	 * 
-	 * ****************************************  CartItem ************************************************************
-	 * */
 
-	
 
 }

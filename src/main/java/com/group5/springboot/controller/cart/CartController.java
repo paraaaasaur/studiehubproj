@@ -1,7 +1,9 @@
 package com.group5.springboot.controller.cart;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,11 @@ import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
+import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
+import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
 
 @RestController
 public class CartController {
@@ -28,7 +33,8 @@ public class CartController {
 	private UserService userService;
 	@Autowired // SDI ✔
 	private CartItemService cartItemService;
-	
+	@Autowired // SDI ✔
+	private OrderService orderService;
 	
 	/***************************************************************************** */
 	@PostMapping(value="/cart.controller/clientShowCart")
@@ -126,6 +132,85 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@PostMapping("/cart.controller/checkout")
+	public String payViaEcpay(
+			@RequestParam("u_id") String u_id,
+			@RequestParam("p_ids") Integer[] p_ids
+			) {
+		List<ProductInfo> cart = new ArrayList<ProductInfo>();
+		for(Integer p_id : p_ids) {
+			ProductInfo product = productService.findByProductID(p_id);
+			cart.add(product);
+		}
+		User_Info uBean = userService.getSingleUser(u_id);
+		
+		AioCheckOutALL aioObj = genEcpayOrder(cart, uBean, cart); 
+		System.out.println(aioObj);
+		
+		// 參數 1 = 充滿EcpayOrder參數的aioObj，參數 2 = 是否要發票(invoice)
+		String htmlForm = new AllInOne("").aioCheckOut(aioObj, null);
+		return htmlForm;
+	}
+
+	@PostMapping("/cart.controller/getEcpayResultAttr")
+	public Map<String, String> getEcpayResultAttr() {
+		@SuppressWarnings("unchecked")
+		Map<String, String> map = (Map<String, String>) CartViewController.cartInfoMap.get("ecpayResultAttr");
+		CartViewController.cartInfoMap.remove("ecpayResultAttr");
+		return map;
+	}
+
+	
+	
+	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
+		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
+		// ❗ 交易失敗的時候這會變得不能用第二次
+		Integer latestOid = orderService.getCurrentIdSeed() + 10000 + (int)Math.ceil(Math.random()*60000); 
+		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
+		String myMerchantTradeNo = String.format("studiehub%s%05d", thisMoment, latestOid);
+		// 【產生 MerchantTradeDate String(20)】
+		String myMerchantTradeDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+		// 【產生 TotalAmount Int】
+		Integer myTotalAmountInt = 0;
+		for(ProductInfo product : cart) {
+			myTotalAmountInt += product.getP_Price();
+		}
+		String myTotalAmount = String.valueOf(myTotalAmountInt);
+		// 【產生 TradeDesc String(200)】
+		String myTradeDesc = "Thank you for joining StudieHub!"; // ❗有更有意義的內容嗎？
+		// 【產生 ItemName String(400)】
+		StringBuilder myItemNameBuilder = new StringBuilder("");
+		cart.forEach(product -> myItemNameBuilder.append("#").append(product.getP_Name()));
+		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
+		// 【產生 ReturnURL String(200)】
+//		String ngrokhttps = "";
+		String ngrokhttp = "http://e8ea96c974fb.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
+
+		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
+		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";
+		
+		
+		AioCheckOutALL aioObj = new AioCheckOutALL(); 
+		aioObj.setMerchantTradeNo(myMerchantTradeNo);
+		aioObj.setMerchantTradeDate(myMerchantTradeDate);
+		aioObj.setTotalAmount(myTotalAmount);
+		aioObj.setTradeDesc(myTradeDesc);
+		aioObj.setItemName(myItemName);
+		aioObj.setReturnURL(myReturnURL);
+		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
+		aioObj.setCustomField1(uBean.getU_id()); // u_id
+		aioObj.setCustomField2(uBean.getU_lastname() + uBean.getU_firstname()); // user's full name
+		
+		
+		CartViewController.cartInfoMap.put(uBean.getU_id(), tempCart);
+		
+
+//		aioObj.setCustomField3("ガンキマリ");
+//		aioObj.setCustomField4("僕を応援しろよ僕を");
+		aioObj.setClientBackURL(myClientBackURL);
+		return aioObj;
+	}
+	
 	
 	
 }

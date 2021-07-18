@@ -67,7 +67,7 @@
 											<tr>
 												<td>(1) 訂單代號：<br>&nbsp;</td>
 												<td width='360'>
-													<form:input path="o_id" id="o_id" readonly="true" /><br>&nbsp;
+													<form:input path="o_id" id="o_id" placeholder="【選填 / 由系統自動產生】" /><br>&nbsp;
 												</td>
 												<td>(2) 課程代號：<br>&nbsp;</td>
 												<td width='360'>

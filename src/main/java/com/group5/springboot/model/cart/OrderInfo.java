@@ -20,9 +20,20 @@ import com.group5.springboot.model.user.User_Info;
 @Component
 public class OrderInfo {
 	
-	// ❗ 沒有什麼實質意義
+	// ※訂單相關編號有三種
+	// (1) MerchantTradeNo = 顧客要記住的特店交易編號，可以用來反查綠界交易編號和order_item的內建o_id (資料庫訂單編號)
+	// (2) TradeNo = 綠界交易編號(唯一)
+	// (3) order_info.o_id 資料庫訂單編號
+	
+	// ❗ 沒有實質意義，純粹是jpa的bean一定要一個PK...
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer identity_seed;
 	private Integer o_id ; // PK
+	@Column(name = "ECPAY_O_ID")
+	// 特店交易編號(來自ecpay的MerchantTradeNo參數)
+	private String ecpay_o_id;
+	// 綠界交易編號(來自ecpay的TradeNo參數)
+	private String ecpay_trade_no;
 	@Column(name = "P_ID", insertable = false, updatable = false)
 	private Integer p_id; // FK
 	private String p_name; 
@@ -36,7 +47,6 @@ public class OrderInfo {
 	//直接指定SQL的條件限制 
 	private String o_status;
 	@Column(insertable = false, updatable = false, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")
-	
 	private String o_date; 
 	private Integer o_amt;
 	/*********************************************************************/
@@ -62,52 +72,77 @@ public class OrderInfo {
 	public OrderInfo() {};
 	public OrderInfo(Integer o_id) {		setO_id(o_id);	}
 	public OrderInfo(String o_status) {		setO_status(o_status);	}
-	public OrderInfo(Integer o_ID, Integer p_ID, String p_Name, Integer p_Price, String u_ID, String u_FirstName,
-			String u_LastName, String u_Email, String o_Status, String o_Date, Integer o_Amt) {
-		setO_id         (o_ID       );
-		setP_id         (p_ID       );
-		setP_name       (p_Name     );
-		setP_price      (p_Price    );
-		setU_id         (u_ID       );
-		setU_firstname  (u_FirstName);
-		setU_lastname   (u_LastName );
-		setU_email      (u_Email    );
-		setO_status     (o_Status   );
-		setO_date       (o_Date     );
-		setO_amt        (o_Amt      );
+	public OrderInfo(ProductInfo productInfo) {
+		setP_id(productInfo.getP_ID());
+		setP_price(productInfo.getP_Price());
+		setP_name(productInfo.getP_Name());
+	}
+	public OrderInfo(Integer identity_seed, Integer o_id, String o_date, Integer o_amt, String ecpay_o_id, String o_status, String ecpay_trade_no,
+			Integer p_id, String p_name, Integer p_price, 
+			String u_id, String u_firstname, String u_lastname, String u_email
+			) {
+		this.identity_seed = identity_seed;
+		this.o_id = o_id;
+		this.ecpay_o_id = ecpay_o_id;
+		this.p_id = p_id;
+		this.p_name = p_name;
+		this.p_price = p_price;
+		this.u_id = u_id;
+		this.u_firstname = u_firstname;
+		this.u_lastname = u_lastname;
+		this.u_email = u_email;
+		this.o_status = o_status;
+		this.ecpay_trade_no = ecpay_trade_no;
+		this.o_date = o_date;
+		this.o_amt = o_amt;
 	}
 	
+	
+	
 	// getters
-	public Integer getO_id()        {return o_id;}
-	public Integer getP_id()        {return p_id;}
-	public String  getP_name()      {return p_name;}
-	public Integer getP_price()     {return p_price;}
-	public String  getU_id()        {return u_id;}
-	public String  getU_firstname() {return u_firstname;}
-	public String  getU_lastname()  {return u_lastname;}
-	public String  getU_email()     {return u_email;}
-	public String  getO_status()    {return o_status;}
-	public String  getO_date()      {return o_date;}
-	public Integer getO_amt()       {return o_amt;}
+	public Integer getIdentity_seed() {		return identity_seed;	}
+	public Integer getO_id() {		return o_id;	}
+	public String getEcpay_o_id() {		return ecpay_o_id;	}
+	public Integer getP_id() {		return p_id;	}
+	public String getP_name() {		return p_name;	}
+	public Integer getP_price() {		return p_price;	}
+	public String getU_id() {		return u_id;	}
+	public String getU_firstname() {		return u_firstname;	}
+	public String getU_lastname() {		return u_lastname;	}
+	public String getU_email() {		return u_email;	}
+	public String getO_status() {		return o_status;	}
+	public String getEcpay_trade_no() {		return ecpay_trade_no;	}
+	public String getO_date() {		return o_date;	}
+	public Integer getO_amt() {		return o_amt;	}
 	
 	// setters
-	public void setO_id(Integer o_ID) {	o_id = o_ID;}
-	public void setP_id(Integer p_ID) {p_id = p_ID;}
-	public void setP_name(String p_Name) {p_name = p_Name;}
-	public void setP_price(Integer p_Price) {p_price = p_Price;}
-	public void setU_id(String u_ID) {u_id = u_ID;}
-	public void setU_firstname(String u_FirstName) {u_firstname = u_FirstName;}
-	public void setU_lastname(String u_LastName) {u_lastname = u_LastName;}
-	public void setU_email(String u_Email) {u_email = u_Email;}
-	public void setO_status(String o_Status) {o_status = o_Status;}
-	public void setO_date(String o_Date) {o_date = o_Date;}
-	public void setO_amt(Integer o_Amt) {o_amt = o_Amt;}
+	public void setIdentity_seed(Integer identity_seed) {		this.identity_seed = identity_seed;	}
+	public void setO_id(Integer o_id) {		this.o_id = o_id;	}
+	public void setEcpay_o_id(String ecpay_o_id) {		this.ecpay_o_id = ecpay_o_id;	}
+	public void setP_id(Integer p_id) {		this.p_id = p_id;	}
+	public void setP_name(String p_name) {		this.p_name = p_name;	}
+	public void setP_price(Integer p_price) {		this.p_price = p_price;	}
+	public void setU_id(String u_id) {		this.u_id = u_id;	}
+	public void setU_firstname(String u_firstname) {		this.u_firstname = u_firstname;	}
+	public void setU_lastname(String u_lastname) {		this.u_lastname = u_lastname;	}
+	public void setU_email(String u_email) {		this.u_email = u_email;	}
+	public void setO_status(String o_status) {		this.o_status = o_status;	}
+	public void setEcpay_trade_no(String ecpay_trade_no) {		this.ecpay_trade_no = ecpay_trade_no;	}
+	public void setO_date(String o_date) {		this.o_date = o_date;	}
+	public void setO_amt(Integer o_amt) {		this.o_amt = o_amt;	}
+	
 	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("OrderInfo [o_id=");
+		builder.append("OrderInfo [identity_seed=");
+		builder.append(identity_seed);
+		builder.append(", o_id=");
 		builder.append(o_id);
+		builder.append(", ecpay_o_id=");
+		builder.append(ecpay_o_id);
+		builder.append(", ecpay_trade_no=");
+		builder.append(ecpay_trade_no);
 		builder.append(", p_id=");
 		builder.append(p_id);
 		builder.append(", p_name=");
@@ -128,12 +163,10 @@ public class OrderInfo {
 		builder.append(o_date);
 		builder.append(", o_amt=");
 		builder.append(o_amt);
-		builder.append(", user_Info=");
-		builder.append(user_Info);
-		builder.append(", productInfo=");
-		builder.append(productInfo);
 		builder.append("]");
 		return builder.toString();
 	}
+	
+
 	
 }

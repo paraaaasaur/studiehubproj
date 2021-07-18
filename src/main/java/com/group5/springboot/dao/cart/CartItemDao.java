@@ -26,6 +26,10 @@ public class CartItemDao implements ICartItemDao{
 	@Autowired 
 	private EntityManager em;
 	
+	public CartItem test05() {
+		return em.createQuery("FROM CartItem WHERE cart_id=1000", CartItem.class).getSingleResult();
+	}
+	
 	public Map<String, Object> select(Integer cart_id) {
 		System.out.println(cart_id);
 		Map<String, Object> map = new HashMap<String, Object>();

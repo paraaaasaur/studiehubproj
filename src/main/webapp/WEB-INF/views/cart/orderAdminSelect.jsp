@@ -61,6 +61,7 @@
 											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
 											<option value='u_id'>會員帳號</option>
 											<option value='o_id'>訂單編號</option>
+											<option value='ecpay_trade_no'>交易編號</option>
 											<option value='p_id'>課程代號</option>
 											<option value='p_name'>課程名稱</option>
 											<option value='u_lastname'>會員姓氏</option>
@@ -134,8 +135,8 @@
 					console.log('checkedIdentitySeeds = ' + checkedIdentitySeeds);
 					// 改變#deleteBtn外觀和disabled值
 					document.querySelector('#deleteBtn').disabled = (checkedIdentitySeeds.length == 0)? true : false;
-					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
-									'刪除<font color="cornflowerblue"> ' + checkedCartids.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
+					document.querySelector('#deleteBtn').innerHTML = (checkedIdentitySeeds.length != 0)?
+									'刪除<font color="cornflowerblue"> ' + checkedIdentitySeeds.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
 									'刪除勾選資料';
 					return;
 				}
@@ -160,8 +161,8 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
-						for (let i = 0; i < checkedCartids.length; i++) {
-							let thisCkbox = document.querySelector('#ckbox' + checkedCartids[i]);
+						for (let i = 0; i < checkedIdentitySeeds.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + checkedIdentitySeeds[i]);
 							if(thisCkbox) thisCkbox.checked = true;
 						}
 					})
@@ -194,21 +195,26 @@
 					// 【自訂函數 3】查詢框(#searchBar)樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
 						$('#searchBtn').attr('disabled', false);
+							// <1> 日期範圍值
 						if(this.value == 'o_date'){
 							searchBarHanger1.css('width', '35%');
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='datetime-local' step='1' id='searchDateStart'>起始時間");
 							$(searchBarHanger2).html("<input type='datetime-local' step='1' id='searchDateEnd'>結束時間");
 							$('input[type="datetime-local"]').setNow();
-						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' || this.value == 'p_name'){
+							// <2> 唯一值
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' 
+									|| this.value == 'p_name' || this.value == 'ecpay_trade_no'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
 							$(searchBarHanger1).html("<input type='search' id='searchBar' placeholder='搜尋'>");
+							// <3> 數值範圍值
 						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
 							searchBarHanger1.css('width', '35%');
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='search' id='searchMin' placeholder='最小值'>");
 							$(searchBarHanger2).html("<input type='search' id='searchMax' placeholder='最大值'>");
+							// <4> 選擇值
 						} else if(this.value == 'o_status'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
@@ -233,10 +239,10 @@
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
 						let queryString = '';
-
+						// ❗❓ 有沒有簡潔一點的寫法啊
 						let forDate = (searchBy.val() == 'o_date');
 						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
-												searchBy.val() == 'p_name' || searchBy.val() == 'o_status');
+												searchBy.val() == 'p_name' || searchBy.val() == 'o_status' || searchBy.val() == 'ecpay_trade_no');
 						let forRange = (searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id');
 
 						if(forDate) {// 日期範圍查詢
@@ -347,6 +353,7 @@
 								mainFunc();
 								checkedIdentitySeeds = [];
 								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+								document.querySelector('#deleteBtn').disabled = true;
 							}
 						}
 												

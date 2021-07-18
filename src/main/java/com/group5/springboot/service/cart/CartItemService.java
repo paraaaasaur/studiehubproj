@@ -109,7 +109,7 @@ public class CartItemService implements ICartItemService{
 	}
 	
 	// 測試用，插入p_id = 1 和 2的商品進購物車
-	public void refillCart(String u_id) {
+	private void refillCart(String u_id) {
 		cartItemDao.insert(1, u_id);
 		cartItemDao.insert(2, u_id);
 		return;

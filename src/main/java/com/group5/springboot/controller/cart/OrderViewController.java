@@ -37,7 +37,8 @@ public class OrderViewController {
 	@PostMapping(value = {"/order.controller/adminInsert"})
 	public String orderAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
 			BindingResult result, 
-			RedirectAttributes ra) {
+			RedirectAttributes ra
+			) {
 		
 		orderValidator.validate(orderInfo, result);
 		if (result.hasErrors()) {			
@@ -47,6 +48,9 @@ public class OrderViewController {
 //			return "redirect:/order.controller/adminInsert"; // ❓
 		}
 		
+		if (orderInfo.getO_id() == null) {
+			orderInfo.setO_id(orderService.getCurrentIdSeed());
+		}
 		orderService.insert(orderInfo);
 		ra.addFlashAttribute("successMessage", "訂單編號 = " + orderInfo.getO_id() + "新增成功！");
 		return "redirect:/order.controller/adminSelect";
@@ -66,13 +70,18 @@ public class OrderViewController {
 	@PostMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
 	public String orderAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
 			BindingResult result, 
-			RedirectAttributes ra) {
+			RedirectAttributes ra
+			) {
 		
 		orderValidator.validate(orderInfo, result);
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
 			return "/cart/orderAdminUpdate";
+		}
+		if (orderInfo.getO_id() == null) {
+			System.out.println("oid = " + orderInfo.getO_id());
+			orderInfo.setO_id(orderService.getCurrentIdSeed());
 		}
 		
 		orderService.update(orderInfo);

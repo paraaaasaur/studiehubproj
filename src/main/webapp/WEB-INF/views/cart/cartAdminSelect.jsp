@@ -321,6 +321,7 @@
 								showTop100();
 								checkedCartids = [];
 								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+								document.querySelector('#deleteBtn').disabled = true;
 							}
 						}
 												

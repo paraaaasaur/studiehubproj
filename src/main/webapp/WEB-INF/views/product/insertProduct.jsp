@@ -21,6 +21,7 @@
 
 <script>
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -48,13 +49,23 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
+    var loginEvent = document.getElementById('loginEvent');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
+        loginEvent.style.display = "block";
+    	loginALLEvent.style.display = "block";
     } 
+
+    $('#quickInsert').on('click',function(){
+        $('#p_Name').val('日文教學_初級日語【日本人老師yuka教你日語】');
+        $('#p_Class').val('日文');
+        $('#p_Price').val('100');
+        $('#descString').val('1. 100%國際認證師資，不只English speaker而是English teacher：認證教師才能真正激發潛力&自信，英協教師具備平均8年以上教學經驗及劍橋認證');
+    });
     
 }
 </script>
@@ -75,33 +86,40 @@ window.onload = function(){
 						<hr>
 
 							<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
-								<table border="1">
+                            <table border="1">
+                                <tr>
+                                    <td>導師名稱:</td>
+                                    
+                                        <td><input type="hidden" name="u_ID" value="${loginBean.u_id}"/>${loginBean.u_id}
+                                        </td>
+                                        
+                                    </tr>
                                     <tr>
                                         <td>課程名稱:</td>
-                                        <td><form:input path="p_Name"/>
+                                        <td><form:input path="p_Name" id="p_Name"/>
                                         	<form:errors path='p_Name' cssClass="error"/>
                                         </td>
                                         
                                     </tr>
                                     <tr>
                                         <td>課程類別:</td>
-                                        <td><form:select path="p_Class">
+                                        <td><form:select path="p_Class" id="p_Class">
                                         		<form:option label="請挑選" value="-1"/>
-                                        		<form:option label="英文" value="en"/>
-                                        		<form:option label="日文" value="ja"/>
+                                        		<form:option label="英文" value="英文"/>
+                                        		<form:option label="日文" value="日文"/>
                                         	</form:select>
                                         	<form:errors path='p_Class' cssClass="error"/>
                                         	</td>
                                     </tr>
                                     <tr>
                                         <td>課程價錢:</td>
-                                        <td><form:input path="p_Price"/>
+                                        <td><form:input path="p_Price" id="p_Price"/>
                                         	<form:errors path='p_Price' cssClass="error"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>課程介紹:</td>
-                                    	<td><textarea rows="10" cols="100" name="descString" id="descString"></textarea>
+                                    	<td><textarea style="resize:none" rows="10" cols="100" name="descString" id="descString"></textarea>
                                     		<form:errors path='descString' cssClass="error"/>
                                     	</td>
                                     </tr>
@@ -118,7 +136,8 @@ window.onload = function(){
                                         </td>
                                     </tr>
                                     <tr>
-                                    <td><input type="submit"></td>
+                                    <td><input type="submit">
+                                    <button type="button" id="quickInsert">一鍵</button></td>
                                     </tr>
                                 </table>
 							</form:form>

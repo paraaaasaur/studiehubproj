@@ -57,6 +57,11 @@ public class QuestionServiceImpl implements QuestionService {
 	public Map<String, Object> sendRandomExam() {
 		return questionDao.sendRandomExam();
 	}
+
+	@Override
+	public Map<String, Object> sendRandomMixExam() {
+		return questionDao.sendRandomMixExam();
+	}
 	
 	
 }

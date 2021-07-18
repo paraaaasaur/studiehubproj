@@ -30,4 +30,7 @@ public interface QuestionService {
 	////送出隨機測驗題目
 	public Map<String, Object> sendRandomExam();
 	
+	////送出隨機綜合題測驗題目
+	public Map<String, Object> sendRandomMixExam();
+	
 }

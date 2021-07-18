@@ -22,6 +22,9 @@ public class QuestionValidator implements Validator {
 		ValidationUtils.rejectIfEmpty(errors, "q_type", "", "題目類型不能是空白!");
 		ValidationUtils.rejectIfEmpty(errors, "q_question", "", "問題不能是空白!");
 		ValidationUtils.rejectIfEmpty(errors, "q_selectionA", "", "選項A不能是空白!");
+		ValidationUtils.rejectIfEmpty(errors, "q_selectionB", "", "選項B不能是空白!");
+		ValidationUtils.rejectIfEmpty(errors, "q_selectionC", "", "選項C不能是空白!");
+		ValidationUtils.rejectIfEmpty(errors, "q_selectionD", "", "選項D不能是空白!");
 		ValidationUtils.rejectIfEmpty(errors, "q_answer", "", "正解不能是空白!");
 
 		

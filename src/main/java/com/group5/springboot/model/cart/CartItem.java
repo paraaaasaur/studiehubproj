@@ -29,7 +29,7 @@ public class CartItem {
 	private String p_name; 
 	private Integer p_price; 
 	@Column(name = "U_ID", insertable = false, updatable = false)
-	private String u_id; // FK //  ⚠注意：這裡的u_id不是課程授課老師、而是購買者帳號
+	private String u_id; // FK //  ⚠注意 ：這裡的u_id不是課程授課老師、而是購買者帳號
 	private String u_firstname; 
 	private String u_lastname; 
 	@Column(insertable = false, updatable = false, columnDefinition = "SMALLDATETIME  DEFAULT getdate()")	

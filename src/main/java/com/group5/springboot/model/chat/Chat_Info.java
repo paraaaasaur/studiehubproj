@@ -34,8 +34,12 @@ public class Chat_Info {
 	@ManyToOne(fetch = FetchType.LAZY) 	
 	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true )
 	private User_Info user_Info;
-	public User_Info getUser_Info() {return user_Info;}
-	public void setUser_Info(User_Info user_Info) {this.user_Info = user_Info;}
+	public User_Info getUser_Info() {
+		return user_Info;
+	}
+	public void setUser_Info(User_Info user_Info) {
+		this.user_Info = user_Info;
+	}
 	
 	public Integer getC_ID() {
 		return c_ID;

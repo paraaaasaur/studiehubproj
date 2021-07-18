@@ -10,6 +10,7 @@
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
+	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
 <title>Studie Hub</title>
 <style type="text/css">
 
@@ -31,6 +32,7 @@
 
 <script>
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -58,17 +60,21 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
+	var loginEvent = document.getElementById('loginEvent');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
+		loginEvent.style.display = "block";
+	    loginALLEvent.style.display = "block";
     } 
     
     var dataArea = document.getElementById("dataArea");
 	var query = document.getElementById("query");
 	var productname = document.getElementById("productname");
+	var typename = document.getElementById("producttypename");
     let xhr = new XMLHttpRequest();
     xhr.open("GET","<c:url value='/findAllProduct' />",true);
     xhr.send();
@@ -82,13 +88,16 @@ window.onload = function(){
 
 	query.addEventListener('click',function(){
 		let pname = productname.value;
-		if(!pname){
+		let producttypename	= typename.value;
+		console.log(pname)
+		console.log(producttypename)
+		if(!pname && !producttypename){
 			alert('請輸入關鍵字');
 			return
 		}
 
 		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET',"<c:url value='/queryByProductName' />?pname="+pname);
+		xhr2.open('GET',"<c:url value='/queryByProductName' />?pname="+pname+"&producttypename="+producttypename,true);
 		xhr2.send();
 		xhr2.onreadystatechange = function(){
 			if(xhr2.readyState == 4 && xhr2.status == 200){
@@ -97,56 +106,85 @@ window.onload = function(){
 			}
 		}
 	})
-    
 }
 
-function showData(textObj) {
-    let obj = JSON.parse(JSON.stringify(textObj));
-    let size = obj.size;
-    let products = obj.list;
-	console.log(obj);
-	console.log(size);
-	console.log(products);
-    let segment = "";
-        if (size == 0) {
-			segment += "<tr><th colspan='8'>查無資料</th></tr>";
+		function setResultStars(p_ID){
+			let star = "";
+
+			let xhr = new XMLHttpRequest();
+			xhr.open("GET","<c:url value='/ratingAVG'/>?p_ID="+p_ID, false);
+			xhr.send();
+
+				if(xhr.status ==200){
+					
+					let result = xhr.responseText;
+					
+					
+					if(!result){
+						star += "<span>尚無評論</span>";
+					}else{
+					
+						for(n=0;n<=result;n++){
+							star += "<i class='fa fa-star fa-x' style='color: gold;'></i>";
+						}
+						console.log(star);
+					}
+				}
+				return star;
+			
+					
+		}
+		
+		function showData(textObj) {
+		let obj = JSON.parse(JSON.stringify(textObj));
+		let size = obj.size;
+		let ratedIndex = obj.ratedIndex;
+		let products = obj.list;
+		let segment = "<div class='posts'>";
+		if (size == 0) {
+			segment+="<table border='1' style = 'width:100%;text-align: center;'>";
+			segment += "<tr><th colspan='8'>查無資料</th></tr></table>";
 		} else {
 			
 			for(n=0;n<products.length;n++){
 				let product = products[n];
-				segment += "<div class='product'>";
-				segment += "<a href='"+ "<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'class='image'style='height:270px'>";
-				segment += "<img src='"+ product.pictureString +"' width='230px' height='120px'>";
-				segment += "<br>";
-				segment += "<h3>"+ product.p_Name +"</h3>"
-			    segment += "</a>";
-			    segment += "</div>";
+				let resultStars = "";
+				let star = ratedIndex[n];
+				let showStar = "";
+				if(star!=null){
+
+					for(i=0;i<star;i++){
+						showStar+="<i class='fa fa-star fa-x commentStar'style='color:gold'></i>";
+					}
+				}else{
+					showStar+="尚未評論";
+				}
+				// resultStars += setResultStars(product.p_ID);
+					segment += "<article>";
+					segment += "<a class='image' href='<c:url value = '/takeClass/"+ product.p_ID +"'/>' alt='' />";
+					segment += "<img src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"' width='10%' height='5%' ></a>";
+					// segment += setResultStars(product.p_ID);
+					segment += "<h3>"+ product.p_Name +"</h3>"
+					segment += showStar;
+					segment += "<p>NT"+product.p_Price+"</p>"
+					segment += "<br>"
+					segment += "<ul class='actions'";
+					segment += "<li><a class='button' href='<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'>More</a></li>";
+					segment += "</ul>";
+					segment += "</article>";
+					
+					
+				}
+				
+				
+				
 			}
 			
-			
-			
-//             segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
+			segment += "</div>";
+			return segment;
+	}
 
-// 			segment += "<tr><th>課程圖片</th><th>課程名稱</th><th>課程類別</th><th>課程價格</th><th>課程介紹</th><th width:50px;>功能</th></tr>";
-// 			for (n = 0; n < products.length; n++) {
-// 				let product = products[n];
-//     			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
-//     			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
-//     			console.log(tmp0);
-// 				segment += "<tr>";
-//                 segment += "<td><img width='100' height='60' src='" + product.pictureString + "' ></td>";
-// 				segment += "<td>" + product.p_Name + "</td>";
-// 				segment += "<td>" + product.p_Class + "</td>";
-// 				segment += "<td>" + product.p_Price + "</td>";
-// 				segment += "<td>" + product.p_DESC + "</td>";
-// 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\"'/>";
-// 				segment += "<input type='button'value='刪除'onclick=\"window.location.href='"+tmp1+"'\" /></td>";
-// 				segment += "</tr>";
-//                 }
-        }
-       
-        return segment;
-}
+
 </script>
 
 </head>
@@ -161,9 +199,19 @@ function showData(textObj) {
 				<h2 align='center'>課程資訊</h2>
 				<hr>
 				<div style="text-align: center;">
+					<select id="producttypename" style="width: 150px;display: inline;float: none;border-radius: 50px;">
+						<option label="類別" value="-1" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="英文" value="英文" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="日文" value="日文" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="西語" value="西語" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="葡萄牙語" value="葡萄牙語" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="拉丁語" value="拉丁語" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="韓文" value="韓文" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+					</select>
 					<input type="text" id="productname" style="display: inline; width: 500px; float: none;border-radius: 50px;" placeholder="請輸入課程關鍵字">
-					<button id="query" style="display: inline;">搜尋</button>
-				<br>
+					<button id="query">搜尋</button>
+					<br>
+
 				<br>
 				
 				</div>
@@ -176,7 +224,87 @@ function showData(textObj) {
 
 	</div>
 
+	<!--Rating JS-->
+	<script>
+		var ratedIndex =-1;
+		var stars = document.getElementById("stars");
+		var comment = document.getElementById("showComment");
+		
+
+		$(document).ready(function(){
+			resetStarColors();
+			
+			if(localStorage.getItem('ratedIndex') != null)
+			setStars(parseInt(localStorage.getItem('ratedIndex')));
+			
+			$('.commentStar').on('click',function(){
+				ratedIndex = parseInt($(this).data('index'));
+				localStorage.setItem('ratedIndex',ratedIndex);
+			});
+			
+			$('.commentStar').mouseover(function(){
+				resetStarColors();
+				
+				var currentIndex = parseInt($(this).data('index'));
+				setStars(currentIndex);
+			});
+			
+			$('.commentStar').mouseleave(function(){
+				resetStarColors();
+				
+				if(ratedIndex !=-1)
+				setStars(ratedIndex);
+			});
+			resetStarColors();
+
+			//show rating result
+		// var p_ID = $('#p_ID').val();
+		// let xhr0 = new XMLHttpRequest();
+		// xhr0.open("GET","<c:url value='/findRatingById'/>?p_ID="+p_ID,true)
+		// xhr0.send();
+		// xhr0.onreadystatechange = function(){
+		// if(xhr0.readyState == 4 && xhr0.status == 200){
+		// 	var result = JSON.parse(xhr0.responseText);
+		// 	comment.innerHTML = showComment(result);
+
+			
+		// 	}
+		// }
+		});
+	
+		
+		function setStars(max){
+				for(var i=0;i<=max;i++)
+					$('.commentStar:eq('+i+')').css('color','gold');
+		}
+		
+
+		function resetStarColors(){
+			$('.commentStar').css('color','gray');
+		}
+
+		$('#ratingSubmit').on('click',function(){
+			console.log(ratedIndex);
+			var text = $('#comment').val();
+			var p_ID = $('#p_ID').val();
+			console.log(text);
+			console.log(p_ID);
+
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "<c:url value='/saveRating' />",true);
+			xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			xhr.send("p_ID="+p_ID+"&ratedIndex="+ratedIndex+"&commentString="+text);
+			window.location.href="http://localhost:8080/studiehub/takeClass/"+p_ID;
+			
+
+		});
+
+		
+
+		</script>
+
 	<!-- Scripts -->
+	<script src="https://kit.fontawesome.com/c43b2fbf26.js"	crossorigin="anonymous"></script>
 	<script
 		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
 	<script

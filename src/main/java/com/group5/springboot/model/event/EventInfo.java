@@ -7,11 +7,15 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.utils.SystemUtils;
 
 @Entity
@@ -37,8 +42,21 @@ public class EventInfo {
 	Timestamp a_startTime;           // 活動開始時間
 	@JsonFormat(pattern = "yyyy/MM/dd/HH:mm",timezone="GMT+8" )
 	Timestamp a_endTime;             // 活動結束時間
+	@JsonFormat(pattern = "yyyy/MM/dd/HH:mm",timezone="GMT+8" )
 	Timestamp creationTime;          // 創建活動的時間戳
+	@JsonFormat(pattern = "yyyy/MM/dd/HH:mm",timezone="GMT+8" )
+	Timestamp a_registration_starttime; //活動報名開始時間
+	@JsonFormat(pattern = "yyyy/MM/dd/HH:mm",timezone="GMT+8" )
+	Timestamp a_registration_endrttime; //活動報名結束時間
+	
+	
 	Clob comment;                    // 活動說明欄位  getcomment 已轉換成String 可以回傳給 json了~
+	String verification ;
+	@JsonIgnore
+	@OneToMany(mappedBy = "eventInfo" , cascade = {CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE} , fetch = FetchType.EAGER)
+	private  List<Entryform>entryforms;
+	int applicants ;                 //報名人數上限 
+	int havesignedup ;               //報名表的人數
 	
 	
 	
@@ -48,9 +66,13 @@ public class EventInfo {
 	@Transient
 	String transientcomment;         //上傳說明暫時存放區 要轉換型態放進資料庫
 	@Transient
-	String transienta_startTime;     //時間的暫時存放區 要跟存進資料庫的時間分開 不然搜尋全部會有問題(get方法重疊)
+	String transienta_startTime;     //活動時間的暫時存放區 要跟存進資料庫的時間分開 不然搜尋全部會有問題(get方法重疊)
 	@Transient
-	String transienta_endTime;       //時間的暫時存放區 要跟存進資料庫的時間分開 不然搜尋全部會有問題(get方法重疊)
+	String transienta_endTime;       //活動時間的暫時存放區 要跟存進資料庫的時間分開 不然搜尋全部會有問題(get方法重疊)
+	@Transient
+	String registration_starttime;   //報名活動時間的暫時存放區 要跟存進資料庫的時間分開 不然搜尋全部會有問題(get方法重疊)
+	@Transient
+	String registration_endrttime;   //報名活動時間的暫時存放區 要跟存進資料庫的時間分開 不然搜尋全部會有問題(get方法重疊)
 
 	
 
@@ -185,22 +207,22 @@ public class EventInfo {
 	
 	
 	
-	//開始時間
+	//活動開始時間
 	public String getTransienta_startTime() {
 		
-		System.out.println("a_endTime="+a_startTime);
+//		System.out.println("a_endTime="+a_startTime);
 		if(a_startTime!=null) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//定义格式，不显示毫秒
 		String new_a_endTime = df.format(a_startTime);
 		new_a_endTime=new_a_endTime.replaceAll(" ", "T");//替换方法
-        System.out.println("轉換格式後 = " + new_a_endTime);
+//        System.out.println("轉換格式後 = " + new_a_endTime);
         return new_a_endTime;
 		}else {
 	        	return "" ;
 	    }
 		
 	}
-	//開始時間
+	//活動開始時間
 	public void setTransienta_startTime(String transienta_startTime) {
 		
 		 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 
@@ -217,22 +239,22 @@ public class EventInfo {
 		
 		
 	}
-	//結束時間
+	//活動結束時間
 	public String getTransienta_endTime() {
 		
-		System.out.println("a_endTime="+a_endTime);
+//		System.out.println("a_endTime="+a_endTime);
 		if(a_endTime!=null) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//定义格式，不显示毫秒
 		String new_a_endTime = df.format(a_endTime);
 		new_a_endTime=new_a_endTime.replaceAll(" ", "T");//替换方法
-        System.out.println("轉換格式後 = " + new_a_endTime);
+//        System.out.println("轉換格式後 = " + new_a_endTime);
         return new_a_endTime;
 		}else {
 	        	return "" ;
 	    }
 		
 	}
-	//結束時間
+	//活動結束時間
 	public void setTransienta_endTime(String transienta_endTime) {
 		
 		 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 
@@ -248,6 +270,144 @@ public class EventInfo {
 			}
 		
 	}
+
+	public String getVerification() {
+		return verification;
+	}
+
+	public void setVerification(String verification) {
+		this.verification = verification;
+	}
+	
+	
+
+	public List<Entryform> getEntryforms() {
+		return entryforms;
+	}
+
+	public void setEntryforms(List<Entryform> entryforms) {
+		this.entryforms = entryforms;
+	}
+
+	public int getApplicants() {
+		return applicants;
+	}
+
+	public void setApplicants(int applicants) {
+		this.applicants = applicants;
+	}
+
+	public int getHavesignedup() {
+		return havesignedup;
+	}
+
+	public void setHavesignedup(int havesignedup) {
+		this.havesignedup = havesignedup;
+	}
+
+	
+	
+	
+	
+	////新增時間部分
+	
+	
+	
+	
+	
+	
+	
+	public Timestamp getA_registration_starttime() {
+		return a_registration_starttime;
+	}
+
+	public void setA_registration_starttime(Timestamp a_registration_starttime) {
+		this.a_registration_starttime = a_registration_starttime;
+	}
+	
+	
+
+	public Timestamp getA_registration_endrttime() {
+		return a_registration_endrttime;
+	}
+
+	public void setA_registration_endrttime(Timestamp a_registration_endrttime) {
+		this.a_registration_endrttime = a_registration_endrttime;
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	public String getRegistration_starttime() {
+		
+//		System.out.println("a_endTime="+a_startTime);
+		if(a_registration_starttime!=null) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//定义格式，不显示毫秒
+		String new_a_registration_starttime = df.format(a_registration_starttime);
+		new_a_registration_starttime=new_a_registration_starttime.replaceAll(" ", "T");//替换方法
+//        System.out.println("轉換格式後 = " + new_a_endTime);
+        return new_a_registration_starttime;
+		}else {
+	        	return "" ;
+	    }	
+	}
+
+	public void setRegistration_starttime(String registration_starttime) {
+
+		 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 
+		 registration_starttime=registration_starttime.replaceAll("T", " ");//替换方法
+	   
+			try {
+	            java.util.Date date = format1.parse(registration_starttime);
+				Timestamp createTime = new Timestamp(date.getTime());
+				this.a_registration_starttime = createTime;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
+	}
+
+	public String getRegistration_endrttime() {
+//		System.out.println("a_endTime="+a_startTime);
+		if(a_registration_endrttime!=null) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//定义格式，不显示毫秒
+		String new_a_registration_endrttime = df.format(a_registration_endrttime);
+		new_a_registration_endrttime=new_a_registration_endrttime.replaceAll(" ", "T");//替换方法
+//        System.out.println("轉換格式後 = " + new_a_endTime);
+        return new_a_registration_endrttime;
+		}else {
+	        	return "" ;
+	    }
+	}
+
+	public void setRegistration_endrttime(String registration_endrttime) {
+
+		 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm"); 
+		 registration_endrttime=registration_endrttime.replaceAll("T", " ");//替换方法
+	   
+			try {
+	            java.util.Date date = format1.parse(registration_endrttime);
+				Timestamp createTime = new Timestamp(date.getTime());
+				this.a_registration_endrttime = createTime;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
+	}
+	
+	
+	
+
+
+	
+	
+
 
 
 

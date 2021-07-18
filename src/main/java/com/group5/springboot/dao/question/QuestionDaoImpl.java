@@ -69,7 +69,7 @@ public class QuestionDaoImpl implements QuestionDao {
 		em.merge(question_Info);
 	}
 	
-	////送出隨機測驗題目
+	////送出隨機測驗題目(隨機x筆)
 	@Override
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> sendRandomExam() {
@@ -79,7 +79,34 @@ public class QuestionDaoImpl implements QuestionDao {
 		//設定隨機抽樣數量:setMaxResults()
 		System.out.println("list.get(0)=" + list.get(0));
 		map.put("size", list.size()); 
-		//較沒啥意義，再看要改啥
+		map.put("list", list); 
+		 return map;
+	}
+	
+	////送出隨機綜合題
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> sendRandomMixExam() {
+		Map<String, Object> map = new HashMap<>();
+		String hql = "FROM Question_Info WHERE q_Type='聽力題' ORDER BY NEWID()";
+		List<Question_Info> list = em.createQuery(hql).setMaxResults(4).getResultList();
+		//設定隨機抽樣數量:setMaxResults()
+		System.out.println("list.get(0)=" + list.get(0));
+		
+		String hql2 = "FROM Question_Info WHERE q_Type='多選題' ORDER BY NEWID()";
+		List<Question_Info> list2 = em.createQuery(hql2).setMaxResults(3).getResultList();
+		//設定隨機抽樣數量:setMaxResults()
+		System.out.println("list2.get(0)=" + list2.get(0));
+		
+		String hql3 = "FROM Question_Info WHERE q_Type='單選題' ORDER BY NEWID()";
+		List<Question_Info> list3 = em.createQuery(hql3).setMaxResults(3).getResultList();
+		//設定隨機抽樣數量:setMaxResults()
+		System.out.println("list3.get(0)=" + list3.get(0));
+		
+		list.addAll(list2);
+		list.addAll(list3);
+	
+		map.put("size", list.size()); 
 		map.put("list", list); 
 		 return map;
 	}

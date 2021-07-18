@@ -7,13 +7,13 @@ import com.group5.springboot.model.product.ProductInfo;
 public interface ProductDao {
 
 	// 儲存資料
-	public void save(ProductInfo productInfo);
+	public void save(ProductInfo productInfo,String u_ID);
 
 	// 搜尋全部資料
 	Map<String, Object> findAll();
 
 	// 名字模糊搜尋
-	public Map<String, Object> queryByName(String p_Name);
+	public Map<String, Object> queryByName(String p_Name, String typeName);
 
 	// findbyp_id
 	ProductInfo findByProductID(Integer p_ID);
@@ -26,5 +26,10 @@ public interface ProductDao {
 
 	// check if product is exist
 	public boolean isProductExist(ProductInfo productInfo);
+	//等待審核
+	public Map<String, Object> pendingAccess();
+	
+	public Integer stars(Integer p_ID);
+
 
 }

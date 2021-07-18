@@ -42,10 +42,15 @@ public class ChatServiceImpl implements ChatService{
 	public Chat_Info selectChatById(int c_ID) {
 		return chatDao.selectChatById(c_ID);
 	}
+	
+	@Override
+	public Chat_Reply selectChatReplyById(int c_ID) {
+		return chatDao.selectChatReplyById(c_ID);
+	}
 
 	@Override
-	public List<Chat_Reply> findAllChatReply(int c_ID) {
-		return chatDao.findAllChatReply(c_ID);
+	public List<Chat_Reply> findAllChatReply(int c_IDr) {
+		return chatDao.findAllChatReply(c_IDr);
 	}
 	
 	@Override
@@ -59,8 +64,13 @@ public class ChatServiceImpl implements ChatService{
 	}
 
 	@Override
-	public void deleteChatReply(int c_ID) {
-		chatDao.deleteChatReply(c_ID);
+	public void deleteChatReply(int c_IDr) {
+		chatDao.deleteChatReply(c_IDr);
+	}
+
+	@Override
+	public void updateChatReply(Chat_Reply chat_Reply) {
+		chatDao.updateChatReply(chat_Reply);
 	}
 
 }

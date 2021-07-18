@@ -7,19 +7,24 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.controller.user.UserController;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.service.chat.ChatService;
+import com.group5.springboot.validate.ChatValidator;
 
 @Controller
 @SessionAttributes(names = {"loginBean","adminBean"})
@@ -31,6 +36,8 @@ public class ChatController {
 	Chat_Info chat_Info;
 	@Autowired
 	UserController uc;
+	@Autowired
+	ChatValidator chatValidator;
 	
 	@GetMapping(path = "/chatIndex")
 	public String chatIndex() {
@@ -75,9 +82,11 @@ public class ChatController {
 		return "chat/deleteChatAdmin";
 	}
 	
-	@GetMapping("/goUpdateChat")
-	public String updateChat(){
-		return "chat/UpdateChat";
+	@GetMapping("/goUpdateChat/{c_ID}")
+	public String updateChat(@PathVariable int c_ID, Model model){
+		Chat_Reply chat_Reply = chatService.selectChatReplyById(c_ID);
+		model.addAttribute("chatReply", chat_Reply);
+		return "chat/updateChatReply";
 	}
 	
 	@GetMapping("/selectSingleChat/{c_ID}")
@@ -85,6 +94,13 @@ public class ChatController {
 	public Chat_Info selectChatById(@PathVariable int c_ID) {
 		Chat_Info chat_Info = chatService.selectChatById(c_ID);
 		return chat_Info;
+	}
+	
+	@GetMapping("/selectSingleChatReply/{c_ID}")
+	@ResponseBody
+	public Chat_Reply selectChatReplyById(@PathVariable int c_ID) {
+		Chat_Reply chat_Reply = chatService.selectChatReplyById(c_ID);
+		return chat_Reply;
 	}
 	
 	@GetMapping(path = "/selectAllChat", produces = {"application/json"})
@@ -103,7 +119,7 @@ public class ChatController {
 	
 	@GetMapping(path = "/selectOneChat/{c_ID}", produces = {"application/json"})
 	@ResponseBody
-	public List<Chat_Reply> findOneChat(@PathVariable(required = true) int c_ID) {
+	public List<Chat_Reply> findOneChat(@PathVariable int c_ID) {
 		List<Chat_Reply> chat_Reply = chatService.findAllChatReply(c_ID);
 		return chat_Reply;
 	}
@@ -115,6 +131,20 @@ public class ChatController {
 		try {
 			chatService.insertChat(chat_Info);
 			chatService.insertFirstChatReply(chat_Info);
+			map.put("success", "新增成功");
+		} catch (Exception e) {
+			map.put("fail", "新增失敗");
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	@PostMapping(path = "/insertChatReply", produces = {"application/json"})
+	@ResponseBody
+	public Map<String, String> InsertChatReply(@RequestBody Chat_Reply chat_Reply){
+		Map<String, String> map = new HashMap<>();
+		try {
+			chatService.insertChatReply(chat_Reply);
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
@@ -151,38 +181,21 @@ public class ChatController {
 		}
 		return map;
 	}
-	
-	@PutMapping(path = "/updateChat/{c_ID}", consumes = { "application/json" }, produces = {"application/json" })
-	@ResponseBody
-	public Map<String, String> updateChat(@RequestBody Chat_Info chat_Info, @PathVariable int c_ID) {
-		Map<String, String> map = new HashMap<>();
-		Chat_Info chatIf = null;
-		if (String.valueOf(c_ID) != null) {
-			chatIf = chatService.selectChatById(c_ID);
-			if (chatIf == null || String.valueOf(chatIf.getC_ID()).length() == 0) {
-				map.put("fail", "文章: " + c_ID + " 不存在!");
-			} else {
-				System.out.println("********************************");
-				System.out.println("\'id!=null\'， 要修改的文章帳號為: " + c_ID);
-				System.out.println("********************************");
-				try {
-					chatService.updateChat(chat_Info);
-					map.put("success", "資料修改成功!");
-				} catch (Exception e) {
-					map.put("fail", "修改失敗!");
-				}
+		
+	//修改會員資料
+	@PostMapping("/goUpdateChat/{c_ID}")
+	public String updateChatReply(@ModelAttribute("chatReply") Chat_Reply chat_Reply, BindingResult result, RedirectAttributes ra){
+		chatValidator.validate(chat_Reply, result);
+		if (result.hasErrors()) {
+			List<ObjectError> list = result.getAllErrors();
+			for (ObjectError error : list) {
+				System.out.println("有錯誤：" + error);
 			}
-		} else {
-			System.out.println("id: " + c_ID + "沒傳進來啊...厚唷");
+			return "chat/updateChatReply";
 		}
-		try {
-			chatService.updateChat(chat_Info);
-			map.put("success", "新增成功");
-		} catch (Exception e) {
-			map.put("fail", "新增失敗");
-			e.printStackTrace();
-		}
-		return map;
+		chatService.updateChatReply(chat_Reply);
+		ra.addFlashAttribute("successMessage", "題目編號: " + chat_Reply.getC_ID() + "  修改成功!");
+		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
 	}
 
 }

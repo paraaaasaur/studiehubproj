@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -14,17 +15,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ClassUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alibaba.fastjson.JSON;
+import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
+import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.event.EventServiceImpl;
 import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.validate.EventValidator;
 
 @Controller
 public class EventController {
@@ -34,6 +43,9 @@ public class EventController {
 
 	@Autowired
 	ServletContext context;
+	
+	@Autowired
+	EventValidator eventValidator;
 
 	// 從網頁首頁跳到老師的首頁
 	@GetMapping("/NewFile")
@@ -58,20 +70,50 @@ public class EventController {
 		return "event/success";
 	}
 
-	// 搜尋全部活動
-	@GetMapping("/queryAllEvent")
-	public String queryRestaurant() {
-		return "event/queryAllEvent";
+	// 個人搜尋全部活動
+	@GetMapping("/userAllEvent")
+	public String userAllEvent() {
+		return "event/userAllEvent";
 	}
+	// 管理者搜尋全部活動
+		@GetMapping("/adminAllEvent")
+		public String queryRestaurant() {
+			return "event/adminAllEvent";
+		}
 	// 活動首頁
 	@GetMapping("/eventindex")
 	public String eventindex() {
 		return "event/eventindex";
 	}
+	//搜尋全部需要驗證的畫面
+	@GetMapping("/managerAllEvent")
+	public String managerAllEvent() {
+		return "event/managerAllEvent";
+	}
+	
 
 	// 新增表單送出
 	@PostMapping("/insertEvent")
-	public String insertSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo, RedirectAttributes ra) {
+	public String insertSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo,
+			                      BindingResult result,
+			                      @SessionAttribute(value = "loginBean")  User_Info user_info,
+			                      Model m,
+			                      RedirectAttributes ra) {
+		
+		eventValidator.validate(eventinfo, result);
+		//6/23上午10講解
+        //表單送出的資料型態 一定要符合資料庫物件的型態 
+		if (result.hasErrors()) {
+
+			List<ObjectError> list = result.getAllErrors();
+			for (ObjectError error : list) {
+
+				System.out.println("有錯誤" + error);
+			}
+          //如果有錯誤 就把錯誤訊息在帶一次新增送出的表單 新增表單裡有  <form:errors path='name' cssClass="error"/> 讀取錯誤訊息
+			return "event/insertEvent";
+
+		}
 
 		EventService.saveEvent(eventinfo);
 		// 先儲存取得主鍵
@@ -126,6 +168,14 @@ public class EventController {
 				eventinfo.setA_picturepath(url_path + "MemberImagexx.png");
 				// 如果沒有傳圖就用預設
 			}
+			
+//			User_Info user_info = (User_Info) m.getAttribute("loginBean") ;
+//			
+//			eventinfo.setA_uid(user_info.getU_id());
+			
+			eventinfo.setVerification("N");
+			eventinfo.setA_uid(user_info.getU_id());
+			System.out.println("user_info.getU_id()======"+user_info.getU_id());
 			EventService.saveEvent(eventinfo);
 
 		} catch (Exception e) {
@@ -134,7 +184,7 @@ public class EventController {
 		}
 		ra.addFlashAttribute("successMessage", eventinfo.getA_name() + "新增成功");
 		// 重定向用的 addAttribute 其原理是放到session中 session再跳到其他頁面時馬上被移除
-		return "redirect:/queryAllEvent";
+		return "redirect:/userAllEvent";
 	}
 
 	// 修改表單
@@ -148,8 +198,25 @@ public class EventController {
 
 	// 修改表單送出
 	@PostMapping("/updateEvent/{a_aid}")
-	public String updateSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo, RedirectAttributes ra) {
+	public String updateSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo,BindingResult result, RedirectAttributes ra) {
 
+		eventValidator.validate(eventinfo, result);
+
+		if (result.hasErrors()) {
+
+			List<ObjectError> list = result.getAllErrors();
+			for (ObjectError error : list) {
+
+				System.out.println("有錯誤" + error);
+			}
+          //如果有錯誤 就把錯誤訊息在帶一次新增送出的表單 新增表單裡有  <form:errors path='name' cssClass="error"/> 讀取錯誤訊息
+			return "event/editEvent";
+
+		}
+		
+		
+		
+		
 //			String comment=eventinfo.getComment();
 //			Clob Clobcomment = SystemUtils.stringToClob(comment);
 //			eventinfo.setComment(Clobcomment);
@@ -197,6 +264,7 @@ public class EventController {
 				eventinfoImage.transferTo(file);
 				// 放進資料夾
 			}
+			eventinfo.setVerification("N");
 			EventService.update(eventinfo);
 
 		} catch (Exception e) {
@@ -205,16 +273,136 @@ public class EventController {
 		}
 		ra.addFlashAttribute("successMessage", eventinfo.getA_name() + "修改成功");
 		// 重定向用的 addAttribute 其原理是放到session中 session再跳到其他頁面時馬上被移除
-		return "redirect:/queryAllEvent";
+		return "redirect:/userAllEvent";
 	}
-	
+	//使用者刪除
 	@GetMapping("/deleteEvent/{a_aid}")
 	public String deleteEditPage(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
 		EventInfo eventinfo = EventService.findByid(a_aid);
 		EventService.deletdate(eventinfo);
 		model.addAttribute("successMessage",eventinfo.getA_name() + "刪除成功");
-		return "redirect:/queryAllEvent";	
+		return "redirect:/userAllEvent";	
+		
 		}
+	//管理者刪除
+		@GetMapping("/deleteadminEvent/{a_aid}")
+		public String deleteadminEvent(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
+			EventInfo eventinfo = EventService.findByid(a_aid);
+			EventService.deletdate(eventinfo);
+			model.addAttribute("successMessage",eventinfo.getA_name() + "刪除成功");
+			return "redirect:/adminAllEvent";	
+			
+			}
+	
+	
+	
+	//顯示活動內容 把EventInfo物件帶到AJAX使用
+	@GetMapping("/Selecteventcontent/{a_aid}")
+	public String Selecteventcontent(@PathVariable Long a_aid,Model model) {
+		
+		EventInfo eventcontent = EventService.findByid(a_aid);
+		model.addAttribute("eventcontent", eventcontent);
+		
+		return "event/eventcontent";	
+		}
+	
+	//改變驗證
+	@GetMapping("/verification/{a_aid}")
+	public String verification(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
+		EventInfo eventinfo = EventService.findByid(a_aid);
+		eventinfo.setVerification("Y");
+		EventService.update(eventinfo);
+		model.addAttribute("successMessage",eventinfo.getA_name() + "驗證成功");
+		return "redirect:/managerAllEvent";	
+		}
+	
+	
+    //當活動內容頁按下我要報名後執行
+	@GetMapping("/signupclick/{a_aid}")
+	public @ResponseBody  Map<String , String> signupclick(@PathVariable Long a_aid, Model model,
+			                  @SessionAttribute(value = "loginBean")  User_Info user_info) {
+		
+		Map<String , String> map = new HashMap<>();
+		 
+		EventInfo eventInfo = EventService.findByid(a_aid);
+		//搜尋此筆 EventInfo 
+		
+
+		boolean isEntryformExist = EventService.isEntryformExist(eventInfo, user_info);
+		System.out.println("判斷有沒有重複================="+isEntryformExist);
+		//檢查要素 當下按出報名的那一個AID搜尋出來的 活動表 + 放在Session裡的user_info裡的UID 去搜尋有無重複
+		//有重複回傳true  
+		//沒有重複回傳false
+		System.out.println("截止日期時間"+eventInfo.getA_endTime().getTime());
+		System.out.println("現在的時間間"+new Date().getTime());
+		
+		if(!isEntryformExist) {
+			
+			if(eventInfo.getA_endTime().getTime() <= new Date().getTime()) {
+				//A_endTime() 截止時間  new Date() = 現在時間
+				map.put("Time", "這個活動報名時間結束了");
+				return  map ;
+			}
+				
+				
+			
+			if(!(eventInfo.getHavesignedup()>=eventInfo.getApplicants())) {
+				  //  applicants=報名人數上限   havesignedup=報名的人數 
+				  //  如果報名人數 大於等於 報名人數上限 就不執行 
+				
+		    //放進用AID搜尋過的EventInfo 跟放在 @SessionAttribute 裡的 User_Info  去關聯儲存 關聯報名表
+		    EventService.saveEntryform(eventInfo, user_info) ;
+		    //用AID搜尋到的活動表 找出相關聯的 報名表 用.size 取得 跟 活動表相關聯的數量 代表有幾個報名人數
+		    int size=EventService.findentryformByaidreturnsize(eventInfo);
+		    //把搜尋到的數量放進活動表
+		    eventInfo.setHavesignedup(size);
+		    //將活動表儲存 回傳頁面的時候才有報名人數
+		    EventService.saveEvent(eventInfo);
+			}else {
+				map.put("Exceed", "親,這個活動報名已經額滿");
+				return  map ;
+			}
+		
+		map.put("succes", "親,報名成功");
+		}else {
+		map.put("fail", "親,你已經報名過了喔~~");	
+		}
+         
+
+		return map;
+		}
+	
+	
+	
+	//查詢報名表
+	@GetMapping("/signupEvent/{a_aid}")
+	public String signupEvent(@PathVariable Long a_aid, Model model) {
+		
+		EventInfo Event = EventService.findByid(a_aid);
+        //裝有此Event裡的Entryform
+//		List<Entryform> aaa = EventService.findentryformByaid(Event);
+//		
+//		for (Entryform p : aaa) {
+//			System.out.println(JSON.toJSONString(aaa, true));}
+		
+		model.addAttribute("signupEvent",Event);
+		
+		return "event/signupEvent";	
+	}
+	//執行報名表單刪除 刪除完 再把值放到model 讓signupEvent.jsp 讀值
+	@GetMapping("/deletesignupEvent/{e_id}/{a_id}")
+	public String signupEvent(@PathVariable Long e_id,
+			                  @PathVariable Long a_id,
+			                  Model model) {
+
+		EventInfo Event = EventService.findByid(a_id);
+		EventService.deleteEntryformByid(e_id);
+		model.addAttribute("signupEvent",Event);
+		return "event/signupEvent";
+		
+	}
+	
+	
 	
 
 //====================以下是@ModelAttribute()===========================	
@@ -232,14 +420,17 @@ public class EventController {
 		return eventinfo;
 
 	}
-	@ModelAttribute("occupationList")
-    public Map<Integer, String>  getAll2255(){
-		Map<Integer, String> map = new HashMap<>();
-		map.put(12, "學生");
-		map.put(1, "公務員");
-		map.put(3, "商");
-		map.put(5, "工");
+
+
+	@ModelAttribute("eventtype")
+    public Map<String, String>  eventtype(){
+		Map<String, String> map = new HashMap<>();
+		map.put("線上活動", "線上活動");
+		map.put("研討會", "研討會");
+		map.put("課程", "課程");
+		map.put("講座", "講座");
+		map.put("分享會", "分享會");
 		return map;
-    }
+    }	
 
 }

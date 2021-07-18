@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!-- 僅單選題，倒數計時器待修改 其他未同步修正 -->
 
 <style type="text/css">
    span.error {
@@ -79,9 +80,6 @@ window.addEventListener('load', function(){
 	
 
 	next.addEventListener('click', function(){
-		if(counter < size-2){
-			back.style.display = '';
-			
 			var userAnswers = document.getElementsByName("userAnswer"); 
 			// 建立用來判斷是否有選擇資料
 			var userAnswer0 = userAnswers;
@@ -92,6 +90,11 @@ window.addEventListener('load', function(){
 					userAnswers = 'userAnswer is Checked'; 
 					}
 				}
+	 if(userAnswer != undefined){  	//使用者有選擇才進判斷
+
+		if(counter < size-2){
+			back.style.display = '';
+			
 			userChoice.splice(counter, 1, userAnswer);
 			counter += 1;
 // 			alert("userAnswer=" + userAnswer );
@@ -124,7 +127,10 @@ window.addEventListener('load', function(){
 			var userLastAnswer = userChoice[counter];
 			dataArea.innerHTML = showData(xhr.responseText,userLastAnswer);
 
-			}		
+			}
+	}else{
+		alert("請先作答！");
+	}
 		});
 		
 	
@@ -269,7 +275,9 @@ window.addEventListener('load', function(){
 		});
 		
 //倒數計時
-		
+	    var fiveMinutes = 60 * 5,
+        display = document.querySelector('#time');
+   		 startTimer(fiveMinutes, display);		
 	
 });
 
@@ -300,13 +308,17 @@ window.addEventListener('load', function(){
 	     	
 		   	segment += "<h4>第&ensp;" + number + "&ensp;題</h4>";
 	
-			
+	   		if(question.mimeTypePic == null){
+		 	   }else{
 		   	segment += "<div><img width='400' height='260' src='" + question.q_pictureString + "' ></div>"; 	
-		   	
-		   	segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 	
+		   		};  	
+	  		if(question.mimeTypePic == null){
+		  	   }else{
+		   	segment += "<div><audio controls src='" + question.q_audioString + "' ></div>"; 
+	   	   		}; 
+
 			segment += "<h3>問題：" + question.q_question + "</h3><br>"; 
-			
-			segment += "<div><input type='radio' value='A' name='userAnswer' id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
+			segment += "<div><input type='radio' value='A' name='userAnswer'  id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
 			segment += "<input type='radio' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
 			segment += "<input type='radio' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
 			segment += "<input type='radio' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
@@ -356,8 +368,24 @@ window.addEventListener('load', function(){
 			 	    
 					return segment2; 
 	 } 	 
-	 
 
+//倒數計時器
+	 function startTimer(duration, display) {
+		    var timer = duration, minutes, seconds;
+		    setInterval(function () {
+		        minutes = parseInt(timer / 60, 10);
+		        seconds = parseInt(timer % 60, 10);
+
+		        minutes = minutes < 10 ? "0" + minutes : minutes;
+		        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+		        display.textContent = minutes + ":" + seconds;
+
+		        if (--timer < 0) {
+		            timer = duration;
+		        }
+		    }, 1000);
+		}
 
 
 
@@ -378,6 +406,8 @@ window.addEventListener('load', function(){
 <div align='center'>
 <h2>線上測驗區</h2>
 
+<div id="clock">讀取時間中...</div>
+<div>Registration closes in <span id="time">05:00</span> minutes!</div>
 
 
 <!-- <hr> -->

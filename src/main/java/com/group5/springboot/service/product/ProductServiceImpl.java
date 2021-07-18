@@ -17,8 +17,8 @@ public class ProductServiceImpl {
 	ProductDaoImpl productDao;
 
 	// 儲存資料
-		public void save(ProductInfo productInfo) {
-			productDao.save(productInfo);
+		public void save(ProductInfo productInfo,String u_ID) {
+			productDao.save(productInfo,u_ID);
 		}
 
 		// 搜尋全部資料
@@ -27,8 +27,8 @@ public class ProductServiceImpl {
 		}
 
 		// 名字模糊搜尋
-		public Map<String, Object> queryByName(String p_Name){
-			return productDao.queryByName(p_Name);
+		public Map<String, Object> queryByName(String p_Name, String typeName){
+			return productDao.queryByName(p_Name, typeName);
 		}
 
 		// findbyp_id
@@ -50,6 +50,13 @@ public class ProductServiceImpl {
 		// check if product is exist
 		public boolean isProductExist(ProductInfo productInfo) {
 			return false;
+		}
+		
+		public Map<String, Object> pendingAccess(){
+			return productDao.pendingAccess();
+		}
+		public Integer stars(Integer p_ID) {
+			return productDao.stars(p_ID);
 		}
 
 }

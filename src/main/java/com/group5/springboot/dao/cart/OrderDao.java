@@ -36,6 +36,7 @@ public class OrderDao implements IOrderDao {
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
 		query.setParameter("oid", oid);
 		List<OrderInfo> list = query.getResultList();
+		System.out.println("Your query return " + list.size() + "");
 		return list.size() == 0? true : false;
 	}
 	

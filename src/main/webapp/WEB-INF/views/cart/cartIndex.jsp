@@ -146,111 +146,111 @@ window.onload = function(){
 				
 				let tbodyArea = $('#tbodyArea');
 				let theadArea = $('#theadArea');
-					// 【function 1】主程式
-					$(window).on('load', function(){
-						if (!u_id) {
-							$('#welcomeMessage').text('')
-							$('#btnAppender').html('');
-							theadArea.html("");
-							tbodyArea.html("<h1>必須先登入才會顯示資料！</h1>"); // ❗
-						} else {
-							$('#welcomeMessage').text(u_id + '，您的購物車清單如下：')
-							
-							let xhr = new XMLHttpRequest();
-							let url = "<c:url value='/cart.controller/clientShowCart' />";
-							let queryString = "u_id=" + u_id;
-							console.log('queryString = ' + queryString);
-							xhr.open("POST", url, true);
-							xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-							// xhr.send("u_id=miosya");
-							xhr.send(queryString);
-							xhr.onreadystatechange = function() {
-								if (xhr.readyState == 4 && xhr.status == 200) {
-									theadArea.html(head);
-									tbodyArea.html(parseCart(xhr.responseText));
-									for(let i = 0; i < cartSize; i++){
-										checkboxes.push($('#ckbox' + i));
-									}
-								}
-							}
-						}
-						
-					});
-					
-					// 【function 2】parseCart() ✔
-					function parseCart(cart) {
-						products = JSON.parse(cart);
-						let segment = "";
-						let totalPrice = 0;
-						cartSize = products.length;
-						
-						if(cartSize){
-							segment += "您的購物車內尚未有任何內容！";
-						}
-						for (let i = 0; i < cartSize; i++) {
-							segment += "<tr>"
-											+ "<td><input type='checkbox' id='ckbox" + i + "' data-test01='" + i*10 + "'>"
-											+ "<label for='ckbox" + i + "'>取消</label></td>"
-											+ "<td>" + products[i].p_name + "</td>"
-											+ "<td>" + products[i].p_id + "</td>"
-											+ "<td>" + products[i].p_price + "</td>"
-											+ "<td>" + products[i].p_desc + "</td>"
-											+ "<td>" + products[i].p_teacher + "</td>"
-											+ "</tr>";
-							totalPrice += products[i].p_price;
-							
-						}
-						return segment;
-					};
-				
-					// 2 Remove
-					$("#removeBtn").click(function(){
-						let ckboxValues = [];
-						let queryString = 'p_ids=';
-						// 不勾選任何checkbox時 == -1，每多勾選一個checkbox都會 +1。用於下述防呆機制。
-						let counter = -1; 
-						for(let i = 0; i < products.length; i++){
-							if(checkboxes[i].is(':checked')){
-								ckboxValues.push(i);
-							} 
-						}
-						// 利用counter計數，來確保使用者至少要勾一件東西才能送出
-						for(let i = 0; i < products.length; i++) {
-							counter += (checkboxes[i].is(':checked'))? 1 : 0;
-						}
-						if(counter == -1) {
-							alert('必須至少勾選一項想要刪除的項目。');
-							return;
-						}
-						// 
-						for(let i = 0; i < products.length; i++) {
-							let checkOrNot = checkboxes[i].is(':checked');
-							if(checkOrNot) {
-								queryString += products[i].p_id;
-								queryString += (i == ckboxValues[counter])? '' : ',';
-							}
-						}
-						queryString +='&u_id=' + u_id;	
 
+				// 【function 1】主程式
+				$(window).on('load', function(){
+					if (!u_id) {
+						$('#welcomeMessage').text('')
+						$('#btnAppender').html('');
+						theadArea.html("");
+						tbodyArea.html("<h1>必須先登入才會顯示資料！</h1>"); // ❗
+					} else {
+						$('#welcomeMessage').text(u_id + '，您的購物車清單如下：')
+						
 						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/clientRemoveProductFromCart' />";
+						let url = "<c:url value='/cart.controller/clientShowCart' />";
+						let queryString = "u_id=" + u_id;
 						xhr.open("POST", url, true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								tbodyArea.html(parseCart(xhr.responseText));
+								let tbodyContent = parseCart(xhr.responseText);
+								theadArea.html(head);
+								tbodyArea.html(tbodyContent);
+								for(let i = 0; i < cartSize; i++){
+									checkboxes.push($('#ckbox' + i));
+								}
 							}
 						}
-					});
-		
-					// 【自訂函數 3】回首頁
-					$('#toIndexBtn').on('click', function(){
-						top.location = "<c:url value='/' />";
-					})
+					}
+					
+				});
+				
+				// 【function 2】parseCart() ✔
+				function parseCart(cart) {
+					products = JSON.parse(cart);
+					let segment = "";
+					let totalPrice = 0;
+					cartSize = products.length;
+					
+					if(cartSize){
+						segment += "您的購物車內尚未有任何內容！";
+					}
+					for (let i = 0; i < cartSize; i++) {
+						segment += "<tr>"
+										+ "<td><input type='checkbox' id='ckbox" + i + "' data-test01='" + i*10 + "'>"
+										+ "<label for='ckbox" + i + "'>取消</label></td>"
+										+ "<td>" + products[i].p_name + "</td>"
+										+ "<td>" + products[i].p_id + "</td>"
+										+ "<td>" + products[i].p_price + "</td>"
+										+ "<td>" + products[i].p_desc + "</td>"
+										+ "<td>" + products[i].p_teacher + "</td>"
+										+ "</tr>";
+						totalPrice += products[i].p_price;
+						
+					}
+					return segment;
+				};
+			
+				// 2 Remove
+				$("#removeBtn").click(function(){
+					let ckboxValues = [];
+					let queryString = 'p_ids=';
+					// 不勾選任何checkbox時 == -1，每多勾選一個checkbox都會 +1。用於下述防呆機制。
+					let counter = -1; 
+					for(let i = 0; i < products.length; i++){
+						if(checkboxes[i].is(':checked')){
+							ckboxValues.push(i);
+						} 
+					}
+					// 利用counter計數，來確保使用者至少要勾一件東西才能送出
+					for(let i = 0; i < products.length; i++) {
+						counter += (checkboxes[i].is(':checked'))? 1 : 0;
+					}
+					if(counter == -1) {
+						alert('必須至少勾選一項想要刪除的項目。');
+						return;
+					}
+					// 
+					for(let i = 0; i < products.length; i++) {
+						let checkOrNot = checkboxes[i].is(':checked');
+						if(checkOrNot) {
+							queryString += products[i].p_id;
+							queryString += (i == ckboxValues[counter])? '' : ',';
+						}
+					}
+					queryString +='&u_id=' + u_id;	
 
-
+					let xhr = new XMLHttpRequest();
+					let url = "<c:url value='/cart.controller/clientRemoveProductFromCart' />";
+					xhr.open("POST", url, true);
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					xhr.send(queryString);
+					xhr.onreadystatechange = function() {
+						if (xhr.readyState == 4 && xhr.status == 200) {
+							tbodyArea.html(parseCart(xhr.responseText));
+						}
+					}
+				});
+	
+				// 【自訂函數 3】回首頁
+				$('#toIndexBtn').on('click', function(){
+					top.location = "<c:url value='/' />";
 				})
+
+
+			})
 
 				
 		</script>

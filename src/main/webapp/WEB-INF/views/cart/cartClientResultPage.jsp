@@ -63,11 +63,11 @@
 							<!-- 這邊把header include進來 -->
 							<%@include file="../universal/header.jsp" %>
 							
-							<h1>顧客回傳頁面</h1>
+							<h1 style="text-align: center;">顧客回傳頁面</h1>
 							
-							<table>
+							<table >
 								<thead id='theadArea'></thead>
-								<tbody id="tbodyArea"></tbody>
+								<tbody id="tbodyArea" ></tbody>
 							</table>
 								
 
@@ -91,9 +91,23 @@
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 	
 		<script>
+
+			// let segment = '';
+			// segment += '<h2>請謹慎保留您的<font color="red">交易編號(' + 'ecpayResultJson.MerchantTradeNo' + ')</font>，以利日後客服為您查詢用。</h2>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '支付方式' + '</li><li style="width: 70%;">' + '信用卡支付' + '</li></ul></td></tr>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '您的姓名' + '</li><li style="width: 70%;">' + 'ecpayResultJson.CustomField2' + '</li></ul></td></tr>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易時間' + '</li><li style="width: 70%;">' + 'ecpayResultJson.TradeDate' + '</li></ul></td></tr>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易編號' + '</li><li style="width: 70%;">' + 'ecpayResultJson.MerchantTradeNo' + '</li></ul></td></tr>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易金額' + '</li><li style="width: 70%;">' + 'ecpayResultJson.TradeAmt' + '</li></ul></td></tr>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '手續費' + '</li><li style="width: 70%;">' + 'ecpayResultJson.PaymentTypeChargeFee' + '</li></ul></td></tr>';
+			// segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '訂單狀態' + '</li><li style="width: 70%;">' + 'ecpayResultJson.RtnMsg' + '</li></ul></td></tr>';
+			
+
+			// $('#tbodyArea').html(segment);
+
+
 			var ecpayResultJson = [];
 			var segments = [];
-
 			$(function(){
 
 				function showEcpayResult(){
@@ -103,11 +117,12 @@
 					xhr.send();
 					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4 && xhr.status == 200) {
-							parseFullEcpayResult(xhr.responseText);
-							let htmlContent = '';
-							for (let i = 0; i < segments.length; i++) {
-								htmlContent += segments[i];
-							}
+							// parseEcpayResult(xhr.responseText);
+							// let htmlContent = '';
+							// for (let i = 0; i < segments.length; i++) {
+							// 	htmlContent += segments[i];
+							// }
+							let htmlContent = parseEcpayResult(xhr.responseText);
 							$('#tbodyArea').html(htmlContent);
 						}
 					}
@@ -128,18 +143,6 @@
 					console.log(segments);
 				}
 
-				let ecpayTable = {
-					PaymentType : {
-						Credit_CreditCard : '信用卡支付'
-					},
-					fullname : ecpayResultJson.CustomField2, // 全名
-					tradeDate : ecpayResultJson.TradeDate,
-					merchantTradeNo : ecpayResultJson.MerchantTradeNo, // 顧客需要記的訂單交易編號
-					totalAmount : ecpayResultJson.TradeAmt,
-					fee : ecpayResultJson.PaymentTypeChargeFee,
-					rtnMsg : ecpayResultJson.RtnMsg
-				};
-
 				// ※訂單相關編號有三種
 				// (1) MerchantTradeNo = 顧客要記住的特店交易編號，可以用來反查綠界交易編號和order_item的內建o_id (資料庫訂單編號)
 				// (2) TradeNo = 綠界交易編號(唯一)
@@ -149,15 +152,17 @@
 				function parseEcpayResult(unparsedEcpayResultMap){
 					ecpayResultJson = JSON.parse(unparsedEcpayResultMap);
 					console.log(ecpayResultJson);
-					let segment = '<tr><td><ul class="actions fit"><li>' + '支付方式' + '</li><li>' + ecpayTable[ecpayResultJson.PaymentType] + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li>' + '您的姓名' + '</li><li>' + ecpayTable.fullname + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li>' + '交易時間' + '</li><li>' + ecpayTable.tradeDate + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li>' + '交易編號' + '</li><li>' + ecpayTable.merchantTradeNo + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li>' + '交易金額' + '</li><li>' + ecpayTable.totalAmount + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li>' + '手續費' + '</li><li>' + ecpayTable.fee + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li>' + '訂單狀態' + '</li><li>' + ecpayTable.rtnMsg + '</li></ul></td></tr>';
 					
-					segment += '<tr><td><h1>請謹慎保留您的<font color="red>交易編號</font>，以利日後客服為您查詢用。</h1></td></tr>';
+					let segment = '';
+					segment += '<h2>請謹慎保留您的<font color="red">交易編號(' + ecpayResultJson.MerchantTradeNo + ')</font>，以利日後客服為您查詢用。</h2>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '支付方式' + '</li><li style="width: 70%;">' + '信用卡支付' + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '您的姓名' + '</li><li style="width: 70%;">' + ecpayResultJson.CustomField2 + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易時間' + '</li><li style="width: 70%;">' + ecpayResultJson.TradeDate + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易編號' + '</li><li style="width: 70%;">' + ecpayResultJson.MerchantTradeNo + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易金額' + '</li><li style="width: 70%;">' + ecpayResultJson.TradeAmt + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '手續費' + '</li><li style="width: 70%;">' + ecpayResultJson.PaymentTypeChargeFee + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '訂單狀態' + '</li><li style="width: 70%;">' + ecpayResultJson.RtnMsg + '</li></ul></td></tr>';
+					
 					
 
 
@@ -165,13 +170,13 @@
 					return segment;
 				}
 
-
-
 				////////////////////////////////////////
-
+				
 				showEcpayResult();
-
 			})
+
+
+
 		</script>
 
 		</body>

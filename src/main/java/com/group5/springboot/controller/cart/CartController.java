@@ -164,7 +164,8 @@ public class CartController {
 	
 	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
 		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
-		Integer latestOid = orderService.getCurrentIdSeed(); // ❗
+		// ❗ 交易失敗的時候這會變得不能用第二次
+		Integer latestOid = orderService.getCurrentIdSeed() + 10000 + (int)Math.ceil(Math.random()*60000); 
 		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
 		String myMerchantTradeNo = String.format("studiehub%s%05d", thisMoment, latestOid);
 		// 【產生 MerchantTradeDate String(20)】
@@ -183,7 +184,7 @@ public class CartController {
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
 //		String ngrokhttps = "";
-		String ngrokhttp = "http://b7db18cbf4fa.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
+		String ngrokhttp = "http://e8ea96c974fb.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
 
 		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
 		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";

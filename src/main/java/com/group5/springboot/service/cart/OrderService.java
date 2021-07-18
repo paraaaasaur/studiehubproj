@@ -15,6 +15,10 @@ public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
 	
+	public Boolean selectCheckOrderExistence(Integer oid) {
+		return orderDao.selectCheckOrderExistence(oid);
+	}
+	
 	public Integer getCurrentIdSeed() {
 		return orderDao.getCurrentIdSeed();
 	}
@@ -23,9 +27,6 @@ public class OrderService implements IOrderService{
 		return orderDao.insert(order);
 	}
 	
-	public OrderInfo selectLatestOid() {
-		return orderDao.selectLatestOid();
-	}
 	
 	public Map<String, Object> selectAll() {
 		return orderDao.selectAll();
@@ -63,7 +64,7 @@ public class OrderService implements IOrderService{
 		return orderDao.update(newBean);
 	}
 	
-	public Integer delete(Integer[] o_ids) {
-		return orderDao.delete(o_ids);
+	public Integer delete(Integer[] identitySeeds) {
+		return orderDao.delete(identitySeeds);
 	}
 }

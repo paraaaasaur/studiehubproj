@@ -142,19 +142,10 @@ public class CartController {
 			ProductInfo product = productService.findByProductID(p_id);
 			cart.add(product);
 		}
+		User_Info uBean = userService.getSingleUser(u_id);
 		
-		AioCheckOutALL aioObj = genEcpayOrder(cart); 
+		AioCheckOutALL aioObj = genEcpayOrder(cart, uBean, cart); 
 		System.out.println(aioObj);
-//		return "";
-		
-		// customize here if needed
-//		aioObj.setMerchantTradeNo("kiryuushiki8931");
-//		aioObj.setMerchantTradeDate("2017/01/01 08:05:23");
-//		aioObj.setTotalAmount("50");
-//		aioObj.setTradeDesc("test Description");
-//		aioObj.setItemName("TestItem");
-//		aioObj.setReturnURL("http://localhost:8080/studiehub/");
-//		aioObj.setNeedExtraPaidInfo("N");
 		
 		// 參數 1 = 充滿EcpayOrder參數的aioObj，參數 2 = 是否要發票(invoice)
 		String htmlForm = new AllInOne("").aioCheckOut(aioObj, null);
@@ -171,9 +162,9 @@ public class CartController {
 
 	
 	
-	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart) {
+	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
 		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
-		Integer latestOid = orderService.selectLatestOid().getO_id() + 10000 + (int)Math.ceil(Math.random()*60000); // ❗
+		Integer latestOid = orderService.getCurrentIdSeed(); // ❗
 		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
 		String myMerchantTradeNo = String.format("studiehub%s%05d", thisMoment, latestOid);
 		// 【產生 MerchantTradeDate String(20)】
@@ -206,8 +197,13 @@ public class CartController {
 		aioObj.setItemName(myItemName);
 		aioObj.setReturnURL(myReturnURL);
 		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
-//		aioObj.setCustomField1("おいおいおい");
-//		aioObj.setCustomField2("きｔらあああああ");
+		aioObj.setCustomField1(uBean.getU_id()); // u_id
+		aioObj.setCustomField2(uBean.getU_lastname() + uBean.getU_firstname()); // user's full name
+		
+		
+		CartViewController.cartInfoMap.put(uBean.getU_id(), tempCart);
+		
+
 //		aioObj.setCustomField3("ガンキマリ");
 //		aioObj.setCustomField4("僕を応援しろよ僕を");
 		aioObj.setClientBackURL(myClientBackURL);

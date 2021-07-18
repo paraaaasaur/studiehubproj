@@ -114,8 +114,8 @@ public class OrderController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/deleteAdmin")
-	public Map<String, String> adminOrderDelete(@RequestParam Integer[] o_ids) {
-		orderService.delete(o_ids);
+	public Map<String, String> adminOrderDelete(@RequestParam Integer[] identitySeeds) {
+		orderService.delete(identitySeeds);
 		HashMap<String, String> map = new HashMap<>();
 		map.put("state", "資料刪除完成。");
 		return map;

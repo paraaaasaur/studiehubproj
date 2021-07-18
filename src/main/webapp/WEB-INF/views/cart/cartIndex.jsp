@@ -136,9 +136,6 @@ window.onload = function(){
 					console.log('nope!');
 				}
 			}
-			$('#toCheckoutPageBtn').on('click', function(){
-				post('<c:url value="/cart.controller/cartCheckout" />', {});
-			})
 
 			$(function(){
 				console.log($('#removeBtn'));

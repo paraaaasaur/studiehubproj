@@ -32,15 +32,15 @@ public class OrderDao implements IOrderDao {
 //	@Autowired
 //	private JdbcTemplate jdbcTemplate;
 	
+	public Boolean selectCheckOrderExistence(Integer oid) {
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
+		query.setParameter("oid", oid);
+		List<OrderInfo> list = query.getResultList();
+		return list.size() == 0? true : false;
+	}
 	
 	public Integer getCurrentIdSeed() {
 		return ((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue();
-	}
-	
-	public OrderInfo selectLatestOid() {
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ORDER BY o_id DESC", OrderInfo.class).setMaxResults(1);
-		OrderInfo result = query.getSingleResult();
-		return result;
 	}
 	
 	@Override
@@ -116,8 +116,8 @@ public class OrderDao implements IOrderDao {
 	public Map<String, Object> select(OrderInfo orderBean) {
 		// ‼ HQL不是用table名 ‼
 		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
-		query.setParameter("oid", orderBean.getO_id());
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE identity_seed = :identitySeed", OrderInfo.class);
+		query.setParameter("identitySeed", orderBean.getIdentity_seed());
 		map.put("orderInfo", query.getSingleResult());
 		return map;
 	}
@@ -133,8 +133,6 @@ public class OrderDao implements IOrderDao {
 
 	public Map<String, Object> selectTop100() {
 		Map<String, Object> map = new HashMap<String, Object>();
-//		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(100);
-//		List<OrderInfo> resultList = query.getResultList();
 		@SuppressWarnings("unchecked")
 		List<OrderInfo> resultList = (List<OrderInfo>) (em.createNativeQuery("SELECT * FROM order_info ORDER BY o_id DESC", OrderInfo.class).setMaxResults(100).getResultList());
 		map.put("list", resultList);
@@ -156,6 +154,7 @@ public class OrderDao implements IOrderDao {
 			return null;	
 		}
 		// 把值補完整
+		
 		oBean.setU_firstname(uBean.getU_firstname()); 
 		oBean.setU_lastname(uBean.getU_lastname()); 
 		oBean.setU_email(uBean.getU_email());
@@ -191,12 +190,19 @@ public class OrderDao implements IOrderDao {
 	public boolean update(OrderInfo newOBean) {
 		boolean updateStatus = false;
 		// 以PK查出資料庫的 O- / P- / U-Bean
-		OrderInfo oBean = em.find(OrderInfo.class, newOBean.getO_id()); 
+		TypedQuery<OrderInfo> preQuery = em.createQuery("FROM OrderInfo WHERE o_id = :oid AND p_id = :pid AND u_id = :uid", OrderInfo.class);
+		preQuery.setParameter("oid", newOBean.getO_id());
+		preQuery.setParameter("pid", newOBean.getU_id());
+		preQuery.setParameter("uid", newOBean.getP_id());
+		List<OrderInfo> oBeans = preQuery.getResultList();
+		OrderInfo oBean = null;
+//		OrderInfo oBean = em.find(OrderInfo.class, newOBean.getO_id()); 
 		ProductInfo pBean = em.find(ProductInfo.class, newOBean.getP_id());
 		User_Info uBean = em.find(User_Info.class, newOBean.getU_id());
 		
 		
-		if (oBean != null) {
+		if (oBeans.size() == 1) {
+			oBean = oBeans.get(0);
 			
 			if(pBean == null) {
 				System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
@@ -228,17 +234,19 @@ public class OrderDao implements IOrderDao {
 //			pBean.setUser_Info(uBean); // P-U 關聯
 			
 			em.merge(oBean); 
-		} else {
+		} else if(oBeans.size() == 0) {
 			System.out.println("*** Order with O_ID = " + newOBean.getO_id() + "doesn't exist in the database :^) ***");
+		} else if(oBeans.size() > 1) {
+			System.out.println("*** Order with O_ID = " + newOBean.getO_id() + "seems to have more than one result, which shouldn't be the case. ***");			
 		}
 		updateStatus = true;
 		return updateStatus;
 	}
 
 	
-	public Integer delete(Integer[] o_ids) {
-		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)");
-		deleteQuery.setParameter("oids", Arrays.asList(o_ids));
+	public Integer delete(Integer[] identitySeeds) {
+		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE identity_seed IN (:identitySeeds)");
+		deleteQuery.setParameter("identitySeeds", Arrays.asList(identitySeeds));
 		Integer result = deleteQuery.executeUpdate();
 		return result;
 	}

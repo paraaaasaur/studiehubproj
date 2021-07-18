@@ -1,6 +1,5 @@
 package com.group5.springboot.controller.cart;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.cart.OrderInfo;
+import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.service.cart.OrderService;
+import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.validate.CartValidator;
 
 @Controller
@@ -27,7 +31,11 @@ public class CartViewController {
 	private CartItemService cartItemService;
 	@Autowired
 	private CartValidator cartValidator;
-	
+	@Autowired
+	private OrderService orderService;
+	@Autowired
+	private UserService userService;
+	// ❗ 比起static attribute感覺應該要放在更好的地方...sessionAttribute之類，或直接讀DB / 真實檔案？
 	public static HashMap<String, Object> cartInfoMap = new HashMap<>();
 	
 	
@@ -46,8 +54,7 @@ public class CartViewController {
 		
 		cartValidator.validate(cartItem, result);
 		if (result.hasErrors()) {			
-			List<ObjectError> list = result.getAllErrors();
-			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
+			result.getAllErrors().forEach(objectError -> System.out.println("有錯誤：" + objectError));
 			return "/cart/cartAdminInsert";
 //			return "redirect:/cart.controller/adminInsert"; // ❓
 		}
@@ -92,12 +99,6 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/cart.controller/cartCheckout"})
-	public String toCartCheckout() {
-		return "cart/cartCheckout";
-	}
-	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/cart.controller/adminSelect"})
 	public String toCartAdminSelect() {
 		return "cart/cartAdminSelect";
@@ -115,13 +116,35 @@ public class CartViewController {
 		String rtnCode = map.get("RtnCode");
 		String paymentType = map.get("PaymentType");
 
-//		Boolean success = ("Credit_CreditCard".equals(paymentType) && "1".equals(rtnCode))? true : false;
+		Boolean success = ("Credit_CreditCard".equals(paymentType) && "1".equals(rtnCode))? true : false;
+		// ❗ 信用卡以外的成功判定都還沒設計
+		String u_id = (String) map.get("CustomField1");
+		if (success) {
+			// (i) OrderInfo part
+			// 取得自訂oid 【統一值】
+			Integer o_id = orderService.getCurrentIdSeed();
+			String o_status = "完成";
+			Integer o_amt = Integer.parseInt(map.get("TradeAmt"));
+			String ecpay_o_id = map.get("MerchantTradeNo");
+			String ecpay_trade_no = map.get("TradeNo");
+			// (ii) User_Info part 【統一值】
+			User_Info user = userService.getSingleUser(u_id);
+			// (iii) ProductInfo part 【個別值】
+			@SuppressWarnings("unchecked")
+			List<ProductInfo> tempCart = (List<ProductInfo>) (CartViewController.cartInfoMap.get(u_id));
+			
+			// 把結帳完的購物車內容正式存進資料表order_info
+			// ❗ identity 和 o_date 值多少都沒影響
+			tempCart.forEach(product -> orderService.insert(new OrderInfo(0, o_id, "dateinfo", o_amt, ecpay_o_id, o_status, ecpay_trade_no, // order相關
+					product.getP_ID(), product.getP_Name(), product.getP_Price(), // product相關
+					user.getU_id(), user.getU_firstname(), user.getU_lastname(), user.getU_email()))); // user相關
+			
+			// 把結帳完的購物車內容從資料表cart_item移除
+			cartItemService.deleteByUserId(u_id);
+			
+		}
 		
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("ecpayResult", ecpayResult);
-//		map.put("success", success);
-		// ❗ 要移除這個
-//		cartInfo.put("ecpayResultAttr", map);
+		cartInfoMap.remove(map.get(u_id));
 		cartInfoMap.put("ecpayResultAttr", map);
 		
 		return;
@@ -129,15 +152,7 @@ public class CartViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = "/cart.controller/clientResultPage")
-	public String toClientResultPage(
-			@RequestParam Map<String, String> map
-//			, Model model
-			) {
-		System.out.println("*********************** 回傳結果如下 **************************");
-		map.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
-		System.out.println("*********************** 回傳結果如上 **************************");
-		
-		
+	public String toClientResultPage() {
 		return "cart/cartClientResultPage";
 	}
 	

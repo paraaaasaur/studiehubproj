@@ -113,7 +113,7 @@
 			<script>
 				// 不用等DOM就可以先宣告的變數們
 				let segments = [];
-				let checkedOids = [];
+				let checkedIdentitySeeds = [];
 				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
@@ -121,19 +121,19 @@
 				let maxPageNum = 10;
 				let orders = [];
 
-				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedOids陣列裡，等到要刪除時存取之送出
+				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedIdentitySeeds陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
-					let o_id = checkboxObj.value;
-					// let o_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
-					let idx = checkedOids.indexOf(o_id);
+					let identitySeed = checkboxObj.value;
+					// let identitySeed = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
+					let idx = checkedIdentitySeeds.indexOf(identitySeed);
 					if(idx > -1) {
-						checkedOids.splice(idx, 1);
+						checkedIdentitySeeds.splice(idx, 1);
 					} else {
-						checkedOids.push(o_id);
+						checkedIdentitySeeds.push(identitySeed);
 					}
-					console.log('checkedOids = ' + checkedOids);
+					console.log('checkedIdentitySeeds = ' + checkedIdentitySeeds);
 					// 改變#deleteBtn外觀和disabled值
-					document.querySelector('#deleteBtn').disabled = (checkedOids.length == 0)? true : false;
+					document.querySelector('#deleteBtn').disabled = (checkedIdentitySeeds.length == 0)? true : false;
 					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
 									'刪除<font color="cornflowerblue"> ' + checkedCartids.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
 									'刪除勾選資料';
@@ -265,12 +265,12 @@
 								// 掛th
 								theadArea.html(
 									"<th>DELETE BUTTON</th>"
-									+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
-									+ "<th>課程代號<br>(p_id)</th>"
-									+ "<th>用戶帳號<br>(u_id)</th>"
-									+ "<th>訂單狀態<br>(o_status)</th>"
-									+ "<th>訂單時間<br>(o_date)</th>"
-									+ "<th>訂單總額<br>(o_amt)</th>"
+									+ "<th>訂單編號<br>(READ-ONLY)</th>"
+									+ "<th>課程代號<br></th>"
+									+ "<th>用戶帳號<br></th>"
+									+ "<th>訂單狀態<br></th>"
+									+ "<th>訂單時間<br></th>"
+									+ "<th>訂單總額<br></th>"
 									+ "<th>操作</th>"
 								);
 								if (segments.length == 0) {
@@ -311,27 +311,27 @@
 						for (let i = 0; i < orders.length; i++) {
 							totalPrice += orders[i].p_price;
 							let temp0 =	 "<tr>" + 
-												"<td><input onclick='memorize(this)' id='ckbox" + orders[i].o_id + "' " +
-													"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + orders[i].o_id + "'></label></td>" +
+												"<td><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
+													"type='checkbox' value='" + orders[i].identity_seed + "'><label for='ckbox" + orders[i].identity_seed + "'></label></td>" +
 												"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
 												"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
 												"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
 												"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
 												"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
 												"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
-												"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+												"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].identity_seed + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}
 						console.log(segments.length);
 					};
 					
-					// 【自訂函數 9】NEW DELETE
+					// 【自訂函數 9】DELETE
 					$('#deleteBtn').on('click', function(){
-						let queryString = 'o_ids=';
-						for (let i = 0; i < checkedOids.length; i++) {
-							queryString += checkedOids[i];
-							queryString += ((i + 1) != checkedOids.length)? ',' : '';
+						let queryString = 'identitySeeds=';
+						for (let i = 0; i < checkedIdentitySeeds.length; i++) {
+							queryString += checkedIdentitySeeds[i];
+							queryString += ((i + 1) != checkedIdentitySeeds.length)? ',' : '';
 						}
 
 						console.log(queryString);
@@ -345,7 +345,7 @@
 								result = JSON.parse(xhr.responseText);
 								console.log(result.state);
 								mainFunc();
-								checkedOids = [];
+								checkedIdentitySeeds = [];
 								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
 							}
 						}
@@ -357,12 +357,12 @@
 						console.log('Start of mainFunc()');
 						theadArea.html(
 								"<th>刪除</th>"
-								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
-								+ "<th>課程代號<br>(p_id)</th>"
-								+ "<th>用戶帳號<br>(u_id)</th>"
-								+ "<th>訂單狀態<br>(o_status)</th>"
-								+ "<th>訂單時間<br>(o_date)</th>"
-								+ "<th>訂單總額<br>(o_amt)</th>"
+								+ "<th>訂單編號<br>(READ-ONLY)</th>"
+								+ "<th>課程代號<br></th>"
+								+ "<th>用戶帳號<br></th>"
+								+ "<th>訂單狀態<br></th>"
+								+ "<th>訂單時間<br></th>"
+								+ "<th>訂單總額<br></th>"
 								+ "<th>操作</th>"
 						);
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤

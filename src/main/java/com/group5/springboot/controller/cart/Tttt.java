@@ -1,15 +1,20 @@
 package com.group5.springboot.controller.cart;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Tttt {
 
 	public static void main(String[] args) {
-		Integer iii[] = {1, 2, 3};
-		List<Integer> aaa = Arrays.asList(iii);
-		System.out.println(aaa.getClass());
+		String format = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		System.out.println(format);
+		
+//		Integer iii[] = {1, 2, 3};
+//		List<Integer> aaa = Arrays.asList(iii);
+//		System.out.println(aaa.getClass());
 		
 		// StringBuilder的replace()方法測試
 //		StringBuilder myItemNameBuilder = new StringBuilder("");

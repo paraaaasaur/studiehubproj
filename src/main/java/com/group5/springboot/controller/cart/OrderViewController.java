@@ -53,15 +53,17 @@ public class OrderViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@GetMapping(value = {"/order.controller/adminUpdate/{oid}"})
-	public String toOrderAdminUpdate(@PathVariable("oid") Integer oid, Model model) {
-		model.addAttribute("orderInfo", orderService.select(new OrderInfo(oid)).get("orderInfo"));
+	@GetMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
+	public String toOrderAdminUpdate(@PathVariable("identitySeed") Integer identitySeed, Model model) {
+		OrderInfo oBean = new OrderInfo();
+		oBean.setIdentity_seed(identitySeed);
+		model.addAttribute("orderInfo", orderService.select(oBean).get("orderInfo"));
 		return "/cart/orderAdminUpdate";
 //		return "redirect:/order.controller/adminUpdate"; // ❓
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-	@PostMapping(value = {"/order.controller/adminUpdate/{oid}"})
+	@PostMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
 	public String orderAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
 			BindingResult result, 
 			RedirectAttributes ra) {
@@ -74,7 +76,7 @@ public class OrderViewController {
 		}
 		
 		orderService.update(orderInfo);
-		ra.addFlashAttribute("successMessage", "o_id = " + orderInfo.getO_id() + "修改成功");
+		ra.addFlashAttribute("successMessage", "修改成功");
 		return "redirect:/order.controller/adminSelect";
 		
 	}
@@ -84,13 +86,6 @@ public class OrderViewController {
 	public String toCartAdminSelect() {
 		return "cart/orderAdminSelect";
 	}
-	
-	/**
-	 * ****************************************  Order ************************************************************
-	 * 
-	 * ****************************************  CartItem ************************************************************
-	 * */
 
-	
 
 }

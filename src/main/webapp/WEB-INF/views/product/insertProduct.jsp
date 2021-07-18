@@ -21,6 +21,7 @@
 
 <script>
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -58,6 +59,13 @@ window.onload = function(){
         loginEvent.style.display = "block";
     	loginALLEvent.style.display = "block";
     } 
+
+    $('#quickInsert').on('click',function(){
+        $('#p_Name').val('日文教學_初級日語【日本人老師yuka教你日語】');
+        $('#p_Class').val('日文');
+        $('#p_Price').val('100');
+        $('#descString').val('1. 100%國際認證師資，不只English speaker而是English teacher：認證教師才能真正激發潛力&自信，英協教師具備平均8年以上教學經驗及劍橋認證');
+    });
     
 }
 </script>
@@ -88,14 +96,14 @@ window.onload = function(){
                                     </tr>
                                     <tr>
                                         <td>課程名稱:</td>
-                                        <td><form:input path="p_Name"/>
+                                        <td><form:input path="p_Name" id="p_Name"/>
                                         	<form:errors path='p_Name' cssClass="error"/>
                                         </td>
                                         
                                     </tr>
                                     <tr>
                                         <td>課程類別:</td>
-                                        <td><form:select path="p_Class">
+                                        <td><form:select path="p_Class" id="p_Class">
                                         		<form:option label="請挑選" value="-1"/>
                                         		<form:option label="英文" value="英文"/>
                                         		<form:option label="日文" value="日文"/>
@@ -105,7 +113,7 @@ window.onload = function(){
                                     </tr>
                                     <tr>
                                         <td>課程價錢:</td>
-                                        <td><form:input path="p_Price"/>
+                                        <td><form:input path="p_Price" id="p_Price"/>
                                         	<form:errors path='p_Price' cssClass="error"/>
                                         </td>
                                     </tr>
@@ -128,7 +136,8 @@ window.onload = function(){
                                         </td>
                                     </tr>
                                     <tr>
-                                    <td><input type="submit"></td>
+                                    <td><input type="submit">
+                                    <button type="button" id="quickInsert">一鍵</button></td>
                                     </tr>
                                 </table>
 							</form:form>

@@ -224,8 +224,9 @@ window.addEventListener('load', function(){
 			
 		});
 		
-//倒數計時
-	    var fiveMinutes = 60 * 5,
+////倒數計時
+// 	    var fiveMinutes = 60 * 2,
+	    var fiveMinutes = 90,
         display = document.querySelector('#time');
    		 startTimer(fiveMinutes, display);		
 	
@@ -240,8 +241,8 @@ function showCountData(textObj){
 			}
 		}
 	
-	let content =  "<tr><th colspan='4' style=' border:2px #cccccc solid; height:20%;'>聽力題</th><th colspan='3' style=' border:2px #cccccc solid;'>多選題</th><th colspan='3' style=' border:2px #cccccc solid;'>單選題</th></tr>";
-	    content += "<tr><td style='" + status0[0] + "'>1</td> <td  style='" + status0[1] + "'>2</td> <td  style='"+status0[2]+"'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"'>4</td>";
+	let content =  "<tr><th colspan='4' style=' border:2px #cccccc solid;height:1px;'>聽力題</th><th colspan='3' style=' border:2px #cccccc solid;'>多選題</th><th colspan='3' style=' border:2px #cccccc solid;'>單選題</th></tr>";
+	    content += "<tr><td style='" + status0[0] + ";height:1px;'>1</td> <td  style='" + status0[1] + "'>2</td> <td  style='"+status0[2]+"'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"'>4</td>";
 	    content += "<td style='" + status0[4] + "'>5</td><td style='" + status0[5] + "'>6</td><td style=' border-right:2px #cccccc solid ;"+status0[6]+"'>7</td>";
 	    content += "<td style='" + status0[7] + "'>8</td><td style='" + status0[8] + "'>9</td><td style='"+ status0[9] +"'>10</td></tr>";
 	return content;
@@ -340,9 +341,16 @@ function showCountData(textObj){
 
 			
 			let correctPercent = correct/size*100 ;
-			let	segment2  = "<h4>＜測驗結果＞</h4><br>";
-			    segment2 += "<div><a>&emsp;測驗共" + size + "題</a></div>";
-				segment2 += "<div><a>&emsp;答錯題數："+ wrong +"題</a><a style='color:red;'>，答對率：" + correctPercent + "%</a></div><br>";
+			let	segment2  = "<h3>＜測驗結果＞</h3><br>";
+			    segment2 += "<div><h4 style='color:red;'>&emsp;測驗共" + size + "題</h4></div>";
+				segment2 += "<div><h4 style='color:red;'>&emsp;答錯題數："+ wrong +"題，答對率：" + correctPercent + "%</h4></div><br>";
+				if(correct >= 7){
+					segment2 += "<div><h4 style='color:red;'>&emsp;✓測驗評語：您的日語能力遠高於目前測驗程度，建議您往更高程度進行測驗學習！</h4></div><br>";
+				}else if(correct > 4 && correct < 7){
+					segment2 += "<div><h4 style='color:red;'>&emsp;✓測驗評語：您的日語能力落在於目前測驗程度，建議您持續測驗學習！</h4></div><br>";
+				}else{
+					segment2 += "<div><h4 style='color:red;'>&emsp;✓測驗評語：您的日語能力落在於基礎至目前測驗程度，建議您調整程度，持續測驗學習！</h4></div><br>";
+				}
 				segment2 += "<table>";
 			
 				segment2 += "<tr>" ;
@@ -424,7 +432,7 @@ function showCountData(textObj){
 //倒數計時器
 	 function startTimer(duration, display) {
 		    var timer = duration, minutes, seconds;
-		    setInterval(function () {
+		    var count = setInterval(function () {
 		        minutes = parseInt(timer / 60, 10);
 		        seconds = parseInt(timer % 60, 10);
 
@@ -434,7 +442,12 @@ function showCountData(textObj){
 		        display.textContent = minutes + ":" + seconds;
 
 		        if (--timer < 0) {
-		            timer = duration;
+// 		            timer = duration;
+// 		        	var submit =document.getElementById("submit");
+					clearInterval(count);
+					alert("時間到，自動提交試卷！");
+					timecounter.style.display = 'none';
+		        	$("#submit").click();
 		        }
 		    }, 1000);
 		}
@@ -458,16 +471,14 @@ function showCountData(textObj){
 <div align='center'>
 <h2>線上測驗區</h2>
 
-<div id="clock">讀取時間中...</div>
-<div>Registration closes in <span id="time">05:00</span> minutes!</div>
-
+<div id='timecounter' style="display: ''">開始測驗，作答時間剩 <span id="time">01:30</span> 分鐘！</div>
 
 <!-- <hr> -->
 <%-- <font color='red'>${successMessage}</font>&nbsp; --%>
 <!-- <hr> -->
 
 
-<table id='countArea' >
+<table id='countArea'>
 </table>  
 
 

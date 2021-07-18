@@ -26,7 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.question.Question_Info;
 import com.group5.springboot.service.question.QuestionService;
-import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.utils.SystemUtilsNickUse;
 import com.group5.springboot.validate.QuestionValidator;
 
 @Controller
@@ -45,7 +45,7 @@ public class QuestionController {
 ////前往提庫首頁
 	@GetMapping(path = "/question.controller/turnQuestionIndex")
 	public String turnQuestionIndex() {
-		return "question/questionIndex";
+		return "question/intro_QuestionIndex";
 	}	
 	
 ////送空白表單
@@ -82,18 +82,19 @@ public class QuestionController {
 		try {
 			InputStream is = multipartFilePic.getInputStream();
 			namePic = multipartFilePic.getOriginalFilename();
-			blob = SystemUtils.inputStreamToBlob(is);
+			blob = SystemUtilsNickUse.inputStreamToBlob(is);
 			mimeTypePic = context.getMimeType(namePic);
 			question_Info.setQ_picture(blob);
 			question_Info.setMimeTypePic(mimeTypePic);
 			
 			is = multipartFileAudio.getInputStream();
 			nameAudio = multipartFileAudio.getOriginalFilename();
-			blob = SystemUtils.inputStreamToBlob(is);
+			blob = SystemUtilsNickUse.inputStreamToBlob(is);
 			mimeTypeAudio = context.getMimeType(nameAudio);
 			question_Info.setQ_audio(blob);
 			question_Info.setMimeTypeAudio(mimeTypeAudio);
 			
+			question_Info.setVerification("N");  //設定為待審核 
 			question_Info.setCreateDate(new Timestamp(System.currentTimeMillis()));
 			//加入時間戳記
 
@@ -102,11 +103,11 @@ public class QuestionController {
 		}
 		
 		questionService.insertQuestion(question_Info);
-		String extPic = SystemUtils.getExtFilename(namePic);
-		String extAudio = SystemUtils.getExtFilename(nameAudio);
+		String extPic = SystemUtilsNickUse.getExtFilename(namePic);
+		String extAudio = SystemUtilsNickUse.getExtFilename(nameAudio);
 		// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 		try {
-			File fileFolder = new File(SystemUtils.QUESTION_FILE_FOLDER);
+			File fileFolder = new File(SystemUtilsNickUse.QUESTION_FILE_FOLDER);
 			if (!fileFolder.exists())
 				fileFolder.mkdirs();
 			File filePic = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extPic);
@@ -119,9 +120,9 @@ public class QuestionController {
 			throw new RuntimeException("檔案上傳發生異常: " + e.getMessage());
 		}
 		
-		ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  新增成功!");
+		ra.addFlashAttribute("successMessage", "申請編號: " + question_Info.getQ_id() + "，  已成功送至審核作業中！");
 		// 新增或修改成功，要用response.sendRedirect(newURL) 通知瀏覽器對newURL發出請求
-		return "redirect:/question.controller/queryQuestion";  
+		return "redirect:/question.controller/guestQueryQuestion";  
 	}
 	
 
@@ -213,14 +214,14 @@ public class QuestionController {
 			try {
 				InputStream is = multipartFilePic.getInputStream();
 				namePic = multipartFilePic.getOriginalFilename();
-				blob = SystemUtils.inputStreamToBlob(is);
+				blob = SystemUtilsNickUse.inputStreamToBlob(is);
 				mimeTypePic = context.getMimeType(namePic);
 				question_Info.setQ_picture(blob);
 				question_Info.setMimeTypePic(mimeTypePic);
-			String extPic = SystemUtils.getExtFilename(namePic);
+			String extPic = SystemUtilsNickUse.getExtFilename(namePic);
 			// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 			try {
-				File fileFolder = new File(SystemUtils.QUESTION_FILE_FOLDER);
+				File fileFolder = new File(SystemUtilsNickUse.QUESTION_FILE_FOLDER);
 				if (!fileFolder.exists())
 					fileFolder.mkdirs();
 				File filePic = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extPic);
@@ -240,15 +241,15 @@ public class QuestionController {
 			try {
 				InputStream is = multipartFileAudio.getInputStream();
 				nameAudio = multipartFileAudio.getOriginalFilename();
-				blob = SystemUtils.inputStreamToBlob(is);
+				blob = SystemUtilsNickUse.inputStreamToBlob(is);
 				mimeTypeAudio = context.getMimeType(nameAudio);
 				question_Info.setQ_audio(blob);
 				question_Info.setMimeTypeAudio(mimeTypeAudio);
 		
-			String extAudio = SystemUtils.getExtFilename(nameAudio);
+			String extAudio = SystemUtilsNickUse.getExtFilename(nameAudio);
 			// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 			try {
-				File fileFolder = new File(SystemUtils.QUESTION_FILE_FOLDER);
+				File fileFolder = new File(SystemUtilsNickUse.QUESTION_FILE_FOLDER);
 				if (!fileFolder.exists())
 					fileFolder.mkdirs();
 				File fileAudio = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extAudio);
@@ -331,6 +332,46 @@ public class QuestionController {
 	public String startRandomMixExam() {
 		return "question/examMixQuestion";
 	}
+	
+////送往後台審核頁面
+	@GetMapping("/question.controller/intoVerifyQuestion")
+	public String intoVerifyQuestion() {
+		return "question/verifyQuestion";
+	}
+////回傳待審核資料 (JSON)
+	@GetMapping(value="/question.controller/sendVerifyQuestion", produces = "application/json; charset=UTF-8")
+	public @ResponseBody Map<String, Object> sendVerifyQuestion(){
+		return questionService.sendVerifyQuestion();
+	}
+	
+////審核通過，審核欄位N改為Y	
+	@GetMapping("/question.controller/verifyPassQuestion/{q_id}")
+	public String verifyPassQuestion(@PathVariable Long q_id,Model model,RedirectAttributes ra) {
+		Question_Info question_Info = questionService.findById(q_id);
+		question_Info.setVerification("Y");
+		questionService.update(question_Info);
+		ra.addFlashAttribute("successMessage", "申請編號: " + question_Info.getQ_id() + "  審核通過！");
+		return "redirect:/question.controller/intoVerifyQuestion";
+	}
+////審核失敗，刪除試題
+	@GetMapping("/question.controller/verifyDeleteQuestion/{q_id}")
+	public String verifydeleteEditPage(@PathVariable Long q_id, Model model,RedirectAttributes ra) {
+	Question_Info question_Info = questionService.findById(q_id);
+	questionService.deleteQuestion(question_Info);
+	ra.addFlashAttribute("successMessage", "申請編號: " + question_Info.getQ_id() + "  未通過審核，已取消申請！");
+	return "redirect:/question.controller/intoVerifyQuestion";	
+	}
+////詳細的單筆申請資料
+	@GetMapping("/question.controller/verifyOneQuestion/{q_id}")
+    public String verifyOneQuestion(
+    		@PathVariable Long q_id, Model model
+    ) {
+		Question_Info question_Info = questionService.findById(q_id);
+		model.addAttribute("Q1", question_Info);
+		return "question/verifyOneQuestion";
+	}	
+	
+
 	
 	
 //// ModelAttribute :  ////

@@ -54,7 +54,7 @@ public class QuestionDaoImpl implements QuestionDao {
 	@Override
 	public  Map<String, Object> queryByName(String qname){
 	Map<String, Object> map = new HashMap<>();
-	String hql = "FROM Question_Info p WHERE p.q_question like :q_question ";
+	String hql = "FROM Question_Info p WHERE p.q_question like :q_question AND p.verification='Y' ";
 	List<Question_Info> list =  em.createQuery(hql, Question_Info.class)
 	         .setParameter("q_question", "%" +  qname + "%")
 	         .getResultList();
@@ -106,6 +106,18 @@ public class QuestionDaoImpl implements QuestionDao {
 		list.addAll(list2);
 		list.addAll(list3);
 	
+		map.put("size", list.size()); 
+		map.put("list", list); 
+		 return map;
+	}
+	
+	////送出待審核資料
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> sendVerifyQuestion() {
+		Map<String, Object> map = new HashMap<>();
+		String hql = "FROM Question_Info where verification = 'N'";
+		List<Question_Info> list = em.createQuery(hql).getResultList();
 		map.put("size", list.size()); 
 		map.put("list", list); 
 		 return map;

@@ -59,7 +59,8 @@
 					<li><span class="opener">題庫</span>
 						<ul>
 							<li><a href="<c:url value='/question.controller/guestQueryQuestion' />">所有試題</a></li>
-							<li><a href="<c:url value='/question.controller/startRandomMixExam' />">線上測驗區</a></li>
+							<li><a href="<c:url value='/question.controller/turnQuestionIndex' />">線上測驗區</a></li>
+							<li><a href="<c:url value='/question.controller/insertQuestion' />">申請新增試題</a></li>
 						</ul>
 					</li>
 					

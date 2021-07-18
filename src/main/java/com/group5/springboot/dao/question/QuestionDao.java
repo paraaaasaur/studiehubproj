@@ -33,5 +33,8 @@ public interface QuestionDao {
 	////送出隨機綜合題測驗題目
 	public Map<String, Object> sendRandomMixExam();
 
+	////送出待審核資料
+	public Map<String, Object> sendVerifyQuestion();
+
 
 }

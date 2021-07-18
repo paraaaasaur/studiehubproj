@@ -7,15 +7,44 @@
 <html>
 <head>
 
-
+<style type="text/css">
+/*  td {white-space:nowrap;overflow:hidden;text-overflow: ellipsis;} */
+/* table{table-layout:fixed;word-wrap:break-word;} */ */
+ 
+</style>
 <meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
 
-<title>所有試題資料</title>
+<title>待審核試題資料</title>
+<script>
 
+	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
+	
+	var adminId = "${adminId}";
+	// 踢除非管理員
+	if(!adminId){
+		alert('您不具有管理者權限，請登入後再試。');
+		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	}
+	
+	window.onload = function(){
+	// console.log(adminId);
+		
+		//如果有登入，隱藏登入標籤
+		var loginHref = document.getElementById('loginHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		if(adminId){
+			loginHref.hidden = true;
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+		}
+		
+	}
+</script>
 </head>
 
 
@@ -30,7 +59,7 @@ window.addEventListener('load', function(){
 	query = document.getElementById("query");
 	dataArea = document.getElementById("dataArea");
 	let xhr = new XMLHttpRequest();
-	xhr.open('GET', "<c:url value='/question.controller/findAllQuestions' />", true);
+	xhr.open('GET', "<c:url value='/question.controller/sendVerifyQuestion' />", true);
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4 && xhr.status == 200 ){
 			console.log(xhr.responseText);
@@ -68,30 +97,37 @@ window.addEventListener('load', function(){
 	let segment = "<table >";
 	
 	if (size == 0){
-		segment += "<tr><th colspan='8'>查無資料</th><tr>";
+		segment += "<tr><th colspan='9'>查無資料</th><tr>";
 	} else {
-		segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
-	    segment += "<tr><th>查看試題</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
+		segment += "<tr><th colspan='9'>共計" + size + "筆資料</th><tr>";
+	    segment += "<tr><th colspan='2'>待審核</th><th>&ensp;查看試題</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
 	    
 	    for(n = 0; n < questions.length ; n++){
 		   	let question = questions[n];
 	   		
-
-		   	let tmp1 = "<c:url value='/question.controller/guestOneQuestion/'  />" + question.q_id;
-	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/check.png' />'" + "</a>";
+		   	let tmp1 = "<c:url value='/question.controller/verifyPassQuestion/'  />" + question.q_id;
+	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/pass.png' />'" + "</a>";
 	     	
+		   	let tmp3 = "<c:url value='/question.controller/queryQuestion/'  />" ;
+	     	let tmp4 = "<a href='#' onclick=if(confirm('是否確定刪除申請編號：" + question.q_id + "'))location='<c:url value = '/question.controller/verifyDeleteQuestion/"+ question.q_id +"'/>' >" + "<img width='37' height='37' src='<c:url value='/images/question/delete.png' />'" + "</a>";
+
+	       	let tmp6 = "<c:url value='/question.controller/verifyOneQuestion/'  />" + question.q_id;
+// 	     	let tmp5 = "<a href='" + tmp6 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/check.png' />'" + "</a>";
+
 	     	
 			segment += "<tr>";
-			segment += "<td style='vertical-align: middle;width:7%'>" + tmp0 + "</td>"; 	
-
+			segment += "<td style='vertical-align: middle;'>" + tmp0 + "</td>"; 	
+			segment += "<td style='vertical-align: middle;'>" + tmp4 + "</td>"; 	
+// 			segment += "<td>" + tmp5 + "</td>"; 
+			segment += "<td style='vertical-align: middle;'><input type='button'value='查看內容' style='margin: 5px;' onclick=\"window.location.href='"+tmp6+"'\"'/>";
+			
 			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_id + "</td>"; 	
 			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_class + "</td>"; 	
 			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_type + "</td>"; 	
-			segment += "<td style='vertical-align: middle;'>" + question.q_question + "</td>";
-			
+		 	segment += "<td style='vertical-align: middle;'>" + question.q_question + "</td>"; 	
+
 			segment += "<td style='vertical-align: middle;'><img  width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
 			segment += "<td style='vertical-align: middle;'><audio controls src='" + question.q_audioString + "' ></td>"; 	
-			
 			segment += "</tr>"; 	
 	   }
 	}
@@ -112,7 +148,7 @@ window.addEventListener('load', function(){
 				<%@include file="../universal/header.jsp"%>
 
 <div align='center'>
-<h2>所有試題資料</h2>
+<h2>待審核試題資料</h2>
 <hr>
 <font color='red'>${successMessage}</font>&nbsp;
 <hr>
@@ -137,7 +173,7 @@ window.addEventListener('load', function(){
 
 	<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 
 	</div>
 

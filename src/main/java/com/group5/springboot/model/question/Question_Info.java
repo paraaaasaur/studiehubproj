@@ -44,6 +44,9 @@ import com.group5.springboot.utils.SystemUtils;
 	    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
 	    private String q_answer;
 	    
+	    private String verification ; //預設為N，驗證後為Y
+
+	    
 	    @Transient
 	    private String[] answers; //暫存多選答案陣列
 	    
@@ -78,7 +81,7 @@ import com.group5.springboot.utils.SystemUtils;
 		}
 
 		public Question_Info(String q_class, String q_type, String q_question, String q_selectionA,
-				String q_selectionB, String q_selectionC, String q_selectionD, String q_selectionE, String q_answer, String mimeTypePic,String mimeTypeAudio,
+				String q_selectionB, String q_selectionC, String q_selectionD, String q_selectionE, String q_answer,String verification, String mimeTypePic,String mimeTypeAudio,
 				Blob q_pictureBlob, Blob q_audioBlob, MultipartFile multipartFilePic, MultipartFile multipartFileAudio,Timestamp createDate,String[] answers) {
 			super();
 			this.q_class = q_class;
@@ -90,6 +93,7 @@ import com.group5.springboot.utils.SystemUtils;
 			this.q_selectionD = q_selectionD;
 			this.q_selectionE = q_selectionE;
 			this.q_answer = q_answer;
+			this.verification = verification;
 			this.mimeTypePic = mimeTypePic;
 			this.mimeTypeAudio = mimeTypeAudio;
 			this.q_picture = q_pictureBlob;
@@ -178,6 +182,14 @@ import com.group5.springboot.utils.SystemUtils;
 
 		public void setQ_answer(String q_answer) {
 			this.q_answer = q_answer;
+		}
+		
+		public String getVerification() {
+			return verification;
+		}
+
+		public void setVerification(String verification) {
+			this.verification = verification;
 		}
 
 		public String getMimeTypePic() {

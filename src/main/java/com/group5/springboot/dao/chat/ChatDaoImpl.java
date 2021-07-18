@@ -53,11 +53,17 @@ public class ChatDaoImpl implements ChatDao{
 		Chat_Info chat_Info = em.find(Chat_Info.class, c_ID);
 		return chat_Info;
 	}
+	
+	@Override
+	public Chat_Reply selectChatReplyById(int c_ID) {
+		Chat_Reply chat_Reply = em.find(Chat_Reply.class, c_ID);
+		return chat_Reply;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Chat_Reply> findAllChatReply(int c_IDr) {
-		String sql = "from Chat_Reply where c_IDr = " + c_IDr;
+		String sql = "from Chat_Reply c left join User_Info u on c.u_ID = u.u_id where c.c_IDr = " + c_IDr;
 		List<Chat_Reply> chat_Reply = em.createQuery(sql).getResultList();
 		return chat_Reply;
 	}
@@ -91,6 +97,11 @@ public class ChatDaoImpl implements ChatDao{
 		String sql = "DELETE FROM [dbo].[chat_Reply]\r\n"
 				+ "WHERE [c_IDr] = " + c_IDr;
 		em.createNativeQuery(sql).executeUpdate();
+	}
+
+	@Override
+	public void updateChatReply(Chat_Reply chat_Reply) {
+		em.merge(chat_Reply);
 	}
 
 }

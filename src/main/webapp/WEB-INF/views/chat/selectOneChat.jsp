@@ -8,6 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<style>
+#iconPos{
+  width: 20px;
+  position: relative;
+  bottom: 8px;
+  font-size:20px;
+  color: #ADADAD;
+}
+</style>
 <title>討論區</title>
 <script>
 	var u_id = "${loginBean.u_id}";
@@ -25,12 +34,25 @@
 				var users = JSON.parse(xhr.responseText);
 				var content = "<table align='right'>";
 				for (var i = 0; i < users.length; i++) {
+					var goUpdateChat = "<c:url value='/goUpdateChat/' />";
 					content += "<tr><td style='text-align: center;' width=20%><div>"
-							+ users[i].u_ID
+							+ "<br>"
+							+ "<img width='80%' style='border-radius: 10%;' src='"
+							+ users[i][1].pictureString
+							+ "'>"
+							+ "<br>"
+							+ users[i][0].u_ID
 							+ "</div></td>"
-							+ "<td style='text-align: left;' width=80%><div style='min-height: 200px;'>"
-							+ users[i].c_Conts
-							+ "</div></td></tr>";
+							+ "<td style='text-align: left;' width=80%><div style='min-height: 180px;'><p align='right'>"
+							+ users[i][0].c_Date
+							+ "<hr style='margin: -20px'></p>"
+							+ users[i][0].c_Conts
+							+ "</div><span>"
+							+ "<a href='"
+							+  goUpdateChat + users[i][0].c_ID
+							+ "'><i id='iconPos' class='fas fa-ellipsis-v'></i></a>"
+							+ "</span></td></tr>";
+					console.log(users[i]);
 				}
 				content += "</table>";
 				var selectAll = document.getElementById("selectAll");
@@ -144,7 +166,7 @@
 					<table align='right' style='width: 80%;'>
 						<tr>
 							<td>
-							<textarea id='c_Conts' style='min-height: 100px;' placeholder='請輸入文章內容...'></textarea>
+							<textarea id='c_Conts' style='min-height: 100px;' placeholder='請輸入回覆內容...'></textarea>
 							<span id='result1c'>&nbsp;</span>
 							</td>
 						</tr>

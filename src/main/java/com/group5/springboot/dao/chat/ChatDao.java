@@ -22,10 +22,14 @@ public interface ChatDao {
 	
 	public List<Chat_Reply> findAllChatReply(int c_IDr);
 	
+	public Chat_Reply selectChatReplyById(int c_ID);
+	
 	public void insertFirstChatReply(Chat_Info chat);
 	
 	public void insertChatReply(Chat_Reply chat);
 	
 	public void deleteChatReply(int c_IDr);
+	
+	public void updateChatReply(Chat_Reply chat);
 
 }

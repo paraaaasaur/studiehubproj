@@ -28,7 +28,7 @@ public class CartViewController {
 	@Autowired
 	private CartValidator cartValidator;
 	
-	public static ArrayList<?> cartInfo = new ArrayList<>();
+	public static HashMap<String, Object> cartInfoMap = new HashMap<>();
 	
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
@@ -106,32 +106,38 @@ public class CartViewController {
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping(value = "/cart.controller/receiveEcpayReturnInfo")
 	public void toReceiveEcpayReturnInfo(
-			@RequestParam Map<String, String> ecpayResult
-			, Model model
+			@RequestParam Map<String, String> map
+//			, Model model
 			) {
-		System.out.println("*********************** 回傳結果如下 **************************");
-		ecpayResult.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
-		System.out.println("*********************** 回傳結果如上 **************************");
-		String rtnCode = ecpayResult.get("RtnCode");
-		String paymentType = ecpayResult.get("PaymentType");
+		System.out.println("*********************** 回傳結果如下(2) **************************");
+		map.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
+		System.out.println("*********************** 回傳結果如上(2) **************************");
+		String rtnCode = map.get("RtnCode");
+		String paymentType = map.get("PaymentType");
 
-		Boolean success = ("Credit_CreditCard".equals(paymentType) && "1".equals(rtnCode))? true : false;
+//		Boolean success = ("Credit_CreditCard".equals(paymentType) && "1".equals(rtnCode))? true : false;
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("ecpayResult", ecpayResult);
-		map.put("success", success);
-		// ❗
-		model.addAttribute("ecpayResultAttr", map);
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("ecpayResult", ecpayResult);
+//		map.put("success", success);
+		// ❗ 要移除這個
+//		cartInfo.put("ecpayResultAttr", map);
+		cartInfoMap.put("ecpayResultAttr", map);
 		
 		return;
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = "/cart.controller/clientResultPage")
-	public String toClientResultPage(@RequestParam Map<String, String> map) {
+	public String toClientResultPage(
+			@RequestParam Map<String, String> map
+//			, Model model
+			) {
 		System.out.println("*********************** 回傳結果如下 **************************");
 		map.forEach((paramName, paramValue) -> System.out.println(paramName + " : " + paramValue));
 		System.out.println("*********************** 回傳結果如上 **************************");
+		
+		
 		return "cart/cartClientResultPage";
 	}
 	

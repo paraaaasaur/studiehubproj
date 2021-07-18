@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group5.springboot.model.cart.OrderDetail;
+import com.group5.springboot.model.cart.testing.OrderDetail;
 import com.group5.springboot.utils.SystemUtils;
 
 @Entity

@@ -1,4 +1,4 @@
-package com.group5.springboot.model.cart;
+package com.group5.springboot.model.cart.testing;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

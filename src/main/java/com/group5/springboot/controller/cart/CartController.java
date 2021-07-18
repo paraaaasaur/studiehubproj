@@ -161,6 +161,13 @@ public class CartController {
 		return htmlForm;
 	}
 
+	@PostMapping("/cart.controller/getEcpayResultAttr")
+	public Map<String, String> getEcpayResultAttr() {
+		@SuppressWarnings("unchecked")
+		Map<String, String> map = (Map<String, String>) CartViewController.cartInfoMap.get("ecpayResultAttr");
+		CartViewController.cartInfoMap.remove("ecpayResultAttr");
+		return map;
+	}
 
 	
 	
@@ -185,7 +192,7 @@ public class CartController {
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
 //		String ngrokhttps = "";
-		String ngrokhttp = "http://2f567d1892c0.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
+		String ngrokhttp = "http://b7db18cbf4fa.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
 
 		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
 		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";
@@ -199,10 +206,10 @@ public class CartController {
 		aioObj.setItemName(myItemName);
 		aioObj.setReturnURL(myReturnURL);
 		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
-		aioObj.setCustomField1("おいおいおい");
-		aioObj.setCustomField2("きｔらあああああ");
-		aioObj.setCustomField3("ガンキマリ");
-		aioObj.setCustomField4("僕を応援しろよ僕を");
+//		aioObj.setCustomField1("おいおいおい");
+//		aioObj.setCustomField2("きｔらあああああ");
+//		aioObj.setCustomField3("ガンキマリ");
+//		aioObj.setCustomField4("僕を応援しろよ僕を");
 		aioObj.setClientBackURL(myClientBackURL);
 		return aioObj;
 	}

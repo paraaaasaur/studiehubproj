@@ -48,12 +48,15 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
+    var loginEvent = document.getElementById('loginEvent');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
+        loginEvent.style.display = "block";
+    	loginALLEvent.style.display = "block";
     } 
     
 }
@@ -75,7 +78,14 @@ window.onload = function(){
 						<hr>
 
 							<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
-								<table border="1">
+                            <table border="1">
+                                <tr>
+                                    <td>導師名稱:</td>
+                                    
+                                        <td><input type="hidden" name="u_ID" value="${loginBean.u_id}"/>${loginBean.u_id}
+                                        </td>
+                                        
+                                    </tr>
                                     <tr>
                                         <td>課程名稱:</td>
                                         <td><form:input path="p_Name"/>
@@ -87,8 +97,8 @@ window.onload = function(){
                                         <td>課程類別:</td>
                                         <td><form:select path="p_Class">
                                         		<form:option label="請挑選" value="-1"/>
-                                        		<form:option label="英文" value="en"/>
-                                        		<form:option label="日文" value="ja"/>
+                                        		<form:option label="英文" value="英文"/>
+                                        		<form:option label="日文" value="日文"/>
                                         	</form:select>
                                         	<form:errors path='p_Class' cssClass="error"/>
                                         	</td>

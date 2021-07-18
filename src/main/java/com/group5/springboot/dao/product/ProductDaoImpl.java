@@ -1,5 +1,6 @@
 package com.group5.springboot.dao.product;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,8 @@ public class ProductDaoImpl implements ProductDao {
 	
 
 	@Override
-	public void save(ProductInfo productInfo) {
+	public void save(ProductInfo productInfo,String u_ID) {
+		productInfo.setU_ID(u_ID);
 		em.persist(productInfo);
 	}
 
@@ -28,21 +30,47 @@ public class ProductDaoImpl implements ProductDao {
 		HashMap<String, Object> map = new HashMap<>();
 		String hql = "from ProductInfo where p_Status = 1";
 		List list = em.createQuery(hql).getResultList();
+		ArrayList<Integer> ratedIndexList = new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			String rating = "select AVG(ratedIndex) from Rating where p_ID = " + String.valueOf((i+1));
+			Integer ratedIndex = (Integer)em.createNativeQuery(rating).getSingleResult();
+			ratedIndexList.add(ratedIndex);
+		}
+		map.put("ratedIndex", ratedIndexList);
 		map.put("size",list.size());
 		map.put("list", list);
 		return map;
 	}
 
 	@Override
-	public Map<String, Object> queryByName(String p_Name) {
+	public Map<String, Object> queryByName(String p_Name, String typeName) {
 
+//		HashMap<String, Object> map = new HashMap<>();
+//		String hql = "FROM ProductInfo p WHERE p.p_Name like :name";
+//		List<ProductInfo> list = em.createQuery(hql, ProductInfo.class)
+//					  .setParameter("name", "%"+p_Name+"%")
+//					  .getResultList();
+//		String typeName = "from ProductInfo p where p.p_Class like :typename";
+//		List<ProductInfo> typeResult = em.createQuery(typeName, ProductInfo.class).setParameter("typename", "%"+p_Name+"%").getResultList();
+//		map.put("size", list.size());
+//		map.put("typeName", typeResult);
+//		map.put("list", list);
+//		map.put("typeNameSize", typeResult.size());
+		if (p_Name == "") {
+			p_Name = "null";
+		}
 		HashMap<String, Object> map = new HashMap<>();
-		String hql = "FROM ProductInfo p WHERE p.p_Name like :name";
-		List<ProductInfo> list = em.createQuery(hql, ProductInfo.class)
-					  .setParameter("name", "%"+p_Name+"%")
-					  .getResultList();
-		map.put("size", list.size());
+		String hql = "from ProductInfo p where p.p_Name like:name or p_Class like :typeName";
+		List list = em.createQuery(hql).setParameter("name", "%"+p_Name+"%").setParameter("typeName", typeName).getResultList();
+		ArrayList<Integer> ratedIndexList = new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			String rating = "select AVG(ratedIndex) from Rating where p_ID = " + String.valueOf(list.get(i));
+			Integer ratedIndex = (Integer)em.createNativeQuery(rating).getSingleResult();
+			ratedIndexList.add(ratedIndex);
+		}
+		map.put("ratedIndex", ratedIndexList);
 		map.put("list", list);
+		map.put("size",list.size());
 		return map;
 	}
 

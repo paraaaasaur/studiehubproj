@@ -33,6 +33,7 @@
 
 <script>
 var u_id = "${loginBean.u_id}";
+var userPicString = "${loginBean.pictureString}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -60,12 +61,15 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
+	var loginEvent = document.getElementById('loginEvent');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
+		loginEvent.style.display = "block";
+    	loginALLEvent.style.display = "block";
     } 
 
 
@@ -88,6 +92,24 @@ window.onload = function(){
 				dataArea.innerHTML = showData(result);
 			}
 		}
+	})
+
+	//購買商品
+	$('#buyProduct').on('click',function(){
+		var p_ID = "${product.p_ID}";
+		var u_ID = "${loginBean.u_id}";
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET',"<c:url value='/buyProduct?p_ID="+p_ID+"&u_ID="+u_ID+"' />",true);
+		xhr.send();
+
+		alert("課程已加入購入車");
+
+
+
+
+
+
+
 	})
     
 }
@@ -141,7 +163,6 @@ function showData(textObj) {
 				</div>
 				<div id='dataArea'>
 
-
 					<h2>${product.p_Name}</h2>
 					<input hidden id="p_ID" value="${product.p_ID}">
 					<c:choose>
@@ -163,6 +184,9 @@ function showData(textObj) {
 					<hr>
 					<h2>關於課程</h2>
 					<div>${product.p_DESC}</div>
+					<br>
+					<br>
+					<div style="text-align: center;"><button type="button" id="buyProduct" style="text-align: center;">購買此課程</button></div>
 					<hr>
 					<h2>評論</h2>
 

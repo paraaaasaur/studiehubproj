@@ -41,6 +41,7 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
+	var loginEvent = document.getElementById('loginEvent');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;

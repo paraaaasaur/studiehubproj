@@ -7,7 +7,7 @@ import com.group5.springboot.model.product.ProductInfo;
 public interface ProductDao {
 
 	// 儲存資料
-	public void save(ProductInfo productInfo);
+	public void save(ProductInfo productInfo,String u_ID);
 
 	// 搜尋全部資料
 	Map<String, Object> findAll();

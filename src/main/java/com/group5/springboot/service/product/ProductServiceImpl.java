@@ -17,8 +17,8 @@ public class ProductServiceImpl {
 	ProductDaoImpl productDao;
 
 	// 儲存資料
-		public void save(ProductInfo productInfo) {
-			productDao.save(productInfo);
+		public void save(ProductInfo productInfo,String u_ID) {
+			productDao.save(productInfo,u_ID);
 		}
 
 		// 搜尋全部資料

@@ -81,7 +81,7 @@ public class ProductController {
 	public String accessResult(@PathVariable Integer p_ID,Model model) {
 		ProductInfo productInfo = productService.findByProductID(p_ID);
 		productInfo.setP_Status(1);
-		productService.save(productInfo);
+		productService.update(productInfo);
 		return "product/pendingAccess";
 	}
 	
@@ -154,7 +154,7 @@ public class ProductController {
 	}
 
 	@PostMapping("insertProduct")
-	public String saveProduct(@RequestParam String descString, @ModelAttribute("productInfo")ProductInfo productInfo,BindingResult result,RedirectAttributes ra) {
+	public String saveProduct(@RequestParam String u_ID ,@RequestParam String descString, @ModelAttribute("productInfo")ProductInfo productInfo,BindingResult result,RedirectAttributes ra) {
 		prodcutValidator.validate(productInfo, result);
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
@@ -167,13 +167,15 @@ public class ProductController {
 		MultipartFile img = productInfo.getImgFile();
 		MultipartFile video = productInfo.getVideoFile();
 		
+		productInfo.setU_ID(u_ID);
+		
 		
 		//建立時間
 		productInfo.setP_createDate(new Date());
 		//desc轉檔
 		Clob clob = SystemUtils.stringToClob(descString);
 		productInfo.setP_DESC(clob);
-		productService.save(productInfo);
+		productService.save(productInfo,u_ID);
 		try {
 			String imgext = SystemUtils.getExtFilename(img.getOriginalFilename());
 			String videoext = SystemUtils.getExtFilename(video.getOriginalFilename());
@@ -192,7 +194,7 @@ public class ProductController {
 			video.transferTo(videoFile);
 			productInfo.setP_Video(SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
 			productInfo.setP_Status(0);
-			productService.save(productInfo);
+			productService.update(productInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

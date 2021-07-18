@@ -51,6 +51,7 @@ public class ProductInfo {
 	private String p_Img;
 	@Column(columnDefinition = "NVARCHAR(255)")
 	private String p_Video;
+	@Column(insertable = true,updatable = true)
 	private String u_ID;
 	//0 = 審核中 1 = 審核通過
 	private Integer p_Status;
@@ -114,7 +115,7 @@ public class ProductInfo {
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
+	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = false, updatable = false)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {		return user_Info;	}
 	public void setUser_Info(User_Info user_Info) {		this.user_Info = user_Info;	}

@@ -114,8 +114,8 @@ textarea {
 							<td>課程類別:</td>
 							<td><form:select path="p_Class">
 									<form:option label="請挑選" value="-1" />
-									<form:option label="英文" value="en" />
-									<form:option label="日文" value="ja" />
+									<form:option label="英文" value="英文" />
+									<form:option label="日文" value="日文" />
 								</form:select> <form:errors path='p_Class' cssClass="error" /></td>
 						</tr>
 						<tr>

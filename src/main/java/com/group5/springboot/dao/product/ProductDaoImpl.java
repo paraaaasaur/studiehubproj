@@ -20,7 +20,8 @@ public class ProductDaoImpl implements ProductDao {
 	
 
 	@Override
-	public void save(ProductInfo productInfo) {
+	public void save(ProductInfo productInfo,String u_ID) {
+		productInfo.setU_ID(u_ID);
 		em.persist(productInfo);
 	}
 

@@ -13,7 +13,7 @@ public interface ProductDao {
 	Map<String, Object> findAll();
 
 	// 名字模糊搜尋
-	public Map<String, Object> queryByName(String p_Name);
+	public Map<String, Object> queryByName(String p_Name, String typeName);
 
 	// findbyp_id
 	ProductInfo findByProductID(Integer p_ID);
@@ -30,5 +30,6 @@ public interface ProductDao {
 	public Map<String, Object> pendingAccess();
 	
 	public Integer stars(Integer p_ID);
+
 
 }

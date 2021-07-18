@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,6 +40,15 @@ public class RatingDao {
 		return map;
 		
 				
+	}
+	
+	public Integer ratingAVG(Integer p_ID) {
+		String id = String.valueOf(p_ID);
+		String hql ="select avg(ratedIndex) from Rating where p_ID = "+ id;
+		Integer result = (Integer) em.createNativeQuery(hql).getSingleResult();
+		return result;
+		
+		
 	}
 
 }

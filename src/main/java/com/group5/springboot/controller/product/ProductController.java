@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.ProductValidator;
@@ -35,6 +36,18 @@ public class ProductController {
 	ProductValidator prodcutValidator;
 	@Autowired
 	ServletContext context;
+	@Autowired
+	CartItemService cartItemService;
+	
+	@GetMapping("/buyProduct")
+	public String buyProduct(@RequestParam Integer p_ID,@RequestParam String u_ID,Model model) {
+		System.out.println("**********"+p_ID+u_ID);
+		cartItemService.insert(p_ID, u_ID);
+		ProductInfo product = productService.findByProductID(p_ID);
+		model.addAttribute("product", product);
+		return "product/Product";
+		
+	}
 	
 	@GetMapping("/takeClass/{p_ID}")
 	public String takeClass(@PathVariable Integer p_ID,Model model) {

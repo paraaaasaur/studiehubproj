@@ -48,12 +48,15 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
+    var loginEvent = document.getElementById('loginEvent');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
+        loginEvent.style.display = "block";
+    	loginALLEvent.style.display = "block";
     } 
     
 }
@@ -76,6 +79,7 @@ window.onload = function(){
 
 							<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
 								<table border="1">
+                                    <form:hidden path="u_ID"/>${loginBean.u_id}
                                     <tr>
                                         <td>課程名稱:</td>
                                         <td><form:input path="p_Name"/>

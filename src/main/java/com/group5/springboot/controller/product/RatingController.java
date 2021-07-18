@@ -29,8 +29,14 @@ public class RatingController {
 	
 	@GetMapping(value = "/findRatingById", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> findRatingById(@RequestParam Integer p_ID){
-		System.out.println(p_ID);
 		return ratingService.findRatingByProductID(p_ID);
+	}
+	
+	@GetMapping(value = "/ratingAVG", produces = "application/json; charset=UTF-8")
+	public @ResponseBody Integer ratingAVG(@RequestParam Integer p_ID){
+		
+		return ratingService.ratingAVG(p_ID);
+		
 	}
 	
 	

@@ -13,41 +13,22 @@
 <title>Studie Hub</title>
 
 <script>
-var u_id = "${loginBean.u_id}";
+if("${success}"=="管理員登入成功"){alert("${"管理員登入成功!"}")}
+
+var adminId = "${adminId}";
 
 window.onload = function(){
     var logout = document.getElementById("logout");
-    logout.onclick = function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                var result = JSON.parse(xhr.responseText);
-                if(result.success){
-                    alert(result.success);
-                    top.location = '<c:url value='/' />';
-                }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
-                }
-            }
-        }
-    }
-    
-    //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
-    if(u_id){
+    if(adminId){
     	loginHref.hidden = true;
-    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
-    } 
+    }
+    
+   
     
     var dataArea = document.getElementById("dataArea");
 	var query = document.getElementById("query");
@@ -90,7 +71,7 @@ function showData(textObj) {
 	console.log(obj);
 	console.log(size);
 	console.log(products);
-    let segment = "<table border='1' style = 'width:1300px;text-align: center;'>";
+    let segment = "<table border='1' style = 'width:100%;text-align: center;'>";
         if (size == 0) {
 			segment += "<tr><th colspan='8'>查無資料</th></tr>";
 		} else {
@@ -126,7 +107,7 @@ function showData(textObj) {
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 				<h2 align='center'>課程資訊</h2>
 				<hr>
 				<div style="text-align: center;">

@@ -27,8 +27,8 @@ public class ProductServiceImpl {
 		}
 
 		// 名字模糊搜尋
-		public Map<String, Object> queryByName(String p_Name){
-			return productDao.queryByName(p_Name);
+		public Map<String, Object> queryByName(String p_Name, String typeName){
+			return productDao.queryByName(p_Name, typeName);
 		}
 
 		// findbyp_id

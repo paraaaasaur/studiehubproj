@@ -5,6 +5,7 @@ import java.sql.Clob;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.product.ProductServiceImpl;
+import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.ProductValidator;
 
@@ -38,6 +41,8 @@ public class ProductController {
 	ServletContext context;
 	@Autowired
 	CartItemService cartItemService;
+	@Autowired
+	EntityManager em;
 	
 	@GetMapping("/buyProduct")
 	public String buyProduct(@RequestParam Integer p_ID,@RequestParam String u_ID,Model model) {
@@ -145,8 +150,7 @@ public class ProductController {
 				throw new RuntimeException("檔案上傳發生異常: "+ e.getMessage());
 			}
 		}
-		
-		
+		productInfo.setP_DESC(SystemUtils.stringToClob(descString));
 		productInfo.setP_Status(0);
 		productService.update(productInfo);
 		ra.addFlashAttribute("successMessage",productInfo.getP_Name()+"更新成功");
@@ -166,8 +170,8 @@ public class ProductController {
 		}
 		MultipartFile img = productInfo.getImgFile();
 		MultipartFile video = productInfo.getVideoFile();
-		
-		productInfo.setU_ID(u_ID);
+		User_Info user_Info = em.find(User_Info.class, u_ID);
+		productInfo.setUser_Info(user_Info);
 		
 		
 		//建立時間

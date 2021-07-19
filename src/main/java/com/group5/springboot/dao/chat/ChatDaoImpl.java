@@ -101,7 +101,13 @@ public class ChatDaoImpl implements ChatDao{
 
 	@Override
 	public void updateChatReply(Chat_Reply chat_Reply) {
-		em.merge(chat_Reply);
+		Chat_Reply crBean = em.find(Chat_Reply.class, chat_Reply.getC_ID());
+		Chat_Info cBean = em.find(Chat_Info.class, chat_Reply.getC_IDr());
+		User_Info uBean = em.find(User_Info.class, chat_Reply.getU_ID());
+		crBean.setC_IDr(cBean.getC_ID());
+		crBean.setU_ID(uBean.getU_id());
+		crBean.setC_Conts(chat_Reply.getC_Conts());
+		em.merge(crBean);
 	}
 
 }

@@ -32,15 +32,15 @@ window.onload = function(){
 					  </tr>
 					  <tr>
 					    <td align='left'>文章編號: </td>
-						<td colspan='2' align='center'><form:input path="c_IDr"/><br><form:errors path="c_IDr" cssClass="error"/></td>
+						<td colspan='2' align='center'><form:input path="c_IDr" readonly="true"/><br><form:errors path="c_IDr" cssClass="error"/></td>
 					  </tr>
 					  <tr>
 					    <td align='left'>日期: </td>
-						<td colspan='2' align='center'><form:input path="c_Date"/><br><form:errors path="c_Date" cssClass="error"/></td>
+						<td colspan='2' align='center'><form:input path="c_Date" readonly="true"/><br><form:errors path="c_Date" cssClass="error"/></td>
 					  </tr>
 					  <tr>
 					    <td align='left'>帳號: </td>
-						<td colspan='2' align='center'><form:input path="U_ID"/><br><form:errors path="U_ID" cssClass="error"/></td>
+						<td colspan='2' align='center'><form:input path="U_ID" readonly="true"/><br><form:errors path="U_ID" cssClass="error"/></td>
 					  </tr>
 					  <tr>
 					    <td align='left'>內容: </td>

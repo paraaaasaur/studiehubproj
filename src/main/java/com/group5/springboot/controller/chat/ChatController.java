@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -198,15 +197,4 @@ public class ChatController {
 		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
 	}
 	
-	@ModelAttribute("chatReply")
-	public Chat_Reply getChatReply(@RequestParam(value="c_ID", required = false ) Integer c_ID) {
-		Chat_Reply chat_Reply = null;
-		if (c_ID != null) {
-			chat_Reply = chatService.selectChatReplyById(c_ID);
-		} else {
-			chat_Reply = new Chat_Reply();
-		}
-		return chat_Reply;
-	}
-
 }

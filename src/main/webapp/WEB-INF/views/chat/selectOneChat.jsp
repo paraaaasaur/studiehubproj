@@ -47,11 +47,13 @@
 							+ users[i][0].c_Date
 							+ "<hr style='margin: -20px'></p>"
 							+ users[i][0].c_Conts
-							+ "</div><span>"
-							+ "<a href='"
-							+  goUpdateChat + users[i][0].c_ID
-							+ "'><i id='iconPos' class='fas fa-ellipsis-v'></i></a>"
-							+ "</span></td></tr>";
+							+ "</div><span>";
+							if(users[i][0].u_ID==u_id){
+								content += "<a href='"
+								+  goUpdateChat + users[i][0].c_ID
+								+ "'><i id='iconPos' class='fas fa-ellipsis-v'></i></a>";
+							}
+					content += "</span></td></tr>";
 					console.log(users[i]);
 				}
 				content += "</table>";

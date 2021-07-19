@@ -151,20 +151,20 @@ window.onload = function(){
 										<option value="其他">其他</option>
 									</select></td>
 								</tr>
-								<tr>
-									<td style="width:60px;">內容:</td>
-									<td style="width:650px;"><input type="text" name="c_Conts" id="c_Conts" style="width:650px;" placeholder="請輸入文章內容..."><span id="result2c">&nbsp;</span></td>
-								</tr>
 								<!--<tr>
 									<td style="width:60px;">內容:</td>
-									<td style="width:650px;"><textarea name="c_Contss" id="c_Contss" placeholder="請輸入文章內容..."></textarea>
+									<td style="width:650px;"><input type="text" name="c_Conts" id="c_Conts" style="width:650px;" placeholder="請輸入文章內容..."><span id="result2c">&nbsp;</span></td>
+								</tr>-->
+								<tr>
+									<td style="width:60px;">內容:</td>
+									<td style="width:650px;"><textarea name="c_Conts" id="c_Conts" placeholder="請輸入文章內容..."></textarea>
 									<span id="result2c">&nbsp;</span>
 									</td>
-								</tr>-->
+								</tr>
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">
 										<button type="button" id="autoInput">一鍵</button> &nbsp;
-										<button type="button" class="primary" id="sendData">送出</button> &nbsp;
+										<input type="submit" class="primary" id="sendData"> &nbsp;
 										<input type="reset" value="清除">
 									</td>
 								</tr>
@@ -183,8 +183,8 @@ window.onload = function(){
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
-	<!--<script>
-	ClassicEditor.create( document.querySelector( '#c_Contss' ), {
+	<script>
+	ClassicEditor.create( document.querySelector( '#c_Conts' ), {
 		// 這裡可以設定 plugin
 	})
 		.then( editor => {
@@ -193,6 +193,6 @@ window.onload = function(){
 		 .catch( err => {
 			console.error( err.stack );
 		 });
-	</script>-->
+	</script>
 </body>
 </html>

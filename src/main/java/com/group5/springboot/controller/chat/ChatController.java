@@ -171,8 +171,8 @@ public class ChatController {
 	public Map<String, String> deleteChatAdmin(@PathVariable(required = true) int c_ID){
 		Map<String, String> map = new HashMap<>();
 		try {
-			chatService.deleteChat(c_ID);
 			chatService.deleteChatReply(c_ID);
+			chatService.deleteChat(c_ID);
 			map.put("success", "刪除成功");
 		} catch (Exception e) {
 			map.put("fail", "刪除失敗，請再試一次...");

@@ -152,6 +152,9 @@
 	    	userId.innerHTML = u_id;
 	    }
 	    
+	    $('#autoInput').on('click', function(){
+	    	$('#c_Conts').val("我也想知道，同問");
+	    })
 	}
 </script>
 </head>
@@ -174,6 +177,7 @@
 						</tr>
 						<tr>
 							<td>
+							<button type="button" id="autoInput">一鍵</button> &nbsp;
 							<button type='button' class='primary' id='sendData'>送出</button>
 							</td>
 						</tr>

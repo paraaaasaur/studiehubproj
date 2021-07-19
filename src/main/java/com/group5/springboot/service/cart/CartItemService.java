@@ -16,7 +16,7 @@ import com.group5.springboot.model.product.ProductInfo;
 
 @Service
 @Transactional
-public class CartItemService implements ICartItemService{
+public class CartItemService implements ICartItemService {
 	@Autowired // SDI✔
 	private CartItemDao cartItemDao;
 	@Autowired // SDI✔
@@ -112,6 +112,9 @@ public class CartItemService implements ICartItemService{
 	private void refillCart(String u_id) {
 		cartItemDao.insert(1, u_id);
 		cartItemDao.insert(2, u_id);
+		cartItemDao.insert(3, u_id);
+		cartItemDao.insert(4, u_id);
+		cartItemDao.insert(5, u_id);
 		return;
 	}
 

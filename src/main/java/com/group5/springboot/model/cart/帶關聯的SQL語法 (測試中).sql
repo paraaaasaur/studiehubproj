@@ -84,6 +84,12 @@ INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstn
 GO
 
 -- product part
+-- old
+INSERT ProductInfo VALUES ('image/jpeg', 'RU', 'halashu', 0x, 'RU_Reading', 7000, null, '2000-01-02', 'ken', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'EN', 'awesome', 0x, 'EN_Speaking', 6000, null, '1999-12-12', 'nick', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'JP', 'subarasheep', 0x, 'JP_Reading', 11893, null, '1999-12-12', 'yen', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'AR', 'awesome', 0x, 'AR_Speaking', 6000, null, '1999-12-12', 'yuz', 'video/x-matroska'
+-- new
 INSERT ProductInfo VALUES ('RU', 'halashu', 0x, 'RU_Reading', 7000, 1, null, '2000-01-02', 'fbk001', 'image/jpeg', 'video/x-matroska')
 INSERT ProductInfo VALUES ('EN', 'awesome', 0x, 'EN_Speaking', 6000, 1, null, '1999-12-12', 'fbk001', 'image/jpeg', 'video/x-matroska')
 INSERT ProductInfo VALUES ('JP', 'subarasheep', 0x, 'JP_Reading', 11893, 1, null, '1999-12-12', 'miosya', 'image/jpeg', 'video/x-matroska')

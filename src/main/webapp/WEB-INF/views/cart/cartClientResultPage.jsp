@@ -154,11 +154,11 @@
 					console.log(ecpayResultJson);
 					
 					let segment = '';
-					segment += '<h2>請謹慎保留您的<font color="red">交易編號(' + ecpayResultJson.MerchantTradeNo + ')</font>，以利日後客服為您查詢用。</h2>';
+					segment += '<h2>請謹慎保留您的<font color="red">訂單編號(' + ecpayResultJson.MerchantTradeNo + ')</font>，以利日後客服為您查詢用。</h2>';
 					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '支付方式' + '</li><li style="width: 70%;">' + '信用卡支付' + '</li></ul></td></tr>';
 					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '您的姓名' + '</li><li style="width: 70%;">' + ecpayResultJson.CustomField2 + '</li></ul></td></tr>';
 					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易時間' + '</li><li style="width: 70%;">' + ecpayResultJson.TradeDate + '</li></ul></td></tr>';
-					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易編號' + '</li><li style="width: 70%;">' + ecpayResultJson.MerchantTradeNo + '</li></ul></td></tr>';
+					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '訂單編號' + '</li><li style="width: 70%;">' + ecpayResultJson.MerchantTradeNo + '</li></ul></td></tr>';
 					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '交易金額' + '</li><li style="width: 70%;">' + ecpayResultJson.TradeAmt + '</li></ul></td></tr>';
 					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '手續費' + '</li><li style="width: 70%;">' + ecpayResultJson.PaymentTypeChargeFee + '</li></ul></td></tr>';
 					segment += '<tr><td><ul class="actions fit"><li style="width: 30%;">' + '訂單狀態' + '</li><li style="width: 70%;">' + ecpayResultJson.RtnMsg + '</li></ul></td></tr>';

@@ -119,6 +119,12 @@
 				let rowPerPage = 10;
 				let maxPageNum = 10;
 				let cartItems = [];
+				let theadContent = "<th style='text-align: center;'>刪除</th>"
+											+ "<th style='text-align: center;'>品項編號</th>"
+											+ "<th style='text-align: center;'>課程代號</th>"
+											+ "<th style='text-align: center;'>用戶帳號</th>"
+											+ "<th style='text-align: center;'>品項添入時間</th>"
+											+ "<th style='text-align: center;'>操作</th>"
 
 				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedCartids陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
@@ -287,13 +293,13 @@
 						segments = [];
 						for (let i = 0; i < cartItems.length; i++) {
 							let temp0 =	 "<tr>" + 
-												"<td><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
+												"<td style='text-align: center;'><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
 													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + cartItems[i].cart_id + "'></label></td>" +
-												"<td><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
-												"<td><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
-												"<td><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +
-												"<td><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
-												"<td><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].cart_id + "'>修改</a></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
+												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].cart_id + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}
@@ -324,7 +330,7 @@
 								document.querySelector('#deleteBtn').disabled = true;
 							}
 						}
-												
+
 					})
 
 					//【自訂函數 10】主程式函數

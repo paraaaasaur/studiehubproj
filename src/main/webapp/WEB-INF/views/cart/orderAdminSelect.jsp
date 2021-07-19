@@ -61,7 +61,7 @@
 											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
 											<option value='u_id'>會員帳號</option>
 											<option value='o_id'>訂單編號</option>
-											<option value='ecpay_trade_no'>交易編號</option>
+											<option value='ecpay_o_id'>訂單編號<font color='red'>(綠界)</font></option>
 											<option value='p_id'>課程代號</option>
 											<option value='p_name'>課程名稱</option>
 											<option value='u_lastname'>會員姓氏</option>
@@ -121,6 +121,15 @@
 				let rowPerPage = 10;
 				let maxPageNum = 10;
 				let orders = [];
+				let theadContent = "<th style='text-align: center'>刪除</th>"
+											+ "<th style='text-align: center'>訂單編號<br></th>"
+											+ "<th style='text-align: center'>訂單編號<font color='red'>(綠界)</font><br></th>"
+											+ "<th style='text-align: center'>課程代號<br></th>"
+											+ "<th style='text-align: center'>用戶帳號<br></th>"
+											+ "<th style='text-align: center'>訂單狀態<br></th>"
+											+ "<th style='text-align: center'>訂單時間<br></th>"
+											+ "<th style='text-align: center'>訂單總額<br></th>"
+											+ "<th style='text-align: center'>操作</th>";
 
 				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedIdentitySeeds陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
@@ -204,7 +213,7 @@
 							$('input[type="datetime-local"]').setNow();
 							// <2> 唯一值
 						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' 
-									|| this.value == 'p_name' || this.value == 'ecpay_trade_no'){
+									|| this.value == 'p_name' || this.value == 'ecpay_o_id'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
 							$(searchBarHanger1).html("<input type='search' id='searchBar' placeholder='搜尋'>");
@@ -242,7 +251,7 @@
 						// ❗❓ 有沒有簡潔一點的寫法啊
 						let forDate = (searchBy.val() == 'o_date');
 						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
-												searchBy.val() == 'p_name' || searchBy.val() == 'o_status' || searchBy.val() == 'ecpay_trade_no');
+												searchBy.val() == 'p_name' || searchBy.val() == 'o_status' || searchBy.val() == 'ecpay_o_id');
 						let forRange = (searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id');
 
 						if(forDate) {// 日期範圍查詢
@@ -269,16 +278,7 @@
 								// 掛頁籤
 								appendPegination();
 								// 掛th
-								theadArea.html(
-									"<th>DELETE BUTTON</th>"
-									+ "<th>訂單編號<br>(READ-ONLY)</th>"
-									+ "<th>課程代號<br></th>"
-									+ "<th>用戶帳號<br></th>"
-									+ "<th>訂單狀態<br></th>"
-									+ "<th>訂單時間<br></th>"
-									+ "<th>訂單總額<br></th>"
-									+ "<th>操作</th>"
-								);
+								theadArea.html(theadContent);
 								if (segments.length == 0) {
 									theadArea.html('');
 								}
@@ -317,15 +317,16 @@
 						for (let i = 0; i < orders.length; i++) {
 							totalPrice += orders[i].p_price;
 							let temp0 =	 "<tr>" + 
-												"<td><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
+												"<td style='text-align: center;'><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
 													"type='checkbox' value='" + orders[i].identity_seed + "'><label for='ckbox" + orders[i].identity_seed + "'></label></td>" +
-												"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
-												"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
-												"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
-												"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
-												"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
-												"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
-												"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].identity_seed + "'>修改</a></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].ecpay_o_id + "'>" + orders[i].ecpay_o_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
+												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].identity_seed + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}
@@ -362,16 +363,7 @@
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
 						console.log('Start of mainFunc()');
-						theadArea.html(
-								"<th>刪除</th>"
-								+ "<th>訂單編號<br>(READ-ONLY)</th>"
-								+ "<th>課程代號<br></th>"
-								+ "<th>用戶帳號<br></th>"
-								+ "<th>訂單狀態<br></th>"
-								+ "<th>訂單時間<br></th>"
-								+ "<th>訂單總額<br></th>"
-								+ "<th>操作</th>"
-						);
+						theadArea.html(theadContent);
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤
 						showTop100();
 						

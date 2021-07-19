@@ -62,7 +62,7 @@ public class OrderController {
 			) {
 		try {
 			
-			if ("o_status".equals(condition) || "u_id".equals(condition) || "u_email".equals(condition) || "ecpay_trade_no".equals(condition)) {
+			if ("o_status".equals(condition) || "u_id".equals(condition) || "u_email".equals(condition) || "ecpay_o_id".equals(condition)) {
 				// (1) 準確查詢
 				return orderService.selectBy(condition, value);
 			} else if ("p_name".equals(condition) || "u_firstname".equals(condition) || "u_lastname".equals(condition)) {

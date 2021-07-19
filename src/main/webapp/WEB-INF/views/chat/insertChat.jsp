@@ -71,6 +71,7 @@ window.onload = function(){
 				}
 			}
 		}
+		
 	}
 
 	
@@ -112,7 +113,12 @@ window.onload = function(){
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
     }
-
+    
+    $('#autoInput').on('click', function(){
+    	$('#c_Title').val("請問德文的你好怎麼說？");
+    	$('#c_Class').val("德文");
+    	$('#c_Conts').val("德文新手請教各位大大");
+    })
 		
 }
 </script>
@@ -157,6 +163,7 @@ window.onload = function(){
 								</tr>
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">
+										<button type="button" id="autoInput">一鍵</button> &nbsp;
 										<button type="button" class="primary" id="sendData">送出</button> &nbsp;
 										<input type="reset" value="清除">
 									</td>

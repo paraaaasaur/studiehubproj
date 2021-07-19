@@ -18,6 +18,9 @@ public class ChatValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		Chat_Reply chat_Reply = (Chat_Reply)target;
+		ValidationUtils.rejectIfEmpty(errors, "c_IDr",		"",  "不能空白!");
+		ValidationUtils.rejectIfEmpty(errors, "c_Date",		"",  "不能空白!");
+		ValidationUtils.rejectIfEmpty(errors, "U_ID",		"",  "不能空白!");
 		ValidationUtils.rejectIfEmpty(errors, "c_Conts",		"",  "回覆不能空白!");
 		
 	}

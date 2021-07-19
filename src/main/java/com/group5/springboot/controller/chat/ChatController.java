@@ -194,8 +194,19 @@ public class ChatController {
 			return "chat/updateChatReply";
 		}
 		chatService.updateChatReply(chat_Reply);
-		ra.addFlashAttribute("successMessage", "題目編號: " + chat_Reply.getC_ID() + "  修改成功!");
+		ra.addFlashAttribute("successMessage", "編號: " + chat_Reply.getC_ID() + "  修改成功!");
 		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
+	}
+	
+	@ModelAttribute("chatReply")
+	public Chat_Reply getChatReply(@RequestParam(value="c_ID", required = false ) Integer c_ID) {
+		Chat_Reply chat_Reply = null;
+		if (c_ID != null) {
+			chat_Reply = chatService.selectChatReplyById(c_ID);
+		} else {
+			chat_Reply = new Chat_Reply();
+		}
+		return chat_Reply;
 	}
 
 }

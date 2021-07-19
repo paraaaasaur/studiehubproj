@@ -58,6 +58,24 @@ public class CartController {
 		Arrays.asList(cart_ids).forEach(cartItemService::deleteASingleProduct);
 		return cartItemService.getCart(u_id);
 	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/clientAddProductToCart")
+	public Boolean clientAddProductToCart(
+			@RequestParam Integer p_ID
+			, @RequestParam String u_ID
+			, @RequestParam String toDo
+			) {
+		Boolean canBuy = (orderService.selectIfBoughtOrNot(p_ID, u_ID) && cartItemService.selectByProductId(p_ID, u_ID));
+		if ("query".equals(toDo)) {
+			return canBuy;
+		} else if ("buy".equals(toDo) && canBuy) {
+			return (cartItemService.insert(p_ID, u_ID) != null);
+		} else if ("remove".equals(toDo)) {
+			return cartItemService.deleteASingleProduct(u_ID, p_ID);
+		}
+		return false;
+	}
 
 	/***************************************************************************** */
 	@GetMapping(value = "/cart.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")

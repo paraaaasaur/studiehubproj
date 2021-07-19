@@ -70,13 +70,13 @@ public class OrderDao implements IOrderDao {
 		if (p_id == null || u_id == null) {
 			return false;
 		}
-		TypedQuery<OrderInfo> query = em.createQuery("SELECT FROM o.status OrderInfo o WHERE p_id = :pid AND u_id = :uid", OrderInfo.class);
+		TypedQuery<String> query = em.createQuery("SELECT o.o_status FROM OrderInfo o WHERE p_id = :pid AND u_id = :uid", String.class);
 		query.setParameter("pid", p_id);
 		query.setParameter("uid", u_id);
-		List<OrderInfo> list = query.getResultList();
+		List<String> list = query.getResultList();
 		Integer counter = 0;
-		for(OrderInfo orderInfo : list) {
-			if ("完成".equals(orderInfo.getO_status())) {
+		for(String status : list) {
+			if ("完成".equals(status)) {
 				counter++;
 			}
 		}

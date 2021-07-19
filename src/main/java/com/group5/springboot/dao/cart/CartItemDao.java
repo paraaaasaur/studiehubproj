@@ -200,9 +200,7 @@ public class CartItemDao implements ICartItemDao{
 			// 綁定關聯物件
 			cartBean.setUser_Info(uBean);
 			cartBean.setProductInfo(pBean);
-			System.out.println("1111111111111111111111111");
 			em.merge(cartBean);
-			System.out.println("222222222222222222222");
 			
 			return 1;
 		} else {
@@ -222,9 +220,8 @@ public class CartItemDao implements ICartItemDao{
 		return (deletedNum == 0)? false : true;
 	}
 	
-	@Override
+	@Override @Deprecated
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
-		
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid AND p_id = :pid");
 		query.setParameter("uid", u_id);
 		query.setParameter("pid", p_id);
@@ -236,7 +233,6 @@ public class CartItemDao implements ICartItemDao{
 	
 	
 	public boolean deleteASingleProduct(Integer cart_id) {
-		
 		Query query = em.createQuery("DELETE CartItem WHERE cart_id = :cartid");
 		query.setParameter("cartid", cart_id);
 		int deletedNum = query.executeUpdate();
@@ -249,8 +245,8 @@ public class CartItemDao implements ICartItemDao{
 		Query deleteQuery = em.createQuery("DELETE CartItem WHERE cart_id IN (:cartids)");
 		deleteQuery.setParameter("cartids", Arrays.asList(cart_ids));
 		Integer result = deleteQuery.executeUpdate();
+		
 		return result;
 	}
-	
 
 }

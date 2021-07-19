@@ -144,7 +144,7 @@ window.onload = function(){
 				}
 			}
 
-			// 【自訂函數 0】每次按下checkbox時會記錄下來哪些是有勾的、並把cartid存進checkedCartIds陣列裡，等到要刪除時存取之送出
+			/** 【自訂函數 0】每次按下checkbox時會記錄下來哪些是有勾的、並把cartid存進checkedCartIds陣列裡，等到要刪除時存取之送出 */
 			var memorize = function(checkboxObj){
 				let cartid = checkboxObj.value;
 				let idx = checkedCartIds.indexOf(cartid);
@@ -252,7 +252,8 @@ window.onload = function(){
 							// <3> 善後
 							checkedCartIds = [];
 							let tbodyContent = parseCart(xhr.responseText);
-							deleteBtn.innerHTML = '刪除勾選資料';
+							document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+							document.querySelector('#deleteBtn').disabled = true;
 							if (cartSize == 0) {
 								console.log('hi，現在cartSize = ' + cartSize);
 								$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何課程喔😉');

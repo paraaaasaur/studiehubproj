@@ -42,6 +42,15 @@ public class CartItemService implements ICartItemService {
 		return cartItemDao.selectLikeOperator(condition, value);
 	}
 	
+	/**
+	 * 用來查某商品是不是已經存在於購物車裡了。<br>
+	 * true > 尚未存在 = 可以加入購物車 <br>
+	 * false > 已存在 = 不允許加入購物車 <br>
+	 **/
+	public boolean selectByProductId(Integer p_id, String u_id) {
+		return cartItemDao.selectByPidUid(p_id, u_id);
+	}
+	
 	public Map<String, Object> selectBy(String condition, String value) {
 		return cartItemDao.selectBy(condition, value);
 	}
@@ -103,14 +112,21 @@ public class CartItemService implements ICartItemService {
 		}
 		return cart;
 	}
+
 	
 	// 測試用，插入p_id = 1 和 2的商品進購物車
 	private void refillCart(String u_id) {
-		cartItemDao.insert(1, u_id);
-		cartItemDao.insert(2, u_id);
-		cartItemDao.insert(3, u_id);
-		cartItemDao.insert(4, u_id);
-		cartItemDao.insert(5, u_id);
+		for(int i = 0; i <= 5; i++) {
+			try {
+				cartItemDao.insert(1, u_id);
+				cartItemDao.insert(2, u_id);
+				cartItemDao.insert(3, u_id);
+				cartItemDao.insert(4, u_id);
+				cartItemDao.insert(5, u_id);
+			} catch (Exception e) {
+				continue;
+			}
+		}
 		return;
 	}
 

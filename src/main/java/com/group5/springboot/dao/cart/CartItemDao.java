@@ -38,6 +38,20 @@ public class CartItemDao implements ICartItemDao{
 		map.put("cartItem", cartItem);
 		return map;
 	}
+	/**
+	 * 用來查某商品是不是已經存在於購物車裡了。<br>
+	 * true > 尚未存在 = 可以加入購物車 <br>
+	 * false > 已存在 = 不允許加入購物車 <br>
+	 **/
+	public Boolean selectByPidUid(Integer p_id, String u_id) {
+		if(p_id == null || u_id == null) {
+			return false;
+		}
+		return (em.createQuery("FROM CartItem WHERE p_id = :pid AND u_id = :uid", CartItem.class)
+				.setParameter("pid", p_id)
+				.setParameter("uid", u_id)
+				.getResultList().size() != 0)? false : true;
+	}
 	
 	@Override
 	public Map<String, Object> selectByUserId(String u_id) {

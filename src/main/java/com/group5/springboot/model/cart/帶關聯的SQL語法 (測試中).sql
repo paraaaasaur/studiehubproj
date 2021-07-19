@@ -84,6 +84,12 @@ INSERT [dbo].[User_Info] ([u_id], [u_psw], [u_birthday], [u_lastname], [u_firstn
 GO
 
 -- product part
+-- old
+INSERT ProductInfo VALUES ('image/jpeg', 'RU', 'halashu', 0x, 'RU_Reading', 7000, null, '2000-01-02', 'ken', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'EN', 'awesome', 0x, 'EN_Speaking', 6000, null, '1999-12-12', 'nick', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'JP', 'subarasheep', 0x, 'JP_Reading', 11893, null, '1999-12-12', 'yen', 'video/x-matroska')
+INSERT ProductInfo VALUES ('image/jpeg', 'AR', 'awesome', 0x, 'AR_Speaking', 6000, null, '1999-12-12', 'yuz', 'video/x-matroska'
+-- new
 INSERT ProductInfo VALUES ('RU', 'halashu', 0x, 'RU_Reading', 7000, 1, null, '2000-01-02', 'fbk001', 'image/jpeg', 'video/x-matroska')
 INSERT ProductInfo VALUES ('EN', 'awesome', 0x, 'EN_Speaking', 6000, 1, null, '1999-12-12', 'fbk001', 'image/jpeg', 'video/x-matroska')
 INSERT ProductInfo VALUES ('JP', 'subarasheep', 0x, 'JP_Reading', 11893, 1, null, '1999-12-12', 'miosya', 'image/jpeg', 'video/x-matroska')
@@ -92,6 +98,26 @@ GO
 
 -- order part
 INSERT Order_Info VALUES (13000, DEFAULT, DEFAULT, 1, 'RU_Reading', 7000, 'c@a.t', 'Fubuki', 'fbk001', 'Shirakami')
+GO
+
+-- new
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 422, CAST(N'2021-07-19T03:09:00' AS SmallDateTime), 3, N'完成', 1, N'RU_Reading', 7000, N'tajen@gmail.com', N'Ta Jen', N'tajen', N'Wang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 3535, CAST(N'2021-07-19T03:10:00' AS SmallDateTime), 5, N'完成', 3, N'JP_Reading', 11893, N'tajen@gmail.com', N'Ta Jen', N'tajen', N'Wang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 222, CAST(N'2021-07-19T03:10:00' AS SmallDateTime), 6, N'完成', 4, N'AR_Speaking', 6000, N'tajen@gmail.com', N'Ta Jen', N'tajen', N'Wang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 99999, CAST(N'2021-07-19T03:11:00' AS SmallDateTime), 7, N'處理中', 1, N'RU_Reading', 7000, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 2346, CAST(N'2021-07-19T03:13:00' AS SmallDateTime), 8, N'完成', 1, N'RU_Reading', 7000, N'freakinpink@gmail', N'Ken', N'ken', N'Huang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 49784, CAST(N'2021-07-19T03:13:00' AS SmallDateTime), 9, N'完成', 1, N'RU_Reading', 7000, N'tajen@gmail.com', N'Ta Jen', N'tajen', N'Wang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (NULL, NULL, 5999, CAST(N'2021-07-19T10:00:00' AS SmallDateTime), 10, N'處理中', 5, N'ES_Conversation', 9000, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071943864', N'2107191026372448', 15843, CAST(N'2021-07-19T10:28:00' AS SmallDateTime), 11, N'完成', 1, N'RU_Reading', 7000, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071943864', N'2107191026372448', 15843, CAST(N'2021-07-19T10:28:00' AS SmallDateTime), 11, N'完成', 2, N'EN_Speaking', 750, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071943864', N'2107191026372448', 15843, CAST(N'2021-07-19T10:28:00' AS SmallDateTime), 11, N'完成', 3, N'JP_Reading', 893, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071943864', N'2107191026372448', 15843, CAST(N'2021-07-19T10:28:00' AS SmallDateTime), 11, N'完成', 4, N'AR_Speaking', 6000, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071943864', N'2107191026372448', 15843, CAST(N'2021-07-19T10:28:00' AS SmallDateTime), 11, N'完成', 5, N'ES_Conversation', 1200, N'nick@gmail.com', N'Meng Hua', N'nick', N'Chung')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071960938', N'2107191053042488', 15843, CAST(N'2021-07-19T10:54:00' AS SmallDateTime), 16, N'完成', 1, N'RU_Reading', 7000, N'freakinpink@gmail', N'Ken', N'ken', N'Huang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071960938', N'2107191053042488', 15843, CAST(N'2021-07-19T10:54:00' AS SmallDateTime), 16, N'完成', 2, N'EN_Speaking', 750, N'freakinpink@gmail', N'Ken', N'ken', N'Huang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071960938', N'2107191053042488', 15843, CAST(N'2021-07-19T10:54:00' AS SmallDateTime), 16, N'完成', 3, N'JP_Reading', 893, N'freakinpink@gmail', N'Ken', N'ken', N'Huang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071960938', N'2107191053042488', 15843, CAST(N'2021-07-19T10:54:00' AS SmallDateTime), 16, N'完成', 4, N'AR_Speaking', 6000, N'freakinpink@gmail', N'Ken', N'ken', N'Huang')
+INSERT [dbo].[order_info] ([ECPAY_O_ID], [ecpay_trade_no], [o_amt], [o_date], [o_id], [o_status], [P_ID], [p_name], [p_price], [u_email], [u_firstname], [U_ID], [u_lastname]) VALUES (N'studiehub21071960938', N'2107191053042488', 15843, CAST(N'2021-07-19T10:54:00' AS SmallDateTime), 16, N'完成', 5, N'ES_Conversation', 1200, N'freakinpink@gmail', N'Ken', N'ken', N'Huang')
 GO
 
 select * from order_info;

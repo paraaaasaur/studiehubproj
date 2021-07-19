@@ -105,16 +105,20 @@ window.onload = function(){
 			let checkboxes = [];
 			let head = "<tr>"
 						  + "<th>移除</th>"
-						  + "<th>課程名稱(P_Name)</th>"
-						  + "<th>課程編號(P_ID)</th>"
-						  + "<th>課程價格(P_Price)</th>"
-						  + "<th>課程介紹(P_DESC)</th>"
-						  + "<th>課程老師(U_ID)</th>"
+						  + "<th>課程名稱</th>"
+						  + "<th>課程編號</th>"
+						  + "<th>課程價格</th>"
+						  + "<th>課程介紹</th>"
+						  + "<th>課程老師</th>"
 						  + "</tr>";
 
 			// 【自訂函數 5】去結帳
 			function checkoutViaEcpay(){
-				let confirmArticle = '*** 您即將購買以下內容 *** \n Hi';
+				let confirmArticle = '*** 您即將購買以下內容 ***';
+				for (let i = 0; i < products.length; i++) {
+					let product = products[i];
+					confirmArticle += '\n課程名稱：' + product.p_name + '；課程價格：' + product.p_price + '；授課老師：' + product.p_teacher;
+				}
 				let confirmAns = confirm(confirmArticle, );
 				if (confirmAns) {
 					console.log('ok!');
@@ -155,7 +159,7 @@ window.onload = function(){
 						theadArea.html("");
 						tbodyArea.html("<h1>必須先登入才會顯示資料！</h1>"); // ❗
 					} else {
-						$('#welcomeMessage').text(u_id + '，您的購物車清單如下：')
+						$('#welcomeMessage').text(u_id + '，您的購物車清單如下：');
 						
 						let xhr = new XMLHttpRequest();
 						let url = "<c:url value='/cart.controller/clientShowCart' />";
@@ -166,6 +170,11 @@ window.onload = function(){
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								let tbodyContent = parseCart(xhr.responseText);
+								if (cartSize == 0) {
+									$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何東西！');
+									$('#btnAppender').html('');
+									return;
+								}
 								theadArea.html(head);
 								tbodyArea.html(tbodyContent);
 								for(let i = 0; i < cartSize; i++){
@@ -239,6 +248,12 @@ window.onload = function(){
 					xhr.send(queryString);
 					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4 && xhr.status == 200) {
+							if (cartSize == 0) { // ❗❓無用
+								console.log('lul');
+								$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何東西！');
+								$('#btnAppender').html('');
+								return;
+							}
 							tbodyArea.html(parseCart(xhr.responseText));
 						}
 					}

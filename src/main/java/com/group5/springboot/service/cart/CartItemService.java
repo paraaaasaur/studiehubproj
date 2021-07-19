@@ -84,6 +84,10 @@ public class CartItemService implements ICartItemService {
 		return cartItemDao.deleteASingleProduct(u_id, p_id);
 	}
 	
+	public boolean deleteASingleProduct(Integer cart_id) {
+		return cartItemDao.deleteASingleProduct(cart_id);
+	}
+	
 	public Integer delete(Integer[] cart_ids) {
 		return cartItemDao.delete(cart_ids);
 	}
@@ -102,6 +106,7 @@ public class CartItemService implements ICartItemService {
 			ProductInfo pBean = productDao.findByProductID(cartItem.getP_id());
 			Map<String, Object> map = new HashMap<String, Object>();
 			
+			map.put("cart_id", cartItem.getCart_id());
 			map.put("p_name", pBean.getP_Name());
 			map.put("p_id", pBean.getP_ID());
 			map.put("p_price", pBean.getP_Price());
@@ -118,11 +123,7 @@ public class CartItemService implements ICartItemService {
 	private void refillCart(String u_id) {
 		for(int i = 0; i <= 5; i++) {
 			try {
-				cartItemDao.insert(1, u_id);
-				cartItemDao.insert(2, u_id);
-				cartItemDao.insert(3, u_id);
-				cartItemDao.insert(4, u_id);
-				cartItemDao.insert(5, u_id);
+				cartItemDao.insert(i, u_id);
 			} catch (Exception e) {
 				continue;
 			}

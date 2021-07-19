@@ -45,10 +45,36 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8")
+	@SuppressWarnings("deprecation")
+	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8") @Deprecated
 	public List<Map<String, Object>> clientRemoveProductFromCart(@RequestParam Integer[] p_ids, @RequestParam String u_id) {
 		Arrays.asList(p_ids).forEach(p_id -> cartItemService.deleteASingleProduct(u_id, p_id));
 		return cartItemService.getCart(u_id);
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/clientRemoveProductFromCartByCartId", produces = "application/json; charset=UTF-8")
+	public List<Map<String, Object>> clientRemoveProductFromCartByCartId(@RequestParam Integer[] cart_ids, @RequestParam String u_id) {
+		Arrays.asList(cart_ids).forEach(cartItemService::deleteASingleProduct);
+		return cartItemService.getCart(u_id);
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/clientAddProductToCart")
+	public Boolean clientAddProductToCart(
+			@RequestParam Integer p_ID
+			, @RequestParam String u_ID
+			, @RequestParam String toDo
+			) {
+		Boolean canBuy = (orderService.selectIfBoughtOrNot(p_ID, u_ID) && cartItemService.selectByProductId(p_ID, u_ID));
+		if ("query".equals(toDo)) {
+			return canBuy;
+		} else if ("buy".equals(toDo) && canBuy) {
+			return (cartItemService.insert(p_ID, u_ID) != null);
+		} else if ("remove".equals(toDo)) {
+			return cartItemService.deleteASingleProduct(u_ID, p_ID);
+		}
+		return false;
 	}
 
 	/***************************************************************************** */
@@ -184,7 +210,7 @@ public class CartController {
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
 //		String ngrokhttps = "";
-		String ngrokhttp = "http://e4c58fcd2f3e.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
+		String ngrokhttp = "http://0025811d2eed.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
 
 		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
 		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";

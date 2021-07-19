@@ -56,7 +56,6 @@
 						</ul>
 					</li>
 
-					<li><a href="<c:url value='/' />">購物車</a></li>
 					<li><a href="#">討論區</a></li>
 					<li><a href="#">題庫</a></li>
 					<li><span class="opener">活動</span>

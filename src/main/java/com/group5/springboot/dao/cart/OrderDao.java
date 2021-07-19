@@ -32,6 +32,21 @@ public class OrderDao implements IOrderDao {
 //	@Autowired
 //	private JdbcTemplate jdbcTemplate;
 	
+	@SuppressWarnings("unchecked")
+	public List<OrderInfo> selectOrderInfoByOPUJoin() {
+		String sql = "SELECT op.o_date, op.o_amt, op.identity_seed, op.o_id, op.ecpay_trade_no, op.ECPAY_O_ID, op.o_status, op.p_ID, op.p_Name, op.p_Price, u.U_ID, u.u_email, u.u_firstname, u.u_lastname\r\n"
+				+ "  FROM\r\n"
+				+ "       (SELECT o.o_date, o.o_amt, o.identity_seed, o.o_id, o.ecpay_trade_no, o.ECPAY_O_ID, o.o_status, p.p_ID, p.p_Name, p.p_Price, o.U_ID\r\n"
+				+ "          FROM order_info o LEFT JOIN ProductInfo p \r\n"
+				+ "            ON o.P_ID = p.p_ID\r\n"
+				+ "       ) op LEFT JOIN user_info u\r\n"
+				+ "    ON op.U_ID = u.u_id";
+		Query sqlQuery = em.createNativeQuery(sql, OrderInfo.class);
+		List<OrderInfo> list = (List<OrderInfo>) sqlQuery.getResultList();
+		list.forEach(System.out::println);
+		return list;
+	}
+	
 	public Boolean selectCheckOrderExistence(Integer oid) {
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
 		query.setParameter("oid", oid);
@@ -55,13 +70,13 @@ public class OrderDao implements IOrderDao {
 		if (p_id == null || u_id == null) {
 			return false;
 		}
-		TypedQuery<OrderInfo> query = em.createQuery("SELECT FROM o.status OrderInfo o WHERE p_id = :pid AND u_id = :uid", OrderInfo.class);
+		TypedQuery<String> query = em.createQuery("SELECT o.o_status FROM OrderInfo o WHERE p_id = :pid AND u_id = :uid", String.class);
 		query.setParameter("pid", p_id);
 		query.setParameter("uid", u_id);
-		List<OrderInfo> list = query.getResultList();
+		List<String> list = query.getResultList();
 		Integer counter = 0;
-		for(OrderInfo orderInfo : list) {
-			if ("完成".equals(orderInfo.getO_status())) {
+		for(String status : list) {
+			if ("完成".equals(status)) {
 				counter++;
 			}
 		}

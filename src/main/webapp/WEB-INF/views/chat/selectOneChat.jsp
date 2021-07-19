@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 <style>
 #iconPos{
@@ -25,6 +26,17 @@
 	var hasError = false;
 	
 	window.onload = function() {
+		var xhr0 = new XMLHttpRequest();
+		xhr0.open("GET", "<c:url value='/selectSingleChat/" + c_ID + "' />", true);
+		xhr0.send();
+		xhr0.onreadystatechange = function() {
+			if (xhr0.readyState == 4 && xhr0.status == 200) {
+				var users = JSON.parse(xhr0.responseText);
+				var content = users.c_Title;
+				var selectSingle = document.getElementById("selectSingle");
+				selectSingle.innerHTML = content;
+			}
+		}
 		
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", "<c:url value='/selectOneChat/" + c_ID + "' />", true);
@@ -168,6 +180,7 @@
 					<h2><span id='selectSingle' style='display: block; text-align: left;'></span></h2>
 					<div align='center' id='selectAll'></div>
 					<div style='text-align: center'>
+					<form>
 					<table align='right' style='width: 80%;'>
 						<tr>
 							<td>
@@ -178,10 +191,11 @@
 						<tr>
 							<td>
 							<button type="button" id="autoInput">一鍵</button> &nbsp;
-							<button type='button' class='primary' id='sendData'>送出</button>
+							<input type='submit' class='primary' id='sendData' value="送出">
 							</td>
 						</tr>
 					</table>
+					</form>
 					</div>
 				</div>
 				<p />
@@ -194,6 +208,18 @@
 	<script	src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
+	<script>
+	ClassicEditor.create( document.querySelector( '#c_Conts' ), {
+		// 這裡可以設定 plugin
+	})
+		.then( editor => {
+			console.log( 'Editor was initialized', editor );
+		 })
+		 .catch( err => {
+			console.error( err.stack );
+		 });
+	</script>
 
 </body>
 </html>

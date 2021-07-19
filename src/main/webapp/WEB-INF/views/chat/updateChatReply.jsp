@@ -9,6 +9,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
 <title>編輯回覆</title>
 <script>
 window.onload = function(){
@@ -27,9 +28,6 @@ window.onload = function(){
 					<br>
 					<form:form method="POST" modelAttribute="chatReply" enctype='multipart/form-data'>
 					<table style="line-height:20px;">
-					  <tr>
-					    <td colspan='3' align='left'>Something</td>
-					  </tr>
 					  <tr>
 					    <td align='left'>文章編號: </td>
 						<td colspan='2' align='center'><form:input path="c_IDr" readonly="true"/><br><form:errors path="c_IDr" cssClass="error"/></td>
@@ -65,5 +63,17 @@ window.onload = function(){
 	<script	src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
+	<script>
+	ClassicEditor.create( document.querySelector( '#c_Conts' ), {
+		// 這裡可以設定 plugin
+	})
+		.then( editor => {
+			console.log( 'Editor was initialized', editor );
+		 })
+		 .catch( err => {
+			console.error( err.stack );
+		 });
+	</script>
 </body>
 </html>

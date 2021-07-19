@@ -31,7 +31,7 @@ public class QuestionDaoImpl implements QuestionDao {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> findAllQuestions() {
 		Map<String, Object> map = new HashMap<>();
-		String hql = "from Question_Info";
+		String hql = "from Question_Info  where verification = 'Y'";
 		List<Question_Info> list = em.createQuery(hql).getResultList();
 		System.out.println("list.get(0)=" + list.get(0));
 		map.put("size", list.size()); 

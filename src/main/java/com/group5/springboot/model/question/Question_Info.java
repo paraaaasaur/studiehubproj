@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.utils.SystemUtilsNickUse;
 
 	@Entity
 	@Table(name="Question_Info")
@@ -225,14 +225,14 @@ import com.group5.springboot.utils.SystemUtils;
 		}
 
 		public String getQ_pictureString() { 
-			return SystemUtils.blobToDataProtocol(mimeTypePic, q_picture);
+			return SystemUtilsNickUse.blobToDataProtocol(mimeTypePic, q_picture);
 		}
 		public void setQ_pictureString(String q_pictureString) {
 			this.q_pictureString = q_pictureString;
 		}
 
 		public String getQ_audioString() {
-			return SystemUtils.blobToDataProtocol(mimeTypeAudio,q_audio);
+			return SystemUtilsNickUse.blobToDataProtocol(mimeTypeAudio,q_audio);
 		}
 		public void setQ_audioString(String q_audioString) {
 			this.q_audioString = q_audioString;

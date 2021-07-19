@@ -43,8 +43,6 @@
 						</ul>
 					</li>
 					<li><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
-					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
-
 					
 					<li><span class="opener">活動</span>
 					    <ul>
@@ -64,6 +62,7 @@
 						</ul>
 					</li>
 					
+					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
 
 					<li><a href="<c:url value='/gotoAdminIndex.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li>
 <%-- 					<li><a href="<c:url value='/gotoAdminLogin.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li> --%>

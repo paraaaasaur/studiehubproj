@@ -43,6 +43,15 @@
 			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 		}
 		
+		public Boolean selectByPidUid(Integer p_id, String u_id) {  //隱藏未登入者的購物車
+			if(p_id == null || u_id == null) {
+				return false;
+			}
+			return (em.createQuery("FROM CartItem WHERE p_id = :pid AND u_id = :uid", CartItem.class)
+					.setParameter("pid", p_id)
+					.setParameter("uid", u_id)
+					.getResultList().size() != 0)? false : true;
+		}
 	}
 </script>
 </head>

@@ -35,6 +35,11 @@
     50%  { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
     100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
   }
+  
+  img:hover{                             
+    filter: invert(0%);
+    -webkit-filter: opacity(0.7);                       
+}
 
 </style>
 

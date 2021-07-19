@@ -26,7 +26,7 @@
  <script>
 	function insertContent() {
 	document.getElementById("q_class").value = "日語";
-	document.getElementById("q_type").value = "單選題";
+	document.getElementById("q_type").value = "聽力題";
 	document.getElementById("q_question").value = "明日、二人で映画に行きたいです。何と言いますか。";
 	document.getElementById("q_selectionA").value = "明日、映画に誘いましょう。";
 	document.getElementById("q_selectionB").value = "明日、映画を見に行きませんか。";

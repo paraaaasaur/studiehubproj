@@ -2,6 +2,7 @@ package com.group5.springboot.controller.cart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,10 @@ public class OrderController {
 	@Autowired // SDI ✔
 	private UserService userService;
 	
+	@GetMapping("/order.controller/test/selectOrderInfoByOPUJoin")
+	public List<OrderInfo> testSelectOrderInfoByOPUJoin() {
+		return orderService.selectOrderInfoByOPUJoin();
+	}
 	
 	/***************************************************************************** */
 	@GetMapping(value = "/order.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")

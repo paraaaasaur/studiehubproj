@@ -1,5 +1,6 @@
 package com.group5.springboot.service.cart;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,11 @@ import com.group5.springboot.model.cart.OrderInfo;
 public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
+	
+	/** 成功試出三張資料表聯集啦啦啦啦啦(不過是用原生SQL) */
+	public List<OrderInfo> selectOrderInfoByOPUJoin() {
+		return orderDao.selectOrderInfoByOPUJoin();
+	}
 	
 	public Boolean selectCheckOrderExistence(Integer oid) {
 		return orderDao.selectCheckOrderExistence(oid);

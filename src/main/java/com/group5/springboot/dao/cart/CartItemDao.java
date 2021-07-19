@@ -210,7 +210,6 @@ public class CartItemDao implements ICartItemDao{
 		
 	}
 	
-	
 	@Override
 	public boolean deleteByUserId(String u_id) {
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid");
@@ -220,7 +219,7 @@ public class CartItemDao implements ICartItemDao{
 		return (deletedNum == 0)? false : true;
 	}
 	
-	@Override @Deprecated
+	@Override
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid AND p_id = :pid");
 		query.setParameter("uid", u_id);

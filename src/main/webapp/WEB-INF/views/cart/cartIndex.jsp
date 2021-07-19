@@ -73,12 +73,13 @@ window.onload = function(){
 							<thead id='theadArea'></thead>
 							<tbody id='tbodyArea'></tbody>
 						</table>
+						<span id='totalPrice' style="background-color: yellow; font-size: 250%;"></span>
 		
 						<!-- 按鈕導向各頁 -->
-						<div id="btnAppender">
+						<div id="btnAppender" class="fit">
 							<hr>
-							<button id="deleteBtn" hidden='true' disabled>刪除勾選資料</button>
-							<button id="checkoutBtn" onclick="checkoutViaEcpay()" hidden='true'>前去結帳</button>
+							<button id="deleteBtn" hidden='true' disabled>刪除勾選課程</button>
+							<button id="checkoutBtn" onclick="checkoutViaEcpay()" hidden='true'>我要結帳</button>
 							<button id="toIndexBtn" hidden='true'>返回首頁</button>
 							<hr>
 						</div>
@@ -103,6 +104,7 @@ window.onload = function(){
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 		<script>
+			let totalPrice = 0;
 			let products;
 			let cartSize = 0;
 			let checkedCartIds = [];
@@ -117,11 +119,13 @@ window.onload = function(){
 
 			// 【function 1】checkout
 			function checkoutViaEcpay(){
-				let confirmArticle = '*** 您即將購買以下內容 ***';
+				let confirmArticle = '※您即將購買以下內容';
 				for (let i = 0; i < products.length; i++) {
 					let product = products[i];
-					confirmArticle += '\n課程名稱：' + product.p_name + '；課程價格：' + product.p_price + '；授課老師：' + product.p_teacher;
+					confirmArticle += '\n- 課程名稱：' + product.p_name; 
+					confirmArticle += '\n【價格：' + product.p_price + '；授課老師：' + product.p_teacher + '】';
 				}
+				confirmArticle += '\n本次結帳共計：' + totalPrice + '元';
 				let confirmAns = confirm(confirmArticle);
 				if (confirmAns) {
 					console.log('ok!');
@@ -157,8 +161,8 @@ window.onload = function(){
 				// 改變#deleteBtn外觀和disabled值
 				document.querySelector('#deleteBtn').disabled = (checkedCartIds.length == 0)? true : false;
 				document.querySelector('#deleteBtn').innerHTML = (checkedCartIds.length != 0)?
-								'刪除<font color="cornflowerblue"> ' + checkedCartIds.length + ' </font>筆資料':
-								'刪除勾選資料';
+								'刪除<font color="cornflowerblue"> ' + checkedCartIds.length + ' </font>筆項目':
+								'刪除勾選課程';
 				return;
 			}
 
@@ -191,6 +195,7 @@ window.onload = function(){
 									$('#btnAppender').html('');
 									return;
 								}
+								$('#totalPrice').html('小計：' + totalPrice);
 								theadArea.html(head);
 								tbodyArea.html(tbodyContent);
 							}
@@ -204,7 +209,7 @@ window.onload = function(){
 				function parseCart(cart) {
 					products = JSON.parse(cart);
 					let segment = "";
-					let totalPrice = 0;
+					totalPrice = 0;
 					cartSize = products.length;
 					
 					if(cartSize){
@@ -223,7 +228,6 @@ window.onload = function(){
 										+ "<td>" + product.p_teacher + "</td>"
 										+ "</tr>";
 						totalPrice += product.p_price;
-						
 					}
 					return segment;
 				};
@@ -252,7 +256,7 @@ window.onload = function(){
 							// <3> 善後
 							checkedCartIds = [];
 							let tbodyContent = parseCart(xhr.responseText);
-							document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+							document.querySelector('#deleteBtn').innerHTML = '刪除勾選課程';
 							document.querySelector('#deleteBtn').disabled = true;
 							if (cartSize == 0) {
 								console.log('hi，現在cartSize = ' + cartSize);
@@ -263,6 +267,7 @@ window.onload = function(){
 								return;
 							} else {
 								console.log('掛上了tbody');
+								$('#totalPrice').html('小計：' + totalPrice);
 								tbodyArea.html(tbodyContent);
 							}
 						}

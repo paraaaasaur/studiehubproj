@@ -27,7 +27,7 @@ public class OrderInfo {
 	
 	// ❗ 沒有實質意義，純粹是jpa的bean一定要一個PK...
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer identity_seed;
+	private Integer identity_seed;	
 	private Integer o_id ; // PK
 	@Column(name = "ECPAY_O_ID")
 	// 特店交易編號(來自ecpay的MerchantTradeNo參數)

@@ -41,9 +41,40 @@ public class OrderDao implements IOrderDao {
 	}
 	
 	public Integer getCurrentIdSeed() {
-		int identitySeed = ((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue();
+		Integer identitySeed = ((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue();
 		System.out.println("[OrderDao] > Your query return identity = " + identitySeed + ".");
 		return identitySeed;
+	}
+	
+	/**
+	 * 用來查某課程商品是不是已經存在於資料庫內並交易完成了。<br>
+	 * true > 尚未存在 = 可以加入購物車 <br>
+	 * false > 已存在 = 不允許加入購物車 <br>
+	 **/
+	public Boolean selectIfBoughtOrNot(Integer p_id, String u_id) {
+		if (p_id == null || u_id == null) {
+			return false;
+		}
+		TypedQuery<OrderInfo> query = em.createQuery("SELECT FROM o.status OrderInfo o WHERE p_id = :pid AND u_id = :uid", OrderInfo.class);
+		query.setParameter("pid", p_id);
+		query.setParameter("uid", u_id);
+		List<OrderInfo> list = query.getResultList();
+		Integer counter = 0;
+		for(OrderInfo orderInfo : list) {
+			if ("完成".equals(orderInfo.getO_status())) {
+				counter++;
+			}
+		}
+		if (counter > 1) {
+			System.out.println("有兩筆以上的購買完成紀錄，屬資料異常，請確認資料庫。");
+			return false;
+		} else if (counter == 1) {
+			System.out.println("使用者" + u_id + "已購買本課程(代號 = " + p_id + ")，不得重複購買。");
+			return false;
+		} else if (counter == 0) {
+			System.out.println("使用者" + u_id + "尚未有完成購買過本課程(代號 = " + p_id + ")的紀錄，可以加入購物車。");
+		}
+		return true;
 	}
 	
 	@Override

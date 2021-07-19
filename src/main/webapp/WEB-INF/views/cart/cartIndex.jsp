@@ -40,12 +40,15 @@ window.onload = function(){
     var logoutHref = document.getElementById('logoutHref');
     var userPic = document.getElementById('userPic');
     if(u_id){
-    	loginHref.hidden = true;
+		loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     }
-    
+	// 有登入才會顯示購物車sidebar
+	let cartHref = document.querySelector('#cartHref');
+	cartHref.hidden = (u_id)? false : true;
+	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 }
 </script>
 

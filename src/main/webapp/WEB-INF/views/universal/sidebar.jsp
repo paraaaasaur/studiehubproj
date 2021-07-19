@@ -97,7 +97,7 @@
 					</article>
 				</div>
 				<ul class="actions">
-					<li><a href="#" class="button">More(這個連結去商品選單)</a></li>
+					<li><a href="#" class="button">More</a></li>
 				</ul>
 			</section>
 

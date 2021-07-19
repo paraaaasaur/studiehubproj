@@ -62,6 +62,10 @@ window.onload = function(){
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
     }
+ // 有登入才會顯示購物車sidebar
+	let cartHref = document.querySelector('#cartHref');
+	cartHref.hidden = (u_id)? false : true;
+	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
     
     //一鍵帶入
     $('#autoInput').on('click', function(){

@@ -45,9 +45,16 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8")
+	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8") @Deprecated
 	public List<Map<String, Object>> clientRemoveProductFromCart(@RequestParam Integer[] p_ids, @RequestParam String u_id) {
 		Arrays.asList(p_ids).forEach(p_id -> cartItemService.deleteASingleProduct(u_id, p_id));
+		return cartItemService.getCart(u_id);
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/clientRemoveProductFromCartByCartId", produces = "application/json; charset=UTF-8")
+	public List<Map<String, Object>> clientRemoveProductFromCartByCartId(@RequestParam Integer[] cart_ids, @RequestParam String u_id) {
+		Arrays.asList(cart_ids).forEach(cartItemService::deleteASingleProduct);
 		return cartItemService.getCart(u_id);
 	}
 

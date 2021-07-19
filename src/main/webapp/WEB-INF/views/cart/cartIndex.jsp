@@ -69,7 +69,7 @@ window.onload = function(){
 		
 						<h1 id='welcomeMessage'></h1>
 						<!-- 顯示當前購物車內容表格 -->
-						<table>
+						<table class="alt" style="border: 2px;">
 							<thead id='theadArea'></thead>
 							<tbody id='tbodyArea'></tbody>
 						</table>
@@ -77,9 +77,9 @@ window.onload = function(){
 						<!-- 按鈕導向各頁 -->
 						<div id="btnAppender">
 							<hr>
-							<button id="removeBtn" hidden='true'>移除</button>
-							<button id="checkoutBtn" onclick="checkoutViaEcpay()" hidden='true'>去結帳</button>
-							<button id="toIndexBtn" hidden='true'>回首頁</button>
+							<button id="deleteBtn" hidden='true' disabled>刪除勾選資料</button>
+							<button id="checkoutBtn" onclick="checkoutViaEcpay()" hidden='true'>前去結帳</button>
+							<button id="toIndexBtn" hidden='true'>返回首頁</button>
 							<hr>
 						</div>
 		
@@ -105,7 +105,7 @@ window.onload = function(){
 		<script>
 			let products;
 			let cartSize = 0;
-			let checkboxes = [];
+			let checkedCartIds = [];
 			let head = "<tr>"
 						  + "<th>移除</th>"
 						  + "<th>課程名稱</th>"
@@ -115,14 +115,14 @@ window.onload = function(){
 						  + "<th>課程老師</th>"
 						  + "</tr>";
 
-			// 【自訂函數 5】去結帳
+			// 【function 1】checkout
 			function checkoutViaEcpay(){
 				let confirmArticle = '*** 您即將購買以下內容 ***';
 				for (let i = 0; i < products.length; i++) {
 					let product = products[i];
 					confirmArticle += '\n課程名稱：' + product.p_name + '；課程價格：' + product.p_price + '；授課老師：' + product.p_teacher;
 				}
-				let confirmAns = confirm(confirmArticle, );
+				let confirmAns = confirm(confirmArticle);
 				if (confirmAns) {
 					console.log('ok!');
 					let queryString = '';
@@ -144,17 +144,30 @@ window.onload = function(){
 				}
 			}
 
+			// 【自訂函數 0】每次按下checkbox時會記錄下來哪些是有勾的、並把cartid存進checkedCartIds陣列裡，等到要刪除時存取之送出
+			var memorize = function(checkboxObj){
+				let cartid = checkboxObj.value;
+				let idx = checkedCartIds.indexOf(cartid);
+				if(idx > -1) { 
+					checkedCartIds.splice(idx, 1);
+				} else {
+					checkedCartIds.push(cartid);
+				}
+				console.log('checkedCartIds = ' + checkedCartIds);
+				// 改變#deleteBtn外觀和disabled值
+				document.querySelector('#deleteBtn').disabled = (checkedCartIds.length == 0)? true : false;
+				document.querySelector('#deleteBtn').innerHTML = (checkedCartIds.length != 0)?
+								'刪除<font color="cornflowerblue"> ' + checkedCartIds.length + ' </font>筆資料':
+								'刪除勾選資料';
+				return;
+			}
+
 			$(function(){
-				console.log($('#removeBtn'));
-				console.log(document.querySelector('#removeBtn').hidden);
-				let removeBtn = $('#removeBtn');
-				
-				console.log('u_id = ' + u_id);
-				
+				let deleteBtn = $('#deleteBtn');
 				let tbodyArea = $('#tbodyArea');
 				let theadArea = $('#theadArea');
 
-				// 【function 1】主程式
+				// 【function 2】主程式
 				$(window).on('load', function(){
 					if (!u_id) {
 						$('#welcomeMessage').text('')
@@ -180,16 +193,14 @@ window.onload = function(){
 								}
 								theadArea.html(head);
 								tbodyArea.html(tbodyContent);
-								for(let i = 0; i < cartSize; i++){
-									checkboxes.push($('#ckbox' + i));
-								}
 							}
 						}
 					}
 					
 				});
 				
-				// 【function 2】parseCart() ✔
+				// 【function 3】parseCart()
+				/** 更新全域變數 @products @cartSize */
 				function parseCart(cart) {
 					products = JSON.parse(cart);
 					let segment = "";
@@ -197,67 +208,62 @@ window.onload = function(){
 					cartSize = products.length;
 					
 					if(cartSize){
-						segment += "您的購物車內尚未有任何內容！";
+						segment += "您的購物車內還沒有任何課程喔😉";
 					}
 					for (let i = 0; i < cartSize; i++) {
+						let temphref1 = '<c:url value="/takeClass/" />';
+						let product = products[i];
 						segment += "<tr>"
-										+ "<td><input type='checkbox' id='ckbox" + i + "' data-test01='" + i*10 + "'>"
-										+ "<label for='ckbox" + i + "'>取消</label></td>"
-										+ "<td>" + products[i].p_name + "</td>"
-										+ "<td>" + products[i].p_id + "</td>"
-										+ "<td>" + products[i].p_price + "</td>"
-										+ "<td>" + products[i].p_desc + "</td>"
-										+ "<td>" + products[i].p_teacher + "</td>"
+										+ "<td><input onclick='memorize(this)' type='checkbox' id='ckbox" + product.cart_id + "' value='" + product.cart_id + "'>"
+										+ "<label for='ckbox" + product.cart_id + "'></label></td>"
+										+ "<td><a href='" + temphref1 + product.p_id + "' >" + product.p_name + "</a></td>"
+										+ "<td>" + product.p_id + "</td>"
+										+ "<td>" + product.p_price + "</td>"
+										+ "<td>" + product.p_desc + "</td>"
+										+ "<td>" + product.p_teacher + "</td>"
 										+ "</tr>";
-						totalPrice += products[i].p_price;
+						totalPrice += product.p_price;
 						
 					}
 					return segment;
 				};
 			
-				// 2 Remove
-				$("#removeBtn").click(function(){
-					let ckboxValues = [];
-					let queryString = 'p_ids=';
-					// 不勾選任何checkbox時 == -1，每多勾選一個checkbox都會 +1。用於下述防呆機制。
-					let counter = -1; 
-					for(let i = 0; i < products.length; i++){
-						if(checkboxes[i].is(':checked')){
-							ckboxValues.push(i);
-						} 
-					}
-					// 利用counter計數，來確保使用者至少要勾一件東西才能送出
-					for(let i = 0; i < products.length; i++) {
-						counter += (checkboxes[i].is(':checked'))? 1 : 0;
-					}
-					if(counter == -1) {
-						alert('必須至少勾選一項想要刪除的項目。');
-						return;
-					}
-					// 
-					for(let i = 0; i < products.length; i++) {
-						let checkOrNot = checkboxes[i].is(':checked');
-						if(checkOrNot) {
-							queryString += products[i].p_id;
-							queryString += (i == ckboxValues[counter])? '' : ',';
-						}
+				// 【function 4】DELETE
+				// 送出cartid + uid 的查詢字串到server
+				// 清空checkids[]
+				// 善後
+				$("#deleteBtn").click(function(){
+					// <1> 拼出queryString
+					let queryString = 'cart_ids=';
+					for(let i = 0; i < checkedCartIds.length; i++) {
+						queryString += checkedCartIds[i];
+						queryString += ((i + 1) == checkedCartIds.length)? '' : ',';
 					}
 					queryString +='&u_id=' + u_id;	
-
+					// <2> 送出請求
 					let xhr = new XMLHttpRequest();
-					let url = "<c:url value='/cart.controller/clientRemoveProductFromCart' />";
+					let url = "<c:url value='/cart.controller/clientRemoveProductFromCartByCartId' />";
 					xhr.open("POST", url, true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					console.log('即將送出的查詢字串 = ' + queryString);
 					xhr.send(queryString);
 					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4 && xhr.status == 200) {
-							if (cartSize == 0) { // ❗❓無用
-								console.log('lul');
-								$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何東西！');
+							// <3> 善後
+							checkedCartIds = [];
+							let tbodyContent = parseCart(xhr.responseText);
+							deleteBtn.innerHTML = '刪除勾選資料';
+							if (cartSize == 0) {
+								console.log('hi，現在cartSize = ' + cartSize);
+								$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何課程喔😉');
+								$('#theadArea').html('');
+								$('#tbodyArea').html('');
 								$('#btnAppender').html('');
 								return;
+							} else {
+								console.log('掛上了tbody');
+								tbodyArea.html(tbodyContent);
 							}
-							tbodyArea.html(parseCart(xhr.responseText));
 						}
 					}
 				});

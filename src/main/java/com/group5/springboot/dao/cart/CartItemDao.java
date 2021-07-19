@@ -234,6 +234,17 @@ public class CartItemDao implements ICartItemDao{
 		return (deletedNum == 0)? false : true;
 	}
 	
+	
+	public boolean deleteASingleProduct(Integer cart_id) {
+		
+		Query query = em.createQuery("DELETE CartItem WHERE cart_id = :cartid");
+		query.setParameter("cartid", cart_id);
+		int deletedNum = query.executeUpdate();
+		System.out.println("You deleted a cart item (id = " + cart_id + ") from cart_item table.");
+		
+		return (deletedNum == 0)? false : true;
+	}
+	
 	public Integer delete(Integer[] cart_ids) {
 		Query deleteQuery = em.createQuery("DELETE CartItem WHERE cart_id IN (:cartids)");
 		deleteQuery.setParameter("cartids", Arrays.asList(cart_ids));

@@ -59,7 +59,7 @@
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 				
 <div align="center">
 	<h2 align='center'>查看詳細試題</h2>

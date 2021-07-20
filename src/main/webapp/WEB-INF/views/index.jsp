@@ -35,6 +35,8 @@ window.onload = function(){
         }
     }
     
+    
+//universal
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
@@ -58,7 +60,7 @@ window.onload = function(){
 	let cartHref = document.querySelector('#cartHref');
 	cartHref.hidden = (u_id)? false : true;
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-    
+//universal
 }
 
 

@@ -56,7 +56,6 @@
 						</ul>
 					</li>
 
-					<li><a href="#">討論區</a></li>
 					<li><span class="opener">活動</span>
 					    <ul>
 					        <li><a href="<c:url value='/managerAllEvent' />">活動審核(管理者)</a></li>	

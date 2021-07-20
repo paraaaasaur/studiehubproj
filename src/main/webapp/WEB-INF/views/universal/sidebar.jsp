@@ -49,7 +49,7 @@
 					    <ul>
 					        <li><a href="<c:url value='/eventindex' />">所有活動</a></li>
 					        <li style='display:none' id='loginEvent1'><a href="<c:url value='/insertEvent' />">新增活動</a></li>
-					        <li style='display:none' id='loginALLEvent1'><a href="<c:url value='/userAllEvent' />">使用者後臺</a></li>
+					        <li style='display:none' id='loginALLEvent'><a href="<c:url value='/userAllEvent' />">使用者後臺</a></li>
 <%-- 					        <li><a href="<c:url value='/Eventindex' />">所有活動(測試)</a></li>			         --%>
 					        			        
 					    </ul>

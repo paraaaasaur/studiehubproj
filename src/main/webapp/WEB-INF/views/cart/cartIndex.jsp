@@ -7,7 +7,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
-
+<style>
+.deleteBtn {
+	color : rgb(0, 132, 255) !important;
+	box-shadow : inset 0 0 0 2px rgb(0, 132, 255);
+}
+.deleteBtn:hover {
+	background-color: rgb(230, 245, 253);
+}
+.deleteBtn:active {
+	background-color: rgb(200, 231, 248);
+}
+</style>
 <script>
 if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
 
@@ -122,12 +133,12 @@ window.onload = function(){
 			let cartSize = 0;
 			let checkedCartIds = [];
 			let head = "<tr>"
-						  + "<th>移除</th>"
-						  + "<th>課程名稱</th>"
-						  + "<th>課程編號</th>"
-						  + "<th>課程價格</th>"
-						  + "<th>課程介紹</th>"
-						  + "<th>課程老師</th>"
+						  + "<th style='text-align: center'>移除</th>"
+						  + "<th style='text-align: center'>課程名稱</th>"
+						  + "<th style='text-align: center'>課程編號</th>"
+						  + "<th style='text-align: center'>課程價格</th>"
+						  + "<th style='text-align: center'>課程介紹</th>"
+						  + "<th style='text-align: center'>課程老師</th>"
 						  + "</tr>";
 
 			// 【function 1】checkout
@@ -172,10 +183,16 @@ window.onload = function(){
 				}
 				console.log('checkedCartIds = ' + checkedCartIds);
 				// 改變#deleteBtn外觀和disabled值
-				document.querySelector('#deleteBtn').disabled = (checkedCartIds.length == 0)? true : false;
+				let thisBtn = document.querySelector('#deleteBtn');
+				if (checkedCartIds.length == 0) {
+					thisBtn.classList.remove('deleteBtn');
+				} else {
+					thisBtn.classList.add('deleteBtn');
+				}
+				document.querySelector('#deleteBtn').disabled = (checkedCartIds.length == 0);
 				document.querySelector('#deleteBtn').innerHTML = (checkedCartIds.length != 0)?
-								'刪除<font color="cornflowerblue"> ' + checkedCartIds.length + ' </font>筆項目':
-								'刪除勾選課程';
+								'刪除<font color="cornflowerblue"> ' + checkedCartIds.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
+								'刪除勾選資料';
 				return;
 			}
 
@@ -232,13 +249,13 @@ window.onload = function(){
 						let temphref1 = '<c:url value="/takeClass/" />';
 						let product = products[i];
 						segment += "<tr>"
-										+ "<td><input onclick='memorize(this)' type='checkbox' id='ckbox" + product.cart_id + "' value='" + product.cart_id + "'>"
+										+ "<td style='text-align: center'><input onclick='memorize(this)' type='checkbox' id='ckbox" + product.cart_id + "' value='" + product.cart_id + "'>"
 										+ "<label for='ckbox" + product.cart_id + "'></label></td>"
-										+ "<td><a href='" + temphref1 + product.p_id + "' >" + product.p_name + "</a></td>"
-										+ "<td>" + product.p_id + "</td>"
-										+ "<td>" + product.p_price + "</td>"
-										+ "<td>" + product.p_desc + "</td>"
-										+ "<td>" + product.p_teacher + "</td>"
+										+ "<td style='text-align: center'><a href='" + temphref1 + product.p_id + "' >" + product.p_name + "</a></td>"
+										+ "<td style='text-align: center'>" + product.p_id + "</td>"
+										+ "<td style='text-align: center'>" + product.p_price + "</td>"
+										+ "<td style='text-align: center'>" + product.p_desc + "</td>"
+										+ "<td style='text-align: center'>" + product.p_teacher + "</td>"
 										+ "</tr>";
 						totalPrice += product.p_price;
 					}
@@ -269,6 +286,9 @@ window.onload = function(){
 							// <3> 善後
 							checkedCartIds = [];
 							let tbodyContent = parseCart(xhr.responseText);
+							console.log(document.querySelector('#deleteBtn'));
+							document.querySelector('#deleteBtn').classList.remove('deleteBtn');
+							console.log(document.querySelector('#deleteBtn'));
 							document.querySelector('#deleteBtn').innerHTML = '刪除勾選課程';
 							document.querySelector('#deleteBtn').disabled = true;
 							if (cartSize == 0) {

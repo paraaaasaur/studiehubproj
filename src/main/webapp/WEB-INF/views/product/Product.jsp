@@ -29,9 +29,22 @@
 .image {
 	text-align: center;
 }
+
+.cantBuy {
+	color : rgb(0, 132, 255) !important;
+	box-shadow : inset 0 0 0 2px rgb(0, 132, 255);
+}
+.cantBuy:hover {
+	background-color: rgb(230, 245, 253);
+}
+.cantBuy:active {
+	background-color: rgb(200, 231, 248);
+}
 </style>
 
 <script>
+var p_ID = "${product.p_ID}";
+
 var u_id = "${loginBean.u_id}";
 var userPicString = "${loginBean.pictureString}";
 
@@ -54,10 +67,6 @@ window.onload = function(){
             }
         }
     }
- // 有登入才會顯示購物車sidebar
-	let cartHref = document.querySelector('#cartHref');
-	cartHref.hidden = (u_id)? false : true;
-	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
     
 	//如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
@@ -101,24 +110,91 @@ window.onload = function(){
 		}
 	})
 
-	//購買商品
-	$('#buyProduct').on('click',function(){
-		var p_ID = "${product.p_ID}";
-		var u_ID = "${loginBean.u_id}";
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET',"<c:url value='/buyProduct?p_ID="+p_ID+"&u_ID="+u_ID+"' />",true);
-		xhr.send();
-
-		alert("課程已加入購入車");
-
-
-
-
-
-
-
+	// nin's
+	$(function(){
+		let xhr3 = new XMLHttpRequest();
+		xhr3.open('POST', "<c:url value='/cart.controller/clientInitializeProductBtnFunc' />");
+		xhr3.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr3.send("p_ID=" + p_ID + "&u_ID=" + u_id);
+		xhr3.onreadystatechange = function(){
+			if(xhr3.readyState == 4 && xhr3.status == 200){
+				let ninResult = JSON.parse(xhr3.responseText);
+				console.log(ninResult);
+				if (ninResult == 1) {
+					$('#buyProduct').text('已購買本課程');
+					$('#buyProduct').attr('disabled', true);
+				} else if (ninResult == 2) {
+					$('#buyProduct').addClass('cantBuy');
+					document.getElementById('buyProduct').innerHTML = '移除出購物車';
+					document.getElementById('buyProduct').dataset.state = 'false';
+				} else if (ninResult == 3) {
+					console.log('尚未過買過，css保持原樣');
+				} else {
+					console.log('#buyProduct按鈕初始化出錯');
+				}
+			}
+		}
 	})
-    
+
+	// //購買商品
+	// $('#buyProduct').on('click',function(){
+	// 	p_ID = "${product.p_ID}";
+	// 	var u_ID = "${loginBean.u_id}";
+	// 	var xhr = new XMLHttpRequest();
+	// 	xhr.open('GET',"<c:url value='/buyProduct?p_ID="+p_ID+"&u_ID="+u_ID+"' />",true);
+	// 	xhr.send();
+
+	// 	alert("課程已加入購入車");
+	// })
+
+	// nin's
+	$('#buyProduct').on('click', function(){
+		let state = this.dataset.state;
+		console.log(state);
+		p_ID = "${product.p_ID}";
+		let u_ID = "${loginBean.u_id}";
+		let xhr = new XMLHttpRequest();
+		let preQueryString = "p_ID="+p_ID+"&u_ID="+u_ID+"&toDo=";
+		console.log(preQueryString);
+		xhr.open('POST',"<c:url value='/cart.controller/clientAddProductToCart' />",true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		if (state == 'true') {
+			xhr.send(preQueryString + "buy");
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					console.log('response = ' + xhr.responseText);
+					if (xhr.responseText == false) {
+						alert('您已有權觀看此課程，因此加入購物車失敗！');
+						return;
+					}
+					$('#buyProduct').addClass('cantBuy');
+					// document.getElementById('buyProduct').style.color = 'blue !important';
+					// document.getElementById('buyProduct').style.boxShadow = 'inset 0 0 0 2px aqua';
+					document.getElementById('buyProduct').innerHTML = '移除出購物車';
+					document.getElementById('buyProduct').dataset.state = 'false';
+					alert("課程已加入購入車！");
+				}
+			}
+		} else if (state == 'false') {
+			xhr.send(preQueryString + "remove");
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					console.log('response = ' + xhr.responseText);
+					if (xhr.responseText == false) {
+						alert('課程移除失敗！');
+						return;
+					}
+					$('#buyProduct').removeClass('cantBuy');
+					// document.getElementById('buyProduct').style.color = '#f56a6a !important';
+					// document.getElementById('buyProduct').style.boxShadow = 'inset 0 0 0 2px #f56a6a';
+					document.getElementById('buyProduct').innerHTML = '購買此課程';
+					document.getElementById('buyProduct').dataset.state = 'true';
+					alert("課程已自購入車移除！");
+				}
+			}
+		}
+	})
+
 }
 
 function showData(textObj) {
@@ -150,6 +226,9 @@ function showData(textObj) {
        
         return segment;
 }
+
+
+
 </script>
 </head>
 
@@ -193,8 +272,7 @@ function showData(textObj) {
 					<div>${product.p_DESC}</div>
 					<br>
 					<br>
-					<div style="text-align: center;"><button type="button" id="buyProduct" style="text-align: center;">購買此課程</button></div>
-					<hr>
+					<div style="text-align: center;"><button type="button" id="buyProduct" data-state='true' style="text-align: center;">購買此課程</button></div>					<hr>
 					<h2>評論</h2>
 
 					<div align='center' style="padding: 50px;">

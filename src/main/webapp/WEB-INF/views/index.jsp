@@ -54,7 +54,7 @@ window.onload = function(){
     	userId.innerHTML = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
-    	loginALLEvent1.style.display = "block";
+    	loginALLEvent.style.display = "block";
     }
 	// 有登入才會顯示購物車sidebar
 	let cartHref = document.querySelector('#cartHref');

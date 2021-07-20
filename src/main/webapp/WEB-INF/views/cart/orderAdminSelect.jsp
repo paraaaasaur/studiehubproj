@@ -7,7 +7,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>訂單後台管理系統</title>
-
+<style>
+.deleteBtn {
+	color : rgb(0, 132, 255) !important;
+	box-shadow : inset 0 0 0 2px rgb(0, 132, 255);
+}
+.deleteBtn:hover {
+	background-color: rgb(230, 245, 253);
+}
+.deleteBtn:active {
+	background-color: rgb(200, 231, 248);
+}
+</style>
 <script>
 
 	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
@@ -143,7 +154,13 @@
 					}
 					console.log('checkedIdentitySeeds = ' + checkedIdentitySeeds);
 					// 改變#deleteBtn外觀和disabled值
-					document.querySelector('#deleteBtn').disabled = (checkedIdentitySeeds.length == 0)? true : false;
+					let thisBtn = document.querySelector('#deleteBtn');
+					if (checkedIdentitySeeds.length == 0) {
+						thisBtn.classList.remove('deleteBtn');
+					} else {
+						thisBtn.classList.add('deleteBtn');
+					}
+					document.querySelector('#deleteBtn').disabled = (checkedIdentitySeeds.length == 0);
 					document.querySelector('#deleteBtn').innerHTML = (checkedIdentitySeeds.length != 0)?
 									'刪除<font color="cornflowerblue"> ' + checkedIdentitySeeds.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
 									'刪除勾選資料';
@@ -317,7 +334,7 @@
 						for (let i = 0; i < orders.length; i++) {
 							totalPrice += orders[i].p_price;
 							let temp0 =	 "<tr>" + 
-												"<td style='text-align: center;'><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
+												"<td style='text-align: center; margin : 0;  padding : 0;'><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
 													"type='checkbox' value='" + orders[i].identity_seed + "'><label for='ckbox" + orders[i].identity_seed + "'></label></td>" +
 												"<td style='text-align: center;'><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
 												"<td style='text-align: center;'><label data-val='" + orders[i].ecpay_o_id + "'>" + orders[i].ecpay_o_id + "</label></td>" +
@@ -353,6 +370,9 @@
 								console.log(result.state);
 								mainFunc();
 								checkedIdentitySeeds = [];
+								console.log(document.querySelector('#deleteBtn'));
+								document.querySelector('#deleteBtn').classList.remove('deleteBtn');
+								console.log(document.querySelector('#deleteBtn'));
 								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
 								document.querySelector('#deleteBtn').disabled = true;
 							}

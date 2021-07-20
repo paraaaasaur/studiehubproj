@@ -44,18 +44,20 @@ window.onload = function(){
 
 	query.addEventListener('click',function(){
 		let pname = productname.value;
+		let producttypename	= "日文";
+		console.log(pname+""+producttypename)
 		if(!pname){
 			alert('請輸入關鍵字');
 			return
 		}
 
 		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET',"<c:url value='/queryByProductName' />?pname="+pname);
+		xhr2.open('GET',"<c:url value='/queryByProductName' />?pname="+pname+"&producttypename="+producttypename,true);
 		xhr2.send();
 		xhr2.onreadystatechange = function(){
 			if(xhr2.readyState == 4 && xhr2.status == 200){
-				var result = JSON.parse(xhr2.responseText)
-				dataArea.innerHTML = showData(result);
+				var search = JSON.parse(xhr2.responseText)
+				dataArea.innerHTML = showData(search);
 			}
 		}
 	})

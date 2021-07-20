@@ -110,7 +110,7 @@
 												<td colspan='4' align='center'><br>&nbsp;
 													<a class="button" href="http:\/\/localhost:8080/studiehub/cart.controller/adminSelect" >回上一頁</a>
 													<input type='submit' value='送出資料'>
-													<input type='button' id='cheat' value='一鍵生成'>
+													<!-- <input type='button' id='cheat' value='一鍵生成'> -->
 												</td>
 											</tr>
 										</Table>
@@ -210,7 +210,6 @@
 					$(cheat).on('click', function(){
 						p_id.val(1);
 						u_id.val('tajen');
-						o_amt.val(Math.round(Math.random() * 100000));
 						autoFillInProductStuff();
 						autoFillInUserStuff();
 					})

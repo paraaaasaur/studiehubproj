@@ -294,6 +294,7 @@ window.onload = function(){
 							if (cartSize == 0) {
 								console.log('hi，現在cartSize = ' + cartSize);
 								$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何課程喔😉');
+								$('#totalPrice').html('小計：0');
 								$('#theadArea').html('');
 								$('#tbodyArea').html('');
 								$('#btnAppender').html('');

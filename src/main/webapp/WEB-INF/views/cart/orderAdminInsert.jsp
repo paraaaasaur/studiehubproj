@@ -131,7 +131,7 @@
 												<td colspan='4' align='center'><br>&nbsp;
 													<a class="button" href="http:\/\/localhost:8080/studiehub/order.controller/adminSelect" >回上一頁</a>
 													<input type='submit' value='送出資料'>
-													<input type='button' id='cheat' value='一鍵生成'>
+													<!-- <input type='button' id='cheat' value='一鍵生成'> -->
 												</td>
 											</tr>
 										</Table>

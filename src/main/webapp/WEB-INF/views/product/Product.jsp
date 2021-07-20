@@ -68,7 +68,8 @@ window.onload = function(){
         }
     }
     
-	//如果有登入，隱藏登入標籤
+  //universal
+    //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
@@ -87,6 +88,11 @@ window.onload = function(){
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
     }
+	// 有登入才會顯示購物車sidebar
+	let cartHref = document.querySelector('#cartHref');
+	cartHref.hidden = (u_id)? false : true;
+	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
+//universal
 
 
 	var query = document.getElementById("query");
@@ -255,7 +261,7 @@ function showData(textObj) {
 						<c:when test="${product.p_Status == 1}">
 							<iframe
 								src="${pageContext.request.contextPath}/video/productVideo/${product.p_Video}"
-								width="1200px" height="700px" frameborder="0"
+								width="1000px" height="700px" frameborder="0"
 								allow="accelerometer;clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 								allowfullscreen></iframe>
 

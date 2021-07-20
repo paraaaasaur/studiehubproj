@@ -228,7 +228,7 @@ public class CartController {
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
 //		String ngrokhttps = "";
-		String ngrokhttp = "http://b0ff88faeec1.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
+		String ngrokhttp = "http://d47fc3ee9932.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
 
 		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
 		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";

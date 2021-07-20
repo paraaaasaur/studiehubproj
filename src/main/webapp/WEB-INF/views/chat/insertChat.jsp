@@ -48,7 +48,7 @@ window.onload = function(){
 			return false;
 		}
 		var xhr1 = new XMLHttpRequest();
-		xhr1.open("POST", "<c:url value='/insertChat' />");
+		xhr1.open("POST", "<c:url value='/insertChat' />", true);
 		var jsonInsertData = {
 			"c_Date" : c_Date,
 			"c_Class" : c_Class,
@@ -145,7 +145,7 @@ window.onload = function(){
 				<div align='center'>
 					<div class="container">
 					<br>
-						<form>
+<%-- 						<form> --%>
 							<table style="width: 750px;">
 								<tr>
 									<td style="width:60px;">標題:</td>
@@ -182,7 +182,7 @@ window.onload = function(){
 									</td>
 								</tr>
 							</table>
-						</form>
+<%-- 						</form> --%>
 					</div>
 				</div>
 

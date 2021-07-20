@@ -139,7 +139,7 @@ window.onload = function(){
 			segment += "<tr><th colspan='1'>'查無資料'</th><tr>"
 		} else {
 			segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
-			segment += "<tr><th>會員帳號</th><th>活動類型</th><th>活動名稱</th><th>報名開始時間</th><th>報名結束時間</th><th>活動開始時間</th><th>活動結束時間</th><th>活動地址</th><th>活動照片</th><th>活動過期</th></tr>"
+			segment += "<tr><th>會員帳號</th><th>活動類型</th><th>活動名稱</th><th>報名時間</th><th>活動時間</th><th>活動地址</th><th>活動照片</th><th>活動過期</th></tr>"
 
 			for (n = 0; n < events.length; n++) {
 				let event = events[n];
@@ -162,11 +162,8 @@ window.onload = function(){
 			    segment += "<td title='"+event.a_uid+"'>" + event.a_uid + "</td>"
 				segment += "<td title='"+event.a_type+"'>" + event.a_type + "</td>"
 				segment += "<td title='"+event.a_name+"'>" + event.a_name + "</td>"
-				segment += "<td title='"+event.a_registration_starttime+"'>" + event.a_registration_starttime + "</td>"
-				segment += "<td title='"+event.a_registration_endrttime+"'>" + event.a_registration_endrttime + "</td>"
-				segment += "<td title='"+event.a_startTime+"'>" + event.a_startTime + "</td>"
-				segment += "<td title='"+event.a_endTime+"'>" + event.a_endTime + "</td>"
-				
+				segment += "<td title='"+event.a_registration_starttime+"至"+event.a_registration_endrttime+"'>" + event.a_registration_starttime +"至"+event.a_registration_endrttime+ "</td>"			
+				segment += "<td title='"+event.a_startTime+"至"+event.a_endTime+"'>" + event.a_startTime +"至"+event.a_endTime+ "</td>"
 				segment += "<td title='"+event.a_address+"'>" + event.a_address + "</td>"
 				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
 				segment += "<td>" + event.expired + "</td>"

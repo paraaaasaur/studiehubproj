@@ -23,12 +23,12 @@
   .spin {
     animation: RotatePlane 1.5s infinite ease-in-out;
   }
-  .text {
-    text-align: center;
-    font-weight: bolder;
-    font-size: 2rem;
-    color: #5b99de;
-  }
+   .text { */
+     text-align: center; 
+     font-weight: bolder; 
+     font-size: 2rem; 
+     color: #5b99de; 
+   } 
   @keyframes RotatePlane {
     0%   { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
     50%  { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
@@ -41,13 +41,12 @@
 
 	/* 卡套版待確 ---覆寫側邊目前題數 */
 	#countArea{
-	border:3px #cccccc solid ;
-	cellpadding:'10'; 
-	border:'1' ; 
-	width:500px ;
-	height:20% ;
-	align:left ;
-	display:'';
+ 	border:3px #cccccc solid ; 
+/* 	cellpadding:'10';  */
+/* 	border:'1' ;  */
+	width:700px ;
+/* 	align:left ; */
+/* 	display:''; */
   }
 
 </style>
@@ -224,8 +223,9 @@ window.addEventListener('load', function(){
 			
 		});
 		
-//倒數計時
-	    var fiveMinutes = 60 * 5,
+////倒數計時
+// 	    var fiveMinutes = 60 * 2,
+	    var fiveMinutes = 90,
         display = document.querySelector('#time');
    		 startTimer(fiveMinutes, display);		
 	
@@ -240,10 +240,10 @@ function showCountData(textObj){
 			}
 		}
 	
-	let content =  "<tr><th colspan='4' style=' border:2px #cccccc solid; height:20%;'>聽力題</th><th colspan='3' style=' border:2px #cccccc solid;'>多選題</th><th colspan='3' style=' border:2px #cccccc solid;'>單選題</th></tr>";
-	    content += "<tr><td style='" + status0[0] + "'>1</td> <td  style='" + status0[1] + "'>2</td> <td  style='"+status0[2]+"'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"'>4</td>";
-	    content += "<td style='" + status0[4] + "'>5</td><td style='" + status0[5] + "'>6</td><td style=' border-right:2px #cccccc solid ;"+status0[6]+"'>7</td>";
-	    content += "<td style='" + status0[7] + "'>8</td><td style='" + status0[8] + "'>9</td><td style='"+ status0[9] +"'>10</td></tr>";
+	let content =  "<tr><th colspan='4' style=' border:2px #cccccc solid;padding:1px;'>&ensp;聽力題</th> <th colspan='3' style=' border:2px #cccccc solid;padding:1px;'>&ensp;多選題</th> <th colspan='3' style=' border:2px #cccccc solid;padding:1px;'>&ensp;單選題</th></tr>";
+	    content += "<tr><td style='" + status0[0] + ";padding:1px;text-align:center;'>1</td> <td  style='" + status0[1] + "padding:1px;text-align:center;'>2</td> <td  style='"+status0[2]+"padding:1px;text-align:center;'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"padding:1px;text-align:center;'>4</td>";
+	    content += "<td style='" + status0[4] + "padding:1px;text-align:center;'>5</td> <td style='" + status0[5] + "padding:1px;text-align:center;'>6</td> <td style='border-right:2px #cccccc solid;"+status0[6]+"padding:1px;text-align:center;'>7</td>";
+	    content += "<td style='" + status0[7] + "padding:1px;text-align:center;'>8</td> <td style='" + status0[8] + "padding:1px;text-align:center;'>9</td> <td style='"+ status0[9] +"padding:1px;text-align:center;'>10</td></tr>";
 	return content;
 };
 
@@ -299,7 +299,7 @@ function showCountData(textObj){
 				segment += "<div><input type='radio' value='A' name='userAnswer'  id='A'" + status[0] + " /><label for='A'>"+ "A &emsp; " + question.q_selectionA +"</label><br>";
 				segment += "<input type='radio' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
 				segment += "<input type='radio' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
-				segment += "<input type='radio' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr><br>";
+				segment += "<input type='radio' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label></div><hr style='margin:1px'><br>";
 	   	   	}
 	   	   	
 	   	   	if(question.q_type == "多選題"){
@@ -308,7 +308,7 @@ function showCountData(textObj){
 				segment += "<input type='checkbox' value='B' name='userAnswer' id='B'" + status[1] + " /><label for='B'>"+ "B &emsp; " + question.q_selectionB +"</label><br>";
 				segment += "<input type='checkbox' value='C' name='userAnswer' id='C'" + status[2] + " /><label for='C'>"+ "C &emsp; " + question.q_selectionC +"</label><br>";
 				segment += "<input type='checkbox' value='D' name='userAnswer' id='D'" + status[3] + " /><label for='D'>"+ "D &emsp; " + question.q_selectionD +"</label><br>";
-				segment += "<input type='checkbox' value='E' name='userAnswer' id='E'" + status[4] + " /><label for='E'>"+ "E &emsp; " + question.q_selectionE +"</label></div><hr><br>";
+				segment += "<input type='checkbox' value='E' name='userAnswer' id='E'" + status[4] + " /><label for='E'>"+ "E &emsp; " + question.q_selectionE +"</label></div><hr style='margin:1px'><br>";
 
 	   	   	}
 	   }
@@ -340,9 +340,16 @@ function showCountData(textObj){
 
 			
 			let correctPercent = correct/size*100 ;
-			let	segment2  = "<h4>＜測驗結果＞</h4><br>";
-			    segment2 += "<div><a>&emsp;測驗共" + size + "題</a></div>";
-				segment2 += "<div><a>&emsp;答錯題數："+ wrong +"題</a><a style='color:red;'>，答對率：" + correctPercent + "%</a></div><br>";
+			let	segment2  = "<h3>＜測驗結果＞</h3><br>";
+			    segment2 += "<div><h4 style='color:red;'>&emsp;測驗共" + size + "題</h4></div>";
+				segment2 += "<div><h4 style='color:red;'>&emsp;答錯題數："+ wrong +"題，答對率：" + correctPercent + "%</h4></div><br>";
+				if(correct >= 7){
+					segment2 += "<div><h4 style='color:red;'>&emsp;✓測驗評語：您的日語能力遠高於目前測驗程度，建議您往更高程度進行測驗學習！</h4></div><br>";
+				}else if(correct > 4 && correct < 7){
+					segment2 += "<div><h4 style='color:red;'>&emsp;✓測驗評語：您的日語能力落在於目前測驗程度，建議您持續測驗學習！</h4></div><br>";
+				}else{
+					segment2 += "<div><h4 style='color:red;'>&emsp;✓測驗評語：您的日語能力落在於基礎至目前測驗程度，建議您調整程度，持續測驗學習！</h4></div><br>";
+				}
 				segment2 += "<table>";
 			
 				segment2 += "<tr>" ;
@@ -424,7 +431,7 @@ function showCountData(textObj){
 //倒數計時器
 	 function startTimer(duration, display) {
 		    var timer = duration, minutes, seconds;
-		    setInterval(function () {
+		    var count = setInterval(function () {
 		        minutes = parseInt(timer / 60, 10);
 		        seconds = parseInt(timer % 60, 10);
 
@@ -432,9 +439,14 @@ function showCountData(textObj){
 		        seconds = seconds < 10 ? "0" + seconds : seconds;
 
 		        display.textContent = minutes + ":" + seconds;
-
-		        if (--timer < 0) {
-		            timer = duration;
+// 		        if (--timer == 0) {  //問題點 前端頁面顯示會在2的時候跳判斷 
+		        if (--timer < 0) {  //問題點 倒數計時可能會發生沒關掉情況，重新啟動倒數
+// 		            timer = duration;
+// 		        	var submit =document.getElementById("submit");
+					clearInterval(count);
+					alert("時間到，自動提交試卷！");
+					timecounter.style.display = 'none';
+		        	$("#submit").click();
 		        }
 		    }, 1000);
 		}
@@ -458,9 +470,7 @@ function showCountData(textObj){
 <div align='center'>
 <h2>線上測驗區</h2>
 
-<div id="clock">讀取時間中...</div>
-<div>Registration closes in <span id="time">05:00</span> minutes!</div>
-
+<div id='timecounter' style="display: ''">開始測驗，作答時間剩 <span id="time">01:30</span> 分鐘！</div>
 
 <!-- <hr> -->
 <%-- <font color='red'>${successMessage}</font>&nbsp; --%>

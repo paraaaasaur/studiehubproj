@@ -52,12 +52,11 @@
 					<li><span class="opener">題庫</span>
 						<ul>
 							<li><a href="<c:url value='/question.controller/queryQuestion' />">查詢、編輯試題資料(後端)</a></li>
-							<li><a href="<c:url value='/question.controller/insertQuestion' />">新增試題資料(後端)</a></li>
+							<li><a href="<c:url value='/question.controller/intoVerifyQuestion' />">試題審核區(後端)</a></li>
 						</ul>
 					</li>
 
 					<li><a href="#">討論區</a></li>
-					<li><a href="#">題庫</a></li>
 					<li><span class="opener">活動</span>
 					    <ul>
 					        <li><a href="<c:url value='/managerAllEvent' />">活動審核(管理者)</a></li>	

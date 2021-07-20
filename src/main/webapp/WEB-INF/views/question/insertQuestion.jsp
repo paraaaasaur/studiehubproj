@@ -23,6 +23,18 @@
 	href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
 
+ <script>
+	function insertContent() {
+	document.getElementById("q_class").value = "日語";
+	document.getElementById("q_type").value = "聽力題";
+	document.getElementById("q_question").value = "明日、二人で映画に行きたいです。何と言いますか。";
+	document.getElementById("q_selectionA").value = "明日、映画に誘いましょう。";
+	document.getElementById("q_selectionB").value = "明日、映画を見に行きませんか。";
+	document.getElementById("q_selectionC").value = "明日、映画に行きたいそうですよ。";
+	document.getElementById("q_selectionD").value = "明日、映画の撮影を行きましょうか。";
+	document.getElementById("q_answer").value = "B";
+	};
+</script>
 
 </head>
 
@@ -37,7 +49,7 @@
 				<%@include file="../universal/adminHeader.jsp"%>
 
 <div align="center">
-	<h2 align='center'>新增試題資料</h2>
+	<br><h2 align='center'>新增試題資料</h2>
 	<form:form method="POST"  modelAttribute="Q1" enctype='multipart/form-data'>
  	<Table>
  	<c:choose>
@@ -99,7 +111,7 @@
 	   
 	   
 	   	<tr>
-	      <td>選項B<br>&nbsp;</td>
+	      <td>選項B：<br>&nbsp;</td>
 	      <td>
 	      	<form:input path="q_selectionB"/>
 		      <form:errors path='q_selectionB' cssClass="error"/>
@@ -155,13 +167,15 @@
 		      <form:errors path='multipartFileAudio' cssClass="error"/>
 		  </td>
 	   </tr>	
-		
-		
-	   <tr>
-	    <td colspan='4' align='center'><br>&nbsp;
-	      <input type='submit'>
-        </td>
-	   </tr>
+	
+	<tr>
+		<td colspan='4' align='center'>&nbsp;
+		<input type='submit' value='送出資料'>
+		<input type='button' onclick="insertContent()" value='一鍵輸入'>
+		</td>
+	</tr>	
+	
+	
 	</Table>
 		 
 	</form:form>
@@ -174,7 +188,7 @@
 
 	<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/adminSidebar.jsp"%>
+		<%@include file="../universal/sidebar.jsp"%>
 
 	</div>
 

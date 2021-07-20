@@ -58,9 +58,16 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionDao.sendRandomExam();
 	}
 
+	////送出隨機綜合測驗題目
 	@Override
 	public Map<String, Object> sendRandomMixExam() {
 		return questionDao.sendRandomMixExam();
+	}
+	
+	////送出待審核資料
+	@Override
+	public Map<String, Object> sendVerifyQuestion() {
+		return questionDao.sendVerifyQuestion();
 	}
 	
 	

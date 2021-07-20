@@ -19,7 +19,41 @@
 	href="${pageContext.request.contextPath}/assets/css/main.css">
 
 <title>所有試題資料</title>
+<script>
 
+	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
+	
+	var adminId = "${adminId}";
+	// 踢除非管理員
+	if(!adminId){
+		alert('您不具有管理者權限，請登入後再試。');
+		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	}
+	
+	window.onload = function(){
+	// console.log(adminId);
+		
+		//如果有登入，隱藏登入標籤
+		var loginHref = document.getElementById('loginHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		if(adminId){
+			loginHref.hidden = true;
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+		}
+		
+		public Boolean selectByPidUid(Integer p_id, String u_id) {  //隱藏未登入者的購物車
+			if(p_id == null || u_id == null) {
+				return false;
+			}
+			return (em.createQuery("FROM CartItem WHERE p_id = :pid AND u_id = :uid", CartItem.class)
+					.setParameter("pid", p_id)
+					.setParameter("uid", u_id)
+					.getResultList().size() != 0)? false : true;
+		}
+	}
+</script>
 </head>
 
 
@@ -75,7 +109,7 @@ window.addEventListener('load', function(){
 		segment += "<tr><th colspan='1'>查無資料</th><tr>";
 	} else {
 		segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
-	    segment += "<tr><th>編輯</th><th>刪除</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
+	    segment += "<tr><th>編輯</th><th>&ensp;刪除</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
 	    
 	    for(n = 0; n < questions.length ; n++){
 		   	let question = questions[n];
@@ -94,18 +128,18 @@ window.addEventListener('load', function(){
 	     	
 	     	
 			segment += "<tr>";
-			segment += "<td>" + tmp0 + "</td>"; 	
+			segment += "<td style='vertical-align: middle;'>" + tmp0 + "</td>"; 	
 			
 // 			segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除編號：" + question.q_id + "'))location='<c:url value = '/question.controller/deleteQuestion/"+ question.q_id +"'/>' /></td>"
-			segment += "<td>" + tmp4 + "</td>"; 	
+			segment += "<td style='vertical-align: middle;'>" + tmp4 + "</td>"; 	
 			
-			segment += "<td width='7%'>" + question.q_id + "</td>"; 	
-			segment += "<td width='7%'>" + question.q_class + "</td>"; 	
-			segment += "<td width='7%'>" + question.q_type + "</td>"; 	
-			segment += "<td>" + question.q_question + "</td>"; 	
+			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_id + "</td>"; 	
+			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_class + "</td>"; 	
+			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_type + "</td>"; 	
+			segment += "<td style='vertical-align: middle;'>" + question.q_question + "</td>"; 	
 
-			segment += "<td><img  width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
-			segment += "<td><audio controls src='" + question.q_audioString + "' ></td>"; 	
+			segment += "<td style='vertical-align: middle;'><img  width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
+			segment += "<td style='vertical-align: middle;'><audio controls src='" + question.q_audioString + "' ></td>"; 	
 			segment += "</tr>"; 	
 	   }
 	}
@@ -132,8 +166,14 @@ window.addEventListener('load', function(){
 <hr>
 
 
-試題搜尋：<input type='text' id="questionName"  placeholder="請輸入部分問題內容" />
-<button id='query'>提交</button>
+<!-- 試題搜尋：<input type='text' id="questionName"  placeholder="請輸入部分問題內容" /> -->
+<!-- <button id='query'>提交</button> -->
+<div style="text-align: center;">
+<input type="text" id="questionName" style="display: inline; width: 500px; float: none;border-radius: 50px;" placeholder="請輸入部分問題內容">
+<button id="query" style="display: inline;">搜尋</button>
+<br>
+<br>
+</div>
 
 
 <div  id='dataArea'>

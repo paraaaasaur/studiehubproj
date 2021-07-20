@@ -22,7 +22,32 @@
 <link rel='stylesheet'
 	href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>Studie Hub</title>
+<script>
 
+	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
+	
+	var adminId = "${adminId}";
+	// 踢除非管理員
+	if(!adminId){
+		alert('您不具有管理者權限，請登入後再試。');
+		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	}
+	
+	window.onload = function(){
+	// console.log(adminId);
+		
+		//如果有登入，隱藏登入標籤
+		var loginHref = document.getElementById('loginHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		if(adminId){
+			loginHref.hidden = true;
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+		}
+		
+	}
+</script>
 </head>
 
 <body class="is-preload">
@@ -108,12 +133,12 @@
 		</tr>
 		
 		<tr>
-		<td  style='vertical-align: middle;'>題目音檔：<br>&nbsp;</td>
+		<td style='vertical-align: middle;'>題目音檔：<br>&nbsp;</td>
 		<td><audio controls src='${Q1.q_audioString}' ></audio></td>
 		</tr>	
 	   
 		<tr>
-		<td  style='vertical-align: middle;'>題目照片：<br>&nbsp;</td>
+		<td style='vertical-align: middle;'>題目照片：<br>&nbsp;</td>
 		<td><img width='300' height='180' src= '${Q1.q_pictureString}'></td>
 		</tr>	
 		
@@ -126,7 +151,7 @@
 	
 <br>
 
-<a href="<c:url value='/question.controller/guestQueryQuestion'/> ">
+<a href="<c:url value='/question.controller/intoVerifyQuestion'/> ">
    <button>回前頁</button>
 </a>
 
@@ -137,7 +162,7 @@
 
 	<!-- Sidebar -->
 		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 
 	</div>
 

@@ -32,5 +32,8 @@ public interface QuestionService {
 	
 	////送出隨機綜合題測驗題目
 	public Map<String, Object> sendRandomMixExam();
+
+	////回傳待審核資料
+	public Map<String, Object> sendVerifyQuestion();
 	
 }

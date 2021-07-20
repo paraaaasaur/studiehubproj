@@ -148,7 +148,7 @@
 		
 		
 			
-			segment += "<tr><th>會員帳號</th><th>會員電話</th><th>Email</th><th>姓名</th><th>物件裡的物件測試</th></tr>"
+			segment += "<tr><th>會員帳號</th><th>姓名</th><th>Email</th><th>會員電話</th></tr>"
 
 			for (n = 0; n < events.length; n++) {
 				let event = events[n];
@@ -156,12 +156,12 @@
 
 				segment += "<tr>"
 			    segment += "<td>" + event.e_id + "</td>"
+				segment += "<td>" + event.e_lastname + event.e_firstname + "</td>"
 				segment += "<td>" + event.e_tel + "</td>"
 				segment += "<td>" + event.e_email + "</td>"
-				segment += "<td>" + event.e_lastname + event.e_firstname + "</td>"
-				segment += "<td>" + event.eventInfo.a_uid + "</td>"
+// 				segment += "<td>" + event.eventInfo.a_uid + "</td>"
 				
-				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.e_lastname + event.e_firstname + ")'))location='<c:url value = '/deletesignupEvent/"+tmp0+"'/>' /></td>"
+				segment += "<td><input type='button'value='移除'onclick=if(confirm('是否確定移除("+ event.e_lastname + event.e_firstname + ")'))location='<c:url value = '/deletesignupEvent/"+tmp0+"'/>' /></td>"
 				
 // 				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
 						
@@ -186,7 +186,7 @@
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
-				<h2 align='center'>${signupEvent.a_name}的報名表單</h2>
+				<h2 align='center'>${signupEvent.a_name}的報名表</h2>
 				
 				<div align="center">
 					
@@ -198,7 +198,7 @@
 				<div1 id='dataArea'>
 <!-- 				插入表單位置 -->
 				</div1>
-				<a href="<c:url value='/'/> ">回前頁</a>
+<%-- 				<a href="<c:url value='/'/> ">回前頁</a> --%>
 			</div>
 		</div>
 

@@ -24,6 +24,8 @@ public class EventJsonController {
 	@GetMapping(value = "/EventfindAll", produces = "application/json; charset=UTF8")
 	//produces   它的作用是指定返回值类型，不但可以设置返回值类型还可以设定返回值的字符编码；
 	public @ResponseBody Map<String, Object> EventfindAll() {
+		
+		
 		return eventserviceImpl.EventfindAll();
 	}
 	

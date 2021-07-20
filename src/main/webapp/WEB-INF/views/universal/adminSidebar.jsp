@@ -60,7 +60,7 @@
 					<li><a href="#">題庫</a></li>
 					<li><span class="opener">活動</span>
 					    <ul>
-					        <li><a href="<c:url value='/managerAllEvent' />">活動驗證(管理者)</a></li>	
+					        <li><a href="<c:url value='/managerAllEvent' />">活動審核(管理者)</a></li>	
                   <li><a href="<c:url value='/adminAllEvent' />">所有活動(管理者)</a></li>
 					        		        
 					    </ul>

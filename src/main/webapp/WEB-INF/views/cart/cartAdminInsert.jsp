@@ -210,7 +210,6 @@
 					$(cheat).on('click', function(){
 						p_id.val(1);
 						u_id.val('tajen');
-						o_amt.val(Math.round(Math.random() * 100000));
 						autoFillInProductStuff();
 						autoFillInUserStuff();
 					})

@@ -7,7 +7,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
 <title>購物車後台管理系統</title>
-
+<style>
+.deleteBtn {
+	color : rgb(0, 132, 255) !important;
+	box-shadow : inset 0 0 0 2px rgb(0, 132, 255);
+}
+.deleteBtn:hover {
+	background-color: rgb(230, 245, 253);
+}
+.deleteBtn:active {
+	background-color: rgb(200, 231, 248);
+}
+</style>
 <script>
 
 	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
@@ -138,7 +149,13 @@
 					}
 					console.log('checkedCartids = ' + checkedCartids);
 					// 改變#deleteBtn外觀和disabled值
-					document.querySelector('#deleteBtn').disabled = (checkedCartids.length == 0)? true : false;
+					let thisBtn = document.querySelector('#deleteBtn');
+					if (checkedCartids.length == 0) {
+						thisBtn.classList.remove('deleteBtn');
+					} else {
+						thisBtn.classList.add('deleteBtn');
+					}
+					document.querySelector('#deleteBtn').disabled = (checkedCartids.length == 0);
 					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
 									'刪除<font color="cornflowerblue"> ' + checkedCartids.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
 									'刪除勾選資料';
@@ -293,7 +310,7 @@
 						segments = [];
 						for (let i = 0; i < cartItems.length; i++) {
 							let temp0 =	 "<tr>" + 
-												"<td style='text-align: center;'><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
+												"<td style='text-align: center; margin : 0;  padding : 0;'><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
 													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + cartItems[i].cart_id + "'></label></td>" +
 												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
 												"<td style='text-align: center;'><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
@@ -326,6 +343,9 @@
 								console.log(result.state);
 								showTop100();
 								checkedCartids = [];
+								console.log(document.querySelector('#deleteBtn'));
+								document.querySelector('#deleteBtn').classList.remove('deleteBtn');
+								console.log(document.querySelector('#deleteBtn'));
 								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
 								document.querySelector('#deleteBtn').disabled = true;
 							}

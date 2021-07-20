@@ -35,6 +35,8 @@ window.onload = function(){
         }
     }
     
+    
+//universal
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
@@ -58,7 +60,7 @@ window.onload = function(){
 	let cartHref = document.querySelector('#cartHref');
 	cartHref.hidden = (u_id)? false : true;
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-    
+//universal
 }
 
 
@@ -88,7 +90,7 @@ window.onload = function(){
 										</header>
 										<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen 主張，學習外語不是累積學科知識，而更像是技能訓練。因此<strong> Studie Hub </strong>採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
 										<ul class="actions">
-											<li><a href="#" class="button big">Learn More</a></li>
+											<li><a href="#popularCourse" class="button big primary">Learn More</a></li>
 										</ul>
 									</div>
 									<span class="image object">
@@ -96,94 +98,57 @@ window.onload = function(){
 									</span>
 								</section>
 
-							<!-- Section -->
+							
 								<section>
-									<header class="major">
-<!-- 										<h2>Erat lacinia</h2> -->
-										<h2>關於 Studie Hub</h2>
-									</header>
-									<div class="features">
-										<article>
-											<span class="icon fa-gem"></span>
-											<div class="content">
-												<h3>Portitor ullamcorper</h3>
-												<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											</div>
-										</article>
-										<article>
-											<span class="icon solid fa-paper-plane"></span>
-											<div class="content">
-												<h3>Sapien veroeros</h3>
-												<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											</div>
-										</article>
-										<article>
-											<span class="icon solid fa-rocket"></span>
-											<div class="content">
-												<h3>Quam lorem ipsum</h3>
-												<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											</div>
-										</article>
-										<article>
-											<span class="icon solid fa-signal"></span>
-											<div class="content">
-												<h3>Sed magna finibus</h3>
-												<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											</div>
-										</article>
-									</div>
-								</section>
-
-							<!-- Section -->
-								<section>
-									<header class="major">
-										<h2>Ipsum sed dolor</h2>
+									<header class="major" id="popularCourse">
+										<h2>熱門課程</h2>
 									</header>
 									<div class="posts">
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，從這裡開始_2.png" alt="" /></a>
-											<h3>Interdum aenean</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始學日文】日語50音的發音和寫法簡單教學_3.png" alt="" /></a>
-											<h3>Nulla amet dolore</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何有效練習英文口說 _ Avis經驗談 _ 突破心魔才能學好英文口語_4.png" alt="" /></a>
-											<h3>Tempus ullamcorper</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>																				
-										</article>
-										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何開始自學日文？日文學習步驟分享！_5.png" alt="" /></a>
-											<h3>Sed etiam facilis</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始】第一期：學英語，從入門到摔門！_1.jpg" alt="" /></a>
+											<h3>從0開始學英文！</h3>
+											<p>國際自編教材與全球同步更新，學員可自由選擇想上的主題：主題涵蓋職場、社交、旅遊、文化及日常生活等情境，可依據個人興趣及需求，自由選擇</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>
 										</article>
 										<article>
 											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/英文閒聊：我克服拖延症的秘密是什麼？ Chen Lily_6.png" alt="" /></a>
-											<h3>Feugiat lorem aenean</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+											<h3>拯救拖延症</h3>
+											<p>真實的英語接觸，面對面學習更有感：情境互動教學，用全身細胞掌握學習的節奏，讓你不只被動學英語，而是主動用英語，「開口說」才是關鍵</p>
+											<ul class="actions">
+												<li><a href="#" class="button">More</a></li>
+											</ul>
+										</article>
+										
+										<article>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何有效練習英文口說 _ Avis經驗談 _ 突破心魔才能學好英文口語_4.png" alt="" /></a>
+											<h3>如何提升英文口說？</h3>
+											<p>分級制度嚴謹，跟著類似程度的夥伴一起互動交流：沒有嚴謹的程度分級，會讓班上同學發言量不均、很難彼此交流，也會打擊程度低學員的自信</p>
+											<ul class="actions">
+												<li><a href="#" class="button">More</a></li>
+											</ul>																				
+										</article>
+										<article>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何開始自學日文？日文學習步驟分享！_5.png" alt="" /></a>
+											<h3>自學日文從哪裡開始？</h3>
+											<p>課程不流於聊天或背誦，運用英文邏輯理解與表達：結構性教法，讓你用英文邏輯思考去理解、學會如何運用句子，每堂課都能帶走很多新的學習</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始】第一期：學英語，從入門到摔門！_1.jpg" alt="" /></a>
-											<h3>Amet varius aliquam</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始學日文】日語50音的發音和寫法簡單教學_3.png" alt="" /></a>
+											<h3>50音簡單教學</h3>
+											<p>學習過程能感到進步，建立信心，就不怕開口犯錯：台灣人口說不好的一大原因就是害怕開口跟犯錯，所以課程首要條件就是先建立信心與興趣</p>
+											<ul class="actions">
+												<li><a href="#" class="button">More</a></li>
+											</ul>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，從這裡開始_2.png" alt="" /></a>
+											<h3>英文基礎文法第一課</h3>
+											<p>100%國際認證師資，不只English speaker而是English teacher：認證教師才能真正激發潛力&自信，英協教師具備平均8年以上教學經驗及劍橋認證</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>

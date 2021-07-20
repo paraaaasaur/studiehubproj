@@ -145,7 +145,7 @@ window.addEventListener('load', function(){
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 
 <div align='center'>
 <h2>待審核試題資料</h2>

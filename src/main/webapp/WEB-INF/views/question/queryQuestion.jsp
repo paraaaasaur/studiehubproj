@@ -61,8 +61,23 @@
 <script>
 let dataArea = null; 
 let questionName = null; 
-let query = null; 
+let query = null;
+var adminId = "${adminId}";
+
+
 window.addEventListener('load', function(){
+	
+	//如果有登入，隱藏登入標籤
+    var loginHref = document.getElementById('loginHref');
+    var logoutHref = document.getElementById('logoutHref');
+    var userId = document.getElementById('userId');
+    var userPic = document.getElementById('userPic');
+    if(adminId){
+    	loginHref.hidden = true;
+    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+    }
+	
+	
 	
 	questionName = document.getElementById("questionName");
 	query = document.getElementById("query");
@@ -157,7 +172,7 @@ window.addEventListener('load', function(){
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 
 <div align='center'>
 <h2>所有試題資料</h2>

@@ -59,21 +59,24 @@ window.onload = function(){
 	cartHref.hidden = (u_id)? false : true;
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
     
-    //如果有登入，隱藏登入標籤
+	//如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
 	var loginEvent = document.getElementById('loginEvent');
+	var loginEvent1 = document.getElementById('loginEvent1');
+    var loginALLEvent1 = document.getElementById('loginALLEvent1');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
-		loginEvent.style.display = "block";
-	    loginALLEvent.style.display = "block";
+    	loginEvent.style.display = "block";
+    	loginEvent1.style.display = "block";
+    	loginALLEvent1.style.display = "block";
     } 
     
     var dataArea = document.getElementById("dataArea");

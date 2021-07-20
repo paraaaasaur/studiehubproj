@@ -137,7 +137,7 @@ window.onload = function(){
 						  + "<th style='text-align: center'>課程名稱</th>"
 						  + "<th style='text-align: center'>課程編號</th>"
 						  + "<th style='text-align: center'>課程價格</th>"
-						  + "<th style='text-align: center'>課程介紹</th>"
+// 						  + "<th style='text-align: center'>課程介紹</th>"
 						  + "<th style='text-align: center'>課程老師</th>"
 						  + "</tr>";
 
@@ -254,7 +254,7 @@ window.onload = function(){
 										+ "<td style='text-align: center'><a href='" + temphref1 + product.p_id + "' >" + product.p_name + "</a></td>"
 										+ "<td style='text-align: center'>" + product.p_id + "</td>"
 										+ "<td style='text-align: center'>" + product.p_price + "</td>"
-										+ "<td style='text-align: center'>" + product.p_desc + "</td>"
+// 										+ "<td style='text-align: center'>" + product.p_desc + "</td>"
 										+ "<td style='text-align: center'>" + product.p_teacher + "</td>"
 										+ "</tr>";
 						totalPrice += product.p_price;

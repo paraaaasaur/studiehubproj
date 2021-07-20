@@ -54,6 +54,11 @@ window.onload = function(){
         }
     }
     
+ // 有登入才會顯示購物車sidebar
+	let cartHref = document.querySelector('#cartHref');
+	cartHref.hidden = (u_id)? false : true;
+	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
+    
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');

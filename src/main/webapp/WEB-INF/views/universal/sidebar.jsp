@@ -75,7 +75,7 @@
 				</header>
 				<div class="mini-posts">
 					<article>
-						<a href="<c:url value = '/takeClass/2'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，想重新學英文 從這裡開始就對了!_2.png"
+						<a href="<c:url value = '/takeClass/2'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，從這裡開始_2.png"
 							alt="" /></a>
 						<p>
 							除了go Dutch，還有什麼俚語包括國家名稱？<br /> 一起學習 8

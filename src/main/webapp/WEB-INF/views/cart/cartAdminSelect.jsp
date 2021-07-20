@@ -299,12 +299,18 @@
 							}
 						}
 					} 
-
-					// 【自訂函數 8】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
-					// !!!
+					
+					/** 【自訂函數 8】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
+					* 重置全域變數 @cartItems @segments @rowNum @checkedCartids
+					* 重置#deleteBtn 的樣式及disabled屬性
+					*/
 					function parseSelectedRows(map) {
 						let parsedMap = JSON.parse(map);
 						let totalPrice = 0;
+						document.querySelector('#deleteBtn').classList.remove('deleteBtn');
+						document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+						document.querySelector('#deleteBtn').disabled = true;
+						checkedCartids = [];
 						cartItems = parsedMap.list;
 						rowNum = (cartItems)? cartItems.length : 0;
 						segments = [];
@@ -342,12 +348,6 @@
 								result = JSON.parse(xhr.responseText);
 								console.log(result.state);
 								showTop100();
-								checkedCartids = [];
-								console.log(document.querySelector('#deleteBtn'));
-								document.querySelector('#deleteBtn').classList.remove('deleteBtn');
-								console.log(document.querySelector('#deleteBtn'));
-								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
-								document.querySelector('#deleteBtn').disabled = true;
 							}
 						}
 

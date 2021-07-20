@@ -42,6 +42,8 @@ window.onload = function(){
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
 	var loginEvent = document.getElementById('loginEvent');
+	var loginEvent1 = document.getElementById('loginEvent1');
+    var loginALLEvent1 = document.getElementById('loginALLEvent1');
     if(u_id){
     	loginHref.hidden = true;
     	signupHref.hidden = true;
@@ -49,7 +51,8 @@ window.onload = function(){
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
     	loginEvent.style.display = "block";
-    	loginALLEvent.style.display = "block";
+    	loginEvent1.style.display = "block";
+    	loginALLEvent1.style.display = "block";
     }
 	// 有登入才會顯示購物車sidebar
 	let cartHref = document.querySelector('#cartHref');
@@ -57,6 +60,8 @@ window.onload = function(){
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
     
 }
+
+
 </script>
 
 </head>

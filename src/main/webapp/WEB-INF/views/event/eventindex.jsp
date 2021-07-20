@@ -50,14 +50,17 @@ window.addEventListener("load", function() {
 	    var logoutHref = document.getElementById('logoutHref');
 	    var userId = document.getElementById('userId');
 	    var userPic = document.getElementById('userPic');
+	    var loginEvent1 = document.getElementById('loginEvent1');
+	    var loginALLEvent1 = document.getElementById('loginALLEvent1');
+
 	    if(u_id){
 	    	loginHref.hidden = true;
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    	userPic.src = userPicString;	//有登入就秀大頭貼
 	    	userId.innerHTML = u_id;
-	    	loginEvent.style.display = "block";
-	    	loginALLEvent.style.display = "block";
+	    	loginEvent1.style.display = "block";
+	    	loginALLEvent1.style.display = "block";
 
 	    }
 	

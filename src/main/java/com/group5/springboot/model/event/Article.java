@@ -14,9 +14,9 @@ import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
 
-@Entity
-@Table(name = "Article")
-@Component
+//@Entity
+//@Table(name = "Article")
+//@Component
 public class Article {
 	
 	 @Id

@@ -95,8 +95,8 @@ window.addEventListener("load", function() {
     	xhr.onreadystatechange = function() {
     		
     		if (xhr.readyState == 4 && xhr.status === 200) {
-    			            console.log(xhr.responseText);
-
+//     			            console.log(xhr.responseText);
+//     			            console.log(u_id);
     			dataArea.innerHTML = showData(xhr.responseText);
     			//執行方法 將 jsoe字串  轉為 jsoe物件 
     		}
@@ -118,7 +118,7 @@ window.addEventListener("load", function() {
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
-// 					console.log(xhr2.responseText);
+// 					console.log(u_id);
 					
 					result = JSON.parse(xhr2.responseText);
 					
@@ -127,10 +127,10 @@ window.addEventListener("load", function() {
 						swal(result.succes);
 					}else if(result.fail){
 						swal(result.fail);
-					}else if(result.Exceed){
-						swal(result.Exceed);
 					}else if(result.Time){
 						swal(result.Time);
+					}else if(result.Exceed){
+						swal(result.Exceed);
 					}
 // 					dataArea.innerHTML = showData(xhr2.responseText);
 
@@ -166,16 +166,25 @@ function showData(textobj) {
 
     let tmp1 = "https://www.google.com/maps?q="+obj.a_address ;
     let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/enevt/地圖小圖.png' />'" + "</a>";
-	
+    let tmp2 = "<c:url value='/modifyRestaurant/'   />"+ obj.a_uid;
 			    segment += "<article>";
 			    segment += "<header class='mb-4'>";
 			    
-			    segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"</h1>";
-			    segment += "<div class='text-muted fst-italic mb-2'>發布者 :"+obj.a_uid+"</div>";
+			    //判斷活動過期了沒有 有在H2裡加上已過期
+			    if(obj.expired=="未過期"){
+			    	
+			    	segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"</h1>";
+			    }else{
+			    	
+			    	segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"("+obj.expired+")"+ "</h1>";
+			    }
+			    
+			    segment += "<div class='text-muted fst-italic mb-2'>發布者 :"+obj.uidname+"</div>";
 				segment += "<div class='text-muted fst-italic mb-2'>建立時間 :"+obj.creationTime+"</div>";
 				segment += "<div class='text-muted fst-italic mb-2'>報名人數上限 :"+obj.applicants+"</div>";
-				segment += "<div class='text-muted fst-italic mb-2'>以報名人數 :"+obj.havesignedup+"</div>";
-				segment += "<a class='badge bg-secondary text-decoration-none link-light' href='#!'>"+obj.a_type+"</a>";
+				segment += "<div class='text-muted fst-italic mb-2'>已報名人數 :"+obj.havesignedup+"</div>";
+				segment += "<a class='badge bg-secondary text-decoration-none link-light' href='#!'>"+obj.a_type+"</a><br>";
+// 				segment += "<a class='badge bg-secondary text-decoration-none link-light' href='"+tmp2+"'>"+"悄悄話"+"</a>";
 				segment += "</header>"
 				segment += "<span style = 'font-size:18px;'>報名活動時間 : "+obj.a_registration_starttime+"<span>至</span>"+obj.a_registration_endrttime+"<br/></span> "	
 				segment += "<br>"
@@ -184,7 +193,7 @@ function showData(textobj) {
 				segment += "<span style = 'font-size:18px;'>活動地點 : "+obj.a_address+"</span>"
 				segment += "<br>"
 				segment += "<br>"			   
-				segment += "<figure class='mb-4'><img width='500' height='500'src=" + '<c:url value="/" />' + obj.a_picturepath+"  /></figure>"				
+				segment += "<figure class='mb-4'><img width='320' height='240'src=" + '<c:url value="/" />' + obj.a_picturepath+"  /></figure>"				
 				segment += "<section class='mb-5'>"
 				segment += "<p class='fs-5 mb-4'>"+str4+"</p>"
 				segment += "</section>"

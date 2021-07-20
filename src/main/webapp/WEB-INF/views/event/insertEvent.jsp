@@ -128,14 +128,14 @@ window.addEventListener("load", function() {
                    </td> 
 						</tr>
 						<tr>
-							<td>活動報名開始時間:</td>
+							<td>報名開始時間:</td>
 							<td><form:input type="datetime-local" path="registration_starttime" />
 							<form:errors path="registration_starttime"  cssClass="error"/>	
 							
 							</td>
 						</tr>
 						<tr>
-							<td>活動報名結束時間</td>
+							<td>報名結束時間:</td>
 							<td><form:input type="datetime-local" path="registration_endrttime" />
 							<form:errors path="registration_endrttime"  cssClass="error"/>	
 							
@@ -148,7 +148,7 @@ window.addEventListener("load", function() {
 							</td>
 						</tr>
 						<tr>
-							<td>活動結束時間</td>
+							<td>活動結束時間:</td>
 							<td><form:input type="datetime-local" path="Transienta_endTime" />
 							<form:errors path="Transienta_endTime"  cssClass="error"/>	
 							</td>
@@ -182,11 +182,16 @@ window.addEventListener("load", function() {
 							<td><input type="submit"></td>
 						</tr>
 						<tr>
-						<td><input
+						<td>
+						<input
 						style="border: none; background-color: #555555; color: white; border-radius: 4px;"
-						type="submit" value="新增"> <input
+						type="button" onclick="inport2()" value="一鍵輸入時間相近"></td>
+						
+						<td>
+						<input
 						style="border: none; background-color: #555555; color: white; border-radius: 4px;"
 						type="button" onclick="inport()" value="一鍵輸入"></td>
+						
 
 						</tr>
 						
@@ -194,16 +199,42 @@ window.addEventListener("load", function() {
 					
 					             <script>
 									$(document).ready(function() {
-										$('#Taoyuan').DataTable();
+						
 									});
 									function inport() {
 
-										document.getElementById("a_name").value = "77";
-										document.getElementById("a_address").value = "03-4945168";
-										document.getElementById("applicants").value = "元智大飯店";
-										document.getElementById("a_type").value = "分享會";
-										document.getElementById("Transienta_startTime").value = "2021-07-16T16:01";
-										document.getElementById("transientcomment").value = "AAAAAAAAAAAAAAAAAAA2021-07-16T16:01";
+										
+										var aa = "在使用Google Analytics你是否曾出現過以下疑問 這些數據，真的能監控網站與分析轉換率，改變訂單成交數量嗎？我要怎麼靠數據了解顧客？哪些數據可以讓我瞭解客戶的行為與需求？數據裡的名詞代表意義是什麼？"
+										       + "這些問題讓創新未來學校來幫你,創新未來學校設計的課程將Google Analytics分析的應用know-how，歸納整理一套完整的操作流程與即學即用的實務方法，協助解決提高網站流量與購買轉換率的核心難題！"
+										       +"七大學習重點,Google廣告類型,1.關鍵字廣告運用的範圍,2.廣告競價機制模式,3.競業關鍵字與自有品牌關鍵字操作,4.廣告操作介面說明,5.廣告活動架構與廣告建立,6.廣告報表分析及廣告優化。"
+										
+										document.getElementById("a_name").value = "GoogleAnalytics數據分析";
+										document.getElementById("a_type").value = "線下課程";
+										document.getElementById("registration_starttime").value = "2021-06-07T15:00";
+										document.getElementById("registration_endrttime").value = "2021-10-01T17:00";
+										document.getElementById("Transienta_startTime").value = "2021-10-02T08:50";
+										document.getElementById("Transienta_endTime").value = "2021-10-12T17:10";
+										document.getElementById("a_address").value = "桃園市桃園區埔新路12號";
+										document.getElementById("transientcomment").value = aa
+										document.getElementById("applicants").value = "1";
+
+									};
+                                        function inport2() {
+
+                                        var dt = (+new Date());
+                                        var  aa= "企業對於數位行銷的常見八大迷思,"+"- 數位商機龐大、我一定可以在其中分杯羹？"+"- 有使用數位工具、就是在做數位行銷？"+"- 看現在流行用什麼數位推廣方式、跟著用就對了？"+"- 數位行銷要做得好、就得要靠小編？"+"- 有投放廣告、就一定有流量？"
+                                        	+ "- 拍Youtube影片、做直播、找網紅/KOL、一定有效果？"+"- 延攬GA高手、就可以提升業績？"+"- 把數位行銷交給專業的行銷顧問公司、就是業績的保證？"
+                                        	+"你需要的是RACE數位行銷規劃術RACE是由英國數位行銷大師DaveChaffey&FionaEllis-Chadwick針對數電子商務業者提出的的數位行銷策略企劃流程四大流程,"
+                                        	+"1. Reach接觸顧客,2. Act 相互影響,3. Convert銷售轉換,4 Engage顧客口碑,藉由結合數位消費行為，訂定每個流程的策略、管理目標與KPI標準，協助企業系統化規劃完善的數位行銷與電商策略與績效評估標準。能協助您改善以下問題,   - 銷售不佳卻不知道從何改善問題,- 不知如何建立策略目標與合理的KPI標準,- 憑經驗制定行銷計畫 上次成功這次卻失敗,課程大綱 。 - 數位行銷企劃概述／SOSTAC + RACE 數位行銷企劃程序,- Traction集客力戰術設計,- RACE 數位整合行銷計畫,- 數位行銷一頁企劃書。 適合進修對象 。  - 數位行銷工作者,- 欲轉職電子商務者- 企業行銷主管,- 電商創業主,"
+										document.getElementById("a_name").value = "RACE數位行銷規劃術";
+										document.getElementById("a_type").value = "線下課程";
+										document.getElementById("registration_starttime").value = "2021-06-07T15:00";
+										document.getElementById("registration_endrttime").value = "2021-07-18T17:00";
+										document.getElementById("Transienta_startTime").value = "2021-07-19T08:50";
+										document.getElementById("Transienta_endTime").value = "2021-07-21T17:10";
+										document.getElementById("a_address").value = "桃園市桃園區復興路180號";
+										document.getElementById("transientcomment").value = aa
+										document.getElementById("applicants").value = "1";
 
 									};
 								</script>

@@ -57,7 +57,9 @@ public class EventInfo {
 	private  List<Entryform>entryforms;
 	int applicants ;                 //報名人數上限 
 	int havesignedup ;               //報名表的人數
-	
+	String expired ;                 //活動過期
+	String uidname ;
+
 	
 	
 //===========暫時存放區===========	
@@ -400,7 +402,24 @@ public class EventInfo {
 			}	
 			
 	}
-	
+
+	public String getExpired() {
+		return expired;
+	}
+
+	public void setExpired(String expired) {
+		this.expired = expired;
+	}
+
+	public String getUidname() {
+		return uidname;
+	}
+
+	public void setUidname(String uidname) {
+		this.uidname = uidname;
+	}
+
+
 	
 	
 

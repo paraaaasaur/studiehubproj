@@ -4,67 +4,69 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
-
+//
 //@Entity
-//@Table(name = "Comment")
+//@Table(name = "Sendmessage")
 //@Component
-public class Comment {
+public class Sendmessage {
 
-	
+
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private Long id;
-	 private String content ;
-	 @ManyToOne
-	 private Article article;
+	 private String title;
+	 private String content;
+	 private String aid;
+	 private String uid;
 	 
-	 public Comment() {
-	 }
-	 
-	 public void dleteComments() {
-		 
-          this.getArticle().getComments().remove(this);
-	}
-	 
-	 public Comment(String content) {
-		 this.content =  content ;
-	 } 
-	 
-	 
+	 public Sendmessage() {
+			super();
+//			System.out.println("是用建構方法===========");
+		}
 
 	public Long getId() {
 		return id;
 	}
 
-
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public String getContent() {
 		return content;
 	}
 
-
 	public void setContent(String content) {
 		this.content = content;
 	}
 
-
-	public Article getArticle() {
-		return article;
+	public String getAid() {
+		return aid;
 	}
 
+	public void setAid(String aid) {
+		this.aid = aid;
+	}
 
-	public void setArticle(Article article) {
-		this.article = article;
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 	 
-	
+	 
 	 
 }

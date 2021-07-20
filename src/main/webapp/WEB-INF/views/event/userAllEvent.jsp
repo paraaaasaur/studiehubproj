@@ -4,9 +4,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <style type="text/css">
- td {white-space:nowrap;overflow:hidden;text-overflow: ellipsis;}
- table{table-layout:fixed;word-wrap:break-word;}
+ td {
+     white-space:nowrap; 
+     overflow:hidden; 
+     text-overflow:ellipsis; 
+      } 
+ table{
+       table-layout:fixed;
+       word-wrap:break-word;}
+ 
+
 </style>
 
 <meta charset="UTF-8">
@@ -25,6 +34,7 @@
 	let dataArea = null; //變數放在外面 空值(原始狀態)  放在方法裡 別的方法要用它會找不到 不要讓他被綁住 
 	let restname = null;
 	let query = null;
+	let queryall = null;
 	var u_id = "${loginBean.u_id}";
 	var userPicString = "${loginBean.pictureString}";   
 
@@ -94,6 +104,8 @@
 		dataArea = document.getElementById("dataArea");
 		restname = document.getElementById("restname");
 		query = document.getElementById("query");
+		queryall = document.getElementById("queryall");
+
 		//抓到 Id 叫 dataArea 能對這個地方做修改 或 對他做監聽事件
 		let xhr = new XMLHttpRequest();
 		xhr.open("GET", "<c:url value='/Eventfindbyuid' />", true);
@@ -104,8 +116,9 @@
 		xhr.onreadystatechange = function() {
 			//當屬性發生變化的時候執行方法	
 			if (xhr.readyState == 4 && xhr.status === 200) {
-				            console.log(xhr.responseText);
-
+				    if("${successMessage}") {
+						alert("${successMessage}");
+				    }     
 				dataArea.innerHTML = showData(xhr.responseText);
 				//執行方法 將 jsoe字串  轉為 jsoe物件 
 			}
@@ -126,13 +139,30 @@
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
-					console.log(xhr2.responseText);
+					
 					
 					dataArea.innerHTML = showData(xhr2.responseText);
 
 				}
 			}
 		});
+		
+		queryall.addEventListener("click", function() {
+					//當id= query 的DOM物件被按下後 執行此方法
+
+					let xhr3 = new XMLHttpRequest();
+					xhr3.open('GET', "<c:url value='/Eventfindbyuid' />", true);
+					xhr3.send();
+					xhr3.onreadystatechange = function() {
+						if (xhr3.readyState == 4 && xhr3.status == 200) {
+
+							
+							
+							dataArea.innerHTML = showData(xhr3.responseText);
+
+						}
+					}
+				});
 
 	});
 
@@ -145,13 +175,13 @@
 		//  分別把物件裡的 size 跟 list 拆開
 		let events = obj.list
 
-		let segment = "<table >";
+		let segment = "<table>";
 
 		if (size == 0) {
-			segment += "<tr><th colspan='1'>'查無此筆資料'</th><tr>"
+			segment += "<tr><th colspan='1'>'查無資料'</th><tr>"
 		} else {
-			segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
-			segment += "<tr><th>活動類型</th><th>活動名稱</th><th>活動開始時間</th><th>活動結束時間</th><th>活動地址</th><th>活動照片</th></tr>"
+			segment += "<tr><th colspan='10'>共計" + size + "筆資料</th><tr>";
+			segment += "<tr><th>活動類型</th><th>活動名稱</th><th>報名開始時間</th><th>報名結束時間</th><th>活動開始時間</th><th>活動結束時間</th><th>活動地址</th><th>活動圖片</th><th>上限人數</th><th>目前人數</th></tr>"
 
 			for (n = 0; n < events.length; n++) {
 				let event = events[n];
@@ -173,20 +203,22 @@
 				// 		console.log("tmp0="+tmp0) ; 
 
 				segment += "<tr>"
-				segment += "<td>" + event.a_type + "</td>"
-				segment += "<td>" + event.a_name + "</td>"
-				segment += "<td>" + event.a_startTime + "</td>"
-				segment += "<td>" + event.a_endTime + "</td>"
-				segment += "<td>" + event.a_address + "</td>"
-				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
+				segment += "<td title='"+event.a_type+"'>" + event.a_type + "</td>"
+				segment += "<td title='"+event.a_name+"'>" + event.a_name + "</td>"
+				segment += "<td title='"+event.a_startTime+"'>" + event.a_startTime + "</td>"
+				segment += "<td title='"+event.a_registration_starttime+"'>" + event.a_registration_starttime + "</td>"
+				segment += "<td title='"+event.a_registration_endrttime+"'>" + event.a_registration_endrttime + "</td>"
+				segment += "<td title='"+event.a_endTime+"'>" + event.a_endTime + "</td>"
+				segment += "<td title='"+event.a_address+"'>" + event.a_address + "</td>"
+				segment += "<td ><img width='70' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
+// 				segment += "<td><p title='表现示意形式'>模式</p></td>"
+                segment += "<td align='center' valign='middle' >" + event.applicants + "</td>"
+                segment += "<td align='center' valign='middle' >" + event.havesignedup + "</td>"
+				segment += "<td width='10%'><input type='button'value='修改'        style='width:60px;height:50px;font-size:1px;border-radius: 10px;'                  onclick=\"window.location.href='"+tmp0+"'\" /></td>";
+				segment += "<td ><input type='button'value='下架'         style='width:60px;height:50px;font-size:1px;border-radius: 10px;'                 onclick=if(confirm('是否確定下架("+ event.a_name+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
+				segment += "<td ><input type='button'value='查詢報名'   style='width:60px;height:50px;font-size:1px;border-radius: 10px;'               onclick=\"window.location.href='"+tmp2+"'\" /></td>";
 
-
-						
-				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
-				segment += "<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
-				segment += "<td><input type='button'value='查詢報名'onclick=\"window.location.href='"+tmp2+"'\" /></td>";
-
-
+// 				style='width:60px;height:50px;font-size:1px;'   
 						
 				segment += "</tr>"
 			}
@@ -205,22 +237,25 @@
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
 				<h2 align='center'>活動內容後台</h2>
-				
-				<div align="center">
+								<div align="center">
 					
 					<font color='red'>${successMessage}</font>
 					<!--   修改成功的重定向帶值 -->
-					搜尋活動名稱:<input type='text' id='restname' />
-					<button id='query'>提交</button>
-					
+				<div style="text-align: center;">
+					<input type="text" id="restname" style="display: inline; width: 300px; "placeholder="請輸入活動關鍵字">
+					<button id="query" style="width:60px;height:50px;font-size:1px;border-radius:10px;" >搜尋</button>&nbsp<button id="queryall"  style="width:60px;height:50px;font-size:1px;border-radius:10px;" >搜尋全部</button>
+					<br>
+					<br>
 				</div>
 					
+				</div>
+				
 
 
 				<div1 id='dataArea'>
 <!-- 				插入表單位置 -->
 				</div1>
-				<a href="<c:url value='/'/> ">回前頁</a>
+<%-- 				<a href="<c:url value='/'/> ">回前頁</a> --%>
 			</div>
 		</div>
 

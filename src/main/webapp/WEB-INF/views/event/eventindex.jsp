@@ -121,7 +121,19 @@ function showData(textobj) {
 // 				class='image'
 			    segment += "<article  class='container'>";
 			    segment += "<a href='"+tmpx+"' class='image'><img src='"+tmp0+"' alt=''  height='300' /></a>"
-				segment += "<h3 class='ellipsis'>"+tmpxx+"</h3>"
+			    
+			    
+			    //判斷活動過期了沒有 有在</h3>裡加上已過期
+                if(event.expired=="未過期"){
+			    	
+        			segment += "<h3 class='ellipsis'>"+tmpxx+"</h3>"
+
+			    }else{
+			    	segment += "<h3 class='ellipsis'>"+tmpxx+"("+event.expired+")"+ "</h3>"
+					
+			    }
+				
+				segment += "<p  class='ellipsis'>報名時間:"+event.a_registration_starttime+"<span>至"+event.a_registration_endrttime+"</span>"+"</p>"
 				segment += "<p  class='ellipsis'>活動時間:"+tmp2+"<span>至"+tmp3+"</span>"+"</p>"
 				segment += "<p  class='ellipsis'>活動地點:"+tmp4+"</p>"
 				segment += "<ul class='actions'>"

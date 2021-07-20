@@ -241,9 +241,9 @@ function showCountData(textObj){
 		}
 	
 	let content =  "<tr><th colspan='4' style=' border:2px #cccccc solid;padding:1px;'>&ensp;聽力題</th> <th colspan='3' style=' border:2px #cccccc solid;padding:1px;'>&ensp;多選題</th> <th colspan='3' style=' border:2px #cccccc solid;padding:1px;'>&ensp;單選題</th></tr>";
-	    content += "<tr><td style='" + status0[0] + ";padding:1px;text-align:center;'>1</td> <td  style='" + status0[1] + "padding:1px;text-align:center;'>2</td> <td  style='"+status0[2]+"padding:1px;text-align:center;'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"padding:1px;text-align:center;'>4</td>";
-	    content += "<td style='" + status0[4] + "padding:1px;text-align:center;'>5</td> <td style='" + status0[5] + "padding:1px;text-align:center;'>6</td> <td style='border-right:2px #cccccc solid;"+status0[6]+"padding:1px;text-align:center;'>7</td>";
-	    content += "<td style='" + status0[7] + "padding:1px;text-align:center;'>8</td> <td style='" + status0[8] + "padding:1px;text-align:center;'>9</td> <td style='"+ status0[9] +"padding:1px;text-align:center;'>10</td></tr>";
+	    content += "<tr><td style='" + status0[0] + ";padding:1px;text-align:center;width:55px;height:26.1px;'>1</td> <td  style='" + status0[1] + "padding:1px;text-align:center;width:55px;height:26.1px;'>2</td> <td  style='"+status0[2]+"padding:1px;text-align:center;width:55px;height:26.1px;'>3</td> <td style='border-right:2px #cccccc solid ;"+status0[3]+"padding:1px;text-align:center;width:55px;height:26.1px;'>4</td>";
+	    content += "<td style='" + status0[4] + "padding:1px;text-align:center;width:76px;height:26.1px;'>5</td> <td style='" + status0[5] + "padding:1px;text-align:center;width:76px;height:26.1px;'>6</td> <td style='border-right:2px #cccccc solid;"+status0[6]+"padding:1px;text-align:center;width:76px;height:26.1px;'>7</td>";
+	    content += "<td style='" + status0[7] + "padding:1px;text-align:center;width:76px;height:26.1px;'>8</td> <td style='" + status0[8] + "padding:1px;text-align:center;width:76px;height:26.1px;'>9</td> <td style='"+ status0[9] +"padding:1px;text-align:center;width:76px;height:26.1px;'>10</td></tr>";
 	return content;
 };
 

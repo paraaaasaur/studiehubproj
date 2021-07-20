@@ -96,9 +96,9 @@ public class CartItemService implements ICartItemService {
 	public List<Map<String, Object>> getCart(String u_id) {
 		List<CartItem> cartItems = (List<CartItem>) cartItemDao.selectByUserId(u_id).get("cartItems");
 		// 測試用
-		if(cartItems.size() == 0 || cartItems == null) {
-			refillCart(u_id);
-		}
+//		if(cartItems.size() == 0 || cartItems == null) {
+//			refillCart(u_id);
+//		}
 		//
 		List<Map<String, Object>> cart = new ArrayList<>();
 		

@@ -322,7 +322,8 @@ function showCountData(textObj){
 			next.style.display = 'none';
 			submit.style.display = 'none';
 			countArea.style.display = 'none';
-
+			timecounter.style.display = 'none';
+			
 			var correct = 0;    //答對數
 			var wrong = 0;      //答對=錯數
 			for(var i=0 ; i<size ; i++){
@@ -445,7 +446,7 @@ function showCountData(textObj){
 // 		        	var submit =document.getElementById("submit");
 					clearInterval(count);
 					alert("時間到，自動提交試卷！");
-					timecounter.style.display = 'none';
+					
 		        	$("#submit").click();
 		        }
 		    }, 1000);

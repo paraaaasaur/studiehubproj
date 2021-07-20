@@ -208,7 +208,7 @@ window.addEventListener("load", function() {
 										document.getElementById("registration_endrttime").value = "2021-10-12T17:00";
 										document.getElementById("Transienta_startTime").value = "2021-10-12T08:50";
 										document.getElementById("Transienta_endTime").value = "2021-10-12T17:10";
-										document.getElementById("a_address").value = "台北市中山區敬業三路123號";
+										document.getElementById("a_address").value = "桃園市中壢區中大路300號";
 										document.getElementById("comment").value = aa
 										document.getElementById("applicants").value = "1";
 

@@ -8,7 +8,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
 <title>發表文章</title>
 <script>
 var u_id = "${loginBean.u_id}";
@@ -182,17 +181,5 @@ window.onload = function(){
 	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
-	<script>
-	ClassicEditor.create( document.querySelector( '#c_Conts' ), {
-		// 這裡可以設定 plugin
-	})
-		.then( editor => {
-			console.log( 'Editor was initialized', editor );
-		 })
-		 .catch( err => {
-			console.error( err.stack );
-		 });
-	</script>
 </body>
 </html>

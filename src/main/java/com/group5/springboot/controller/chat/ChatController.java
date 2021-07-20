@@ -69,6 +69,11 @@ public class ChatController {
 		}
 	}
 	
+	@GetMapping("/goInsertChatReply")
+	public String goInsertChat(){
+		return "chat/insertChatReply";
+	}
+	
 	@GetMapping("/goDeleteChat/{c_ID}")
 	public String goDeleteChat(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
@@ -150,6 +155,21 @@ public class ChatController {
 			e.printStackTrace();
 		}
 		return map;
+	}
+	
+	@PostMapping("/goInsertChatReply")
+	public String insertChatReply(@ModelAttribute("chatReply") Chat_Reply chat_Reply, BindingResult result, RedirectAttributes ra){
+		chatValidator.validate(chat_Reply, result);
+		if (result.hasErrors()) {
+			List<ObjectError> list = result.getAllErrors();
+			for (ObjectError error : list) {
+				System.out.println("有錯誤：" + error);
+			}
+			return "chat/insertChatReply";
+		}
+		chatService.insertChatReply(chat_Reply);
+		ra.addFlashAttribute("successMessage", "編號: " + chat_Reply.getC_ID() + "  新增成功!");
+		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
 	}
 	
 	@DeleteMapping("/deleteChat/{c_ID}")

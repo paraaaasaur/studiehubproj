@@ -45,7 +45,6 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@SuppressWarnings("deprecation")
 	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8") @Deprecated
 	public List<Map<String, Object>> clientRemoveProductFromCart(@RequestParam Integer[] p_ids, @RequestParam String u_id) {
 		Arrays.asList(p_ids).forEach(p_id -> cartItemService.deleteASingleProduct(u_id, p_id));
@@ -75,6 +74,25 @@ public class CartController {
 			return cartItemService.deleteASingleProduct(u_ID, p_ID);
 		}
 		return false;
+	}
+	
+	/***************************************************************************** */
+	@PostMapping(value = "/cart.controller/clientInitializeProductBtnFunc")
+	public Integer clientInitializeProductBtnFunc(
+			@RequestParam Integer p_ID
+			, @RequestParam String u_ID
+			) {
+		Boolean alreadyBought = !(orderService.selectIfBoughtOrNot(p_ID, u_ID));
+		Boolean alreadyInCart = !(cartItemService.selectByProductId(p_ID, u_ID));
+		if (alreadyBought) {
+			return 1;
+		} else if (alreadyInCart) {
+			return 2;
+		} else if (!alreadyBought && !alreadyInCart) {
+			return 3;
+		}
+		
+		return 0;
 	}
 
 	/***************************************************************************** */

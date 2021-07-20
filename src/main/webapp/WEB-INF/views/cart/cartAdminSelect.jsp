@@ -355,14 +355,7 @@
 
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
-						theadArea.html(
-								"<th>刪除</th>"
-								+ "<th>品項編號</th>"
-								+ "<th>課程代號</th>"
-								+ "<th>用戶帳號</th>"
-								+ "<th>品項添入時間</th>"
-								+ "<th>操作</th>"
-						);
+						theadArea.html(theadContent);
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤
 						showTop100();
 						

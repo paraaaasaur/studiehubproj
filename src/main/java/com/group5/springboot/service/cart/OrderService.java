@@ -16,13 +16,31 @@ public class OrderService implements IOrderService{
 	@Autowired // SDI✔
 	private OrderDao orderDao;
 	
-	public List<OrderInfo> test() {
-		return orderDao.test();
+	/** 成功試出三張資料表聯集啦啦啦啦啦(不過是用原生SQL) */
+	public List<OrderInfo> selectOrderInfoByOPUJoin() {
+		return orderDao.selectOrderInfoByOPUJoin();
+	}
+	
+	public Boolean selectCheckOrderExistence(Integer oid) {
+		return orderDao.selectCheckOrderExistence(oid);
+	}
+	
+	public Integer getCurrentIdSeed() {
+		return orderDao.getCurrentIdSeed();
+	}
+	/**
+	 * 用來查某課程商品是不是已經存在於資料庫內並交易完成了。<br>
+	 * true > 尚未存在 = 可以加入購物車 <br>
+	 * false > 已存在 = 不允許加入購物車 <br>
+	 **/
+	public Boolean selectIfBoughtOrNot(Integer p_id, String u_id) {
+		return orderDao.selectIfBoughtOrNot(p_id, u_id);
 	}
 
 	public Map<String, Object> insert(OrderInfo order) {
 		return orderDao.insert(order);
 	}
+	
 	
 	public Map<String, Object> selectAll() {
 		return orderDao.selectAll();
@@ -60,7 +78,7 @@ public class OrderService implements IOrderService{
 		return orderDao.update(newBean);
 	}
 	
-	public Integer delete(Integer[] o_ids) {
-		return orderDao.delete(o_ids);
+	public Integer delete(Integer[] identitySeeds) {
+		return orderDao.delete(identitySeeds);
 	}
 }

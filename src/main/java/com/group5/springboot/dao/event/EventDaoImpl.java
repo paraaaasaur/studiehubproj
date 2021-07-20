@@ -3,6 +3,7 @@ package com.group5.springboot.dao.event;
 
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,22 @@ public class EventDaoImpl implements EventDao {
         //for (EventInfo p : list) {
         //System.out.println(p.getA_name()+p.getA_aid()); 
         //}
+		
+//		transienta_startTime 活動開始時間
+//		transienta_endTime 活動結束時間
+
+        //判斷活動時間 有沒有超過現在的時間  有的話 把 未過期 設成 已過期 
+		//管理者 搜尋所有活動時 才會來這裡
+		for(int i = 0; i <= list.size()-1; i++) {
+			EventInfo aaa = list.get(i);
+			if (aaa.getA_endTime().getTime()<= new Date().getTime()) {
+				
+				aaa.setExpired("已過期");
+				
+				saveEvent(aaa);
+			}
+		}
+		
 	    
 		map.put("size", list.size()); 
 		map.put("list", list); 

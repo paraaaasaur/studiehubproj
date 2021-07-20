@@ -25,7 +25,9 @@ public class Chat_Info {
 	private Integer c_ID;
 	private String c_Date;
 	private String c_Class;
+	@Column(columnDefinition = "NVARCHAR(255)")
 	private String c_Title;
+	@Column(columnDefinition = "NVARCHAR(255)")
 	private String c_Conts;
 	@Column(name = "U_ID", insertable = false, updatable = false)
 	private String u_ID;

@@ -65,7 +65,7 @@
 											<tr>
 												<td>(1) 訂單代號：<br>&nbsp;</td>
 												<td width='360'>
-													<form:input path="o_id" disabled="true" id="o_id" value="[由系統自動產生]" /><br>&nbsp;
+													<form:input path="o_id" id="o_id" placeholder="【選填 / 由系統自動產生】"  /><br>&nbsp;
 												</td>
 												<td>(2) 課程代號：<br>&nbsp;</td>
 												<td width='360'>
@@ -76,11 +76,11 @@
 											<tr>
 												<td>(3) 課程名稱：<br>&nbsp;</td>
 												<td width='360'>
-													<form:input path="p_name" readonly="true" id="p_name" placeholder="【自動代入】" /><br>&nbsp;
+													<form:input path="p_name" readonly="true" id="p_name" placeholder="【由系統自動代入】" /><br>&nbsp;
 												</td>
 												<td>(4) 課程價格：<br>&nbsp;</td>
 												<td>
-													<form:input path="p_price" readonly="true" id="p_price" placeholder="【自動代入】" /><br>&nbsp;
+													<form:input path="p_price" readonly="true" id="p_price" placeholder="【由系統自動代入】" /><br>&nbsp;
 												</td>
 											</tr>
 											<tr>
@@ -91,18 +91,18 @@
 												</td>
 												<td>(6) 會員名字：<br>&nbsp;</td>
 												<td width='360'>
-													<form:input path='u_firstname' readonly="true" id="u_firstname" placeholder="【自動代入】" /><br>&nbsp;
+													<form:input path='u_firstname' readonly="true" id="u_firstname" placeholder="【由系統自動代入】" /><br>&nbsp;
 												</td>
 											</tr>
 								
 											<tr>
 												<td>(7) 會員姓氏：<br>&nbsp;</td>
 												<td>
-													<form:input path="u_lastname" readonly="true" id="u_lastname" placeholder="【自動代入】" /><br>&nbsp;
+													<form:input path="u_lastname" readonly="true" id="u_lastname" placeholder="【由系統自動代入】" /><br>&nbsp;
 												</td>
 												<td>(8) 會員信箱：<br>&nbsp;</td>
 												<td>
-													<form:input path="u_email" readonly="true" id="u_email" inputmode="email" placeholder="【自動代入】" /><br>&nbsp;
+													<form:input path="u_email" readonly="true" id="u_email" inputmode="email" placeholder="【由系統自動代入】" /><br>&nbsp;
 												</td>
 											</tr>
 								
@@ -177,8 +177,8 @@
 
 					function autoFillInProductStuff(){
 						if (!(p_id.val())) {
-							p_name.val('【自動代入】');
-							p_price.val('【自動代入】');
+							p_name.val('【由系統自動代入】');
+							p_price.val('【由系統自動代入】');
 							return;
 						}
 						let xhr = new XMLHttpRequest();
@@ -205,9 +205,9 @@
 					
 					function autoFillInUserStuff(){
 						if (!(u_id.val())) {
-							u_firstname.val('【自動代入】');
-							u_lastname.val('【自動代入】');
-							u_email.val('【自動代入】');
+							u_firstname.val('【由系統自動代入】');
+							u_lastname.val('【由系統自動代入】');
+							u_email.val('【由系統自動代入】');
 							return;
 						}
 						let xhr = new XMLHttpRequest();
@@ -236,7 +236,7 @@
 
 					$(cheat).on('click', function(){
 						p_id.val(1);
-						u_id.val('fbk001');
+						u_id.val('tajen');
 						o_amt.val(Math.round(Math.random() * 100000));
 						autoFillInProductStuff();
 						autoFillInUserStuff();

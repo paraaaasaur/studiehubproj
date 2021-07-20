@@ -77,11 +77,11 @@
 										<tr>
 											<td>(3) 課程名稱：<br>&nbsp;</td>
 											<td width='360'>
-												<form:input path="p_name" readonly="true" id="p_name" placeholder="【自動代入】" /><br>&nbsp;
+												<form:input path="p_name" readonly="true" id="p_name" placeholder="【由系統自動代入】" /><br>&nbsp;
 											</td>
 											<td>(4) 課程價格：<br>&nbsp;</td>
 											<td>
-												<form:input path="p_price" readonly="true" id="p_price" placeholder="【自動代入】" /><br>&nbsp;
+												<form:input path="p_price" readonly="true" id="p_price" placeholder="【由系統自動代入】" /><br>&nbsp;
 											</td>
 										</tr>
 										<tr>
@@ -92,14 +92,14 @@
 											</td>
 											<td>(6) 會員名字：<br>&nbsp;</td>
 											<td width='360'>
-												<form:input path='u_firstname' readonly="true" id="u_firstname" placeholder="【自動代入】" /><br>&nbsp;
+												<form:input path='u_firstname' readonly="true" id="u_firstname" placeholder="【由系統自動代入】" /><br>&nbsp;
 											</td>
 										</tr>
 							
 										<tr>
 											<td>(7) 會員姓氏：<br>&nbsp;</td>
 											<td>
-												<form:input path="u_lastname" readonly="true" id="u_lastname" placeholder="【自動代入】" /><br>&nbsp;
+												<form:input path="u_lastname" readonly="true" id="u_lastname" placeholder="【由系統自動代入】" /><br>&nbsp;
 											</td>
 											<td>(8) 品項加入日期：<br>&nbsp;</td>
 											<td>
@@ -149,8 +149,8 @@
 
 				$(p_id).on('focusout', function(){
 					if (!(p_id.val())) {
-							p_name.val('【自動代入】');
-							p_price.val('【自動代入】');
+							p_name.val('【由系統自動代入】');
+							p_price.val('【由系統自動代入】');
 							return;
 					}
 					let xhr = new XMLHttpRequest();
@@ -173,9 +173,9 @@
 				
 				$(u_id).on('focusout', function(){
 					if (!(u_id.val())) {
-							u_firstname.val('【自動代入】');
-							u_lastname.val('【自動代入】');
-							u_email.val('【自動代入】');
+							u_firstname.val('【由系統自動代入】');
+							u_lastname.val('【由系統自動代入】');
+							u_email.val('【由系統自動代入】');
 							return;
 					}
 					let xhr = new XMLHttpRequest();

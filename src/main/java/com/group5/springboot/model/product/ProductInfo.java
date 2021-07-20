@@ -2,7 +2,6 @@ package com.group5.springboot.model.product;
 
 import java.io.CharArrayWriter;
 import java.io.Reader;
-import java.sql.Blob;
 import java.sql.Clob;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,8 +14,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -25,7 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group5.springboot.utils.SystemUtils;
+
+import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.cart.OrderInfo;
+import com.group5.springboot.model.user.User_Info;
 
 @Entity
 @Table(name = "ProductInfo")
@@ -49,6 +52,7 @@ public class ProductInfo {
 	private String p_Img;
 	@Column(columnDefinition = "NVARCHAR(255)")
 	private String p_Video;
+	@Column(insertable = false,updatable = false)
 	private String u_ID;
 	//0 = 審核中 1 = 審核通過
 	private Integer p_Status;
@@ -92,9 +96,9 @@ public class ProductInfo {
 		this.descString = descString;
 	}
 
-	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
+	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/	
 	// 被OrderInfo參考
-	/*/
+	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
 	private Set<OrderInfo> orderInfoSet = new HashSet<OrderInfo>();
@@ -102,21 +106,21 @@ public class ProductInfo {
 	public void setOrderInfoSet(Set<OrderInfo> orderInfoSet) {		this.orderInfoSet = orderInfoSet;	}
 	
 	// 被CartItem參考
-//	@JsonIgnore
-//	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
-//	private Set<CartItem> cartItemSet = new HashSet<CartItem>();
-//	public Set<CartItem> getCartItemSet() {		return cartItemSet;	}
-//	public void setCartItemSet(Set<CartItem> cartItemSet) {		this.cartItemSet = cartItemSet;	}
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "productInfo")
+	private Set<CartItem> cartItemSet = new HashSet<CartItem>();
+	public Set<CartItem> getCartItemSet() {		return cartItemSet;	}
+	public void setCartItemSet(Set<CartItem> cartItemSet) {		this.cartItemSet = cartItemSet;	}
 	
 	// 去參考User_Info (※以後要和User_Info建立關聯時再開啟)
-	/*
+	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "U_ID", referencedColumnName = "U_ID", insertable = true, updatable = true)
 	private User_Info user_Info;
 	public User_Info getUser_Info() {		return user_Info;	}
 	public void setUser_Info(User_Info user_Info) {		this.user_Info = user_Info;	}
-	*/
+	
 	/**❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗*/
 
 
@@ -223,5 +227,13 @@ public class ProductInfo {
 		this.videoFile = videoFile;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(p_ID);
+		return builder.toString();
+	}
+
+	
 
 }

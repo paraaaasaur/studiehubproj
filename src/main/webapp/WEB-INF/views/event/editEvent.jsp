@@ -124,13 +124,13 @@ window.addEventListener("load", function() {
                             </td>
 						</tr>
 						<tr>
-							<td>活動報名開始時間:</td>
+							<td>報名開始時間:</td>
 							<td><form:input type="datetime-local" path="registration_starttime" />
 							<form:errors path="registration_starttime"  cssClass="error"/>	
 							</td>
 						</tr>
 						<tr>
-							<td>活動報名結束時間</td>
+							<td>報名結束時間</td>
 							<td><form:input type="datetime-local" path="registration_endrttime" />
 							<form:errors path="registration_endrttime"  cssClass="error"/>	
 							</td>
@@ -175,7 +175,37 @@ window.addEventListener("load", function() {
 						<tr>
 							<td><input type="submit"></td>
 						</tr>
+						
+						<td>
+						<input
+						style="border: none; background-color: #555555; color: white; border-radius: 4px;"
+						type="button" onclick="inport()" value="一鍵輸入">
+						</td>
+						
 					</table>
+					
+					            <script>
+									$(document).ready(function() {
+						
+									});
+									function inport() {
+
+										
+										var aa = "新創雖如雨後春筍般的興盛但大部分都處於經營困難或甚至失敗、因此現在有一群人、專門協助新創公司、希望可以幫這些好的產品/服務、推廣給適合的使用者、以及改善企業內部的營運問題，也就是新創孵化器，究竟孵化器在做甚麼呢？是管理顧問嗎？這次Skyline邀請到Rainmaking Innovation台灣營運長Leo來跟我們分享、他在各國擔任創業顧問的經驗及他是如和走上新創顧問這條路的！歡迎對 #職涯規劃 #跨國工作 #新創 #創業 有興去的朋友來聽聽！"
+										       + "這次邀請到英商Rainmaking Innovation台灣營運長-Leo,（一）講者：Leo【簡介】曾旅居北京6年，完成社會學博士學位，並設立跨國顧問公司，客戶包含任天堂、KDDI與不下40個中、日、韓新創科技企業，及韓國政府計畫。博班資格考前夕，一邊做口試投影片，一邊前往南京提案，獲得200多萬人民幣合約，順勢開啟創業之路賺學費；並藉學術活動，前往波士頓、里斯本、巴塞隆納、金邊、胡志明市、雪梨、東京、上海和深圳等地與新創平台、創投進行商情研究。現於歐洲第一大創新與加速器Rainmaking，推動台灣業務落地、新創國際拓展與投資評估，尤其是日本與東南亞市場。興趣是當背包客，前往20幾個國家，包含北韓與前蘇聯地區。最近開始學俄語。【現職】英商Rainmaking Innovation台灣營運長在這場講座，你可以聽到,1.興趣跟職業到底能不能結合？碩士班研究孵化小雞，到博士班研究孵化公司？2.我不是斜槓，只是充滿好奇與行動：創業、合夥與遷徙,3.我喜歡什麼？醒來不知到在哪個城市的顧問生活（兼談中日韓台的經歷）,4.我從不相信work life balance：怎麼可以去日本玩，還順便接到任天堂的委託？5.職涯探索，就跟當背包客旅行一樣：東南歐、東南亞、南半球，再回到台灣。"
+										document.getElementById("a_name").value = "三10而立,10年,10城,10個職涯決定";
+										document.getElementById("a_type").value = "分享會";
+										document.getElementById("registration_starttime").value = "2021-06-07T15:00";
+										document.getElementById("registration_endrttime").value = "2021-10-12T17:00";
+										document.getElementById("Transienta_startTime").value = "2021-10-12T08:50";
+										document.getElementById("Transienta_endTime").value = "2021-10-12T17:10";
+										document.getElementById("a_address").value = "台北市中山區敬業三路123號";
+										document.getElementById("comment").value = aa
+										document.getElementById("applicants").value = "1";
+
+									};
+                                    
+								</script>
 				</form:form>
 
 			</div>

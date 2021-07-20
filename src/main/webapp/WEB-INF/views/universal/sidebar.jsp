@@ -39,10 +39,11 @@
 					<li><span class="opener">課程資訊</span>
 						<ul>
 							<li><a href="/studiehub/queryProductForUser">所有課程</a></li>
-							<li><a href="/studiehub/insertProduct">新增課程</a></li>
+							<li style='display:none' id='loginEvent'><a href="/studiehub/insertProduct">新增課程</a></li>
 						</ul>
 					</li>
-					<li><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
+					<li id="cartHref" hidden><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
+					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
 					
 					<li><span class="opener">活動</span>
 					    <ul>
@@ -75,7 +76,7 @@
 				</header>
 				<div class="mini-posts">
 					<article>
-						<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/demopic1.jpg"
+						<a href="<c:url value = '/takeClass/2'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，從這裡開始_2.png"
 							alt="" /></a>
 						<p>
 							除了go Dutch，還有什麼俚語包括國家名稱？<br /> 一起學習 8
@@ -83,7 +84,7 @@
 						</p>
 					</article>
 					<article>
-						<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/demopic2.jpg"
+						<a href="<c:url value = '/takeClass/3'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始學日文】日語50音的發音和寫法簡單教學_3.png"
 							alt="" /></a>
 						<p>
 							正式英文 email 究竟該怎麼寫？ 該怎麼稱呼對方？ 又該如何有禮貌地結束信件？<br /> 幫你搞定商業
@@ -91,13 +92,13 @@
 						</p>
 					</article>
 					<article>
-						<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/demopic3.png"
+						<a href="<c:url value = '/takeClass/4'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何有效練習英文口說 _ Avis經驗談 _ 突破心魔才能學好英文口語_4.png"
 							alt="" /></a>
 						<p>別再說 “I am boring”！這十種最常見的英文錯誤你中了幾個？</p>
 					</article>
 				</div>
 				<ul class="actions">
-					<li><a href="#" class="button">More(這個連結去商品選單)</a></li>
+					<li><a href="#" class="button">More</a></li>
 				</ul>
 			</section>
 

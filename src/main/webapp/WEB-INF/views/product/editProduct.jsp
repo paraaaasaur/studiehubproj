@@ -55,12 +55,15 @@ textarea {
 	    var logoutHref = document.getElementById('logoutHref');
 	    var userId = document.getElementById('userId');
 	    var userPic = document.getElementById('userPic');
+		var loginEvent = document.getElementById('loginEvent');
 	    if(u_id){
 	    	loginHref.hidden = true;
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    	userPic.src = userPicString;	//有登入就秀大頭貼
 	    	userId.innerHTML = u_id;
+			loginEvent.style.display = "block";
+    		loginALLEvent.style.display = "block";
 		}
 
 	}
@@ -111,8 +114,8 @@ textarea {
 							<td>課程類別:</td>
 							<td><form:select path="p_Class">
 									<form:option label="請挑選" value="-1" />
-									<form:option label="英文" value="en" />
-									<form:option label="日文" value="ja" />
+									<form:option label="英文" value="英文" />
+									<form:option label="日文" value="日文" />
 								</form:select> <form:errors path='p_Class' cssClass="error" /></td>
 						</tr>
 						<tr>

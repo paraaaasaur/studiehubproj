@@ -71,23 +71,24 @@
 									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
 								</ul>
 								<h1 id='topLogo'></h1>
-								<hr id="pageHref" class="">
-								<form>
-									<!-- 秀出所有Cart_Info -->
-									<table class="alt" style="border: 2px " >
-										<thead id="theadArea"></thead>
-										<tbody id="tbodyArea"></tbody>
-									</table>
-									<h1 id='logo' style="background-color: red"></h1>
-									<hr>
+								<div id="pageHref" class="" style="display: flex; justify-content: center;"></div>
+								<br>
+
+								<!-- 秀出所有CartItem -->
+								<table class="alt" style="border: 2px " >
+									<thead id="theadArea"></thead>
+									<tbody id="tbodyArea"></tbody>
+								</table>
+
+								<h1 id='logo' style="background-color: red"></h1>
+								<hr>
 									
-								</form>
-								<button id="insert" onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/adminInsert'">新增</button>
-								<button id="delete">刪除勾選資料</button>
+								<button id="insertBtn" onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/adminInsert'">新增</button>
+								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
 								
-
+								<br><br><br><br><br><br>
 								
 
 						</div>
@@ -111,25 +112,36 @@
 			<script>
 				// 不用等DOM就可以先宣告的變數們
 				let segments = [];
-				let isCheckedList = [];
+				let checkedCartids = [];
 				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
 				let rowPerPage = 10;
 				let maxPageNum = 10;
 				let cartItems = [];
+				let theadContent = "<th style='text-align: center;'>刪除</th>"
+											+ "<th style='text-align: center;'>品項編號</th>"
+											+ "<th style='text-align: center;'>課程代號</th>"
+											+ "<th style='text-align: center;'>用戶帳號</th>"
+											+ "<th style='text-align: center;'>品項添入時間</th>"
+											+ "<th style='text-align: center;'>操作</th>"
 
-				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
+				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedCartids陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
 					let cart_id = checkboxObj.value;
 					// let cart_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
-					let idx = isCheckedList.indexOf(cart_id);
+					let idx = checkedCartids.indexOf(cart_id);
 					if(idx > -1) {
-						isCheckedList.splice(idx, 1);
+						checkedCartids.splice(idx, 1);
 					} else {
-						isCheckedList.push(cart_id);
+						checkedCartids.push(cart_id);
 					}
-					console.log('isCheckedList = ' + isCheckedList);
+					console.log('checkedCartids = ' + checkedCartids);
+					// 改變#deleteBtn外觀和disabled值
+					document.querySelector('#deleteBtn').disabled = (checkedCartids.length == 0)? true : false;
+					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
+									'刪除<font color="cornflowerblue"> ' + checkedCartids.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
+									'刪除勾選資料';
 					return;
 				}
 
@@ -153,11 +165,9 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
-						for (let i = 0; i < isCheckedList.length; i++) {
-							let thisCkbox = document.querySelector('#ckbox' + isCheckedList[i]);
-							if(thisCkbox){
-								thisCkbox.checked = true;
-							}
+						for (let i = 0; i < checkedCartids.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + checkedCartids[i]);
+							if(thisCkbox) thisCkbox.checked = true;
 						}
 					})
 				}
@@ -244,7 +254,7 @@
 								// 解析&暫存回傳資料
 								parseSelectedRows(xhr.responseText);
 								// 掛topLogo
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								topLogo.text("以下是資料庫最新" + segments.length + "筆購物車品項");
 								// 掛資料(index = 0 即第 1 頁)
 								switchPage(0);
 								// 掛頁籤
@@ -254,7 +264,7 @@
 						}
 					})
 						
-					// 【自訂函數 7】顯示資料庫最新100筆訂單 (SELECT TOP(100)) + 掛資料 + 掛頁籤
+					// 【自訂函數 7】顯示資料庫最新100筆購物車品項 (SELECT TOP(100)) + 掛資料 + 掛頁籤
 					function showTop100() {
 						let xhr = new XMLHttpRequest();
 						let url = "<c:url value='/cart.controller/adminSelectTop100' />";
@@ -265,7 +275,10 @@
 								parseSelectedRows(xhr.responseText);
 								switchPage(0);
 								appendPegination();
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								topLogo.text("以下是資料庫最新" + segments.length + "筆購物車品項");
+								if (segments.length == 0) {
+									theadArea.html("");
+								}
 							}
 						}
 					} 
@@ -280,13 +293,13 @@
 						segments = [];
 						for (let i = 0; i < cartItems.length; i++) {
 							let temp0 =	 "<tr>" + 
-												"<td><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
+												"<td style='text-align: center;'><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
 													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + cartItems[i].cart_id + "'></label></td>" +
-												"<td><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
-												"<td><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
-												"<td><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +
-												"<td><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
-												"<td><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].cart_id + "'>修改</a></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
+												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].cart_id + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}
@@ -294,11 +307,11 @@
 					};
 					
 					// 【自訂函數 9】DELETE
-					$('#delete').on('click', function(){
+					$('#deleteBtn').on('click', function(){
 						let queryString = 'cart_ids=';
-						for (let i = 0; i < isCheckedList.length; i++) {
-							queryString += isCheckedList[i];
-							queryString += ((i + 1) != isCheckedList.length)? ',' : '';
+						for (let i = 0; i < checkedCartids.length; i++) {
+							queryString += checkedCartids[i];
+							queryString += ((i + 1) != checkedCartids.length)? ',' : '';
 						}
 
 						console.log(queryString);
@@ -312,16 +325,18 @@
 								result = JSON.parse(xhr.responseText);
 								console.log(result.state);
 								showTop100();
-								isCheckedList = [];
+								checkedCartids = [];
+								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+								document.querySelector('#deleteBtn').disabled = true;
 							}
 						}
-												
+
 					})
 
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
 						theadArea.html(
-								"<th>DELETE BUTTON</th>"
+								"<th>刪除</th>"
 								+ "<th>品項編號</th>"
 								+ "<th>課程代號</th>"
 								+ "<th>用戶帳號</th>"

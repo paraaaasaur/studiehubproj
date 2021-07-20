@@ -26,6 +26,7 @@ public class Chat_Reply {
 	@Column(name = "C_IDr", insertable = false, updatable = false)
 	private Integer c_IDr;
 	private String c_Date;
+	@Column(columnDefinition = "NVARCHAR(255)")
 	private String c_Conts;
 	@Column(name = "U_ID", insertable = false, updatable = false)
 	private String u_ID;

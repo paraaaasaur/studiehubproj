@@ -13,41 +13,20 @@
 <title>Studie Hub</title>
 
 <script>
-var u_id = "${loginBean.u_id}";
+if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
+	
+	var adminId = "${adminId}";
 
 window.onload = function(){
-    var logout = document.getElementById("logout");
-    logout.onclick = function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                var result = JSON.parse(xhr.responseText);
-                if(result.success){
-                    alert(result.success);
-                    top.location = '<c:url value='/' />';
-                }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
-                }
-            }
-        }
-    }
-    
-    //如果有登入，隱藏登入標籤
-    var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
+	var loginHref = document.getElementById('loginHref');
     var logoutHref = document.getElementById('logoutHref');
     var userId = document.getElementById('userId');
     var userPic = document.getElementById('userPic');
-    if(u_id){
+    if(adminId){
     	loginHref.hidden = true;
-    	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
-    } 
+    }
+    
     
     var dataArea = document.getElementById("dataArea");
 	var query = document.getElementById("query");
@@ -90,18 +69,17 @@ function showData(textObj) {
 	console.log(obj);
 	console.log(size);
 	console.log(products);
-    let segment = "<table border='1' style = 'width:1300px;text-align: center;'>";
+    let segment = "<table border='1' style = 'width:100%;text-align: center;'>";
         if (size == 0) {
-			segment += "<tr><th colspan='8'>查無資料</th></tr>";
+			segment += "<tr><th colspan='5'>查無資料</th></tr>";
 		} else {
-            segment += "<tr><th colspan='8'>共計" + size + "筆資料</th></tr>";
+            segment += "<tr><th colspan='5'>共計" + size + "筆資料</th></tr>";
 
 			segment += "<tr><th style='text-align: center;'>課程圖片</th><th style='text-align: center;'>課程名稱</th><th>課程類別</th><th>課程價格</th><th style='text-align: center;'>課程介紹</th><th width:50px; style='text-align: center;'>功能</th></tr>";
 			for (n = 0; n < products.length; n++) {
 				let product = products[n];
     			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
     			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
-    			console.log(tmp0);
 				segment += "<tr>";
                 segment += "<td><img width='100' height='60' src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"'/ ></td>";
 				segment += "<td style='text-align: center;'>" + product.p_Name + "</td>";
@@ -126,7 +104,7 @@ function showData(textObj) {
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 				<h2 align='center'>課程資訊</h2>
 				<hr>
 				<div style="text-align: center;">

@@ -28,4 +28,8 @@ public class RatingServiceImpl {
 		return ratingDao.findRatingByProductID(p_ID);
 	}
 	
+	public Integer ratingAVG(Integer p_ID) {
+		return ratingDao.ratingAVG(p_ID);
+	}
+	
 }

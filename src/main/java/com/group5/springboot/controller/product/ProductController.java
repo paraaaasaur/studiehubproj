@@ -5,6 +5,7 @@ import java.sql.Clob;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.product.ProductServiceImpl;
+import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.ProductValidator;
 
@@ -35,6 +39,20 @@ public class ProductController {
 	ProductValidator prodcutValidator;
 	@Autowired
 	ServletContext context;
+	@Autowired
+	CartItemService cartItemService;
+	@Autowired
+	EntityManager em;
+	
+	@GetMapping("/buyProduct")
+	public String buyProduct(@RequestParam Integer p_ID,@RequestParam String u_ID,Model model) {
+		System.out.println("**********"+p_ID+u_ID);
+		cartItemService.insert(p_ID, u_ID);
+		ProductInfo product = productService.findByProductID(p_ID);
+		model.addAttribute("product", product);
+		return "product/Product";
+		
+	}
 	
 	@GetMapping("/takeClass/{p_ID}")
 	public String takeClass(@PathVariable Integer p_ID,Model model) {
@@ -68,7 +86,7 @@ public class ProductController {
 	public String accessResult(@PathVariable Integer p_ID,Model model) {
 		ProductInfo productInfo = productService.findByProductID(p_ID);
 		productInfo.setP_Status(1);
-		productService.save(productInfo);
+		productService.update(productInfo);
 		return "product/pendingAccess";
 	}
 	
@@ -132,8 +150,7 @@ public class ProductController {
 				throw new RuntimeException("檔案上傳發生異常: "+ e.getMessage());
 			}
 		}
-		
-		
+		productInfo.setP_DESC(SystemUtils.stringToClob(descString));
 		productInfo.setP_Status(0);
 		productService.update(productInfo);
 		ra.addFlashAttribute("successMessage",productInfo.getP_Name()+"更新成功");
@@ -141,7 +158,7 @@ public class ProductController {
 	}
 
 	@PostMapping("insertProduct")
-	public String saveProduct(@RequestParam String descString, @ModelAttribute("productInfo")ProductInfo productInfo,BindingResult result,RedirectAttributes ra) {
+	public String saveProduct(@RequestParam String u_ID ,@RequestParam String descString, @ModelAttribute("productInfo")ProductInfo productInfo,BindingResult result,RedirectAttributes ra) {
 		prodcutValidator.validate(productInfo, result);
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
@@ -153,6 +170,8 @@ public class ProductController {
 		}
 		MultipartFile img = productInfo.getImgFile();
 		MultipartFile video = productInfo.getVideoFile();
+		User_Info user_Info = em.find(User_Info.class, u_ID);
+		productInfo.setUser_Info(user_Info);
 		
 		
 		//建立時間
@@ -160,7 +179,7 @@ public class ProductController {
 		//desc轉檔
 		Clob clob = SystemUtils.stringToClob(descString);
 		productInfo.setP_DESC(clob);
-		productService.save(productInfo);
+		productService.save(productInfo,u_ID);
 		try {
 			String imgext = SystemUtils.getExtFilename(img.getOriginalFilename());
 			String videoext = SystemUtils.getExtFilename(video.getOriginalFilename());
@@ -179,7 +198,7 @@ public class ProductController {
 			video.transferTo(videoFile);
 			productInfo.setP_Video(SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
 			productInfo.setP_Status(0);
-			productService.save(productInfo);
+			productService.update(productInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

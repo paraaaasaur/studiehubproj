@@ -61,6 +61,7 @@
 											<option value='u_id'selected disabled hidden>選擇查詢參數...</option>
 											<option value='u_id'>會員帳號</option>
 											<option value='o_id'>訂單編號</option>
+											<option value='ecpay_o_id'>訂單編號<font color='red'>(綠界)</font></option>
 											<option value='p_id'>課程代號</option>
 											<option value='p_name'>課程名稱</option>
 											<option value='u_lastname'>會員姓氏</option>
@@ -73,23 +74,23 @@
 									<li style="width: 10%;" class=""><button type="submit" class="" id="searchBtn" disabled>查詢</button></li>
 								</ul>
 								<h1 id='topLogo'></h1>
-								<hr id="pageHref" class="">
-								<form>
-									<!-- 秀出所有Order_Info -->
-									<table class="alt" style="border: 2px " >
-										<thead id="theadArea"></thead>
-										<tbody id="tbodyArea"></tbody>
-									</table>
-									<h1 id='logo' style="background-color: red"></h1>
-									<hr>
+								<div id="pageHref" class="" style="display: flex; justify-content: center;"></div>
+								<br>
+
+								<!-- 秀出所有Order_Info -->
+								<table class="alt" style="border: 2px " >
+									<thead id="theadArea"></thead>
+									<tbody id="tbodyArea"></tbody>
+								</table>
+								<h1 id='logo' style="background-color: red"></h1>
+								<hr>
 									
-								</form>
-								<button id="insert"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
-								<button id="delete">刪除勾選資料</button>
+								<button id="insertBtn"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
+								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
 								
-
+								<br><br><br><br><br><br>
 								
 
 						</div>
@@ -113,25 +114,39 @@
 			<script>
 				// 不用等DOM就可以先宣告的變數們
 				let segments = [];
-				let isCheckedList = [];
+				let checkedIdentitySeeds = [];
 				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
 				let rowPerPage = 10;
 				let maxPageNum = 10;
 				let orders = [];
+				let theadContent = "<th style='text-align: center'>刪除</th>"
+											+ "<th style='text-align: center'>訂單編號<br></th>"
+											+ "<th style='text-align: center'>訂單編號<font color='red'>(綠界)</font><br></th>"
+											+ "<th style='text-align: center'>課程代號<br></th>"
+											+ "<th style='text-align: center'>用戶帳號<br></th>"
+											+ "<th style='text-align: center'>訂單狀態<br></th>"
+											+ "<th style='text-align: center'>訂單時間<br></th>"
+											+ "<th style='text-align: center'>訂單總額<br></th>"
+											+ "<th style='text-align: center'>操作</th>";
 
-				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進isCheckedList陣列裡，等到要刪除時存取之送出
+				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedIdentitySeeds陣列裡，等到要刪除時存取之送出
 				var memorize = function(checkboxObj){
-					let o_id = checkboxObj.value;
-					// let o_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
-					let idx = isCheckedList.indexOf(o_id);
+					let identitySeed = checkboxObj.value;
+					// let identitySeed = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
+					let idx = checkedIdentitySeeds.indexOf(identitySeed);
 					if(idx > -1) {
-						isCheckedList.splice(idx, 1);
+						checkedIdentitySeeds.splice(idx, 1);
 					} else {
-						isCheckedList.push(o_id);
+						checkedIdentitySeeds.push(identitySeed);
 					}
-					console.log('isCheckedList = ' + isCheckedList);
+					console.log('checkedIdentitySeeds = ' + checkedIdentitySeeds);
+					// 改變#deleteBtn外觀和disabled值
+					document.querySelector('#deleteBtn').disabled = (checkedIdentitySeeds.length == 0)? true : false;
+					document.querySelector('#deleteBtn').innerHTML = (checkedIdentitySeeds.length != 0)?
+									'刪除<font color="cornflowerblue"> ' + checkedIdentitySeeds.length + ' </font>筆資料':  // ❗ 超過10筆資料時button會變胖
+									'刪除勾選資料';
 					return;
 				}
 
@@ -155,11 +170,9 @@
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
 						switchPage(pageIndex);
-						for (let i = 0; i < isCheckedList.length; i++) {
-							let thisCkbox = document.querySelector('#ckbox' + isCheckedList[i]);
-							if(thisCkbox){
-								thisCkbox.checked = true;
-							}
+						for (let i = 0; i < checkedIdentitySeeds.length; i++) {
+							let thisCkbox = document.querySelector('#ckbox' + checkedIdentitySeeds[i]);
+							if(thisCkbox) thisCkbox.checked = true;
 						}
 					})
 				}
@@ -191,21 +204,26 @@
 					// 【自訂函數 3】查詢框(#searchBar)樣式隨使用者的選擇變化
 					$(searchBy).on('change', function(){
 						$('#searchBtn').attr('disabled', false);
+							// <1> 日期範圍值
 						if(this.value == 'o_date'){
 							searchBarHanger1.css('width', '35%');
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='datetime-local' step='1' id='searchDateStart'>起始時間");
 							$(searchBarHanger2).html("<input type='datetime-local' step='1' id='searchDateEnd'>結束時間");
 							$('input[type="datetime-local"]').setNow();
-						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' || this.value == 'p_name'){
+							// <2> 唯一值
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' 
+									|| this.value == 'p_name' || this.value == 'ecpay_o_id'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
 							$(searchBarHanger1).html("<input type='search' id='searchBar' placeholder='搜尋'>");
+							// <3> 數值範圍值
 						} else if(this.value == 'o_amt' || this.value == 'o_id' || this.value == 'p_id'){
 							searchBarHanger1.css('width', '35%');
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='search' id='searchMin' placeholder='最小值'>");
 							$(searchBarHanger2).html("<input type='search' id='searchMax' placeholder='最大值'>");
+							// <4> 選擇值
 						} else if(this.value == 'o_status'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
@@ -230,10 +248,10 @@
 					$('#searchBtn').on('click', function(){
 						let xhr = new XMLHttpRequest();
 						let queryString = '';
-
+						// ❗❓ 有沒有簡潔一點的寫法啊
 						let forDate = (searchBy.val() == 'o_date');
 						let forSingle = (searchBy.val() == 'u_id' || searchBy.val() == 'u_firstname' || searchBy.val() == 'u_lastname' ||
-												searchBy.val() == 'p_name' || searchBy.val() == 'o_status');
+												searchBy.val() == 'p_name' || searchBy.val() == 'o_status' || searchBy.val() == 'ecpay_o_id');
 						let forRange = (searchBy.val() == 'o_amt' || searchBy.val() == 'o_id' || searchBy.val() == 'p_id');
 
 						if(forDate) {// 日期範圍查詢
@@ -260,16 +278,7 @@
 								// 掛頁籤
 								appendPegination();
 								// 掛th
-								theadArea.html(
-									"<th>DELETE BUTTON</th>"
-									+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
-									+ "<th>課程代號<br>(p_id)</th>"
-									+ "<th>用戶帳號<br>(u_id)</th>"
-									+ "<th>訂單狀態<br>(o_status)</th>"
-									+ "<th>訂單時間<br>(o_date)</th>"
-									+ "<th>訂單總額<br>(o_amt)</th>"
-									+ "<th>操作</th>"
-								);
+								theadArea.html(theadContent);
 								if (segments.length == 0) {
 									theadArea.html('');
 								}
@@ -290,7 +299,7 @@
 								switchPage(0);
 								appendPegination();
 								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
-								if (segments.length != 0) {
+								if (segments.length == 0) {
 									theadArea.html("");
 								}
 							}
@@ -308,27 +317,28 @@
 						for (let i = 0; i < orders.length; i++) {
 							totalPrice += orders[i].p_price;
 							let temp0 =	 "<tr>" + 
-												"<td><input onclick='memorize(this)' id='ckbox" + orders[i].o_id + "' " +
-													"type='checkbox' value='" + orders[i].o_id + "'><label for='ckbox" + orders[i].o_id + "'></label></td>" +
-												"<td><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
-												"<td><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
-												"<td><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
-												"<td><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
-												"<td><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
-												"<td><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
-												"<td><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].o_id + "'>修改</a></td>" +
+												"<td style='text-align: center;'><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
+													"type='checkbox' value='" + orders[i].identity_seed + "'><label for='ckbox" + orders[i].identity_seed + "'></label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].ecpay_o_id + "'>" + orders[i].ecpay_o_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
+												"<td style='text-align: center;'><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
+												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].identity_seed + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}
 						console.log(segments.length);
 					};
 					
-					// 【自訂函數 9】NEW DELETE
-					$('#delete').on('click', function(){
-						let queryString = 'o_ids=';
-						for (let i = 0; i < isCheckedList.length; i++) {
-							queryString += isCheckedList[i];
-							queryString += ((i + 1) != isCheckedList.length)? ',' : '';
+					// 【自訂函數 9】DELETE
+					$('#deleteBtn').on('click', function(){
+						let queryString = 'identitySeeds=';
+						for (let i = 0; i < checkedIdentitySeeds.length; i++) {
+							queryString += checkedIdentitySeeds[i];
+							queryString += ((i + 1) != checkedIdentitySeeds.length)? ',' : '';
 						}
 
 						console.log(queryString);
@@ -342,7 +352,9 @@
 								result = JSON.parse(xhr.responseText);
 								console.log(result.state);
 								mainFunc();
-								isCheckedList = [];
+								checkedIdentitySeeds = [];
+								document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
+								document.querySelector('#deleteBtn').disabled = true;
 							}
 						}
 												
@@ -350,17 +362,8 @@
 
 					//【自訂函數 10】主程式函數
 					function mainFunc(){
-						// console.log('Start of mainFunc()');
-						theadArea.html(
-								"<th>DELETE BUTTON</th>"
-								+ "<th>訂單代號(o_id)<br>(READ-ONLY)</th>"
-								+ "<th>課程代號<br>(p_id)</th>"
-								+ "<th>用戶帳號<br>(u_id)</th>"
-								+ "<th>訂單狀態<br>(o_status)</th>"
-								+ "<th>訂單時間<br>(o_date)</th>"
-								+ "<th>訂單總額<br>(o_amt)</th>"
-								+ "<th>操作</th>"
-						);
+						console.log('Start of mainFunc()');
+						theadArea.html(theadContent);
 						// 解析&暫存回傳資料 + 掛資料(index = 0 即第 1 頁) + 掛頁籤
 						showTop100();
 						

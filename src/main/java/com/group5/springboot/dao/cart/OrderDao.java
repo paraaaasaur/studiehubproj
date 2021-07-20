@@ -2,6 +2,7 @@ package com.group5.springboot.dao.cart;
 // 購物車的連線物件
 // 要考慮做DAO Factory嗎？
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -31,20 +32,73 @@ public class OrderDao implements IOrderDao {
 //	@Autowired
 //	private JdbcTemplate jdbcTemplate;
 	
+	@SuppressWarnings("unchecked")
+	public List<OrderInfo> selectOrderInfoByOPUJoin() {
+		String sql = "SELECT op.o_date, op.o_amt, op.identity_seed, op.o_id, op.ecpay_trade_no, op.ECPAY_O_ID, op.o_status, op.p_ID, op.p_Name, op.p_Price, u.U_ID, u.u_email, u.u_firstname, u.u_lastname\r\n"
+				+ "  FROM\r\n"
+				+ "       (SELECT o.o_date, o.o_amt, o.identity_seed, o.o_id, o.ecpay_trade_no, o.ECPAY_O_ID, o.o_status, p.p_ID, p.p_Name, p.p_Price, o.U_ID\r\n"
+				+ "          FROM order_info o LEFT JOIN ProductInfo p \r\n"
+				+ "            ON o.P_ID = p.p_ID\r\n"
+				+ "       ) op LEFT JOIN user_info u\r\n"
+				+ "    ON op.U_ID = u.u_id";
+		Query sqlQuery = em.createNativeQuery(sql, OrderInfo.class);
+		List<OrderInfo> list = (List<OrderInfo>) sqlQuery.getResultList();
+		list.forEach(System.out::println);
+		return list;
+	}
 	
-	@SuppressWarnings({ "unchecked" })
-	public List<OrderInfo> test() {
-		Query query = em.createNativeQuery("SELECT * FROM order_info WHERE o_date < '2021-07-08' AND o_date > :value ", OrderInfo.class); // ❓❗
-		query.setParameter("value", "2021-07-05 18:00:00");
+	public Boolean selectCheckOrderExistence(Integer oid) {
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
+		query.setParameter("oid", oid);
 		List<OrderInfo> list = query.getResultList();
-		return list; 
+		System.out.println("[OrderDao] > Your query return " + list.size() + " row(s) of data.");
+		return list.size() == 0? true : false;
+	}
+	
+	public Integer getCurrentIdSeed() {
+		Integer identitySeed = ((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue();
+		System.out.println("[OrderDao] > Your query return identity = " + identitySeed + ".");
+		return identitySeed;
+	}
+	
+	/**
+	 * 用來查某課程商品是不是已經存在於資料庫內並交易完成了。<br>
+	 * true > 尚未存在 = 可以加入購物車 <br>
+	 * false > 已存在 = 不允許加入購物車 <br>
+	 **/
+	public Boolean selectIfBoughtOrNot(Integer p_id, String u_id) {
+		if (p_id == null || u_id == null) {
+			return false;
+		}
+		TypedQuery<String> query = em.createQuery("SELECT o.o_status FROM OrderInfo o WHERE p_id = :pid AND u_id = :uid", String.class);
+		query.setParameter("pid", p_id);
+		query.setParameter("uid", u_id);
+		List<String> list = query.getResultList();
+		Integer counter = 0;
+		for(String status : list) {
+			if ("完成".equals(status)) {
+				counter++;
+			}
+		}
+		if (counter > 1) {
+			System.out.println("有兩筆以上的購買完成紀錄，屬資料異常，請確認資料庫。");
+			return false;
+		} else if (counter == 1) {
+			System.out.println("使用者" + u_id + "已購買本課程(代號 = " + p_id + ")，不得重複購買。");
+			return false;
+		} else if (counter == 0) {
+			System.out.println("使用者" + u_id + "尚未有完成購買過本課程(代號 = " + p_id + ")的紀錄，可以加入購物車。");
+		}
+		return true;
 	}
 	
 	@Override
 	public Map<String, Object> selectAll() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo", OrderInfo.class);
-		map.put("list", query.getResultList());
+		List<OrderInfo> list = query.getResultList();
+		map.put("list", list);
+		System.out.println("[OrderDao] > Your query return " + list.size() + " row(s) of data.");
 		return map;
 	}
 	
@@ -56,7 +110,7 @@ public class OrderDao implements IOrderDao {
 		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo o WHERE " + condition + " LIKE :value", OrderInfo.class);
 		query.setParameter("value", "%" + value + "%");
 		List<OrderInfo> resultList = query.getResultList();
-		System.out.println(resultList);
+		System.out.println("[OrderDao] > Your query return " + resultList.size() + " row(s) of data.");
 		map.put("list", resultList);
 		return map;
 	}
@@ -70,7 +124,7 @@ public class OrderDao implements IOrderDao {
 		query.setParameter("value", parsedValue);
 		
 		List<OrderInfo> resultList = query.getResultList();
-		System.out.println(resultList);
+		System.out.println("[OrderDao] > Your query return " + resultList.size() + " row(s) of data.");
 		map.put("list", resultList);
 		return map;
 	}
@@ -93,6 +147,7 @@ public class OrderDao implements IOrderDao {
 		}
 		@SuppressWarnings("unchecked")
 		List<OrderInfo> list = (List<OrderInfo>) (query.getResultList());
+		System.out.println("[OrderDao] > Your query return " + list.size() + " row(s) of data.");
 		map.put("list", list);
 		return map;
 	}
@@ -105,6 +160,7 @@ public class OrderDao implements IOrderDao {
 		query.setParameter("maxValue", maxValue);
 		@SuppressWarnings("unchecked")
 		List<OrderInfo> list = query.getResultList();
+		System.out.println("[OrderDao] > Your query return " + list.size() + " row(s) of data.");
 		map.put("list", list);
 		return map;
 	}
@@ -113,9 +169,10 @@ public class OrderDao implements IOrderDao {
 	public Map<String, Object> select(OrderInfo orderBean) {
 		// ‼ HQL不是用table名 ‼
 		Map<String, Object> map = new HashMap<String, Object>();
-		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE o_id = :oid", OrderInfo.class);
-		query.setParameter("oid", orderBean.getO_id());
-		map.put("orderInfo", query.getSingleResult());
+		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo WHERE identity_seed = :identitySeed", OrderInfo.class);
+		OrderInfo result = query.setParameter("identitySeed", orderBean.getIdentity_seed()).getSingleResult();
+		System.out.println("[OrderDao] > Your query return a row of data.");
+		map.put("orderInfo", result);
 		return map;
 	}
 
@@ -124,16 +181,16 @@ public class OrderDao implements IOrderDao {
 		Map<String, Object> map = new HashMap<String, Object>();
 		TypedQuery<OrderInfo> query = em.createQuery(hql, OrderInfo.class);
 		List<OrderInfo> resultList = query.getResultList();
+		System.out.println("[OrderDao] > Your query return " + resultList.size() + " row(s) of data.");
 		map.put("list", resultList);
 		return map;
 	}
 
 	public Map<String, Object> selectTop100() {
 		Map<String, Object> map = new HashMap<String, Object>();
-//		TypedQuery<OrderInfo> query = em.createQuery("FROM OrderInfo ob ORDER BY ob.o_id ASC", OrderInfo.class).setMaxResults(100);
-//		List<OrderInfo> resultList = query.getResultList();
 		@SuppressWarnings("unchecked")
 		List<OrderInfo> resultList = (List<OrderInfo>) (em.createNativeQuery("SELECT * FROM order_info ORDER BY o_id DESC", OrderInfo.class).setMaxResults(100).getResultList());
+		System.out.println("[OrderDao] > Your query return " + resultList.size() + " row(s) of data.");
 		map.put("list", resultList);
 		return map;
 	}
@@ -153,6 +210,7 @@ public class OrderDao implements IOrderDao {
 			return null;	
 		}
 		// 把值補完整
+		
 		oBean.setU_firstname(uBean.getU_firstname()); 
 		oBean.setU_lastname(uBean.getU_lastname()); 
 		oBean.setU_email(uBean.getU_email());
@@ -188,12 +246,19 @@ public class OrderDao implements IOrderDao {
 	public boolean update(OrderInfo newOBean) {
 		boolean updateStatus = false;
 		// 以PK查出資料庫的 O- / P- / U-Bean
-		OrderInfo oBean = em.find(OrderInfo.class, newOBean.getO_id()); 
+		TypedQuery<OrderInfo> preQuery = em.createQuery("FROM OrderInfo WHERE o_id = :oid AND p_id = :pid AND u_id = :uid", OrderInfo.class);
+		preQuery.setParameter("oid", newOBean.getO_id());
+		preQuery.setParameter("pid", newOBean.getP_id());
+		preQuery.setParameter("uid", newOBean.getU_id());
+		List<OrderInfo> oBeans = preQuery.getResultList();
+		OrderInfo oBean = null;
+//		OrderInfo oBean = em.find(OrderInfo.class, newOBean.getO_id()); 
 		ProductInfo pBean = em.find(ProductInfo.class, newOBean.getP_id());
 		User_Info uBean = em.find(User_Info.class, newOBean.getU_id());
 		
 		
-		if (oBean != null) {
+		if (oBeans.size() == 1) {
+			oBean = oBeans.get(0);
 			
 			if(pBean == null) {
 				System.out.println("********** 錯誤：以 p_id (" + newOBean.getP_id() + ") 在資料庫中找不到對應的 Product 資料。 **********");
@@ -202,7 +267,7 @@ public class OrderDao implements IOrderDao {
 				System.out.println("********** 錯誤：以 o_id (" + newOBean.getU_id() + ") 在資料庫中找不到對應的 User 資料。 **********");
 				return updateStatus;	
 			}
-//			oBean.setO_id         (newBean.getO_id()       ); // 無意義  
+			oBean.setO_id         (newOBean.getO_id()       ); 
 			oBean.setP_id         (newOBean.getP_id()       );  
 			oBean.setP_name       (newOBean.getP_name()     );  
 			oBean.setP_price      (newOBean.getP_price()    );  
@@ -225,17 +290,19 @@ public class OrderDao implements IOrderDao {
 //			pBean.setUser_Info(uBean); // P-U 關聯
 			
 			em.merge(oBean); 
-		} else {
+		} else if(oBeans.size() == 0) {
 			System.out.println("*** Order with O_ID = " + newOBean.getO_id() + "doesn't exist in the database :^) ***");
+		} else if(oBeans.size() > 1) {
+			System.out.println("*** Order with O_ID = " + newOBean.getO_id() + "seems to have more than one result, which shouldn't be the case. ***");			
 		}
 		updateStatus = true;
 		return updateStatus;
 	}
 
 	
-	public Integer delete(Integer[] o_ids) {
-		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE o_id IN (:oids)");
-		deleteQuery.setParameter("oids", Arrays.asList(o_ids));
+	public Integer delete(Integer[] identitySeeds) {
+		Query deleteQuery = em.createQuery("DELETE OrderInfo WHERE identity_seed IN (:identitySeeds)");
+		deleteQuery.setParameter("identitySeeds", Arrays.asList(identitySeeds));
 		Integer result = deleteQuery.executeUpdate();
 		return result;
 	}

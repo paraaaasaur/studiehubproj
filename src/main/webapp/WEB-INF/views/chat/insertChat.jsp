@@ -8,7 +8,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
 <title>發表文章</title>
 <script>
 var u_id = "${loginBean.u_id}";
@@ -71,6 +70,7 @@ window.onload = function(){
 				}
 			}
 		}
+		
 	}
 
 	
@@ -112,7 +112,12 @@ window.onload = function(){
     	userPic.src = userPicString;	//有登入就秀大頭貼
     	userId.innerHTML = u_id;
     }
-
+    
+    $('#autoInput').on('click', function(){
+    	$('#c_Title').val("請問德文的你好怎麼說？");
+    	$('#c_Class').val("德文");
+    	$('#c_Conts').val("德文新手請教各位大大");
+    })
 		
 }
 </script>
@@ -145,19 +150,20 @@ window.onload = function(){
 										<option value="其他">其他</option>
 									</select></td>
 								</tr>
-								<tr>
+								<!--<tr>
 									<td style="width:60px;">內容:</td>
 									<td style="width:650px;"><input type="text" name="c_Conts" id="c_Conts" style="width:650px;" placeholder="請輸入文章內容..."><span id="result2c">&nbsp;</span></td>
-								</tr>
+								</tr>-->
 								<tr>
 									<td style="width:60px;">內容:</td>
-									<td style="width:650px;"><textarea name="c_Contss" id="c_Contss" placeholder="請輸入文章內容..."></textarea>
+									<td style="width:650px;"><textarea name="c_Conts" id="c_Conts" placeholder="請輸入文章內容..."></textarea>
 									<span id="result2c">&nbsp;</span>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="4" align="center" style="table-layout: fixed">
-										<button type="button" class="primary" id="sendData">送出</button> &nbsp;
+										<button type="button" id="autoInput">一鍵</button> &nbsp;
+										<input type="submit" class="primary" id="sendData"> &nbsp;
 										<input type="reset" value="清除">
 									</td>
 								</tr>
@@ -175,17 +181,5 @@ window.onload = function(){
 	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
 	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
-	<script>
-	ClassicEditor.create( document.querySelector( '#c_Contss' ), {
-		// 這裡可以設定 plugin
-	})
-		.then( editor => {
-			console.log( 'Editor was initialized', editor );
-		 })
-		 .catch( err => {
-			console.error( err.stack );
-		 });
-	</script>
 </body>
 </html>

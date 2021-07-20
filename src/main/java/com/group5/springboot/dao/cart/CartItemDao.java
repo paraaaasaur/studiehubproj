@@ -26,6 +26,10 @@ public class CartItemDao implements ICartItemDao{
 	@Autowired 
 	private EntityManager em;
 	
+	public CartItem test05() {
+		return em.createQuery("FROM CartItem WHERE cart_id=1000", CartItem.class).getSingleResult();
+	}
+	
 	public Map<String, Object> select(Integer cart_id) {
 		System.out.println(cart_id);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -33,6 +37,20 @@ public class CartItemDao implements ICartItemDao{
 		System.out.println(cartItem);
 		map.put("cartItem", cartItem);
 		return map;
+	}
+	/**
+	 * 用來查某商品是不是已經存在於購物車裡了。<br>
+	 * true > 尚未存在 = 可以加入購物車 <br>
+	 * false > 已存在 = 不允許加入購物車 <br>
+	 **/
+	public Boolean selectByPidUid(Integer p_id, String u_id) {
+		if(p_id == null || u_id == null) {
+			return false;
+		}
+		return (em.createQuery("FROM CartItem WHERE p_id = :pid AND u_id = :uid", CartItem.class)
+				.setParameter("pid", p_id)
+				.setParameter("uid", u_id)
+				.getResultList().size() != 0)? false : true;
 	}
 	
 	@Override
@@ -182,9 +200,7 @@ public class CartItemDao implements ICartItemDao{
 			// 綁定關聯物件
 			cartBean.setUser_Info(uBean);
 			cartBean.setProductInfo(pBean);
-			System.out.println("1111111111111111111111111");
 			em.merge(cartBean);
-			System.out.println("222222222222222222222");
 			
 			return 1;
 		} else {
@@ -193,7 +209,6 @@ public class CartItemDao implements ICartItemDao{
 		}
 		
 	}
-	
 	
 	@Override
 	public boolean deleteByUserId(String u_id) {
@@ -206,7 +221,6 @@ public class CartItemDao implements ICartItemDao{
 	
 	@Override
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
-		
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid AND p_id = :pid");
 		query.setParameter("uid", u_id);
 		query.setParameter("pid", p_id);
@@ -216,12 +230,22 @@ public class CartItemDao implements ICartItemDao{
 		return (deletedNum == 0)? false : true;
 	}
 	
+	
+	public boolean deleteASingleProduct(Integer cart_id) {
+		Query query = em.createQuery("DELETE CartItem WHERE cart_id = :cartid");
+		query.setParameter("cartid", cart_id);
+		int deletedNum = query.executeUpdate();
+		System.out.println("You deleted a cart item (id = " + cart_id + ") from cart_item table.");
+		
+		return (deletedNum == 0)? false : true;
+	}
+	
 	public Integer delete(Integer[] cart_ids) {
 		Query deleteQuery = em.createQuery("DELETE CartItem WHERE cart_id IN (:cartids)");
 		deleteQuery.setParameter("cartids", Arrays.asList(cart_ids));
 		Integer result = deleteQuery.executeUpdate();
+		
 		return result;
 	}
-	
 
 }

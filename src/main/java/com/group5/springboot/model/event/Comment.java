@@ -9,9 +9,9 @@ import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
 
-@Entity
-@Table(name = "Comment")
-@Component
+//@Entity
+//@Table(name = "Comment")
+//@Component
 public class Comment {
 
 	

@@ -10,9 +10,12 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.utils.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.question.Question_Info;
 import com.group5.springboot.service.question.QuestionService;
-import com.group5.springboot.utils.SystemUtilsNickUse;
 import com.group5.springboot.validate.QuestionValidator;
 
 @Controller
@@ -41,8 +43,16 @@ public class QuestionController {
 	@Autowired
 	QuestionValidator questionValidator;
 
-	
-////前往提庫首頁
+	private final String IMAGE_AUDIO_STORAGE_DIR;
+
+
+	@Autowired
+	public QuestionController(StorageConfigProperties props) {
+		IMAGE_AUDIO_STORAGE_DIR = props.getQuestionAudioAndImageUploadStorageDir();
+	}
+
+
+	////前往提庫首頁
 	@GetMapping(path = "/question.controller/turnQuestionIndex")
 	public String turnQuestionIndex() {
 		return "question/intro_QuestionIndex";
@@ -82,14 +92,14 @@ public class QuestionController {
 		try {
 			InputStream is = multipartFilePic.getInputStream();
 			namePic = multipartFilePic.getOriginalFilename();
-			blob = SystemUtilsNickUse.inputStreamToBlob(is);
+			blob = SystemUtils.inputStreamToBlob(is);
 			mimeTypePic = context.getMimeType(namePic);
 			question_Info.setQ_picture(blob);
 			question_Info.setMimeTypePic(mimeTypePic);
 			
 			is = multipartFileAudio.getInputStream();
 			nameAudio = multipartFileAudio.getOriginalFilename();
-			blob = SystemUtilsNickUse.inputStreamToBlob(is);
+			blob = SystemUtils.inputStreamToBlob(is);
 			mimeTypeAudio = context.getMimeType(nameAudio);
 			question_Info.setQ_audio(blob);
 			question_Info.setMimeTypeAudio(mimeTypeAudio);
@@ -103,16 +113,18 @@ public class QuestionController {
 		}
 		
 		questionService.insertQuestion(question_Info);
-		String extPic = SystemUtilsNickUse.getExtFilename(namePic);
-		String extAudio = SystemUtilsNickUse.getExtFilename(nameAudio);
+		String extPic = StringUtils.getFilenameExtension(namePic);
+		String extAudio = StringUtils.getFilenameExtension(nameAudio);
 		// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 		try {
-			File fileFolder = new File(SystemUtilsNickUse.QUESTION_FILE_FOLDER);
+			File fileFolder = new File(IMAGE_AUDIO_STORAGE_DIR);
 			if (!fileFolder.exists())
 				fileFolder.mkdirs();
-			File filePic = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extPic);
+			String filenamePic = "QuestionFile_" + question_Info.getQ_id() + "." + extPic;
+			File filePic = new File(fileFolder, filenamePic);
 			multipartFilePic.transferTo(filePic);
-			File fileAudio = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extAudio);
+			String filenameAudio = "QuestionFile_" + question_Info.getQ_id() + "." + extAudio;
+			File fileAudio = new File(fileFolder, filenameAudio);
 			multipartFileAudio.transferTo(fileAudio);
 
 		} catch (Exception e) {
@@ -214,17 +226,18 @@ public class QuestionController {
 			try {
 				InputStream is = multipartFilePic.getInputStream();
 				namePic = multipartFilePic.getOriginalFilename();
-				blob = SystemUtilsNickUse.inputStreamToBlob(is);
+				blob = SystemUtils.inputStreamToBlob(is);
 				mimeTypePic = context.getMimeType(namePic);
 				question_Info.setQ_picture(blob);
 				question_Info.setMimeTypePic(mimeTypePic);
-			String extPic = SystemUtilsNickUse.getExtFilename(namePic);
+			String extPic = StringUtils.getFilenameExtension(namePic);
 			// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 			try {
-				File fileFolder = new File(SystemUtilsNickUse.QUESTION_FILE_FOLDER);
+				File fileFolder = new File(IMAGE_AUDIO_STORAGE_DIR);
 				if (!fileFolder.exists())
 					fileFolder.mkdirs();
-				File filePic = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extPic);
+				String filenamePic = "QuestionFile_" + question_Info.getQ_id() + "." + extPic;
+				File filePic = new File(fileFolder, filenamePic);
 				multipartFilePic.transferTo(filePic);
 			
 			} catch (Exception e) {
@@ -241,18 +254,19 @@ public class QuestionController {
 			try {
 				InputStream is = multipartFileAudio.getInputStream();
 				nameAudio = multipartFileAudio.getOriginalFilename();
-				blob = SystemUtilsNickUse.inputStreamToBlob(is);
+				blob = SystemUtils.inputStreamToBlob(is);
 				mimeTypeAudio = context.getMimeType(nameAudio);
 				question_Info.setQ_audio(blob);
 				question_Info.setMimeTypeAudio(mimeTypeAudio);
 		
-			String extAudio = SystemUtilsNickUse.getExtFilename(nameAudio);
+			String extAudio = StringUtils.getFilenameExtension(nameAudio);
 			// 將上傳的檔案移到指定的資料夾, 目前註解此功能
 			try {
-				File fileFolder = new File(SystemUtilsNickUse.QUESTION_FILE_FOLDER);
+				File fileFolder = new File(IMAGE_AUDIO_STORAGE_DIR);
 				if (!fileFolder.exists())
 					fileFolder.mkdirs();
-				File fileAudio = new File(fileFolder, "QuestionFile_" + question_Info.getQ_id() + extAudio);
+				String filenameAudio = "QuestionFile_" + question_Info.getQ_id() + "." + extAudio;
+				File fileAudio = new File(fileFolder, filenameAudio);
 				multipartFileAudio.transferTo(fileAudio);
 			} catch (Exception e) {
 				e.printStackTrace();

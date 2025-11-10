@@ -170,7 +170,7 @@ window.onload = function(){
 				// resultStars += setResultStars(product.p_ID);
 					segment += "<article>";
 					segment += "<a class='image' href='<c:url value = '/takeClass/"+ product.p_ID +"'/>' alt='' />";
-					segment += "<img src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"' width='10%' height='5%' ></a>";
+					segment += "<img src='${pageContext.request.contextPath}/"+ product.p_Img +"' width='10%' height='5%' ></a>";
 					// segment += setResultStars(product.p_ID);
 					segment += "<h3>"+ product.p_Name +"</h3>"
 					segment += showStar;

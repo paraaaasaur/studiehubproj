@@ -1,7 +1,6 @@
 package com.group5.springboot.controller.event;
 
 import java.io.File;
-import java.sql.Clob;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,10 +10,12 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.utils.ResourceLocationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +28,10 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.alibaba.fastjson.JSON;
-import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.event.Sendmessage;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.event.EventServiceImpl;
-import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.EventValidator;
 
 @Controller
@@ -47,6 +45,16 @@ public class EventController {
 	
 	@Autowired
 	EventValidator eventValidator;
+
+	private final String IMAGE_STORAGE_DIR;
+	private final String IMAGE_URL_BASE;
+
+
+	@Autowired
+	public EventController(StorageConfigProperties props) {
+		IMAGE_STORAGE_DIR = props.getEventImageUploadStorageDir();
+		IMAGE_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(IMAGE_STORAGE_DIR);
+	}
 
 	// 從網頁首頁跳到老師的首頁
 	@GetMapping("/NewFile")
@@ -134,17 +142,20 @@ public class EventController {
 			// 取得檔名
 			mimeType = context.getMimeType(name);
 			// 取得 mimeType 怕有人傳沒副檔名的資料
-			String ext = SystemUtils.getExtFilename(name);
+			String ext = StringUtils.getFilenameExtension(name);
 			// 取得副檔名
-			String path = ClassUtils.getDefaultClassLoader().getResource("static").getPath();
+//			String path = ClassUtils.getDefaultClassLoader().getResource("static").getPath();
 			// 得到classes/static地址
-			String savePath = path + File.separator + "eventimages";
+			// uploads不是static resources。不屬於app的一部份，要獨立出app外面 (CDN，外部資料夾...)
+			// 想像一下，我們的app最後會被打包成一個JAR（像是exe的東西)，這種東西應該不會有檔案存進來存進去吧？
+			// 現在我們可看到、使用各種專案裡的資料夾，只是因為我們是開發者、還在開發階段，正在駭「裡面」的東西而已
+//			String savePath = path + File.separator + "eventimages";
 			// 儲存路徑classes/static/images
-			String url_path = File.separator + "eventimages" + File.separator;
+//			String url_path = File.separator + "eventimages" + File.separator;
 			// 讀取檔案路徑 /images/eventimages 為了放進資料庫
 			String stamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 			// 路徑要加上時間戳記 避免重複名稱修改問題
-			File imageFoldet = new File(savePath);
+			File imageFoldet = new File(IMAGE_STORAGE_DIR);
 			// 儲存資料夾的位置 File型態
 			if (!imageFoldet.exists()) {
 				// 看看有沒有這個儲存資料夾的位置 沒有就建立新的
@@ -158,15 +169,16 @@ public class EventController {
 			if (eventinfoImage != null && eventinfoImage.getSize() > 0 && ext != null) {
 				// 如果有傳圖就執行放入圖片的步驟 
 				// ext != null 怕上傳的檔案沒有副檔名
-				File file = new File(imageFoldet, "MemberImage_" + eventinfo.getA_aid() + stamp + ext);
+				String imageFilename = "MemberImage_" + eventinfo.getA_aid() + stamp + "." + ext;
+				File file = new File(imageFoldet, imageFilename);
 				// 儲存資料夾的位置 跟 儲存的文件名稱
-				eventinfo.setA_picturepath(url_path + "MemberImage_" + eventinfo.getA_aid() + stamp + ext);
+				eventinfo.setA_picturepath(IMAGE_URL_BASE + "/" + imageFilename);
 				// /eventimages/MemberImage_1 + 時間戳記.jpg
 				// 放進資料庫的路徑
 				eventinfoImage.transferTo(file);
 				// 放進資料夾
 			} else {
-				eventinfo.setA_picturepath(url_path + "MemberImagexx.png");
+				eventinfo.setA_picturepath(ResourceLocationResolver.EVENT_NO_IMAGE_URL);
 				// 如果沒有傳圖就用預設
 			}
 			
@@ -239,17 +251,17 @@ public class EventController {
 			// 取得檔名
 			mimeType = context.getMimeType(name);
 			// 取得 mimeType 怕有人傳沒副檔名的資料
-			String ext = SystemUtils.getExtFilename(name);
+			String ext = StringUtils.getFilenameExtension(name);
 			// 取得副檔名
-			String path = ClassUtils.getDefaultClassLoader().getResource("static").getPath();
+//			String path = ClassUtils.getDefaultClassLoader().getResource("static").getPath();
 			// 得到classes/static地址
-			String savePath = path + File.separator + "eventimages";
+//			String savePath = path + File.separator + "eventimages";
 			// 儲存路徑classes/static/eventimages(資料夾)
-			String url_path = File.separator + "eventimages" + File.separator;
+//			String url_path = File.separator + "eventimages" + File.separator;
 			// 讀取檔案路徑 /images/ 為了放進資料庫
 			String stamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 			// 路徑要加上時間戳記 避免重複名稱修改問題
-			File imageFoldet = new File(savePath);
+			File imageFoldet = new File(IMAGE_STORAGE_DIR);
 			// 儲存資料夾的位置 File型態
 			System.out.println("eventinfoImage=" + eventinfoImage);
 			System.out.println("size=" + eventinfoImage.getSize());
@@ -263,9 +275,10 @@ public class EventController {
 			if (eventinfoImage != null && eventinfoImage.getSize() > 0 && ext != null) {
 				// 如果有傳圖就執行放入圖片的步驟
 				// ext != null 怕上傳的檔案沒有副檔名
-				File file = new File(imageFoldet, "MemberImage_" + eventinfo.getA_aid() + stamp + ext);
+				final String imageFilename = "MemberImage_" + eventinfo.getA_aid() + stamp + "." + ext;
+				File file = new File(imageFoldet, imageFilename);
 				// 儲存資料夾的位置 跟 儲存的文件名稱
-				eventinfo.setA_picturepath(url_path + "MemberImage_" + eventinfo.getA_aid() + stamp + ext);
+				eventinfo.setA_picturepath(IMAGE_URL_BASE + "/" + imageFilename);
 				// /eventimages/MemberImage_1 + 時間戳記.jpg
 				// 放進資料庫的路徑
 				eventinfoImage.transferTo(file);

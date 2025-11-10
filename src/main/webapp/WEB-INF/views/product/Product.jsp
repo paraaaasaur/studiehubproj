@@ -219,7 +219,7 @@ function showData(textObj) {
 				let product = products[n];
 				segment += "<div class='product'>";
 				segment += "<a href='"+"<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'class='image'style='height:270px'>";
-				segment += "<img src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"' width='230px' height='120px'>";
+				segment += "<img src='${pageContext.request.contextPath}/"+ product.p_Img +"' width='230px' height='120px'>";
 				segment += "<br>";
 				segment += "<h3>"+ product.p_Name +"</h3>"
 			    segment += "</a>";
@@ -260,7 +260,7 @@ function showData(textObj) {
 					<c:choose>
 						<c:when test="${product.p_Status == 1}">
 							<iframe
-								src="${pageContext.request.contextPath}/video/productVideo/${product.p_Video}"
+								src="${pageContext.request.contextPath}/${product.p_Video}"
 								width="1000px" height="700px" frameborder="0"
 								allow="accelerometer;clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 								allowfullscreen></iframe>
@@ -268,7 +268,7 @@ function showData(textObj) {
 						</c:when>
 						<c:otherwise>
 							<img
-								src='${pageContext.request.contextPath}/images/productImages/${product.p_Img}'
+								src='${pageContext.request.contextPath}/${product.p_Img}'
 								width="1500px" height="700px">
 						</c:otherwise>
 

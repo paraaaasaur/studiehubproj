@@ -33,3 +33,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+## Project Related ##
+
+### Local Storage (external FS; pre-CDN) ###
+storage-dev/
+storage-prod/
+storage-test/

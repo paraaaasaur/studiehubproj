@@ -8,16 +8,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.config.StorageConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,7 +23,6 @@ import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.product.ProductServiceImpl;
-import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.ProductValidator;
 
@@ -43,6 +40,20 @@ public class ProductController {
 	CartItemService cartItemService;
 	@Autowired
 	EntityManager em;
+	private final String IMAGE_STORAGE_DIR;
+	private final String VIDEO_STORAGE_DIR;
+	private final String IMAGE_URL_BASE;
+	private final String VIDEO_URL_BASE;
+
+
+	@Autowired
+	public ProductController(StorageConfigProperties props) {
+		this.IMAGE_STORAGE_DIR = props.getProductImageUploadStorageDir();
+		this.VIDEO_STORAGE_DIR = props.getProductVideoUploadStorageDir();
+		this.IMAGE_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(IMAGE_STORAGE_DIR);
+		this.VIDEO_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(VIDEO_STORAGE_DIR);
+	}
+
 	
 	@GetMapping("/buyProduct")
 	public String buyProduct(@RequestParam Integer p_ID,@RequestParam String u_ID,Model model) {
@@ -112,14 +123,15 @@ public class ProductController {
 		MultipartFile video = productInfo.getVideoFile();
 		if (img != null && img.getSize()>0) {
 			try {
-				String imgext = SystemUtils.getExtFilename(img.getOriginalFilename());
-				File imageFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\images\\productImages");
+				String imgext = StringUtils.getFilenameExtension(img.getOriginalFilename());
+				File imageFolder = new File(IMAGE_STORAGE_DIR);
 				if (!imageFolder.exists()) {
 					imageFolder.mkdirs();
 				}
-				File imgFile = new File(imageFolder,SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+				String imgFilename = StringUtils.stripFilenameExtension(img.getOriginalFilename())+"_"+productInfo.getP_ID()+ "." + imgext;
+				File imgFile = new File(imageFolder, imgFilename);
 				img.transferTo(imgFile);
-				productInfo.setP_Img(SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+				productInfo.setP_Img(IMAGE_URL_BASE + "/" + imgFilename);
 
 				
 			}catch (Exception e) {
@@ -133,14 +145,15 @@ public class ProductController {
 			try {
 				
 
-				String videoext = SystemUtils.getExtFilename(video.getOriginalFilename());
-				File videoFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\video\\productVideo");
+				String videoext = StringUtils.getFilenameExtension(video.getOriginalFilename());
+				File videoFolder = new File(VIDEO_STORAGE_DIR);
 				if (!videoFolder.exists()) {
 					videoFolder.mkdirs();
 				}
-				File videoFile = new File(videoFolder,SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+				String videoFilename = StringUtils.stripFilenameExtension(video.getOriginalFilename())+"_"+productInfo.getP_ID()+ "." + videoext;
+				File videoFile = new File(videoFolder, videoFilename);
 				video.transferTo(videoFile);
-				productInfo.setP_Video(SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+				productInfo.setP_Video(VIDEO_URL_BASE + "/" + videoFilename);
 				
 				
 				
@@ -181,22 +194,24 @@ public class ProductController {
 		productInfo.setP_DESC(clob);
 		productService.save(productInfo,u_ID);
 		try {
-			String imgext = SystemUtils.getExtFilename(img.getOriginalFilename());
-			String videoext = SystemUtils.getExtFilename(video.getOriginalFilename());
-			File imageFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\images\\productImages");
-			File videoFolder = new File("C:\\_SpringBoot\\workspace\\studiehubproj\\src\\main\\resources\\static\\video\\productVideo");
+			String imgext = StringUtils.getFilenameExtension(img.getOriginalFilename());
+			String videoext = StringUtils.getFilenameExtension(video.getOriginalFilename());
+			File imageFolder = new File(IMAGE_STORAGE_DIR);
+			File videoFolder = new File(VIDEO_STORAGE_DIR);
 			if (!imageFolder.exists()) {
 				imageFolder.mkdirs();
 			}
 			if (!videoFolder.exists()) {
 				videoFolder.mkdirs();
 			}
-			File imgFile = new File(imageFolder,SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
+			String imgFilename = StringUtils.stripFilenameExtension(img.getOriginalFilename())+"_"+productInfo.getP_ID()+ "." + imgext;
+			File imgFile = new File(IMAGE_STORAGE_DIR + "/" + imgFilename);
 			img.transferTo(imgFile);
-			productInfo.setP_Img(SystemUtils.getFilename(img.getOriginalFilename())+"_"+productInfo.getP_ID()+imgext);
-			File videoFile = new File(videoFolder,SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+			productInfo.setP_Img(IMAGE_URL_BASE + "/" + imgFilename);
+			String videoFilename = StringUtils.stripFilenameExtension(video.getOriginalFilename())+"_"+productInfo.getP_ID()+ "." + videoext;
+			File videoFile = new File(VIDEO_STORAGE_DIR + "/" + videoFilename);
 			video.transferTo(videoFile);
-			productInfo.setP_Video(SystemUtils.getFilename(video.getOriginalFilename())+"_"+productInfo.getP_ID()+videoext);
+			productInfo.setP_Video(VIDEO_URL_BASE + "/" + videoFilename);
 			productInfo.setP_Status(0);
 			productService.update(productInfo);
 		} catch (Exception e) {

@@ -12,12 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.group5.springboot.utils.SystemUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group5.springboot.utils.SystemUtilsNickUse;
 
 	@Entity
 	@Table(name="Question_Info")
@@ -225,14 +225,14 @@ import com.group5.springboot.utils.SystemUtilsNickUse;
 		}
 
 		public String getQ_pictureString() { 
-			return SystemUtilsNickUse.blobToDataProtocol(mimeTypePic, q_picture);
+			return SystemUtils.blobToDataProtocolForQuestion(mimeTypePic, q_picture);
 		}
 		public void setQ_pictureString(String q_pictureString) {
 			this.q_pictureString = q_pictureString;
 		}
 
 		public String getQ_audioString() {
-			return SystemUtilsNickUse.blobToDataProtocol(mimeTypeAudio,q_audio);
+			return SystemUtils.blobToDataProtocolForQuestion(mimeTypeAudio,q_audio);
 		}
 		public void setQ_audioString(String q_audioString) {
 			this.q_audioString = q_audioString;

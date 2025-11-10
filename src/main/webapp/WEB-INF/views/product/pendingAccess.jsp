@@ -84,7 +84,7 @@ function showData(textObj) {
     			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
     			console.log(tmp0);
 				segment += "<tr>";
-                segment += "<td><img width='100' height='60' src='${pageContext.request.contextPath}/images/productImages/"+ product.p_Img +"'/ ></td>";
+                segment += "<td><img width='100' height='60' src='${pageContext.request.contextPath}/"+ product.p_Img +"'/ ></td>";
 				segment += "<td>" + product.p_Name + "</td>";
 				segment += "<td style='width: 100px;'>" + product.p_Class + "</td>";
 				segment += "<td style='width: 100px;'>" + product.p_Price + "</td>";

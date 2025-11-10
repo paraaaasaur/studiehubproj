@@ -9,9 +9,11 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.config.StorageConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +47,14 @@ public class UserController {
 	ServletContext context;
 	@Autowired
 	EmailSenderService emailService;
+	private final String AVATAR_STORAGE_DIR;
+
+
+	@Autowired
+	public UserController(StorageConfigProperties props) {
+		this.AVATAR_STORAGE_DIR = props.getUserAvatarUploadStorageDir();
+	}
+
 
 	// 到會員的index
 	@GetMapping(path = "/gotoUserIndex.controller")
@@ -253,12 +263,13 @@ public class UserController {
 				user_Info.setU_img(blob);
 				user_Info.setMimeType(mimeType);
 				//將上傳的檔案移到指定的資料夾
-				String ext = SystemUtils.getExtFilename(ogfName);
+				String ext = StringUtils.getFilenameExtension(ogfName);
 				try {
-					File imageFolder = new File(SystemUtils.PLACE_IMAGE_FOLDER);
+					File imageFolder = new File(AVATAR_STORAGE_DIR);
 					if (!imageFolder.exists())
 						imageFolder.mkdirs();
-					File file = new File(imageFolder, "MemberImage_" + user_Info.getU_id() + ext);
+					String imageFilename = "MemberImage_" + user_Info.getU_id() + "." + ext;
+					File file = new File(imageFolder, imageFilename);
 					uploadImage.transferTo(file);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -334,18 +345,18 @@ public class UserController {
 		map.put("女", "女");
 		return map;
     }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

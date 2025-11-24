@@ -1,5 +1,9 @@
 package com.group5.springboot.dao.test;
 
+import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.product.Rating;
+import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.utils.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -52,6 +56,43 @@ public class GenericDao {
 
 	public <T> int deleteAll(Class<T> clazz) {
 		return em.createQuery("DELETE FROM " + clazz.getSimpleName()).executeUpdate();
+	}
+
+	public ProductInfo saveProductButSkipStorage(ProductInfo rawProduct, User_Info uploader) {
+		// real
+		rawProduct.setUser_Info(uploader);
+		rawProduct.setP_Img("dummy/path/to/image.jpg");
+		rawProduct.setP_Video("dummy/path/to/video.mp4");
+		rawProduct.setP_Status(0);
+
+		// schema design defect(2.0.0)
+		rawProduct.setP_createDate(new Date()); // can be defaulted at db level
+
+		// jpa defects(2.0.0)
+		rawProduct.setU_ID(uploader.getU_id()); // redundant from denormalized column
+		rawProduct.setP_DESC(SystemUtils.stringToClob(rawProduct.getDescString())); // use lob
+
+		em.persist(rawProduct);
+
+		return rawProduct;
+	}
+
+	public ProductInfo adminApprovesProduct(ProductInfo dbProduct) {
+		ProductInfo merged = em.merge(dbProduct);
+		merged.setP_Status(1);
+
+		return merged;
+	}
+
+	public Rating saveRating(Rating rawRating, ProductInfo product) {
+		rawRating.setProdcuInfo(product); // missing
+		rawRating.setRatedIndex(rawRating.getRatedIndex());
+		rawRating.setP_ID(product.getP_ID()); // redundant
+		rawRating.setComment(SystemUtils.stringToClob(rawRating.getCommentString())); // should be lob
+
+		em.persist(rawRating); // new -> managed
+
+		return rawRating;
 	}
 
 	// -----------------------------------------

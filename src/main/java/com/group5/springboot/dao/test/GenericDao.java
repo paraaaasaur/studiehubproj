@@ -2,6 +2,7 @@ package com.group5.springboot.dao.test;
 
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.product.Rating;
+import com.group5.springboot.model.question.Question_Info;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.utils.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.Timestamp;
 import java.util.*;
 
 /** In courtesy of da almighty chatgpt */
@@ -93,6 +97,40 @@ public class GenericDao {
 		em.persist(rawRating); // new -> managed
 
 		return rawRating;
+	}
+
+	public Question_Info saveQuestionButSkipExtStorage(Question_Info rawQuestion) throws IOException {
+		return saveQuestionButSkipExtStorage(rawQuestion, null);
+	}
+
+	private Question_Info saveQuestionButSkipExtStorage(Question_Info rawQuestion, User_Info instructor) throws IOException {
+		// all from controller
+		{
+			// db media storage
+			Blob imgBlob = SystemUtils.inputStreamToBlob(rawQuestion.getMultipartFilePic().getInputStream());
+			Blob audioBlob = SystemUtils.inputStreamToBlob(rawQuestion.getMultipartFileAudio().getInputStream());
+			rawQuestion.setQ_picture(imgBlob);
+			rawQuestion.setQ_audio(audioBlob);
+			rawQuestion.setMimeTypePic("image/jpeg"); // dummy
+			rawQuestion.setMimeTypeAudio("audio/mpeg"); // dummy
+
+			// np
+			rawQuestion.setVerification("N");
+
+			// default value issue belongs to schema(entity/table) level
+			rawQuestion.setCreateDate(new Timestamp(System.currentTimeMillis()));
+		}
+
+		em.persist(rawQuestion);
+
+		return rawQuestion;
+	}
+
+	public Question_Info adminApprovesQuestion(Question_Info dbQuestion) {
+		Question_Info merged = em.merge(dbQuestion);
+		merged.setVerification("Y");
+
+		return merged;
 	}
 
 	// -----------------------------------------

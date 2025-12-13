@@ -1,8 +1,12 @@
 package com.group5.springboot.dao.test;
 
+import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
+import com.group5.springboot.model.chat.scaffolding.dev.PostWithPoster;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.product.Rating;
 import com.group5.springboot.model.question.Question_Info;
+import com.group5.springboot.model.chat.scaffolding.dev.ChatInfoWithRedundancy;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.utils.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,8 @@ import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /** In courtesy of da almighty chatgpt */
@@ -131,6 +137,53 @@ public class GenericDao {
 		merged.setVerification("Y");
 
 		return merged;
+	}
+
+	public ChatInfoWithRedundancy saveTopPost(Chat_Info rawChatInfo, User_Info loginBean) {
+		// frontend
+		rawChatInfo.setU_ID(loginBean.getU_id());
+		rawChatInfo.setC_Date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssa"))); // default setup belongs to schema level
+
+		// #insertChat
+		rawChatInfo.setUser_Info(em.merge(loginBean));
+		em.persist(rawChatInfo);
+		em.flush();
+
+		// #insertFirstChatReply
+		// create a row of redundancy in chat_reply
+		// check out 99-extra-notes.md if you don't understand,
+		// since this is anti-pattern
+		Chat_Reply chatInfoRedundancy = new Chat_Reply();
+		chatInfoRedundancy.setC_IDr(rawChatInfo.getC_ID());
+		chatInfoRedundancy.setC_Conts(rawChatInfo.getC_Conts());
+		chatInfoRedundancy.setC_Date(rawChatInfo.getC_Date());
+		chatInfoRedundancy.setU_ID(rawChatInfo.getU_ID());
+		em.persist(chatInfoRedundancy);
+		em.flush();
+
+		return new ChatInfoWithRedundancy(rawChatInfo, chatInfoRedundancy);
+	}
+
+	public Chat_Reply saveReply(Chat_Reply rawChatReply, Chat_Info dbTopPost, User_Info loginBean) {
+		// frontend
+		rawChatReply.setC_Date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssa"))); // default value belongs to schema level
+		rawChatReply.setU_ID(loginBean.getU_id()); // redundant as a field and as an input from frontend
+		rawChatReply.setC_IDr(dbTopPost.getC_ID());
+
+		// service/dao
+		rawChatReply.setChat_Info(em.find(Chat_Info.class, rawChatReply.getC_IDr()));
+		rawChatReply.setUser_Info(em.find(User_Info.class, loginBean.getU_id()));
+		em.persist(rawChatReply);
+
+		return rawChatReply;
+	}
+
+	public PostWithPoster[] findPostsWithPosters(int threadId) {
+		String hql = "SELECT NEW com.group5.springboot.model.chat.scaffolding.dev.PostWithPoster(c, u) " +
+					 "FROM Chat_Reply c LEFT JOIN User_Info u ON c.u_ID = u.u_id WHERE c.c_IDr = :threadId";
+		return em.createQuery(hql, PostWithPoster.class)
+				.setParameter("threadId", threadId)
+				.getResultList().toArray(new PostWithPoster[]{});
 	}
 
 	// -----------------------------------------

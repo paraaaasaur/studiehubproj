@@ -1,8 +1,11 @@
 package com.group5.springboot.dao.test;
 
+import com.group5.springboot.dto.CreateEventRequest;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.model.chat.scaffolding.dev.PostWithPoster;
+import com.group5.springboot.model.event.Entryform;
+import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.product.Rating;
 import com.group5.springboot.model.question.Question_Info;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
@@ -184,6 +188,62 @@ public class GenericDao {
 		return em.createQuery(hql, PostWithPoster.class)
 				.setParameter("threadId", threadId)
 				.getResultList().toArray(new PostWithPoster[]{});
+	}
+
+	public EventInfo saveEventButNoStorage(CreateEventRequest dto, User_Info loginBean) {
+		// all controller logic🫠
+		EventInfo eventInfo = dto.toEntity();
+		em.persist(eventInfo);
+		em.flush();
+
+		eventInfo.setComment(eventInfo.getTransientcomment()); // dto
+		eventInfo.setCreationTime(new Timestamp(System.currentTimeMillis())); // schema level
+		eventInfo.setA_picturepath("dummy/path/to/image.jpg");
+		eventInfo.setUidname(loginBean.getU_lastname() + loginBean.getU_firstname());
+		eventInfo.setExpired("未過期"); // computed field or table view
+		eventInfo.setVerification("N"); // schema default value
+		eventInfo.setA_uid(loginBean.getU_id()); // denormalized column
+
+		em.persist(eventInfo);
+		em.flush();
+
+		return eventInfo;
+	}
+
+	public void adminApprovesEvent(EventInfo pendingEvent) {
+		pendingEvent.setVerification("Y");
+		em.merge(pendingEvent);
+	}
+
+	/**
+	 * <li>Basic dao level CRUD</li>
+	 * <li>Skips all validations and side effects required in a usual event signup flow</li>
+	 **/
+	public void persistEventRegistration(EventInfo event, User_Info applicant) {
+		var ef = new Entryform();
+		// 打開報名表
+		ef.setEventInfo(event);
+		ef.setE_id(applicant.getU_id());
+		ef.setE_lastname(applicant.getU_lastname());
+		ef.setE_firstname(applicant.getU_firstname());
+		ef.setE_tel(applicant.getU_tel());
+		ef.setE_email(applicant.getU_email());
+
+		em.persist(ef);
+	}
+
+	public Entryform findEventRegistration(Long eventId, String userId) {
+		Entryform entryform;
+		try {
+			entryform = em.createQuery("SELECT ef FROM Entryform ef WHERE ef.eventInfo.a_aid = :eventId AND ef.e_id = :userId", Entryform.class)
+					.setParameter("eventId", eventId)
+					.setParameter("userId", userId)
+					.getSingleResult();
+		} catch (NoResultException nre) {
+			entryform = null;
+		}
+
+		return entryform;
 	}
 
 	// -----------------------------------------

@@ -1,6 +1,7 @@
 package com.group5.springboot.utils;
 
 import java.io.*;
+import java.net.URI;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.util.Base64;
@@ -9,6 +10,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialClob;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 public class SystemUtils {
 
@@ -177,5 +179,10 @@ public class SystemUtils {
 			e.printStackTrace();
 		}
 		return clob;
+	}
+
+	public static String getBaseUrl() {
+		URI baseUrl= ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
+		return baseUrl.toString();
 	}
 }

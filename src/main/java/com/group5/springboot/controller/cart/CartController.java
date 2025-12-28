@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.group5.springboot.dto.cart.ECPayPaymentResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,8 @@ import com.group5.springboot.service.product.ProductServiceImpl;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
 import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
+
+import static com.group5.springboot.utils.SystemUtils.getBaseUrl;
 
 @RestController
 public class CartController {
@@ -197,13 +200,11 @@ public class CartController {
 	}
 
 	@PostMapping("/cart.controller/getEcpayResultAttr")
-	public Map<String, String> getEcpayResultAttr() {
-		@SuppressWarnings("unchecked")
-		Map<String, String> map = (Map<String, String>) CartViewController.cartInfoMap.get("ecpayResultAttr");
+	public ECPayPaymentResult getEcpayResultAttr() {
+		var body = (ECPayPaymentResult) CartViewController.cartInfoMap.get("ecpayResultAttr");
 		CartViewController.cartInfoMap.remove("ecpayResultAttr");
-		return map;
+		return body;
 	}
-
 	
 	
 	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
@@ -227,12 +228,11 @@ public class CartController {
 		cart.forEach(product -> myItemNameBuilder.append("#").append(product.getP_Name()));
 		String myItemName = myItemNameBuilder.replace(0, 1, "").toString();
 		// 【產生 ReturnURL String(200)】
-//		String ngrokhttps = "";
-		String ngrokhttp = "http://d47fc3ee9932.ngrok.io"; // 演示時需要重開ngrok輸入ngrok http 8080取得
+		String ngrokHttp = System.getenv("ngrokHttp");
+		boolean localhost = ngrokHttp != null && !ngrokHttp.trim().isEmpty();
 
-		String myReturnURL = new StringBuilder(ngrokhttp).append("/studiehub").append("/cart.controller/receiveEcpayReturnInfo").toString();
-		String myClientBackURL = "http://localhost:8080/studiehub/cart.controller/clientResultPage";
-		
+		String myReturnURL = (localhost? ngrokHttp : getBaseUrl()) + "/payment/ecpay/callback";
+		String myClientBackURL = getBaseUrl() + "/cart.controller/clientResultPage";
 		
 		AioCheckOutALL aioObj = new AioCheckOutALL(); 
 		aioObj.setMerchantTradeNo(myMerchantTradeNo);

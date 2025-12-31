@@ -1,6 +1,9 @@
 package com.group5.springboot.dao.test;
 
 import com.group5.springboot.dto.CreateEventRequest;
+import com.group5.springboot.dto.cart.ECPayPaymentResult;
+import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.model.chat.scaffolding.dev.PostWithPoster;
@@ -12,6 +15,8 @@ import com.group5.springboot.model.question.Question_Info;
 import com.group5.springboot.model.chat.scaffolding.dev.ChatInfoWithRedundancy;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutOneTime;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -20,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -87,8 +93,9 @@ public class GenericDao {
 		rawProduct.setP_DESC(SystemUtils.stringToClob(rawProduct.getDescString())); // use lob
 
 		em.persist(rawProduct);
+		em.flush();
 
-		return rawProduct;
+		return em.find(ProductInfo.class, rawProduct.getP_ID());
 	}
 
 	public ProductInfo adminApprovesProduct(ProductInfo dbProduct) {
@@ -105,8 +112,9 @@ public class GenericDao {
 		rawRating.setComment(SystemUtils.stringToClob(rawRating.getCommentString())); // should be lob
 
 		em.persist(rawRating); // new -> managed
+		em.flush();
 
-		return rawRating;
+		return em.find(Rating.class, rawRating.getR_ID());
 	}
 
 	public Question_Info saveQuestionButSkipExtStorage(Question_Info rawQuestion) throws IOException {
@@ -132,8 +140,9 @@ public class GenericDao {
 		}
 
 		em.persist(rawQuestion);
+		em.flush();
 
-		return rawQuestion;
+		return em.find(Question_Info.class, rawQuestion.getQ_id());
 	}
 
 	public Question_Info adminApprovesQuestion(Question_Info dbQuestion) {
@@ -165,7 +174,10 @@ public class GenericDao {
 		em.persist(chatInfoRedundancy);
 		em.flush();
 
-		return new ChatInfoWithRedundancy(rawChatInfo, chatInfoRedundancy);
+		return new ChatInfoWithRedundancy(
+				em.find(Chat_Info.class, rawChatInfo.getC_ID()),
+				em.find(Chat_Reply.class, chatInfoRedundancy.getC_ID())
+		);
 	}
 
 	public Chat_Reply saveReply(Chat_Reply rawChatReply, Chat_Info dbTopPost, User_Info loginBean) {
@@ -177,9 +189,11 @@ public class GenericDao {
 		// service/dao
 		rawChatReply.setChat_Info(em.find(Chat_Info.class, rawChatReply.getC_IDr()));
 		rawChatReply.setUser_Info(em.find(User_Info.class, loginBean.getU_id()));
-		em.persist(rawChatReply);
 
-		return rawChatReply;
+		em.persist(rawChatReply);
+		em.flush();
+
+		return em.find(Chat_Reply.class, rawChatReply.getC_ID());
 	}
 
 	public PostWithPoster[] findPostsWithPosters(int threadId) {
@@ -207,7 +221,7 @@ public class GenericDao {
 		em.persist(eventInfo);
 		em.flush();
 
-		return eventInfo;
+		return em.find(EventInfo.class, eventInfo.getA_aid());
 	}
 
 	public void adminApprovesEvent(EventInfo pendingEvent) {
@@ -244,6 +258,107 @@ public class GenericDao {
 		}
 
 		return entryform;
+	}
+
+	/**
+	 * <li>Basic dao level CRUD</li>
+	 * <li>Skips all validations and side effects required in a usual flow</li>
+	 **/
+	public CartItem persistCartItem(ProductInfo product, User_Info customer) {
+		// from dao
+		var cartItem = new CartItem();
+		cartItem.setU_firstname(customer.getU_firstname()); // redundant
+		cartItem.setU_lastname(customer.getU_lastname()); // redundant
+		cartItem.setP_name(product.getP_Name()); // redundant
+		cartItem.setP_price(product.getP_Price()); // redundant
+		cartItem.setProductInfo(product);
+		cartItem.setUser_Info(customer);
+		cartItem.setCart_date("gibberish"); // db-generated
+
+		em.persist(cartItem);
+		em.flush();
+		em.clear();
+
+//		return em.find(CartItem.class, cartItem.getCart_id());
+		var foundCartItem = em.find(CartItem.class, cartItem.getCart_id());
+		Hibernate.initialize(foundCartItem.getProductInfo());
+		Hibernate.initialize(foundCartItem.getUser_Info());
+		return foundCartItem;
+	}
+
+	/** Only works for ECPay payment method == credit card */
+	private List<OrderInfo> saveOrderAndThenDeleteCart(ECPayPaymentResult dto) {
+		// controller raw logic
+		String u_id = dto.getCustomField1();
+		var customer = em.find(User_Info.class, u_id);
+		var cartProducts = em.createQuery("SELECT c.productInfo FROM CartItem c WHERE c.user_Info = :customer", ProductInfo.class)
+				.setParameter("customer", customer)
+				.getResultList();
+
+		for (var cartProduct : cartProducts) {
+			OrderInfo order = new OrderInfo();
+				order.setO_id(((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue());
+				order.setO_status("完成"); // belongs to schema-level
+				order.setO_amt(Integer.parseInt(dto.getTradeAmt()));
+				order.setEcpay_o_id(dto.getMerchantTradeNo());
+				order.setEcpay_trade_no(dto.getTradeNo());
+		//		order.setO_date(db-default-value);
+
+				order.setProductInfo(cartProduct);
+				order.setP_id(cartProduct.getP_ID());
+				order.setP_name(cartProduct.getP_Name());
+				order.setP_price(cartProduct.getP_Price());
+
+				order.setUser_Info(customer);
+				order.setU_id(customer.getU_id());
+				order.setU_firstname(customer.getU_firstname());
+				order.setU_lastname(customer.getU_lastname());
+				order.setU_email(customer.getU_email());
+
+			em.persist(order);
+		}
+
+		// delete cart only after order items are persisted
+		em.createQuery("DELETE FROM CartItem c WHERE c.user_Info = :customer")
+				.executeUpdate();
+
+		return em.createQuery("SELECT o FROM OrderInfo o WHERE o.ecpay_o_id = :merchantTradeNo", OrderInfo.class)
+				.setParameter("merchantTradeNo", dto.getMerchantTradeNo())
+				.getResultList();
+	}
+
+	/**
+	 * <li>Basic dao level CRUD that bypasses business flow.</li>
+	 * <li>Usually, it constructs order items from the payment result and cart items,
+	 * and then deletes cart items in the end</li>
+	 **/
+	public OrderInfo persistOrder(ProductInfo product, User_Info customer) {
+		var order = new OrderInfo();
+			order.setO_id(((BigDecimal) em.createNativeQuery("SELECT IDENT_CURRENT('order_info')").getSingleResult()).intValue());
+			order.setO_status("完成"); // belongs to schema-level
+			order.setO_amt(product.getP_Price());
+			order.setEcpay_o_id("studiehub-demo-no-" + UUID.randomUUID());
+			order.setEcpay_trade_no("mock-trade-no-8888888");
+//			order.setO_date(db-default-value);
+
+			order.setProductInfo(product);
+			order.setP_id(product.getP_ID());
+			order.setP_name(product.getP_Name());
+			order.setP_price(product.getP_Price());
+
+			order.setUser_Info(customer);
+			order.setU_id(customer.getU_id());
+			order.setU_firstname(customer.getU_firstname());
+			order.setU_lastname(customer.getU_lastname());
+			order.setU_email(customer.getU_email());
+
+		em.persist(order);
+
+//		return em.find(OrderInfo.class, order.getIdentity_seed());
+		var foundOrder = em.find(OrderInfo.class, order.getIdentity_seed());
+		Hibernate.initialize(foundOrder.getProductInfo());
+		Hibernate.initialize(foundOrder.getUser_Info());
+		return foundOrder;
 	}
 
 	// -----------------------------------------

@@ -105,50 +105,50 @@ window.onload = function(){
 									</header>
 									<div class="posts">
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始】第一期：學英語，從入門到摔門！_1.jpg" alt="" /></a>
-											<h3>從0開始學英文！</h3>
-											<p>國際自編教材與全球同步更新，學員可自由選擇想上的主題：主題涵蓋職場、社交、旅遊、文化及日常生活等情境，可依據個人興趣及需求，自由選擇</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-03.png" alt="" /></a>
+											<h3>🐒 猴子互動口說課（Monkey Interactive English）</h3>
+											<p>高互動設計，保持學習動能：讓好奇心成為學習的引擎。</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/英文閒聊：我克服拖延症的秘密是什麼？ Chen Lily_6.png" alt="" /></a>
-											<h3>拯救拖延症</h3>
-											<p>真實的英語接觸，面對面學習更有感：情境互動教學，用全身細胞掌握學習的節奏，讓你不只被動學英語，而是主動用英語，「開口說」才是關鍵</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-04.png" alt="" /></a>
+											<h3>🦊 狐狸導師思考日文課（Fox Mentor Logic Japanese）</h3>
+											<p>重視思考脈絡的教學方式：不是快，而是看得深。</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>
 										</article>
 										
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何有效練習英文口說 _ Avis經驗談 _ 突破心魔才能學好英文口語_4.png" alt="" /></a>
-											<h3>如何提升英文口說？</h3>
-											<p>分級制度嚴謹，跟著類似程度的夥伴一起互動交流：沒有嚴謹的程度分級，會讓班上同學發言量不均、很難彼此交流，也會打擊程度低學員的自信</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-05.png" alt="" /></a>
+											<h3>🐺 狼群溝通實戰課（Wolf Team Communication）</h3>
+											<p>團隊導向的互動設計、建立信任，提升群體表達效率，清楚的角色與程度分級。</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>																				
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何開始自學日文？日文學習步驟分享！_5.png" alt="" /></a>
-											<h3>自學日文從哪裡開始？</h3>
-											<p>課程不流於聊天或背誦，運用英文邏輯理解與表達：結構性教法，讓你用英文邏輯思考去理解、學會如何運用句子，每堂課都能帶走很多新的學習</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-06.png" alt="" /></a>
+											<h3>🐻 棕熊穩健基礎英文課（Brown Bear Foundation English）</h3>
+											<p>慢而扎實的學習設計，建立長期自信，而非短期刺激。同程度學員安心學習，不追求花樣，重視理解。</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始學日文】日語50音的發音和寫法簡單教學_3.png" alt="" /></a>
-											<h3>50音簡單教學</h3>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-07.png" alt="" /></a>
+											<h3>🦌 鹿系自然表達英文課（Deer Natural Expression）</h3>
 											<p>學習過程能感到進步，建立信心，就不怕開口犯錯：台灣人口說不好的一大原因就是害怕開口跟犯錯，所以課程首要條件就是先建立信心與興趣</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，從這裡開始_2.png" alt="" /></a>
-											<h3>英文基礎文法第一課</h3>
-											<p>100%國際認證師資，不只English speaker而是English teacher：認證教師才能真正激發潛力&自信，英協教師具備平均8年以上教學經驗及劍橋認證</p>
+											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-01.png" alt="" /></a>
+											<h3>🐱 貓咪英文口說課（Cat Speaking Program）</h3>
+											<p>專為內向型學員設計的安心學習環境：理解「慢熟型人格」的學習節奏，從觀察、模仿到自然開口，不強迫、不比較。</p>
 											<ul class="actions">
 												<li><a href="#" class="button">More</a></li>
 											</ul>

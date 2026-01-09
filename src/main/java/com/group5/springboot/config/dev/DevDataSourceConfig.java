@@ -16,7 +16,7 @@ public class DevDataSourceConfig {
 	public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
 		final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
 		populator.addScript(new PathResource("dev/db/sqlserver/01-schema-v1.0.0-snapshot.sql"));
-		populator.addScript(new PathResource("dev/db/sqlserver/02-data-v1.0.0-snapshot.sql"));
+		populator.addScript(new PathResource("dev/db/sqlserver/02-data-v1.0.0-release.sql"));
 
 		DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
 		dataSourceInitializer.setDataSource(dataSource);

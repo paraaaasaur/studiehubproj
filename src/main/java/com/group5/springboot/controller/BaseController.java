@@ -11,5 +11,8 @@ public class BaseController {
 		return "index";
 	}
 	
-		
+	@GetMapping("/credits")
+	public String credits() {
+		return "credits";
+	}
 }

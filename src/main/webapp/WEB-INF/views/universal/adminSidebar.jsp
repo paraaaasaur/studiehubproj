@@ -63,7 +63,7 @@
 					        		        
 					    </ul>
 					</li>
-
+					<li><a href="<c:url value='/credits' />">⭐️SPECIAL THANKS⭐️</a></li>
 				</ul>
 			</nav>
 

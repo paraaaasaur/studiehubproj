@@ -66,6 +66,7 @@
 
 					<li><a href="<c:url value='/gotoAdminIndex.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li>
 <%-- 					<li><a href="<c:url value='/gotoAdminLogin.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li> --%>
+					<li><a href="<c:url value='/credits' />">⭐️SPECIAL THANKS⭐️</a></li>
 				</ul>
 			</nav>
 			<!-- Section -->
@@ -75,25 +76,26 @@
 				</header>
 				<div class="mini-posts">
 					<article>
-						<a href="<c:url value = '/takeClass/2'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【基礎英文文法第一課】7分鐘學會5大句型，從這裡開始_2.png"
+						<a href="<c:url value = '/takeClass/2'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-02.png"
 							alt="" /></a>
 						<p>
-							除了go Dutch，還有什麼俚語包括國家名稱？<br /> 一起學習 8
-							種國家俚語，學習用「荷蘭」形容藉酒壯膽、用「法國」形容不告而別！
+							掌握關鍵句型，讓每次溝通都有重點。活潑、互動、敢開口！
 						</p>
 					</article>
 					<article>
-						<a href="<c:url value = '/takeClass/3'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/【從零開始學日文】日語50音的發音和寫法簡單教學_3.png"
+						<a href="<c:url value = '/takeClass/3'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-03.png"
 							alt="" /></a>
 						<p>
-							正式英文 email 究竟該怎麼寫？ 該怎麼稱呼對方？ 又該如何有禮貌地結束信件？<br /> 幫你搞定商業
-							email，讓你職場應對超得體！
+							跳脫直翻，用英文邏輯組織你的想法！ 主打聰明、結構、理解而非背誦
 						</p>
 					</article>
 					<article>
-						<a href="<c:url value = '/takeClass/4'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/如何有效練習英文口說 _ Avis經驗談 _ 突破心魔才能學好英文口語_4.png"
+						<a href="<c:url value = '/takeClass/4'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-04.png"
 							alt="" /></a>
-						<p>別再說 “I am boring”！這十種最常見的英文錯誤你中了幾個？</p>
+						<p>
+							把英文用起來，日常對話自然又不尷尬！<br>
+							用活潑的俚語秀出你的風趣！
+						</p>
 					</article>
 				</div>
 				<ul class="actions">

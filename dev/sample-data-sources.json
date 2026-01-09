@@ -1,0 +1,104 @@
+{
+  "product": {
+    "videos-and-images": {
+      "url": "https://www.youtube.com/watch?v=KaHypeOcui0",
+      "license": "personal note: free to use as long as the following quote is included: \"The video material has been kindly provided by HikingFex.com.\"",
+      "note": "videos -> trims; images -> screenshots from trims"
+    },
+    "description": "AI-generated"
+  },
+  "user": {
+    "avatar": [
+      {
+        "alt": "husky",
+        "source-url": "https://www.flaticon.com/free-icon/husky_6236513?term=husky&page=1&position=2&origin=search&related_id=6236513",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/dog\" title=\"dog icons\">Dog icons created by Freepik - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "squirrel",
+        "source-url": "https://www.flaticon.com/free-icon/squirrel_1864480?term=animal&related_id=1864480",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/squirrel\" title=\"squirrel icons\">Squirrel icons created by Freepik - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "dolphin",
+        "source-url": "https://www.flaticon.com/free-icon/dolphin_1864473?term=dolphin&page=1&position=7&origin=search&related_id=1864473",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/dolphin\" title=\"dolphin icons\">Dolphin icons created by Freepik - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "crab",
+        "source-url": "https://www.flaticon.com/free-icon/crab_1998617?term=crab&page=1&position=36&origin=search&related_id=1998617",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/crab\" title=\"crab icons\">Crab icons created by Flat Icons - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "sunglasses-cat",
+        "source-url": "https://www.flaticon.com/free-icon/cool_3906577?term=cat&page=1&position=64&origin=search&related_id=3906577",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/cool\" title=\"cool icons\">Cool icons created by BZZRINCANTATION - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "ghost",
+        "source-url": "https://www.flaticon.com/free-icon/ghost_5793587?term=ghost&related_id=5793587",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/ghost\" title=\"ghost icons\">Ghost icons created by Freepik - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "clover",
+        "source-url": "https://www.flaticon.com/free-icon/clover_2454318?term=clover&related_id=2454318",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/clover\" title=\"clover icons\">Clover icons created by Freepik - Flaticon</a>",
+        "license": "Flaticon License"
+      },
+      {
+        "alt": "triceratops",
+        "source-url": "https://www.flaticon.com/free-icon/triceratops_8352520?term=triceratops&page=1&position=5&origin=search&related_id=8352520",
+        "attribution-link": "<a href=\"https://www.flaticon.com/free-icons/dinosaur\" title=\"dinosaur icons\">Dinosaur icons created by Freepik - Flaticon</a>",
+        "license": "Flaticon License"
+      }
+    ],
+    "Flaticon License": {
+      "summary": "Free for personal and commercial purpose with attribution",
+      "url": "https://www.flaticon.com",
+      "allowed-usages": [
+        "For commercial and personal projects",
+        "On digital or printed media",
+        "For an unlimited number of times and perpetually",
+        "Anywhere in the world",
+        "To make modifications and derived works"
+      ],
+      "attribute-how": "Copy the link and paste it wherever it's visible, close to where you’re using the resource. If that's not possible, place it at the footer of your website, blog or newsletter, or in the credits section."
+    }
+  },
+  "question:": {
+    "images": [
+      {
+        "id": 1,
+        "url": "https://www.irasutoya.com/2018/10/blog-post_886.html",
+        "alt": "cold-classroom-uniform",
+        "license": "limited free uses based on irasutoya license"
+      },
+      {
+        "id": 2,
+        "url": "https://www.irasutoya.com/2013/11/blog-post_4923.html",
+        "alt": "train-give-out-seat",
+        "license": "limited free uses based on irasutoya license"
+      },
+      {
+        "id": 3,
+        "url": "https://www.irasutoya.com/2018/03/happy-birthday.html",
+        "alt": "birthday",
+        "license": "limited free uses based on irasutoya license"
+      },
+      {
+        "id": 12,
+        "url": "https://www.irasutoya.com/2015/12/blog-post_351.html",
+        "alt": "consultation-with-teacher",
+        "license": "limited free uses based on irasutoya license"
+      }
+
+    ],
+    "irasutoya-license": "https://www.irasutoya.com/p/terms.html"
+  }
+}

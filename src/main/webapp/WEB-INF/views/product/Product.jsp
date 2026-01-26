@@ -403,8 +403,8 @@ function showData(textObj) {
 						xhr.open("POST", "<c:url value='/saveRating' />",true);
 						xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 						xhr.send("p_ID="+p_ID+"&ratedIndex="+ratedIndex+"&commentString="+text);
-						window.location.href="http://localhost:8080/studiehub/takeClass/"+p_ID;
-						
+						window.location.href="<c:url value='/takeClass/' />"+p_ID;
+
 
 					});
 

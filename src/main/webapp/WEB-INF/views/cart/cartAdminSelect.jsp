@@ -94,7 +94,7 @@
 								<h1 id='logo' style="background-color: red"></h1>
 								<hr>
 									
-								<button id="insertBtn" onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/adminInsert'">新增</button>
+								<button id="insertBtn" onclick="location.href='<c:url value="/cart.controller/adminInsert" />'">新增</button>
 								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
@@ -315,6 +315,7 @@
 						rowNum = (cartItems)? cartItems.length : 0;
 						segments = [];
 						for (let i = 0; i < cartItems.length; i++) {
+							const url = '<c:url value="/cart.controller/adminUpdate/" />' + cartItems[i].cart_id;
 							let temp0 =	 "<tr>" + 
 												"<td style='text-align: center; margin : 0;  padding : 0;'><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
 													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + cartItems[i].cart_id + "'></label></td>" +
@@ -322,7 +323,7 @@
 												"<td style='text-align: center;'><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
 												"<td style='text-align: center;'><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +
 												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
-												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].cart_id + "'>修改</a></td>" +
+												"<td style='text-align: center;'><a class='button' href='" + url + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}

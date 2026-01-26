@@ -36,8 +36,8 @@
 					<li><a href="<c:url value='/gotoShowAllUser.controller' />">會員資訊</a></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="/studiehub/queryProduct">所有課程</a></li>
-							<li><a href="/studiehub/findAllProductPending">待審核課程</a></li>
+							<li><a href="<c:url value='/queryProduct' />">所有課程</a></li>
+							<li><a href="<c:url value='/findAllProductPending' />">待審核課程</a></li>
 						</ul>
 					</li>
 

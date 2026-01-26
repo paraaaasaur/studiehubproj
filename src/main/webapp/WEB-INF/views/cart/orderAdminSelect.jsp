@@ -96,7 +96,7 @@
 								<h1 id='logo' style="background-color: red"></h1>
 								<hr>
 									
-								<button id="insertBtn"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
+								<button id="insertBtn"	onclick="location.href='<c:url value="/order.controller/adminInsert" />'">新增</button>
 								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
@@ -340,7 +340,8 @@
 						segments = [];
 						for (let i = 0; i < orders.length; i++) {
 							totalPrice += orders[i].p_price;
-							let temp0 =	 "<tr>" + 
+							const url = '<c:url value="/order.controller/adminUpdate/" />' + orders[i].identity_seed;
+							let temp0 =	 "<tr>" +
 												"<td style='text-align: center; margin : 0;  padding : 0;'><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
 													"type='checkbox' value='" + orders[i].identity_seed + "'><label for='ckbox" + orders[i].identity_seed + "'></label></td>" +
 												"<td style='text-align: center;'><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
@@ -350,7 +351,7 @@
 												"<td style='text-align: center;'><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
 												"<td style='text-align: center;'><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
 												"<td style='text-align: center;'><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
-												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].identity_seed + "'>修改</a></td>" +
+												"<td style='text-align: center;'><a class='button' href='" + url + "'>修改</a></td>" +
 												"</tr>";
 							segments.push(temp0);
 						}

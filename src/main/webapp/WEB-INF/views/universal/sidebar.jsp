@@ -38,8 +38,8 @@
 						</ul></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="/studiehub/queryProductForUser">所有課程</a></li>
-							<li style='display:none' id='loginEvent'><a href="/studiehub/insertProduct">新增課程</a></li>
+							<li><a href="<c:url value='/queryProductForUser' />">所有課程</a></li>
+							<li style='display:none' id='loginEvent'><a href="<c:url value='/insertProduct' />">新增課程</a></li>
 						</ul>
 					</li>
 					<li id="cartHref" hidden><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>

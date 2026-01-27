@@ -1,9 +1,6 @@
 package com.group5.springboot.controller.cart;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group5.springboot.controller.user.UserTestUtils;
-import com.group5.springboot.dao.test.GenericDao;
-import com.group5.springboot.model.user.User_Info;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +12,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -62,5 +57,14 @@ class OrderViewControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("cart/orderAdminSelect"));
+	}
+
+	@Test
+	@DisplayName("GET /order.controller/adminSelect - requires admin")
+	// wrong method name
+	void toCartAdminSelect_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/order.controller/adminSelect"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 }

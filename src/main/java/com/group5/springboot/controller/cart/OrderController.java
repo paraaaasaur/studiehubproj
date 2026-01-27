@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,7 @@ public class OrderController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresAdmin
 	@GetMapping(value = "/order.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
 	public Map<String, Object> adminOrderSelectTop100(){
 		return orderService.selectTop100();
@@ -69,6 +71,7 @@ public class OrderController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresAdmin
 	@PostMapping(value = "/order.controller/adminSearchBar")
 	public Map<String, Object> adminOrderSearchBar(
 			@RequestParam(name = "searchBy") String condition

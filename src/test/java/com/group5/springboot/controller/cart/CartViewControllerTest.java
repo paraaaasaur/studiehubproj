@@ -85,6 +85,14 @@ class CartViewControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /cart.controller/adminInsert - requires admin")
+	void toCartAdminInsert_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/cart.controller/adminInsert"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/adminInsert - success")
 	void cartAdminInsert_success() throws Exception {
 		// 0. admin-login + decide a cart item to add & a user to add for
@@ -105,6 +113,14 @@ class CartViewControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/cart.controller/adminSelect"));
+	}
+
+	@Test
+	@DisplayName("POST /cart.controller/adminInsert - requires admin")
+	void cartAdminInsert_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/adminInsert"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -146,6 +162,14 @@ class CartViewControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /cart.controller/adminUpdate/{cartid} - requires admin")
+	void toCartAdminUpdate_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/cart.controller/adminUpdate/{cartid}", cartItem1.getCart_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/adminUpdate/{cartid} - success")
 	void cartAdminUpdate_success() throws Exception {
 		// 0. admin-login
@@ -170,6 +194,14 @@ class CartViewControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/cart.controller/adminSelect"));
+	}
+
+	@Test
+	@DisplayName("POST /cart.controller/adminUpdate/{cartid} - requires admin")
+	void cartAdminUpdate_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/adminUpdate/{cartid}", cartItem1.getCart_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -214,6 +246,14 @@ class CartViewControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /cart.controller/cartIndex - requires user")
+	void toCartIndex_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/cart.controller/cartIndex"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /cart.controller/adminSelect - success")
 	void toCartAdminSelect_success() throws Exception {
 		// 0. admin-login
@@ -229,6 +269,14 @@ class CartViewControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /cart.controller/adminSelect - requires admin")
+	void toCartAdminSelect_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/cart.controller/adminSelect"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("/cart.controller/clientResultPage - success")
 	void toClientResultPage_success() throws Exception {
 		// 0. login
@@ -241,5 +289,13 @@ class CartViewControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("cart/cartClientResultPage"));
+	}
+
+	@Test
+	@DisplayName("/cart.controller/clientResultPage - requires user")
+	void toClientResultPage_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/cart.controller/clientResultPage"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 }

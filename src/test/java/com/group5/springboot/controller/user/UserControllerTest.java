@@ -80,12 +80,36 @@ class UserControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /gotologin.controller - rejects user")
+	void gotoLoginPage_whenUserLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.loginAs(joshua, mockHttpSession);
+
+
+		mockMvc.perform(get("/gotologin.controller")
+						.session(mockHttpSession))
+
+				.andExpect(forwardedUrl("/"));
+	}
+
+	@Test
 	@DisplayName("GET /gotosignup.controller - success")
 	void gotoSignupPage_success() throws Exception {
 		mockMvc.perform(get("/gotosignup.controller"))
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("user/signup"));
+	}
+
+	@Test
+	@DisplayName("GET /gotosignup.controller - rejects user")
+	void gotoSignupPage_whenUserLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.loginAs(joshua, mockHttpSession);
+
+
+		mockMvc.perform(get("/gotosignup.controller")
+						.session(mockHttpSession))
+
+				.andExpect(forwardedUrl("/"));
 	}
 
 	@Test
@@ -102,7 +126,6 @@ class UserControllerTest {
 				.andExpect(view().name("user/updateUser"));
 	}
 
-	@Disabled("todo@1.0.1: enforce auth policy & finish the same category")
 	@Test
 	@DisplayName("GET /gotoUpdateUserinfo.controller - requires user")
 	void gotoUpdateUserinfo_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
@@ -123,6 +146,14 @@ class UserControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("user/changePassword"));
+	}
+
+	@Test
+	@DisplayName("GET /gotoChangePassword.controller - requires user")
+	void gotoChangePassword_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/gotoChangePassword.controller"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -148,6 +179,18 @@ class UserControllerTest {
 				.andReturn();
 
 		assertNotNull(mvcResult.getRequest().getSession().getAttribute("loginBean"), "session attribute 'loginBean' should exist");
+	}
+
+	@Test
+	@DisplayName("POST /login.controller - rejects user")
+	void login_whenUserLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.loginAs(joshua, mockHttpSession);
+
+
+		mockMvc.perform(post("/login.controller")
+						.session(mockHttpSession))
+
+				.andExpect(status().isForbidden());
 	}
 
 	@Test
@@ -215,6 +258,18 @@ class UserControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /userSignup - rejects user")
+	void signup_whenUserLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.loginAs(joshua, mockHttpSession);
+
+
+		mockMvc.perform(post("/userSignup")
+						.session(mockHttpSession))
+
+				.andExpect(status().isForbidden());
+	}
+
+	@Test
 	@DisplayName("POST /userSignup - id already exists")
 	void signup_whenIdAlreadyExists_thenRequestIsRejected() throws Exception {
 		User_Info newRandomUser = aRandomUser();
@@ -249,6 +304,14 @@ class UserControllerTest {
 				.andExpect(flash().attributeCount(1))
 				.andExpect(flash().attributeExists("successMessageOfChangingPassword"))
 				.andExpect(redirectedUrl("/"));
+	}
+
+	@Test
+	@DisplayName("POST /changePassword.controller - requires user")
+	void changePassword_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/changePassword.controller"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -318,6 +381,14 @@ class UserControllerTest {
 		mockMvc.perform(get(redirectedUrl).session(session))
 				.andExpect(status().isOk())
 				.andExpect(view().name("user/updateUser"));
+	}
+
+	@Test
+	@DisplayName("POST /updateUserinfo.controller - requires user")
+	void updateUser_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/updateUserinfo.controller"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test

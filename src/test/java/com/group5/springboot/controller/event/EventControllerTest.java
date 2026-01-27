@@ -93,6 +93,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /insertEvent - requires user")
+	void insertEvent_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/insertEvent"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /userAllEvent - success")
 	void userAllEvent_success() throws Exception {
 		// 0. login
@@ -108,6 +116,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /userAllEvent - requires user")
+	void userAllEvent_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/userAllEvent"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /adminAllEvent - success")
 	void queryRestaurant_success() throws Exception {
 		// 0. admin-login
@@ -119,6 +135,14 @@ class EventControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("event/adminAllEvent"));
+	}
+
+	@Test
+	@DisplayName("GET /adminAllEvent - requires admin")
+	void queryRestaurant_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/adminAllEvent"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -142,6 +166,14 @@ class EventControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("event/managerAllEvent"));
+	}
+
+	@Test
+	@DisplayName("GET /managerAllEvent - requires admin")
+	void managerAllEvent_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/managerAllEvent"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -173,6 +205,14 @@ class EventControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/userAllEvent"));
+	}
+
+	@Test
+	@DisplayName("POST /insertEvent - requires user")
+	void insertSaveEvent_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/insertEvent"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -223,6 +263,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /updateEvent/{a_aid} - requires user")
+	void sendEditPage_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/updateEvent/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("POST /updateEvent/{a_aid} - success")
 	void updateSaveEvent_success() throws Exception {
 		// 0. login + prepare test data
@@ -255,6 +303,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /updateEvent/{a_aid} - requires user")
+	void updateSaveEvent_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/updateEvent/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /deleteEvent/{a_aid} - success")
 	void deleteEditPage_success() throws Exception {
 		// 0. login
@@ -271,6 +327,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /deleteEvent/{a_aid} - requires user")
+	void deleteEditPage_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/deleteEvent/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /deleteadminEvent/{a_aid} - success")
 	void deleteadminEvent_success() throws Exception {
 		// 0. admin-login
@@ -284,6 +348,14 @@ class EventControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/adminAllEvent"));
+	}
+
+	@Test
+	@DisplayName("GET /deleteadminEvent/{a_aid} - requires admin")
+	void deleteadminEvent_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/deleteadminEvent/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -316,6 +388,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /verification/{a_aid} - requires admin")
+	void verification_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/verification/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /deleteverification/{a_aid} - success")
 	void deleteverification_success() throws Exception {
 		// 0. admin-login
@@ -328,6 +408,14 @@ class EventControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/managerAllEvent"));
+	}
+
+	@Test
+	@DisplayName("GET /deleteverification/{a_aid} - requires admin")
+	void deleteverification_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/deleteverification/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -345,6 +433,14 @@ class EventControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON))
 				.andExpect(jsonPath("$.succes", notNullValue()));
+	}
+
+	@Test
+	@DisplayName("GET /signupclick/{a_aid} - requires user")
+	void signupclick_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/signupclick/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -420,6 +516,14 @@ class EventControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /signupEvent/{a_aid} - requires user")
+	void signupEvent_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/signupEvent/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /deletesignupEvent/{e_id}/{a_id} - success")
 	void cancelEventRegistration_success() throws Exception {
 		// 0. login to sign up event
@@ -436,6 +540,14 @@ class EventControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("signupEvent"))
 				.andExpect(view().name("event/signupEvent"));
+	}
+
+	@Test
+	@DisplayName("GET /deletesignupEvent/{e_id}/{a_id} - requires user")
+	void cancelEventRegistration_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/deletesignupEvent/{e_id}/{a_id}", 0, 0))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 

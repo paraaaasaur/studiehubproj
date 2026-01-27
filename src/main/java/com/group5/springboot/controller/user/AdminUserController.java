@@ -2,6 +2,8 @@ package com.group5.springboot.controller.user;
 
 import java.util.List;
 
+import com.group5.springboot.annotation.auth.RejectsAdmin;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,39 +26,29 @@ public class AdminUserController {
 	
 	
 	//去管理員頁面
+	@RequiresAdmin
 	@GetMapping(path = "/gotoAdminIndex.controller")
-	public String adminIndex(Model model) {
-		String returnPage = "";
-		boolean loginResult = checkIfAdminLoggedIn(model);
-		if(loginResult) {
-			returnPage = "adminIndex";
-		}else {
-			returnPage = "user/adminLogin";
-		}
-		return returnPage;
+	public String adminIndex() {
+		return "adminIndex";
 	}
 	
 	//去管理員登入頁面
+	@RejectsAdmin
 	@GetMapping(path = "/gotoAdminLogin.controller")
 	public String gotoAdminLoginPage() {
 		return "user/adminLogin";
 	}
 	
 	//到查看全部會員資料頁面
+	@RequiresAdmin
 	@GetMapping(path = "/gotoShowAllUser.controller")
-	public String gotoShowAllUser(Model model) {
-		String returnPage = "";
-		boolean loginResult = checkIfAdminLoggedIn(model);
-		if(loginResult) {
-			returnPage = "user/showAllUser";
-		}else {
-			returnPage = "user/adminLogin";
-		}
-		return returnPage;
+	public String gotoShowAllUser() {
+		return "user/showAllUser";
 	}
 	
 	
 	//管理員登入
+	@RejectsAdmin
 	@PostMapping(path = "/AdminLogin.controller")
 	public String adminLogin(@RequestParam(name = "id")String id,
 			@RequestParam(name = "psw")String psw,
@@ -80,6 +72,7 @@ public class AdminUserController {
 	}
 	
 	//管理員登出
+	@RequiresAdmin
 	@GetMapping(path = "/adminLogout.controller")
 	public String adminLogout(Model model, SessionStatus ss){
 		ss.setComplete();
@@ -87,27 +80,11 @@ public class AdminUserController {
 	}
 	
 	//查看全部會員資料
+	@RequiresAdmin
 	@GetMapping(path = "/showAllUser.controller", produces = {"application/json"})
 	@ResponseBody
 	public List<User_Info> gotoFindAllUserPage() {
 		List<User_Info> users = iUserService.showAllUsers();
 		return users;
-	}
-	
-	//檢查管理員是否已登入
-	private boolean checkIfAdminLoggedIn(Model model) {
-		boolean result = false;
-		try {
-			String id = (String)model.getAttribute("adminId");
-			if(id!=null && id.equals("adming5")) {
-				result = true;
-			}else {
-				result = false;
-			}
-		} catch (Exception e) {
-			result = false;
-			System.out.println("有問題，在\'檢查管理者是否登入\'這邊......");
-		}
-		return result;
 	}
 }

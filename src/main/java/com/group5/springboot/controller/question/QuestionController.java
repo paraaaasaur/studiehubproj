@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
 import com.group5.springboot.utils.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,12 +62,14 @@ public class QuestionController {
 	}	
 	
 ////送空白表單
+	@RequiresUser
 	@GetMapping("/question.controller/insertQuestion")
 	public String sendInsertQuestion() {
 		return "question/insertQuestion";
 	}
 	
 ////新增試題
+	@RequiresUser
 	@PostMapping("/question.controller/insertQuestion")
 	public String saveQuestion(@ModelAttribute("Q1") Question_Info question_Info,
 			BindingResult result,
@@ -157,6 +161,7 @@ public class QuestionController {
 	
 	
 ////送出顯示所有試題的表單 //後台
+    @RequiresAdmin
 	@GetMapping("/question.controller/queryQuestion")
 	public String sendQueryQuestion() {
 		return "question/queryQuestion";
@@ -182,6 +187,7 @@ public class QuestionController {
 
 ////修改試題內容	
 	//送該表單
+	@RequiresAdmin
 	@GetMapping("/question.controller/modifyQuestion/{q_id}")
     public String sendEditPage(
     		@PathVariable Long q_id, Model model
@@ -197,6 +203,7 @@ public class QuestionController {
 		return "question/editQuestion";
 	}	
 	//提出表單修改要求
+	@RequiresAdmin
 	@PostMapping("/question.controller/modifyQuestion/{q_id}")
 	public String updateQuestion(@ModelAttribute("Q1") Question_Info question_Info,
 			BindingResult result, 
@@ -307,7 +314,8 @@ public class QuestionController {
 //	}
 
 	
-////刪除單筆試題(by bean)	
+////刪除單筆試題(by bean)
+    @RequiresAdmin
 	@GetMapping("/question.controller/deleteQuestion/{q_id}")
 	public String deleteEditPage(@PathVariable Long q_id, Model model,RedirectAttributes ra) {
 	Question_Info question_Info = questionService.findById(q_id);
@@ -355,17 +363,20 @@ public class QuestionController {
 	}
 	
 ////送往後台審核頁面
+	@RequiresAdmin
 	@GetMapping("/question.controller/intoVerifyQuestion")
 	public String intoVerifyQuestion() {
 		return "question/verifyQuestion";
 	}
 ////回傳待審核資料 (JSON)
+	@RequiresAdmin
 	@GetMapping(value="/question.controller/sendVerifyQuestion", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> sendVerifyQuestion(){
 		return questionService.sendVerifyQuestion();
 	}
 	
-////審核通過，審核欄位N改為Y	
+////審核通過，審核欄位N改為Y
+	@RequiresAdmin
 	@GetMapping("/question.controller/verifyPassQuestion/{q_id}")
 	public String verifyPassQuestion(@PathVariable Long q_id,Model model,RedirectAttributes ra) {
 		Question_Info question_Info = questionService.findById(q_id);
@@ -375,6 +386,7 @@ public class QuestionController {
 		return "redirect:/question.controller/intoVerifyQuestion";
 	}
 ////審核失敗，刪除試題
+	@RequiresAdmin
 	@GetMapping("/question.controller/verifyDeleteQuestion/{q_id}")
 	public String verifydeleteEditPage(@PathVariable Long q_id, Model model,RedirectAttributes ra) {
 	Question_Info question_Info = questionService.findById(q_id);
@@ -383,6 +395,7 @@ public class QuestionController {
 	return "redirect:/question.controller/intoVerifyQuestion";	
 	}
 ////詳細的單筆申請資料
+	@RequiresAdmin
 	@GetMapping("/question.controller/verifyOneQuestion/{q_id}")
     public String verifyOneQuestion(
     		@PathVariable Long q_id, Model model

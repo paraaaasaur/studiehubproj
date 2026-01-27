@@ -72,7 +72,6 @@ class AdminUserControllerTest {
 				.andExpect(view().name("adminIndex"));
 	}
 
-	@Disabled("todo@1.0.1: enforce auth policy & finish the category")
 	@Test
 	@DisplayName("GET /gotoAdminIndex.controller - requires admin")
 	void adminIndex_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
@@ -91,6 +90,18 @@ class AdminUserControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /gotoAdminLogin.controller - rejects admin")
+	void gotoAdminLoginPage_whenAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.adminLoginAsAdming5(mockHttpSession);
+
+
+		mockMvc.perform(get("/gotoAdminLogin.controller")
+						.session(mockHttpSession))
+
+				.andExpect(forwardedUrl("/gotoAdminIndex.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /gotoShowAllUser.controller - success")
 	void gotoShowAllUser_success() throws Exception {
 		// 0. admin-login
@@ -101,6 +112,14 @@ class AdminUserControllerTest {
 					.session(mockHttpSession))
 				.andExpect(status().isOk())
 				.andExpect(view().name("user/showAllUser"));
+	}
+
+	@Test
+	@DisplayName("GET /gotoShowAllUser.controller - requires admin")
+	void gotoShowAllUser_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/gotoShowAllUser.controller"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -132,6 +151,18 @@ class AdminUserControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /AdminLogin.controller - rejects admin")
+	void adminLogin_whenAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.adminLoginAsAdming5(mockHttpSession);
+
+
+		mockMvc.perform(post("/AdminLogin.controller")
+						.session(mockHttpSession))
+
+				.andExpect(forwardedUrl("/gotoAdminIndex.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /adminLogout.controller - success")
 	void adminLogout_success() throws Exception {
 		// 0. admin-login
@@ -148,6 +179,14 @@ class AdminUserControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /adminLogout.controller - requires admin")
+	void adminLogout_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/adminLogout.controller"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /showAllUser.controller - success")
 	void gotoFindAllUserPage_success() throws Exception {
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
@@ -159,5 +198,13 @@ class AdminUserControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON))
 				.andExpect(jsonPath("$[*].u_id", hasItem("joshua")));
+	}
+
+	@Test
+	@DisplayName("GET /showAllUser.controller - requires admin")
+	void gotoFindAllUserPage_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/showAllUser.controller"))
+
+				.andExpect(status().isUnauthorized());
 	}
 }

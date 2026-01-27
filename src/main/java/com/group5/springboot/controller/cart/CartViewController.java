@@ -3,6 +3,8 @@ package com.group5.springboot.controller.cart;
 import java.util.HashMap;
 import java.util.List;
 
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,7 @@ public class CartViewController {
 	
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminInsert"})
 	public String toCartAdminInsert(Model model) {
 		model.addAttribute("emptyCartItem", new CartItem());
@@ -36,6 +39,7 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresAdmin
 	@PostMapping(value = {"/cart.controller/adminInsert"})
 	public String cartAdminInsert(@ModelAttribute("emptyCartInfo") CartItem cartItem,
 			BindingResult result, 
@@ -54,6 +58,7 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
 	public String toCartAdminUpdate(@PathVariable("cartid") Integer cartid, Model model) {
 		model.addAttribute("cartItem", cartItemService.select(cartid).get("cartItem"));
@@ -62,6 +67,7 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresAdmin
 	@PostMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
 	public String cartAdminUpdate(@ModelAttribute(name = "cartItem") CartItem cartItem,
 			BindingResult result, 
@@ -82,18 +88,21 @@ public class CartViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresUser
 	@GetMapping(value = {"/cart.controller/cartIndex"})
 	public String toCartIndex() {
 		return "cart/cartIndex";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminSelect"})
 	public String toCartAdminSelect() {
 		return "cart/cartAdminSelect";
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresUser
 	@GetMapping(value = "/cart.controller/clientResultPage")
 	public String toClientResultPage() {
 		return "cart/cartClientResultPage";

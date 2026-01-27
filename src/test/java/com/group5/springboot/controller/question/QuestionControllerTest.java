@@ -101,6 +101,14 @@ class QuestionControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /question.controller/insertQuestion - requires user")
+	void sendInsertQuestion_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/insertQuestion"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("POST /question.controller/insertQuestion - success")
 	void saveQuestion_success() throws Exception {
 		userTestUtils.loginAs(nick, mockHttpSession);
@@ -124,6 +132,14 @@ class QuestionControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attribute("successMessage", notNullValue()))
 				.andExpect(redirectedUrl("/question.controller/guestQueryQuestion"));
+	}
+
+	@Test
+	@DisplayName("POST /question.controller/insertQuestion - requires user")
+	void saveQuestion_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/question.controller/insertQuestion"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -186,6 +202,14 @@ class QuestionControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /question.controller/queryQuestion - requires admin")
+	void sendQueryQuestion_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/queryQuestion"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /question.controller/findAllQuestions")
 	void findAllQuestions() throws Exception {
 		mockMvc.perform(get("/question.controller/findAllQuestions"))
@@ -231,6 +255,14 @@ class QuestionControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /question.controller/modifyQuestion/{q_id} - requires admin")
+	void sendEditPage_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/modifyQuestion/{q_id}", question1Approved.getQ_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("POST /question.controller/modifyQuestion/{q_id} - success")
 	void updateQuestion_success() throws Exception {
 		// 0. admin-login
@@ -256,6 +288,14 @@ class QuestionControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/question.controller/queryQuestion"));
+	}
+
+	@Test
+	@DisplayName("POST /question.controller/modifyQuestion/{q_id} - requires admin")
+	void updateQuestion_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/question.controller/modifyQuestion/{q_id}", question1Approved.getQ_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -303,6 +343,14 @@ class QuestionControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /question.controller/deleteQuestion/{q_id} - requires admin")
+	void deleteEditPage_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/deleteQuestion/{q_id}", question1Approved.getQ_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /question.controller/sendRandomMixExam")
 	void sendRandomMixExam() throws Exception {
 		// 0. prepare test data
@@ -345,6 +393,14 @@ class QuestionControllerTest {
 				.andExpect(view().name("question/verifyQuestion"));
 	}
 
+	@Test
+	@DisplayName("GET /question.controller/intoVerifyQuestion - requires admin")
+	void intoVerifyQuestion_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/intoVerifyQuestion"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
 	@Test // returns JSON of questions where verification = 'N'
 	@DisplayName("GET /question.controller/sendVerifyQuestion - success")
 	void sendVerifyQuestion_success() throws Exception {
@@ -366,6 +422,14 @@ class QuestionControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /question.controller/sendVerifyQuestion - requires admin")
+	void sendVerifyQuestion_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/sendVerifyQuestion"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("GET /question.controller/verifyPassQuestion/{q_id} - success")
 	void verifyPassQuestion_success() throws Exception {
 		// 0. admin-login
@@ -383,6 +447,14 @@ class QuestionControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /question.controller/verifyPassQuestion/{q_id} - requires admin")
+	void verifyPassQuestion_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/verifyPassQuestion/{q_id}", question2.getQ_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /question.controller/verifyDeleteQuestion/{q_id} - success")
 	void verifydeleteEditPage_success() throws Exception {
 		// 0. admin-login
@@ -396,6 +468,14 @@ class QuestionControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/question.controller/intoVerifyQuestion"));
+	}
+
+	@Test
+	@DisplayName("GET /question.controller/verifyDeleteQuestion/{q_id} - requires admin")
+	void verifydeleteEditPage_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/verifyDeleteQuestion/{q_id}", question2.getQ_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -416,5 +496,13 @@ class QuestionControllerTest {
 
 		Question_Info q1 = (Question_Info) mvcResult.getModelAndView().getModel().get("Q1");
 		assertEquals(q_id, q1.getQ_id());
+	}
+
+	@Test
+	@DisplayName("GET /question.controller/verifyOneQuestion/{q_id} - requires admin")
+	void verifyOneQuestion_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/question.controller/verifyOneQuestion/{q_id}", question2.getQ_id()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 }

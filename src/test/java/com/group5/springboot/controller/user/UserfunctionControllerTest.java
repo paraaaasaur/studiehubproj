@@ -72,16 +72,14 @@ class UserfunctionControllerTest {
 				.andExpect(view().name("user/forgetPassword"));
 	}
 
-	@Disabled("todo@1.0.1: enforce auth policy & finish the same category")
 	@Test
 	@DisplayName("GET /gotoForgetPassword.controller - rejects user")
 	void gotoForgetPassword_whenUserLoggedIn_ThenDeniesAccess() throws Exception {
-		// 0. login
 		userTestUtils.loginAs(joshua, mockHttpSession);
 
 
-		// 1. main
-		mockMvc.perform(get("/gotoForgetPassword.controller"))
+		mockMvc.perform(get("/gotoForgetPassword.controller")
+						.session(mockHttpSession))
 
 				.andExpect(forwardedUrl("/"));
 	}
@@ -104,7 +102,6 @@ class UserfunctionControllerTest {
 		assertNull(mockHttpSession.getAttribute("loginBean"));
 	}
 
-	@Disabled("todo@1.0.1: enforce auth policy & finish the same category")
 	@Test
 	@DisplayName("GET /logout.controller - requires user")
 	void logout_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
@@ -129,6 +126,18 @@ class UserfunctionControllerTest {
 				.andExpect(jsonPath("$.success").exists());
 
 		verify(mockEmailSenderService, times(1)).sendSimpleEmail(any(), any(), any());
+	}
+
+	@Test
+	@DisplayName("POST /sendRandomPasswordToRegisteredEmail.controller - rejects user")
+	void resetPasswordAndSendEmail_whenUserLoggedIn_thenAccessIsDenied() throws Exception {
+		userTestUtils.loginAs(joshua, mockHttpSession);
+
+
+		mockMvc.perform(post("/sendRandomPasswordToRegisteredEmail.controller")
+						.session(mockHttpSession))
+
+				.andExpect(status().isForbidden());
 	}
 
 	@Test

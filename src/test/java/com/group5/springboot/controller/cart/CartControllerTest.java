@@ -106,6 +106,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/clientShowCart - requires user")
+	void clientShowCart_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/clientShowCart"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/clientRemoveProductFromCartByCartId - success")
 	void clientRemoveProductFromCartByCartId_success() throws Exception {
 		// 0. login
@@ -126,6 +134,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/clientRemoveProductFromCartByCartId - requires user")
+	void clientRemoveProductFromCartByCartId_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/clientRemoveProductFromCartByCartId"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/clientAddProductToCart (toDo=buy) - success")
 	void clientAddProductToCart_toDoEqualsBuy_success() throws Exception {
 		// 0. login
@@ -142,6 +158,14 @@ class CartControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", is(true)));
+	}
+
+	@Test
+	@DisplayName("POST /cart.controller/clientAddProductToCart (toDo=buy) - requires user")
+	void clientAddProductToCart_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/clientAddProductToCart"))
+
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -200,6 +224,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/clientInitializeProductBtnFunc - requires user")
+	void clientInitializeProductBtnFunc_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/clientInitializeProductBtnFunc"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/clientInitializeProductBtnFunc - alreadyInCart")
 	void clientInitializeProductBtnFunc_alreadyInCart() throws Exception {
 		// 0. login
@@ -255,6 +287,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /cart.controller/adminSelectTop100 - requires admin")
+	void adminCartSelectTop100_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/cart.controller/adminSelectTop100"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/adminSelectProduct - success")
 	void adminCartSelectProduct_success() throws Exception {
 		// 0. admin-login
@@ -272,6 +312,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/adminSelectProduct - requires admin")
+	void adminCartSelectProduct_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/adminSelectProduct"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/adminSelectUser - success")
 	void adminCartSelectUser_success() throws Exception {
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
@@ -284,6 +332,14 @@ class CartControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON))
 				.andExpect(jsonPath("$.u_id", is(tajenwww.getU_id())));
+	}
+
+	@Test
+	@DisplayName("POST /cart.controller/adminSelectUser - requires admin")
+	void adminCartSelectUser_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/adminSelectUser"))
+
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -370,6 +426,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/adminSearchBar - requires admin")
+	void adminCartSearchBar_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/adminSearchBar"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/adminSearchBar - invalid search condition")
 	void adminCartSearchBar_whenInvalidSearchCondition_thenRequestIsRejected() throws Exception {
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
@@ -400,6 +464,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/deleteAdmin - requires admin")
+	void adminCartDelete_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/deleteAdmin"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/checkout (To ECPay page) - success")
 	void payViaEcpay_success() throws Exception {
 		userTestUtils.loginAs(tajenwww, mockHttpSession);
@@ -417,6 +489,14 @@ class CartControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /cart.controller/checkout (To ECPay page) - requires user")
+	void payViaEcpay_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/checkout"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /cart.controller/getEcpayResultAttr - success")
 	// test purpose: only to prove the endpoint exists.
 	// asserts nothing: poor design using in-memory json storage instead of
@@ -429,5 +509,13 @@ class CartControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("POST /cart.controller/getEcpayResultAttr - requires user")
+	void getEcpayResultAttr_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/cart.controller/getEcpayResultAttr"))
+
+				.andExpect(status().isUnauthorized());
 	}
 }

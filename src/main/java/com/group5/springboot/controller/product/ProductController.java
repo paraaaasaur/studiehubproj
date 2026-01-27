@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -74,7 +76,8 @@ public class ProductController {
 		model.addAttribute("product", product);
 		return "product/Product";
 	}
-	
+
+	@RequiresAdmin
 	@GetMapping("/updateProduct/{p_ID}")
 	public String updateProduct(@PathVariable Integer p_ID,Model model) {
 		ProductInfo productInfo = productService.findByProductID(p_ID);
@@ -82,20 +85,23 @@ public class ProductController {
 		model.addAttribute("productInfo",productInfo);
 		return "product/editProduct";
 	}
-	
+
 	@GetMapping("/queryProductForUser")
 	public String queryProductForUser() {
 		return "product/showProductToUser";
 	}
-	
+
+	@RequiresAdmin
 	@GetMapping("/queryProduct")
 	public String sendQueryProduct() {
 		return "product/showProduct";
 	}
+	@RequiresAdmin
 	@GetMapping("/findAllProductPending")
 	public String findAllProductPending() {
 		return "product/pendingAccess";
 	}
+	@RequiresAdmin
 	@GetMapping("/accessResult/{p_ID}")
 	public String accessResult(@PathVariable Integer p_ID,Model model) {
 		ProductInfo productInfo = productService.findByProductID(p_ID);
@@ -103,11 +109,13 @@ public class ProductController {
 		productService.update(productInfo);
 		return "product/pendingAccess";
 	}
-	
+
+	@RequiresUser
 	@GetMapping("insertProduct")
 	public String addProduct() {
 		return "product/insertProduct";
 	}
+	@RequiresAdmin
 	@PostMapping("/updateProduct/{p_ID}")
 	public String updateProduct(@RequestParam String descString,
 								@ModelAttribute("productInfo") ProductInfo productInfo,
@@ -173,6 +181,7 @@ public class ProductController {
 		return "redirect:/queryProduct";
 	}
 
+	@RequiresUser
 	@PostMapping("insertProduct")
 	public String saveProduct(@RequestParam String u_ID ,@RequestParam String descString, @ModelAttribute("productInfo")ProductInfo productInfo,BindingResult result,RedirectAttributes ra) {
 		prodcutValidator.validate(productInfo, result);
@@ -225,7 +234,8 @@ public class ProductController {
 		
 		return "redirect:/queryProductForUser";
 	}
-	
+
+	@RequiresAdmin
 	@GetMapping("/deleteProduct/{p_ID}")
 	public String deleteProduct(@PathVariable("p_ID") Integer p_ID) {
 		

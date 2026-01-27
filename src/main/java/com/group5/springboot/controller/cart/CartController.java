@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,7 @@ public class CartController {
 	private OrderService orderService;
 	
 	/***************************************************************************** */
+	@RequiresUser
 	@PostMapping(value="/cart.controller/clientShowCart")
 	public List<Map<String, Object>> clientShowCart(@RequestParam String u_id) {
 		List<Map<String, Object>> cart = cartItemService.getCart(u_id);
@@ -58,6 +61,7 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientRemoveProductFromCartByCartId", produces = "application/json; charset=UTF-8")
 	public List<Map<String, Object>> clientRemoveProductFromCartByCartId(@RequestParam Integer[] cart_ids, @RequestParam String u_id) {
 		Arrays.asList(cart_ids).forEach(cartItemService::deleteASingleProduct);
@@ -65,6 +69,7 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientAddProductToCart")
 	public Boolean clientAddProductToCart(
 			@RequestParam Integer p_ID
@@ -83,6 +88,7 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientInitializeProductBtnFunc")
 	public Integer clientInitializeProductBtnFunc(
 			@RequestParam Integer p_ID
@@ -102,24 +108,28 @@ public class CartController {
 	}
 
 	/***************************************************************************** */
+	@RequiresAdmin
 	@GetMapping(value = "/cart.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
 	public Map<String, Object> adminCartSelectTop100(){
 		return cartItemService.selectTop100();
 	}
 	
 	/***************************************************************************** */
+	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSelectProduct")
 	public ProductInfo adminCartSelectProduct(@RequestParam("p_id") String p_id) {
 		return productService.findByProductID(Integer.parseInt(p_id));
 	}
 	
 	/***************************************************************************** */
+	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSelectUser")
 	public User_Info adminCartSelectUser(@RequestParam("u_id") String u_id) {
 		return userService.getSingleUser(u_id);
 	}
 	
 	/***************************************************************************** */
+	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSearchBar")
 	public Map<String, Object> adminCartSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
 		try {
@@ -175,6 +185,7 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/deleteAdmin")
 	public Map<String, String> adminCartDelete(@RequestParam Integer[] cart_ids) {
 		cartItemService.delete(cart_ids);
@@ -184,6 +195,7 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
+	@RequiresUser
 	@PostMapping("/cart.controller/checkout")
 	public String payViaEcpay(
 			@RequestParam("u_id") String u_id,
@@ -204,6 +216,7 @@ public class CartController {
 		return htmlForm;
 	}
 
+	@RequiresUser
 	@PostMapping("/cart.controller/getEcpayResultAttr")
 	public ECPayPaymentResult getEcpayResultAttr() {
 		var body = (ECPayPaymentResult) CartViewController.cartInfoMap.get("ecpayResultAttr");

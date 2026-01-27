@@ -102,6 +102,14 @@ class EventJsonControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /EventfindAll - requires admin")
+	void eventfindAll_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/EventfindAll"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("GET /queryEventByName - success")
 	void queryByName_success() throws Exception {
 		// 0, admin-login
@@ -119,6 +127,14 @@ class EventJsonControllerTest {
 				.andExpect(jsonPath("$.list[0].a_aid", is(event1Approved.getA_aid().intValue())))
 				.andExpect(jsonPath("$.list[0].a_aid", not(event2.getA_aid().intValue())))
 				.andExpect(jsonPath("$.list[0].a_aid", not(event3.getA_aid().intValue())));
+	}
+
+	@Test
+	@DisplayName("GET /queryEventByName - requires admin")
+	void queryByName_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/queryEventByName"))
+
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -152,6 +168,14 @@ class EventJsonControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /Eventfindbyuid - requires user")
+	void eventfindbyuid_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/Eventfindbyuid"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("GET /signupEventjson/{a_aid} - success")
 	void signupEventjson_success() throws Exception {
 		// 0. random users login to sign up the test event!
@@ -175,5 +199,13 @@ class EventJsonControllerTest {
 				.andExpect(jsonPath("$[*].e_id", hasItem(applicants[1].getU_id())))
 				.andExpect(jsonPath("$[*].e_id", hasItem(applicants[2].getU_id())))
 				.andExpect(jsonPath("$[*].e_id", hasItem(applicants[3].getU_id())));
+	}
+
+	@Test
+	@DisplayName("GET /signupEventjson/{a_aid} - requires user")
+	void signupEventjson_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/signupEventjson/{a_aid}", event1Approved.getA_aid()))
+
+				.andExpect(status().isUnauthorized());
 	}
 }

@@ -4,6 +4,7 @@ import java.util.*;
 
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -100,6 +101,7 @@ public class OrderViewController {
 	}
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	@RequiresAdmin
 	@GetMapping(value = {"/order.controller/adminSelect"})
 	public String toCartAdminSelect() {
 		return "cart/orderAdminSelect";

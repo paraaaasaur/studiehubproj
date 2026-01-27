@@ -108,6 +108,14 @@ class ChatControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /goSelectAllChatAdmin - requires admin")
+	void goSelectAllChatAdmin_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/goSelectAllChatAdmin"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /goSelectOneChat/{c_ID}")
 	void goSelectOneChat() throws Exception {
 		final int c_ID = chatInfo1.getC_ID();
@@ -133,6 +141,14 @@ class ChatControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /goInsertChat - requires user")
+	void gotoInsertChat_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/goInsertChat"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /goDeleteChatAdmin/{c_ID} - success")
 	void goDeleteChatAdmin_success() throws Exception {
 		// 0. admin-login
@@ -149,6 +165,14 @@ class ChatControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /goDeleteChatAdmin/{c_ID} - requires admin")
+	void goDeleteChatAdmin_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/goDeleteChatAdmin/{c_ID}", chatInfo1.getC_ID()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /goUpdateChat/{c_ID} - success")
 	void updateChat_success() throws Exception {
 		// 0. login
@@ -162,6 +186,14 @@ class ChatControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("chatReply", notNullValue(Chat_Reply.class)))
 				.andExpect(view().name("chat/updateChatReply"));
+	}
+
+	@Test
+	@DisplayName("GET /goUpdateChat/{c_ID} - requires user")
+	void updateChat_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/goUpdateChat/{c_ID}", chatInfo1Redundancy.getC_ID()))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -203,6 +235,14 @@ class ChatControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /selectAllChatAdmin - requires admin")
+	void findAllChatAdmin_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/selectAllChatAdmin"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("GET /selectOneChat/{c_ID}")
 	void findOneChat() throws Exception {
 		final int c_ID = chatInfo1.getC_ID();
@@ -240,6 +280,14 @@ class ChatControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /insertChat - requires user")
+	void InsertChat_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/insertChat"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /insertChatReply - success")
 	void InsertChatReply_success() throws Exception {
 		// 0. login + prepare reply data
@@ -264,6 +312,14 @@ class ChatControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /insertChatReply - requires user")
+	void InsertChatReply_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/insertChatReply"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("DELETE /deleteChatAdmin/{c_ID} - success")
 	void deleteChatAdmin_success() throws Exception {
 		// 0. admin-login + prepare thread to delete
@@ -278,6 +334,14 @@ class ChatControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON))
 				.andExpect(jsonPath("$.success", notNullValue(String.class)));
+	}
+
+	@Test
+	@DisplayName("DELETE /deleteChatAdmin/{c_ID} - requires admin")
+	void deleteChatAdmin_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(delete("/deleteChatAdmin/{c_ID}", chatInfo1.getC_ID()))
+
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -299,6 +363,14 @@ class ChatControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
 				.andExpect(redirectedUrl("/goSelectOneChat/" + chatInfo1Redundancy.getC_IDr()));
+	}
+
+	@Test
+	@DisplayName("POST /goUpdateChat/{c_ID} - requires user")
+	void updateChatReply_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/goUpdateChat/{c_ID}", chatInfo1Redundancy.getC_ID()))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test

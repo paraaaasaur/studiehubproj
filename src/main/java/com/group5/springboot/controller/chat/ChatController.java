@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.annotation.dev.RenameSuggestion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ import com.group5.springboot.validate.ChatValidator;
 @Controller
 @SessionAttributes(names = {"loginBean","adminBean"})
 public class ChatController {
-	
+
 	@Autowired
 	ChatService chatService;
 	@Autowired
@@ -53,26 +55,23 @@ public class ChatController {
 	public String goSelectAllChat(){
 		return "chat/selectAllChat";
 	}
-	
+
+	@RequiresAdmin
 	@GetMapping("/goSelectAllChatAdmin")
 	public String goSelectAllChatAdmin(){
 		return "chat/selectAllChatAdmin";
 	}
-	
+
 	@GetMapping("/goSelectOneChat/{c_ID}")
 	public String goSelectOneChat(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
 		return "chat/selectOneChat";
 	}
 
+	@RequiresUser
 	@GetMapping("/goInsertChat")
-	public String insertChat(Model model){
-		boolean loginResult = uc.checkIfLogin(model);
-		if (loginResult) {
-			return "chat/insertChat";
-		}else {
-			return "user/login";
-		}
+	public String insertChat(){
+		return "chat/insertChat";
 	}
 
 	@Deprecated
@@ -89,13 +88,15 @@ public class ChatController {
 		model.addAttribute("c_ID", c_ID);
 		return "chat/DeleteChat";
 	}
-	
+
+	@RequiresAdmin
 	@GetMapping("/goDeleteChatAdmin/{c_ID}")
 	public String goDeleteChatAdmin(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
 		return "chat/deleteChatAdmin";
 	}
-	
+
+	@RequiresUser
 	@GetMapping("/goUpdateChat/{c_ID}")
 	@RenameSuggestion("gotoTopPostUpdate")
 	public String updateChat(@PathVariable int c_ID, Model model){
@@ -103,7 +104,7 @@ public class ChatController {
 		model.addAttribute("chatReply", chat_Reply);
 		return "chat/updateChatReply";
 	}
-	
+
 	@GetMapping("/selectSingleChat/{c_ID}")
 	@ResponseBody
 	@RenameSuggestion("findTopPost")
@@ -121,7 +122,7 @@ public class ChatController {
 		Chat_Reply chat_Reply = chatService.selectChatReplyById(c_ID);
 		return chat_Reply;
 	}
-	
+
 	@GetMapping(path = "/selectAllChat", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("findAllTopPosts")
@@ -129,7 +130,8 @@ public class ChatController {
 		List<Chat_Info> chat_Info = chatService.findAllChat();
 		return chat_Info;
 	}
-	
+
+	@RequiresAdmin
 	@GetMapping(path = "/selectAllChatAdmin", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("findAllTopPostsAdmin")
@@ -137,7 +139,7 @@ public class ChatController {
 		List<Chat_Info> chat_Info = chatService.findAllChat();
 		return chat_Info;
 	}
-	
+
 	@GetMapping(path = "/selectOneChat/{c_ID}", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("findThread")
@@ -145,7 +147,8 @@ public class ChatController {
 		List<Chat_Reply> chat_Reply = chatService.findAllChatReply(c_ID);
 		return chat_Reply;
 	}
-	
+
+	@RequiresUser
 	@PostMapping(path = "/insertChat", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("insertTopPost")
@@ -163,7 +166,8 @@ public class ChatController {
 		}
 		return map;
 	}
-	
+
+	@RequiresUser
 	@PostMapping(path = "/insertChatReply", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("insertReply")
@@ -212,6 +216,7 @@ public class ChatController {
 		return map;
 	}
 
+	@RequiresAdmin
 	@DeleteMapping("/deleteChatAdmin/{c_ID}")
 	@ResponseBody
 	@RenameSuggestion("deleteThreadAdmin")
@@ -227,8 +232,9 @@ public class ChatController {
 		}
 		return map;
 	}
-		
+
 	//技術上：修改討論回覆及討論文章；用意：修改文章
+	@RequiresUser
 	@PostMapping("/goUpdateChat/{c_ID}")
 	@RenameSuggestion("updateTopPost")
 	public String updateChatReply(@ModelAttribute("chatReply") Chat_Reply chat_Reply, BindingResult result, RedirectAttributes ra){

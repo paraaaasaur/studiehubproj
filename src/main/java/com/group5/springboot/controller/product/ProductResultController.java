@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.annotation.auth.RequiresAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class ProductResultController {
 		
 		return productService.findAll();
 	}
+	@RequiresAdmin
 	@GetMapping(value="/findAllProductPendingAccess", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> findAllProductPendingAccess(){
 		return productService.pendingAccess();

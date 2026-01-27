@@ -99,8 +99,16 @@ class ProductResultControllerTest {
 	}
 
 	@Test
-	@DisplayName("GET /queryByProductName")
+	@DisplayName("GET /findAllProductPendingAccess - requires admin")
+	void findAllProductPendingAccess_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/findAllProductPendingAccess"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
 	@Disabled("reactivate after fixes on resource leakage(1.0.1) and wrong query(1.0.2)")
+	@Test
+	@DisplayName("GET /queryByProductName")
 	void queryByName() throws Exception {
 		String pname = product1Approved.getP_Name().substring(1);
 		String producttypename = product1Approved.getP_Class();

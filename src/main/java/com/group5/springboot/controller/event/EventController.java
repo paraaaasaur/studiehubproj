@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
 import com.group5.springboot.utils.ResourceLocationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +75,7 @@ public class EventController {
 	}
 
 	// 從老師網頁跳到新增活動頁面
+	@RequiresUser
 	@GetMapping("/insertEvent")
 	public String insertEvent(Model model) {
 		// 縫縫表單已有 EventInfo物件
@@ -87,11 +90,13 @@ public class EventController {
 	}
 
 	// 個人搜尋全部活動
+	@RequiresUser
 	@GetMapping("/userAllEvent")
 	public String userAllEvent() {
 		return "event/userAllEvent";
 	}
 	// 管理者搜尋全部活動
+		@RequiresAdmin
 		@GetMapping("/adminAllEvent")
 		public String queryRestaurant() {
 			return "event/adminAllEvent";
@@ -102,6 +107,7 @@ public class EventController {
 		return "event/eventindex";
 	}
 	//搜尋全部需要驗證的畫面
+	@RequiresAdmin
 	@GetMapping("/managerAllEvent")
 	public String managerAllEvent() {
 		return "event/managerAllEvent";
@@ -109,6 +115,7 @@ public class EventController {
 	
 
 	// 新增表單送出
+	@RequiresUser
 	@PostMapping("/insertEvent")
 	public String insertSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo,
 			                      BindingResult result,
@@ -215,6 +222,7 @@ public class EventController {
 
 	// 修改表單
 	// 搜尋全部網頁 把a_aid帶到網頁參數上 再用每一筆的a_aid 拉出資料 放在Model裡 讓縫縫表單讀值
+	@RequiresUser
 	@GetMapping("/updateEvent/{a_aid}")
 	public String SendEditPage(@PathVariable Long a_aid, Model model) {
 		EventInfo eventinfo = EventService.findByid(a_aid);
@@ -223,6 +231,7 @@ public class EventController {
 	}
 
 	// 修改表單送出
+	@RequiresUser
 	@PostMapping("/updateEvent/{a_aid}")
 	public String updateSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo,BindingResult result, RedirectAttributes ra,  @SessionAttribute(value = "loginBean")  User_Info user_info) {
 
@@ -307,6 +316,7 @@ public class EventController {
 		return "redirect:/userAllEvent";
 	}
 	//使用者刪除
+	@RequiresUser
 	@GetMapping("/deleteEvent/{a_aid}")
 	public String deleteEditPage(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
 		EventInfo eventinfo = EventService.findByid(a_aid);
@@ -316,6 +326,7 @@ public class EventController {
 		
 		}
 	//管理者刪除
+		@RequiresAdmin
 		@GetMapping("/deleteadminEvent/{a_aid}")
 		public String deleteadminEvent(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
 			EventInfo eventinfo = EventService.findByid(a_aid);
@@ -338,6 +349,7 @@ public class EventController {
 		}
 	
 	//改變驗證
+	@RequiresAdmin
 	@GetMapping("/verification/{a_aid}")
 	public String verification(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
 		EventInfo eventinfo = EventService.findByid(a_aid);
@@ -346,7 +358,8 @@ public class EventController {
 		ra.addFlashAttribute("successMessage",eventinfo.getA_name() + "發布成功");
 		return "redirect:/managerAllEvent";	
 		}
-	//驗證失敗後刪除 
+	//驗證失敗後刪除
+		@RequiresAdmin
 		@GetMapping("/deleteverification/{a_aid}")
 		public String deleteverification(@PathVariable Long a_aid, Model model,RedirectAttributes ra) {
 			EventInfo eventinfo = EventService.findByid(a_aid);
@@ -358,6 +371,7 @@ public class EventController {
 	
 	
     //當活動內容頁按下我要報名後執行
+	@RequiresUser
 	@GetMapping("/signupclick/{a_aid}")
 	public @ResponseBody  Map<String , String> signupclick(@PathVariable Long a_aid, Model model,
 			                  @SessionAttribute(value = "loginBean")  User_Info user_info) {
@@ -419,6 +433,7 @@ public class EventController {
 	
 	
 	//查詢報名表
+	@RequiresUser
 	@GetMapping("/signupEvent/{a_aid}")
 	public String signupEvent(@PathVariable Long a_aid, Model model) {
 		
@@ -434,6 +449,7 @@ public class EventController {
 		return "event/signupEvent";	
 	}
 	//執行報名表單刪除 刪除完 再把值放到model 讓signupEvent.jsp 讀值
+	@RequiresUser
 	@GetMapping("/deletesignupEvent/{e_id}/{a_id}")
 	public String signupEvent(@PathVariable Long e_id,
 			                  @PathVariable Long a_id,

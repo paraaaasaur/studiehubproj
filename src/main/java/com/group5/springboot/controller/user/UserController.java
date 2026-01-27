@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
+import com.group5.springboot.annotation.auth.RejectsUser;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,20 +68,15 @@ public class UserController {
 	}
 	
 	//到登入頁面
+	@RejectsUser
 	@GetMapping(path = "/gotologin.controller")
-	public String gotoLoginPage(Model model) {
-		String returnPage = "";
-		boolean loginResult = checkIfLogin(model);
-		if (loginResult) {
-			returnPage = "index";
-		}else {
-			returnPage = "user/login";
-		}
-		return returnPage;
+	public String gotoLoginPage() {
+		return "user/login";
 	}
 	
 	
 	//到註冊頁面
+	@RejectsUser
 	@GetMapping(path = "/gotosignup.controller")
 	public String gotoSignupPage() {
 		return "user/signup";
@@ -95,30 +92,18 @@ public class UserController {
 	}
 	
 	//到修改會員資料頁面
+	@RequiresUser
 	@GetMapping(path = "/gotoUpdateUserinfo.controller")
-	public String gotoUpdateUserinfo(Model model) {
-		String returnPage = "";
-		boolean loginResult = checkIfLogin(model);
-		if (loginResult) {
-			returnPage = "user/updateUser";
-		}else {
-			returnPage = "user/login";
-		}
-		return returnPage;
+	public String gotoUpdateUserinfo() {
+		return "user/updateUser";
 	}
 	
 	
 	//到修改會員密碼頁面
+	@RequiresUser
 	@GetMapping(path = "/gotoChangePassword.controller")
-	public String gotoChangePassword(Model model) {
-		String returnPage = "";
-		boolean loginResult = checkIfLogin(model);
-		if (loginResult) {
-			returnPage = "user/changePassword";
-		}else {
-			returnPage = "user/login";
-		}
-		return returnPage;
+	public String gotoChangePassword() {
+		return "user/changePassword";
 	}
 	
 	
@@ -133,6 +118,7 @@ public class UserController {
 	
 	
 	//登入
+	@RejectsUser
 	@PostMapping(path = "/login.controller", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, Object> login(@RequestBody User_Info user_Info, Model model){
@@ -170,6 +156,7 @@ public class UserController {
 	}
 	
 	//會員註冊
+	@RejectsUser
 	@PostMapping(path = "/userSignup", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> signup(@RequestBody User_Info user_Info){
@@ -227,6 +214,7 @@ public class UserController {
 	
 	
 	//修改密碼
+	@RequiresUser
 	@PostMapping("/changePassword.controller")
 	public String changePassword(@ModelAttribute("userBean") User_Info user_Info,
 			RedirectAttributes ra,
@@ -248,6 +236,7 @@ public class UserController {
 
 	
 	//修改會員資料
+	@RequiresUser
 	@PostMapping("/updateUserinfo.controller")
 	public String updateUser(@ModelAttribute("userBean") User_Info user_Info,
 			BindingResult bindingResult,
@@ -294,27 +283,8 @@ public class UserController {
 		ra.addFlashAttribute("successMessage", "修改成功");	//暫時沒做秀出成功訊息
 		return "redirect:/gotoUpdateUserinfo.controller";
 	}
-	
-	
-	
-	//查看是否登入
-	public boolean checkIfLogin(Model model) {
-		boolean result = false;
-		try {
-			User_Info userBean = (User_Info)model.getAttribute("loginBean");
-			if(userBean!=null && userBean.getU_id()!=null && userBean.getU_id().length()>0) {
-				System.out.println("在\'確認是否登入\'這邊的loginBean name: " + userBean.getU_firstname() + userBean.getU_lastname());
-				result = true;
-			}else {
-				result = false;
-			}
-		} catch (Exception e) {
-			result = false;
-			System.out.println("有問題喔，在\'確認是否登入\'這邊......");
-		}
-		return result;
-	}
-	
+
+
 	
 	//更新sessionAttribute裡的bean資料
 	public void updateLoginBean(Model model, SessionStatus status) {

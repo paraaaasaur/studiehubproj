@@ -3,6 +3,8 @@ package com.group5.springboot.controller.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.group5.springboot.annotation.auth.RejectsUser;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,12 +35,14 @@ public class UserfunctionController {
 	
 
 	//到忘記密碼頁面
+	@RejectsUser
 	@GetMapping(path = "/gotoForgetPassword.controller")
 	public String gotoForgetPassword() {
 		return "user/forgetPassword";
 	}
 
 	//登出
+	@RequiresUser
 	@GetMapping(path = "/logout.controller", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> logout(Model model, SessionStatus ss){
@@ -59,6 +63,7 @@ public class UserfunctionController {
 	}
 	
 	//送隨機密碼至信箱(忘記密碼)
+	@RejectsUser
 	@PostMapping(path = "/sendRandomPasswordToRegisteredEmail.controller", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> resetPasswordAndSendEmail(@RequestBody User_Info userInfo) {

@@ -3,6 +3,8 @@ package com.group5.springboot.controller.event;
 import java.util.List;
 import java.util.Map;
 
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ public class EventJsonController {
 	@Autowired	
 	EventServiceImpl eventserviceImpl;
 	//顯示所有活動表 回傳給前端
+	@RequiresAdmin
 	@GetMapping(value = "/EventfindAll", produces = "application/json; charset=UTF8")
 	//produces   它的作用是指定返回值类型，不但可以设置返回值类型还可以设定返回值的字符编码；
 	public @ResponseBody Map<String, Object> EventfindAll() {
@@ -30,6 +33,7 @@ public class EventJsonController {
 	}
 	
 	//用Name尋找 顯示前端
+	@RequiresAdmin
 	@GetMapping(value = "/queryEventByName", produces = "application/json; charset=UTF8")
 	public @ResponseBody Map<String, Object> queryByName(@RequestParam("rname") String rname) {
 //		@RequestParam 從前端畫面找 name = rname 的值  抓的是請求參數  /findByTypeId?rname=string
@@ -52,6 +56,7 @@ public class EventJsonController {
 		
 	}
 	//用放在Session的uid尋找活動表 
+	@RequiresUser
 	@GetMapping(value = "/Eventfindbyuid", produces = "application/json; charset=UTF8")
 	public @ResponseBody Map<String, Object> Eventfindbyuid(@SessionAttribute(value = "loginBean")  User_Info user_info) {
 		
@@ -59,7 +64,8 @@ public class EventJsonController {
 		
 		return eventserviceImpl.Eventfindbyuid(a_uid);
 	}
-	//用報名表單的id尋找 
+	//用報名表單的id尋找
+	@RequiresUser
 	@GetMapping(value = "/signupEventjson/{a_aid}", produces = "application/json; charset=UTF8")
 	public @ResponseBody List<Entryform> signupEventjson(@PathVariable Long a_aid ) {
 		EventInfo Event = eventserviceImpl.findByid(a_aid);

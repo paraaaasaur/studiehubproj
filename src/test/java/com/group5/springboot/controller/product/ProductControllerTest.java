@@ -100,6 +100,14 @@ class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /updateProduct/{p_ID} - requires admin")
+	void gotoUpdateProduct_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/updateProduct/{p_ID}", product1.getP_ID()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /queryProductForUser")
 	void queryProductForUser() throws Exception {
 		mockMvc.perform(get("/queryProductForUser"))
@@ -124,6 +132,14 @@ class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /queryProduct - requires admin")
+	void sendQueryProduct_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/queryProduct"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /findAllProductPending - success")
 	void findAllProductPending_success() throws Exception {
 		// 0. admin-login
@@ -136,6 +152,14 @@ class ProductControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("product/pendingAccess"));
+	}
+
+	@Test
+	@DisplayName("GET /findAllProductPending - requires admin")
+	void findAllProductPending_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/findAllProductPending"))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -154,6 +178,14 @@ class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /accessResult/{p_ID} - requires admin")
+	void accessResult_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/accessResult/{p_ID}", product1.getP_ID()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
 	@DisplayName("GET /insertProduct - success")
 	void addProduct_success() throws Exception {
 		// 0. login
@@ -166,6 +198,14 @@ class ProductControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("product/insertProduct"));
+	}
+
+	@Test
+	@DisplayName("GET /insertProduct - requires user")
+	void addProduct_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/insertProduct"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -190,6 +230,14 @@ class ProductControllerTest {
 				.andExpect(redirectedUrl("/queryProduct"))
 				.andExpect(flash().attributeExists("successMessage"))
 				.andReturn();
+	}
+
+	@Test
+	@DisplayName("POST /updateProduct/{p_ID} - requires admin")
+	void updateProduct_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/updateProduct/{p_ID}", product2Approved.getP_ID()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 
 	@Test
@@ -240,6 +288,14 @@ class ProductControllerTest {
 	}
 
 	@Test
+	@DisplayName("POST /insertProduct - requires user")
+	void saveProduct_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(multipart("/insertProduct"))
+
+				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
 	@DisplayName("POST /insertProduct - empty field")
 	void saveProduct_whenEmptyField_thenRequestIsRejected() throws Exception {
 		// 0. user login + prepare insert data
@@ -276,5 +332,13 @@ class ProductControllerTest {
 
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/queryProduct"));
+	}
+
+	@Test
+	@DisplayName("GET /deleteProduct/{p_ID} - requires admin")
+	void deleteProduct_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/deleteProduct/{p_ID}", product1.getP_ID()))
+
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
 	}
 }

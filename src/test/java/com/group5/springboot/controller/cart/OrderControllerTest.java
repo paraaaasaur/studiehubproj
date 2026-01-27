@@ -2,7 +2,6 @@ package com.group5.springboot.controller.cart;
 
 import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
-import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
@@ -99,6 +98,14 @@ class OrderControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /order.controller/adminSelectTop100 - requires admin")
+	void adminOrderSelectTop100_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/order.controller/adminSelectTop100"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("POST /order.controller/adminSearchBar - success (u_id full match)")
 	void adminOrderSearchBar_success_uidFullMatch() throws Exception {
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
@@ -180,6 +187,14 @@ class OrderControllerTest {
 						purchased3.getO_id(),
 						purchased2.getO_id()
 				)));
+	}
+
+	@Test
+	@DisplayName("POST /order.controller/adminSearchBar - requires admin")
+	void adminOrderSearchBar_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(post("/order.controller/adminSearchBar"))
+
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test

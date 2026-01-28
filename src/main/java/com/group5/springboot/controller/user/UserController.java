@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.annotation.auth.RejectsUser;
@@ -26,8 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -38,7 +37,6 @@ import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 
 @Controller
-@SessionAttributes(names = {"loginBean","adminBean"})
 public class UserController {
 	@Autowired
 	IUserService iUserService;
@@ -121,7 +119,7 @@ public class UserController {
 	@RejectsUser
 	@PostMapping(path = "/login.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, Object> login(@RequestBody User_Info user_Info, Model model){
+	public Map<String, Object> login(@RequestBody User_Info user_Info, HttpSession session) {
 		Map<String, Object> map = new HashMap<>();
 		user_info = null;
 		try {
@@ -132,7 +130,7 @@ public class UserController {
 				map.put("loginBean", user_info);
 				
 				//登入成功:把使用者資訊加到sessionScope上
-				model.addAttribute("loginBean", user_info);
+				session.setAttribute("loginBean", user_info);
 			} else if(user_info == null) {
 				map.put("fail", "帳號或密碼錯誤，請再試一次...");
 			}
@@ -219,8 +217,8 @@ public class UserController {
 	public String changePassword(@ModelAttribute("userBean") User_Info user_Info,
 			RedirectAttributes ra,
 			@RequestParam String u_psw, @RequestParam String cfm_psw,
-			Model model, SessionStatus status) {
-		
+			HttpSession session) {
+
 		System.out.println("u_psw="+u_psw+", cfm_psw="+cfm_psw);
 		if(!(u_psw.equals(cfm_psw))) {
 			ra.addFlashAttribute("errorMessageOfChangingPassword", "兩次密碼不同");
@@ -228,7 +226,7 @@ public class UserController {
 		}
 		
 		iUserService.updateUser(user_Info);
-		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
+		updateLoginBean(session);	//更新sessionAttribute裡的bean資料
 		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
 		return "redirect:/";
 	}
@@ -241,7 +239,7 @@ public class UserController {
 	public String updateUser(@ModelAttribute("userBean") User_Info user_Info,
 			BindingResult bindingResult,
 			RedirectAttributes ra,
-			Model model, SessionStatus status) {
+			HttpSession session) {
 		
 		userValidator.validate(user_Info, bindingResult);
 		if(bindingResult.hasErrors()) {
@@ -279,29 +277,26 @@ public class UserController {
 		}
 		
 		iUserService.updateUser(user_Info);
-		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
+		updateLoginBean(session);	//更新sessionAttribute裡的bean資料
 		ra.addFlashAttribute("successMessage", "修改成功");	//暫時沒做秀出成功訊息
 		return "redirect:/gotoUpdateUserinfo.controller";
 	}
 
 
-	
+
 	//更新sessionAttribute裡的bean資料
-	public void updateLoginBean(Model model, SessionStatus status) {
-		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
+	public void updateLoginBean(HttpSession session) {
+		User_Info loginBean = (User_Info)session.getAttribute("loginBean");
 		System.out.println("oldBean id:" + loginBean.getU_id() + ", old psw:" + loginBean.getU_psw() + ", old lastname:" + loginBean.getU_lastname());
 		User_Info updateBean = iUserService.getSingleUser(loginBean.getU_id());
 		System.out.println("updatedBean id:" + updateBean.getU_id() + ", update psw:" + updateBean.getU_psw() + ", update lastname" + updateBean.getU_lastname());
-		model.addAttribute("loginBean", updateBean);
+		session.setAttribute("loginBean", updateBean);
 	}
-	
-	
 	
 	//0624新增ModelAttribute
 	@ModelAttribute("userBean")
-//	public User_Info getLoginUserInfos(User_Info userBean, Model model){
-	public User_Info getLoginUserInfos(Model model){
-		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
+	public User_Info getLoginUserInfos(HttpSession session) {
+		User_Info loginBean = (User_Info)session.getAttribute("loginBean");
 		System.out.println("******************************************");
 		User_Info userInfo = null;
 		try {

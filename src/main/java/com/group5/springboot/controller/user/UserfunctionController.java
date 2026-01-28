@@ -7,15 +7,11 @@ import com.group5.springboot.annotation.auth.RejectsUser;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 
-import com.group5.springboot.dao.user.UserDao;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.IUserService;
 import com.group5.springboot.utils.EmailSenderService;
@@ -24,7 +20,6 @@ import com.group5.springboot.utils.GenerateRandomPassword;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@SessionAttributes(names = {"loginBean"})
 public class UserfunctionController {
 	
 	@Autowired
@@ -47,10 +42,10 @@ public class UserfunctionController {
 	@RequiresUser
 	@GetMapping(path = "/logout.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, String> logout(Model model, HttpSession session){
+	public Map<String, String> logout(HttpSession session) {
 		Map<String, String> map = new HashMap<>();
 		try {
-			User_Info bean = (User_Info)model.getAttribute("loginBean");
+			User_Info bean = (User_Info)session.getAttribute("loginBean");
 			if(bean != null && !(bean.getU_id().length() == 0)) {
 				session.invalidate();
 				map.put("success", "已成功登出!");

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.config.StorageConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,8 @@ public class UserController {
 
 	// 到會員的index
 	@GetMapping(path = "/gotoUserIndex.controller")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
 	public String gotoUserIndex() {
 		return "user/userIndex";
 	}
@@ -84,6 +87,8 @@ public class UserController {
 		
 	//到刪除會員的頁面
 	@GetMapping(path = "/gotoDeleteUser.controller/{u_id}")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
 	public String gotoDeleteUser(@PathVariable String u_id, Model model) {
 		model.addAttribute("u_id", u_id);
 		return "user/deleteUser";
@@ -119,6 +124,8 @@ public class UserController {
 	
 	//讀取單筆會員資料(全部會員資料到刪除單筆資料)
 	@GetMapping("/showSingleUser.controller/{u_id}")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
 	public @ResponseBody User_Info showSingleUser(@PathVariable String u_id) {
 		User_Info user = iUserService.getSingleUser(u_id);
 		return user;
@@ -204,6 +211,8 @@ public class UserController {
 	//刪除會員資料
 	@DeleteMapping("/user.controller/{u_id}")
 	@ResponseBody
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
 	public Map<String, String> deleteUser(@PathVariable(required = true) String u_id){
 		Map<String, String> map = new HashMap<>();
 		try {

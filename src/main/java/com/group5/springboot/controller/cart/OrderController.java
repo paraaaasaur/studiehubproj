@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,8 @@ public class OrderController {
 	private UserService userService;
 	
 	@GetMapping("/order.controller/test/selectOrderInfoByOPUJoin")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public List<OrderInfo> testSelectOrderInfoByOPUJoin() {
 		return orderService.selectOrderInfoByOPUJoin();
 	}
@@ -41,12 +44,16 @@ public class OrderController {
 	
 	/***************************************************************************** */
 	@GetMapping(value = "/order.controller/adminSelectAll", produces = "application/json; charset=UTF-8")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public Map<String, Object> adminOrderSelectAll(){
 		return orderService.selectAll();
 	}
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/adminSelectProduct")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public ProductInfo adminOrderSelectProduct(@RequestParam("p_id") String p_id) {
 		ProductInfo pBeanInDb = productService.findByProductID(Integer.parseInt(p_id));
 		System.out.println(pBeanInDb);
@@ -55,6 +62,8 @@ public class OrderController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/adminSelectUser")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public User_Info adminOrderSelectUser(@RequestParam("u_id") String u_id) {
 		return userService.getSingleUser(u_id);
 	}
@@ -107,6 +116,8 @@ public class OrderController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/insertAdmin")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public Map<String, Object> adminOrderInsert(@RequestBody OrderInfo order) {
 		Map<String, Object> map = orderService.insert(order);
 		String msg = (map.get("errorMessage") == null)? "新增成功！" : "新增失敗 :^)";
@@ -117,6 +128,8 @@ public class OrderController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/order.controller/deleteAdmin")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public Map<String, String> adminOrderDelete(@RequestParam Integer[] identitySeeds) {
 		orderService.delete(identitySeeds);
 		HashMap<String, String> map = new HashMap<>();

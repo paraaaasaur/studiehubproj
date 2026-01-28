@@ -3,6 +3,7 @@ package com.group5.springboot.controller.cart;
 import java.util.*;
 
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,8 @@ public class OrderViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/order.controller/adminInsert"})
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "manual CRUD operations on orders are intentionally unsupported")
 	public String toOrderAdminInsert(Model model) {
 		model.addAttribute("emptyOrderInfo", new OrderInfo());
 		return "/cart/orderAdminInsert";
@@ -35,6 +38,8 @@ public class OrderViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping(value = {"/order.controller/adminInsert"})
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "manual CRUD operations on orders are intentionally unsupported")
 	public String orderAdminInsert(@ModelAttribute("emptyOrderInfo") OrderInfo orderInfo,
 			BindingResult result, 
 			RedirectAttributes ra
@@ -58,6 +63,8 @@ public class OrderViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@GetMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "manual CRUD operations on orders are intentionally unsupported")
 	public String toOrderAdminUpdate(@PathVariable("identitySeed") Integer identitySeed, Model model) {
 		OrderInfo oBean = new OrderInfo();
 		oBean.setIdentity_seed(identitySeed);
@@ -68,6 +75,8 @@ public class OrderViewController {
 	
 	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@PostMapping(value = {"/order.controller/adminUpdate/{identitySeed}"})
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "manual CRUD operations on orders are intentionally unsupported")
 	public String orderAdminUpdate(@ModelAttribute(name = "orderInfo") OrderInfo orderInfo,
 			BindingResult result, 
 			RedirectAttributes ra

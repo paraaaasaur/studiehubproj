@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.config.StorageConfigProperties;
 import com.group5.springboot.utils.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -317,13 +318,17 @@ public class QuestionController {
 	
 ////送出顯示所有試題的表單
 	@GetMapping("/question.controller/startRandomExam")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public String startRandomExam() {
 		return "question/examQuestion";
 	}	
 	
 ////回傳隨機X筆試題 (JSON)
 	//produces:指定返回的內容類型，僅當request請求頭中的(Accept)類型中包含該指定類型才返回
-	@GetMapping(value="/question.controller/sendRandomExam", produces = "application/json; charset=UTF-8")	
+	@GetMapping(value="/question.controller/sendRandomExam", produces = "application/json; charset=UTF-8")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public @ResponseBody Map<String, Object> sendRandomExam(){
 		return questionService.sendRandomExam();
 	}
@@ -337,6 +342,8 @@ public class QuestionController {
 
 ////test多選題表單
 	@GetMapping("/question.controller/tstartRandomExam")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public String tstartRandomExam() {
 		return "question/examMultipleQuestion";
 	}

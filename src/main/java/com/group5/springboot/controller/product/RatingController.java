@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,8 @@ public class RatingController {
 	}
 	
 	@GetMapping(value = "/ratingAVG", produces = "application/json; charset=UTF-8")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "unused")
 	public @ResponseBody Integer ratingAVG(@RequestParam Integer p_ID){
 		
 		return ratingService.ratingAVG(p_ID);

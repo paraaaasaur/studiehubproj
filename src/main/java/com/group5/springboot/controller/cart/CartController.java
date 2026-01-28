@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,9 @@ public class CartController {
 	}
 	
 	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8") @Deprecated
+	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "no usage")
 	public List<Map<String, Object>> clientRemoveProductFromCart(@RequestParam Integer[] p_ids, @RequestParam String u_id) {
 		Arrays.asList(p_ids).forEach(p_id -> cartItemService.deleteASingleProduct(u_id, p_id));
 		return cartItemService.getCart(u_id);
@@ -161,6 +164,8 @@ public class CartController {
 	
 	/***************************************************************************** */
 	@PostMapping(value = "/cart.controller/insertAdmin")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "duplicate", replaceWith = "GET & POST /cart.controller/adminInsert")
 	public Map<String, Object> adminCartInsert(@RequestBody CartItem cartItem) {
 		Map<String, Object> map = cartItemService.insert(cartItem.getP_id(), cartItem.getU_id());
 		String msg = (map.get("errorMessage") == null)? "新增成功！" : "新增失敗 :^)";

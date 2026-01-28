@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.config.StorageConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,6 +57,8 @@ public class ProductController {
 
 	
 	@GetMapping("/buyProduct")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = {"unused", "duplicate"})
 	public String buyProduct(@RequestParam Integer p_ID,@RequestParam String u_ID,Model model) {
 		System.out.println("**********"+p_ID+u_ID);
 		cartItemService.insert(p_ID, u_ID);

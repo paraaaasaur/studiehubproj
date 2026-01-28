@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.config.StorageConfigProperties;
 import com.group5.springboot.utils.ResourceLocationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +59,15 @@ public class EventController {
 
 	// 從網頁首頁跳到老師的首頁
 	@GetMapping("/NewFile")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "no usage")
 	public String NewFile() {
 		return "event/NewFile";
 	}
 	// 從網頁首頁跳到老師的首頁
 	@GetMapping("/Eventindex")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "no usage")
 	public String Eventindex() {
 		return "event/index";
 	}
@@ -75,6 +80,8 @@ public class EventController {
 	}
 
 	@GetMapping("/success")
+	@Deprecated
+	@DeprecatedDetail(removeIn = "1.0.2", reason = "no usage")
 	public String querysuccess() {
 		return "event/success";
 	}

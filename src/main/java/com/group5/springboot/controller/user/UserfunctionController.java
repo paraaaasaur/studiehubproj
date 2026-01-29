@@ -21,6 +21,8 @@ import com.group5.springboot.service.user.IUserService;
 import com.group5.springboot.utils.EmailSenderService;
 import com.group5.springboot.utils.GenerateRandomPassword;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @SessionAttributes(names = {"loginBean"})
 public class UserfunctionController {
@@ -45,12 +47,12 @@ public class UserfunctionController {
 	@RequiresUser
 	@GetMapping(path = "/logout.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, String> logout(Model model, SessionStatus ss){
+	public Map<String, String> logout(Model model, HttpSession session){
 		Map<String, String> map = new HashMap<>();
 		try {
 			User_Info bean = (User_Info)model.getAttribute("loginBean");
 			if(bean != null && !(bean.getU_id().length() == 0)) {
-				ss.setComplete();
+				session.invalidate();
 				map.put("success", "已成功登出!");
 			}else {
 				map.put("fail", "尚未登入，請先登入後再操作...");

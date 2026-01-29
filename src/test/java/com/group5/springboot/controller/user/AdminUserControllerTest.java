@@ -162,7 +162,6 @@ class AdminUserControllerTest {
 				.andExpect(forwardedUrl("/gotoAdminIndex.controller"));
 	}
 
-	@Disabled("todo@1.0.1: fix inline session logic before enabling this test")
 	@Test
 	@DisplayName("GET /adminLogout.controller - success")
 	void adminLogout_success() throws Exception {
@@ -179,7 +178,6 @@ class AdminUserControllerTest {
 		assertTrue(mockHttpSession.isInvalid());
 	}
 
-	@Disabled("todo@1.0.1: fix inline session logic before enabling this test")
 	@Test
 	@DisplayName("GET /adminLogout.controller - requires admin")
 	void adminLogout_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {

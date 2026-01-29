@@ -17,6 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.IUserService;
+
+import javax.servlet.http.HttpSession;
+
 @Controller
 @SessionAttributes(names = {"adminId"})
 public class AdminUserController {
@@ -74,8 +77,8 @@ public class AdminUserController {
 	//管理員登出
 	@RequiresAdmin
 	@GetMapping(path = "/adminLogout.controller")
-	public String adminLogout(Model model, SessionStatus ss){
-		ss.setComplete();
+	public String adminLogout(HttpSession session) {
+		session.invalidate();
 		return "redirect:/";	//登出後回使用者首頁
 	}
 	

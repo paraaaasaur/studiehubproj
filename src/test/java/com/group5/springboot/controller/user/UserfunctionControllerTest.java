@@ -84,7 +84,6 @@ class UserfunctionControllerTest {
 				.andExpect(forwardedUrl("/"));
 	}
 
-	@Disabled("todo@1.0.1: fix inline session logic")
 	@Test
 	@DisplayName("GET /logout.controller - success")
 	void logout_success() throws Exception {
@@ -103,7 +102,6 @@ class UserfunctionControllerTest {
 		assertTrue(mockHttpSession.isInvalid());
 	}
 
-	@Disabled("todo@1.0.1: fix inline session logic")
 	@Test
 	@DisplayName("GET /logout.controller - requires user")
 	void logout_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {

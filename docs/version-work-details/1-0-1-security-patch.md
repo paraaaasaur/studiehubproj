@@ -1,10 +1,14 @@
-# [1.0.1] - Security Patch: Required Session on Certain Endpoints
+# [1.0.1] - Security Patch
 
-## Goal
-1. Resolve the security vulnerability of current incomplete, inline session auth implementation that leaks out privileged server-side operations
-2. Resolve XSS risk brought up by the API `CKEditor` used around `chat` domains for lack of HTML sanitization
-3. Fix unauthorized data leaking endpoints across domains
-4. Fix related or critical bugs
+## Vulnerability List
+1. Authentication
+   - inline session checks that leak out privileged server-side operations
+   - incomplete auth impls that only exist in few endpoints
+   - decorative frontend session checks for falsy confidence
+2. XSS risk brought up by the API `CKEditor` used in `chat` domains for lack of HTML sanitization
+3. Resources leaking endpoints across domains
+4. Related bugs (if any is found)
+
 
 ## 1. Implement A Centralized Security Layer
 A new feature to replace scattered, inline session checks.
@@ -27,17 +31,19 @@ A new feature to replace scattered, inline session checks.
    - separate by REST/page-rendering
 3. Add a `WebMvcConfigurer` to register the `HandlerInterceptor`
 4. Put annotation to handler methods that need it
+   - follow the Notion table `endpoint` to check out which are in need
 
 
 ### Related Changes
 - Remove duplicate inline auth logic, release params in handlers
-- Remove `@SessionAttributes`s in controllers
-- Remove `#checkIfAdminLoggedIn` and `checkIfLogin`
+- Remove `#checkIfAdminLoggedIn` and `#checkIfLogin`
+  - login check gets replaced with the new interceptor + auth annotations style
 - Remove frontend auth for no need & consistency, notably:
   - question view files
 - Update client(ajax) usages
   - add redirect logic for REST endpoint usages when 401/403
 - Add missing tests for the cases of failed auth
+
 
 ### Specific Items
 - `ss#setComplete` -> `httpSession#invalidate` for logout & adminLogout
@@ -48,10 +54,12 @@ Use the dependency `OWASP Java HTML sanitizer` to perform server-side HTML sanit
 - [tutorial](https://www.baeldung.com/java-sanitize-html-prevent-xss-attacks)
 - target: update and insert logic where `CKEditor` is used
 
+
 ## 3. Unauthorized Resources Leaking Endpoints across Domains
 
 ### product
 1. `GET /queryByProductName`: query missing pending status check
+
 
 ### event
 1. `GET /EventfindAll`: authorization enforced only at the presentation layer

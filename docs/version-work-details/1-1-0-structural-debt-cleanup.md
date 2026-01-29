@@ -43,9 +43,24 @@
 
 #### User
 - `@ModelAttribute("userBean") getLoginUserInfos`:
-  - kick out the first line, change param to `User_Info`, and make it a service method
+  - reduce it to a service method
+  - apply only where it's used, instead of getting eagerly triggered all over the controller
   - recommended name: e.g., `loadProfile(uid)`
   - update usage: `changePassword`, `updateUser`: replace `@ModelAttribute("userBean")` with `@SessionAttribute("loginBean")`
+- Switch session attr handling strategy 
+  - old: class annotations `@SessionAttributes` in controllers
+  - new
+    - remove all `@SessionAttributes`
+    - use explicit writer `httpSession.setAttribute("loginBean", user_info);` instead of generic `Model`
+    - use explicit reader `@SessionAttribute("loginBean") loginBean` instead of generic `Model`
+  - update usage in handler methods
+  - update usage in helper methods:
+    - `#updateLoginBean` method signature
+      - from: `(Model, SessionStatus)` (`SessionStatus` is unused btw)
+      - to: `(HttpSession)`
+    - `@ModelAttribute("userBean") #getLoginUserInfos` method signature
+      - from: `(Model)`
+      - to: `(HttpSession)`
 
 #### Product
 

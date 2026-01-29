@@ -1,7 +1,7 @@
 # 1.0.2 - Big Cleanup & Bugfix
-(For endpoint and view specific/centered items, see Notion tables)
 
-## Goal
+## Goals
+- Endpoint and view specific/centered items (see Notion tables)
 - Profile the frontend (HTML, CSS, but mainly JS) mess
 - Clean the frontend mess, notably:
   - Unused named/unnamed functions/variables/files
@@ -11,6 +11,11 @@
 
 - Target: known unused classes/methods/files, duplicate utilities + quick bugfixes
 - feature bug quick fix
+
+## Recommended Steps
+1. Finish endpoint and view specific/centered items (see Notion tables)
+2. Finish common/specific items in this doc
+3. Clean leftovers if any is found and possible, or document if not possible to resolve quickly 
 
 ## Backend
 
@@ -28,7 +33,7 @@
 ### user
 - Remove unused session attribute `adminBean`
 
-### products
+### product
 - Remove unused class
   - `OldProductInfo`
 - Remove unused fields in all 3 controllers
@@ -44,7 +49,7 @@
   - `CartItemDao`: `#test05`
 - Remove hidden messy packages of test classes
 
-### chats
+### chat
 - Remove unused session attribute `adminBean`
 - Fix the generic type in controller method `findOneChat` and service/dao methods `findAllChatReply` because it's not true
   - change from `<Chat_Reply>`to `<Chat_ReplyAndUser_Info>`
@@ -54,7 +59,7 @@
     - login + send reply: no reload for the first time but fine after the second one
 - Missing logic in `serviceImpl#updateChatReply`, where the hook in `Chat_Info` is not updated
 
-### events
+### event
 - Try fixing missing FK on the column `a_uid` in the `EventInfo` table & the fake seed data
 - unreliable 
 
@@ -64,12 +69,9 @@
 - Frontend profiling: Inspect frontend view files one by one, and inspect JS, CSS and HTML junks around each of them
 - Resolve known quick issues recorded by accident in 1.0.0
 
-### Common
-
-
-### Question_Info
+### question
 - Fix 一鍵: js should check selection B but currently fails to do so
 
-### Chat_Info
+### chat
 - Add difference to tell between a chat and its replies, otherwise it's annoying for dev purpose
   - e,g., out-of-the-box class from bootstrap

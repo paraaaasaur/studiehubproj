@@ -100,7 +100,8 @@ class EventControllerTest {
 
 
 		// 1. main
-		mockMvc.perform(get("/userAllEvent"))
+		mockMvc.perform(get("/userAllEvent")
+						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("event/userAllEvent"));

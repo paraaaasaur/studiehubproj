@@ -85,13 +85,14 @@ class ProductControllerTest {
 
 	@Test
 	@DisplayName("GET /updateProduct/{p_ID} - success")
-	void updateProduct_GET_success() throws Exception {
+	void gotoUpdateProduct_success() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
 
 
 		// 1. main
-		mockMvc.perform(get("/updateProduct/{p_ID}", product1.getP_ID()))
+		mockMvc.perform(get("/updateProduct/{p_ID}", product1.getP_ID())
+						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("product/editProduct"))
@@ -169,7 +170,7 @@ class ProductControllerTest {
 
 	@Test
 	@DisplayName("POST /updateProduct/{p_ID} - success")
-	void updateProduct_POST_success() throws Exception {
+	void updateProduct_success() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
 
@@ -193,7 +194,7 @@ class ProductControllerTest {
 
 	@Test
 	@DisplayName("POST /updateProduct/{p_ID} - empty field")
-	void updateProduct_POST_whenEmptyField_ThenRequestIsRejected() throws Exception {
+	void updateProduct_whenEmptyField_ThenRequestIsRejected() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
 

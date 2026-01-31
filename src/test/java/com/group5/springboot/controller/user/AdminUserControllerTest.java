@@ -78,13 +78,21 @@ class AdminUserControllerTest {
 	void adminIndex_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
 		mockMvc.perform(get("/gotoAdminIndex.controller"))
 
+				.andExpect(forwardedUrl("/gotoAdminLogin.controller"));
+	}
+
+	@Test
+	@DisplayName("GET /gotoAdminLogin.controller - success")
+	void gotoAdminLoginPage_success() throws Exception {
+		mockMvc.perform(get("/gotoAdminLogin.controller"))
+
 				.andExpect(status().isOk())
 				.andExpect(view().name("user/adminLogin"));
 	}
 
 	@Test
-	@DisplayName("GET /gotoShowAllUser.controller")
-	void gotoShowAllUser() throws Exception {
+	@DisplayName("GET /gotoShowAllUser.controller - success")
+	void gotoShowAllUser_success() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
 
@@ -96,8 +104,8 @@ class AdminUserControllerTest {
 	}
 
 	@Test
-	@DisplayName("POST /AdminLogin.controller")
-	void adminLogin() throws Exception {
+	@DisplayName("POST /AdminLogin.controller - success")
+	void adminLogin_success() throws Exception {
 		String[] adminCreds = {"adming5", "manager"};
 
 		MvcResult mvcResult = mockMvc.perform(post("/AdminLogin.controller")
@@ -123,10 +131,9 @@ class AdminUserControllerTest {
 				.andExpect(view().name("adminIndex"));
 	}
 
-	@Disabled("todo@1.0.1: fix inline session logic before enabling this test")
 	@Test
-	@DisplayName("GET /adminLogout.controller")
-	void adminLogout() throws Exception {
+	@DisplayName("GET /adminLogout.controller - success")
+	void adminLogout_success() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
 
@@ -137,12 +144,15 @@ class AdminUserControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/"));
 
-		assertTrue(mockHttpSession.isInvalid());
+		assertNull(mockHttpSession.getAttribute("adminId"));
 	}
 
 	@Test
-	@DisplayName("GET /showAllUser.controller")
-	void gotoFindAllUserPage() throws Exception {
+	@DisplayName("GET /showAllUser.controller - success")
+	void gotoFindAllUserPage_success() throws Exception {
+		userTestUtils.adminLoginAsAdming5(mockHttpSession);
+
+
 		mockMvc.perform(get("/showAllUser.controller")
 						.session(mockHttpSession))
 

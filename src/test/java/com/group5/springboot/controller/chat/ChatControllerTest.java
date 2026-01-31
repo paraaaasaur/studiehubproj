@@ -108,8 +108,8 @@ class ChatControllerTest {
 	}
 
 	@Test
-	@DisplayName("GET /goSelectOneChat/{c_ID} - success")
-	void goSelectOneChat_success() throws Exception {
+	@DisplayName("GET /goSelectOneChat/{c_ID}")
+	void goSelectOneChat() throws Exception {
 		final int c_ID = chatInfo1.getC_ID();
 		mockMvc.perform(get("/goSelectOneChat/{c_ID}", c_ID))
 
@@ -190,7 +190,11 @@ class ChatControllerTest {
 	@Test
 	@DisplayName("GET /selectAllChatAdmin - success")
 	void findAllChatAdmin_success() throws Exception {
-		mockMvc.perform(get("/selectAllChatAdmin"))
+		userTestUtils.adminLoginAsAdming5(mockHttpSession);
+
+
+		mockMvc.perform(get("/selectAllChatAdmin")
+						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON))

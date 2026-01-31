@@ -1,7 +1,5 @@
 package com.group5.springboot.controller.cart;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
 import com.group5.springboot.model.cart.CartItem;
@@ -15,15 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.group5.springboot.controller.cart.CartAndOrderTestUtils.aSuccessfulECPayResult;
-import static com.group5.springboot.controller.product.ProductTestUtils.aRandomProduct;
 import static com.group5.springboot.controller.user.UserTestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ECPayControllerTest {
 	private final MockMvc mockMvc;
 	private final GenericDao dao;
-	private final UserTestUtils userTestUtils;
 
 	private MockHttpSession mockHttpSession;
 
@@ -46,7 +40,6 @@ class ECPayControllerTest {
 	ECPayControllerTest(MockMvc mockMvc, GenericDao dao) {
 		this.mockMvc = mockMvc;
 		this.dao = dao;
-		this.userTestUtils = new UserTestUtils(this.mockMvc);
 		this.tajenwww = dao.find(User_Info.class, "tajenwww");
 	}
 
@@ -75,14 +68,12 @@ class ECPayControllerTest {
 	}
 
 	@Test
-	@DisplayName("POST /payment/ecpay/callback - success")
-	void paymentResultWebhook_success() throws Exception {
-		userTestUtils.loginAs(tajenwww, mockHttpSession);
+	@DisplayName("POST /payment/ecpay/callback")
+	void paymentResultWebhook() throws Exception {
 
 
 		mockMvc.perform(post("/payment/ecpay/callback")
 						.contentType(APPLICATION_FORM_URLENCODED)
-						.session(mockHttpSession)
 						.param("CustomField1", paymentResult1.getCustomField1())
 						.param("CustomField2", paymentResult1.getCustomField2())
 						.param("CustomField3", paymentResult1.getCustomField3())

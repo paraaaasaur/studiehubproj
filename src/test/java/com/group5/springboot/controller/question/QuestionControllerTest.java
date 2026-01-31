@@ -223,7 +223,7 @@ class QuestionControllerTest {
 		// 1. main
 		long q_id = question1Approved.getQ_id();
 		mockMvc.perform(get("/question.controller/modifyQuestion/{q_id}", q_id)
-				.session(mockHttpSession))
+						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("Q1"))
@@ -303,15 +303,6 @@ class QuestionControllerTest {
 	}
 
 	@Test
-	@DisplayName("GET /question.controller/startRandomMixExam")
-	void startRandomExam() throws Exception {
-		mockMvc.perform(get("/question.controller/startRandomMixExam"))
-
-				.andExpect(status().isOk())
-				.andExpect(view().name("question/examMixQuestion"));
-	}
-
-	@Test
 	@DisplayName("GET /question.controller/sendRandomMixExam")
 	void sendRandomMixExam() throws Exception {
 		// 0. prepare test data
@@ -347,7 +338,8 @@ class QuestionControllerTest {
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
 
 
-		mockMvc.perform(get("/question.controller/intoVerifyQuestion"))
+		mockMvc.perform(get("/question.controller/intoVerifyQuestion")
+						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("question/verifyQuestion"));

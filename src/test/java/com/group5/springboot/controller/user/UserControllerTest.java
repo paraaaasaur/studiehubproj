@@ -108,8 +108,7 @@ class UserControllerTest {
 	void gotoUpdateUserinfo_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
 		mockMvc.perform(get("/gotoUpdateUserinfo.controller"))
 
-				.andExpect(status().isOk())
-				.andExpect(view().name("user/login"));
+				.andExpect(forwardedUrl("/gotologin.controller"));
 	}
 
 	@Test
@@ -173,7 +172,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@DisplayName("POST /checkUserId - available")
+	@DisplayName("POST /checkUserId - success (available)")
 	void checkUserId_success_available() throws Exception {
 		mockMvc.perform(post("/checkUserId")
 						.param("u_id", "bless-you") // available
@@ -186,7 +185,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@DisplayName("POST /checkUserId - id already exists")
+	@DisplayName("POST /checkUserId - success (id already exists)")
 	void checkUserId_success_idAlreadyExists() throws Exception {
 		mockMvc.perform(post("/checkUserId")
 						.param("u_id", joshua.getU_id()) // id already exists

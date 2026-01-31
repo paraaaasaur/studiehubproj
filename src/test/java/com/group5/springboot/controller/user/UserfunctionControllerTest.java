@@ -83,14 +83,13 @@ class UserfunctionControllerTest {
 		// 1. main
 		mockMvc.perform(get("/gotoForgetPassword.controller"))
 
-				.andExpect(status().isOk())
-				.andExpect(view().name("index"));
+				.andExpect(forwardedUrl("/"));
 	}
 
 	@Disabled("todo@1.0.1: fix inline session logic")
 	@Test
 	@DisplayName("GET /logout.controller - success")
-	void logout_success() throws Throwable {
+	void logout_success() throws Exception {
 		// 0. login
 		userTestUtils.loginAs(joshua, mockHttpSession);
 
@@ -111,16 +110,15 @@ class UserfunctionControllerTest {
 			  "2. enforce auth policy & finish the same category")
 	@Test
 	@DisplayName("GET /logout.controller - requires user")
-	void logout_whenNoUserLoggedIn_thenAccessIsDenied() throws Throwable {
+	void logout_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
 		mockMvc.perform(get("/logout.controller"))
 
-				.andExpect(status().isOk())
-				.andExpect(view().name("user/login"));
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	@DisplayName("POST /sendRandomPasswordToRegisteredEmail.controller - email found")
-	void resetPasswordAndSendEmail_whenEmailFound_thenSendPswResetEmail() throws Exception {
+	@DisplayName("POST /sendRandomPasswordToRegisteredEmail.controller - success")
+	void resetPasswordAndSendEmail_success() throws Exception {
 		// 0. prepare request
 		String reqBody = String.format("{ \"u_email\" : \"%s\" }", joshua.getU_email());
 

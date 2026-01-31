@@ -99,9 +99,9 @@ class ProductResultControllerTest {
 	}
 
 	@Test
-	@DisplayName("GET /queryByProductName - success")
+	@DisplayName("GET /queryByProductName")
 	@Disabled("reactivate after fixes on resource leakage(1.0.1) and wrong query(1.0.2)")
-	void queryByName_success() throws Exception {
+	void queryByName() throws Exception {
 		String pname = product1Approved.getP_Name().substring(1);
 		String producttypename = product1Approved.getP_Class();
 		mockMvc.perform(get("/queryByProductName")

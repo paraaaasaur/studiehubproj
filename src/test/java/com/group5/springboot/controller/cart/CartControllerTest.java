@@ -416,18 +416,18 @@ class CartControllerTest {
 				;
 	}
 
-	@Disabled("todo@2.0.0: enable after redesign replaces in-memory data holder with db persisting")
 	@Test
-	@DisplayName("POST /cart.controller/getEcpayResultAttr")
-	void getEcpayResultAttr() throws Exception {
+	@DisplayName("POST /cart.controller/getEcpayResultAttr - success")
+	// test purpose: only to prove the endpoint exists.
+	// asserts nothing: poor design using in-memory json storage instead of
+	// db storage, but since it still functions atm, it needs to exist at least.
+	void getEcpayResultAttr_success() throws Exception {
 		userTestUtils.loginAs(tajenwww, mockHttpSession);
 
 
 		mockMvc.perform(post("/cart.controller/getEcpayResultAttr")
 				.session(mockHttpSession))
 
-				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$", is("<api-payment-result-json>")))
-		;
+				.andExpect(status().isOk());
 	}
 }

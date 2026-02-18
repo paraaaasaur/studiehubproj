@@ -1,35 +1,61 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>  
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html>
 <head>
 
 
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 
 <title>所有試題資料</title>
 
+<style>
+	.question-box {} /* <todo@1.1.0>: reserved for each question container (looping <tr>) */
+
+	.question-box__check-detail-link {
+		width: 37px;
+		height: 37px;
+	}
+
+	.question-box__item {
+		vertical-align: middle;
+	}
+
+	.question-box__item--wide {
+		vertical-align: middle;
+		width: 7%;
+	}
+
+	.question-box__image {
+		width: 100px;
+		height: 60px;
+	}
+</style>
 </head>
 
-
-
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
 <script>
-let dataArea = null; 
-let questionName = null; 
-let query = null; 
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
 
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+let dataArea = null;
+let questionName = null;
+let query = null;
 
 window.addEventListener('load', function(){
-	
+
 	//universal
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
@@ -45,7 +71,7 @@ window.addEventListener('load', function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
@@ -54,12 +80,12 @@ window.addEventListener('load', function(){
 	let cartHref = document.querySelector('#cartHref');
 	cartHref.hidden = (u_id)? false : true;
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-	
+
 	questionName = document.getElementById("questionName");
 	query = document.getElementById("query");
 	dataArea = document.getElementById("dataArea");
 	let xhr = new XMLHttpRequest();
-	xhr.open('GET', "<c:url value='/question.controller/findAllQuestions' />", true);
+	xhr.open('GET', "question.controller/findAllQuestions", true);
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4 && xhr.status == 200 ){
 			console.log(xhr.responseText);
@@ -67,15 +93,15 @@ window.addEventListener('load', function(){
 		}
 	};
 	xhr.send();
-	
-	
+
+
 	query.addEventListener('click', function(){
 		let qname = questionName.value;
 		if (!qname){
 			alert('請輸入問題內容，可輸入部分內容');
 			return;
 		}
-		
+
 		let xhr2 = new XMLHttpRequest();
 		xhr2.open('GET', "<c:url value='/question.controller/queryByName' />?qname=" + qname);
 		xhr2.send();
@@ -84,49 +110,108 @@ window.addEventListener('load', function(){
 				dataArea.innerHTML = showData(xhr2.responseText);
 			}
 		}
-		
-		
+
+
 	});
 })
 
  function showData(textObj){
-	
+
 	let obj = JSON.parse(textObj);
 	let size = obj.size;
 	let questions = obj.list;
 	let segment = "<table >";
-	
+
 	if (size == 0){
 		segment += "<tr><th colspan='8'>查無資料</th><tr>";
 	} else {
-		segment += "<tr><th colspan='8'>共計" + size + "筆資料</th><tr>";
+		segment += dataSizeRow(size).outerHTML;
 	    segment += "<tr><th>查看試題</th><th>題目編號</th><th>課程分類</th><th>題目類型</th><th>問題</th><th>題目照片</th><th>題目音檔</th></tr>";
-	    
-	    for(n = 0; n < questions.length ; n++){
-		   	let question = questions[n];
-	   		
 
-		   	let tmp1 = "<c:url value='/question.controller/guestOneQuestion/'  />" + question.q_id;
-	     	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/question/check.png' />'" + "</a>";
-	     	
-	     	
+	    for (const question of questions) {
 			segment += "<tr>";
-			segment += "<td style='vertical-align: middle;width:7%'>" + tmp0 + "</td>"; 	
-
-			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_id + "</td>"; 	
-			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_class + "</td>"; 	
-			segment += "<td style='vertical-align: middle;width:7%'>" + question.q_type + "</td>"; 	
-			segment += "<td style='vertical-align: middle;'>" + question.q_question + "</td>";
-			
-			segment += "<td style='vertical-align: middle;'><img  width='100' height='60' src='" + question.q_pictureString + "' ></td>"; 	
-			segment += "<td style='vertical-align: middle;'><audio controls src='" + question.q_audioString + "' ></td>"; 	
-			
-			segment += "</tr>"; 	
+			segment += checkIconCell(question.q_id).outerHTML;
+			segment += tdTextWide(question.q_id).outerHTML;
+			segment += tdTextWide(question.q_class).outerHTML;
+			segment += tdTextWide(question.q_type).outerHTML;
+			segment += tdText(question.q_question).outerHTML;
+			segment += imgCell(question.q_pictureString).outerHTML;
+			segment += audioCell(question.q_audioString).outerHTML;
+			segment += "</tr>";
 	   }
 	}
-	segment += "</table>"; 
+	segment += "</table>";
 	return segment;
 }
+
+function dataSizeRow(dataSize) {
+	const tr = document.createElement("tr");
+
+	const th = document.createElement("th");
+	th.textContent = "共計" + dataSize + "筆資料";
+	th.colSpan = 8;
+
+	tr.appendChild(th);
+
+	return tr;
+}
+function checkIconCell(q_id) {
+	const td = document.createElement("td");
+	td.classList.add('question-box__item');
+
+	const a = document.createElement("a");
+	a.href = 'question.controller/guestOneQuestion/' + q_id;
+	{
+		const img = document.createElement("img");
+		img.src = 'images/question/check.png';
+		img.classList.add('question-box__check-detail-link');
+
+		a.appendChild(img);
+	}
+
+	td.appendChild(a);
+
+	return td;
+}
+function tdTextWide(text) {
+	const td = document.createElement("td");
+	td.textContent = text;
+	td.classList.add('question-box__item--wide');
+
+	return td;
+}
+function tdText(text) {
+	const td = document.createElement("td");
+	td.classList.add('question-box__item');
+	td.textContent = text;
+
+	return td;
+}
+function imgCell(q_pictureString) {
+	const td = document.createElement("td");
+	td.classList.add('question-box__item');
+
+	const img = document.createElement("img");
+	img.src = q_pictureString;
+	img.classList.add('question-box__image');
+
+	td.appendChild(img);
+
+	return td;
+}
+function audioCell(q_audioString) {
+	const td = document.createElement("td");
+	td.classList.add('question-box__item');
+
+	const audio = document.createElement("audio");
+	audio.toggleAttribute('controls', true);
+	audio.src = q_audioString;
+
+	td.appendChild(audio);
+
+	return td;
+}
+
 </script>
 
 
@@ -143,7 +228,7 @@ window.addEventListener('load', function(){
 <div align='center'>
 <h2>所有試題資料</h2>
 <hr>
-<font color='red'>${successMessage}</font>&nbsp;
+<font color='red'>${fn:escapeXml(successMessage)}</font>&nbsp;
 <hr>
 
 
@@ -172,13 +257,13 @@ window.addEventListener('load', function(){
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 	
 </body>
 </html>

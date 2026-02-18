@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 
 <title>忘記密碼</title>
 <script>
@@ -33,13 +34,13 @@ window.onload = function(){
 		}
 		
 		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "<c:url value='/sendRandomPasswordToRegisteredEmail.controller' />");
+		xhr.open("POST", "sendRandomPasswordToRegisteredEmail.controller");
 		var jsonData = {
 			"u_email" : email
 		}
 		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.send(JSON.stringify(jsonData));
-		loading.src = "<c:url value='images/user/loading.gif' />";
+		loading.src = "images/user/loading.gif";
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200){
 				//判斷回傳
@@ -47,10 +48,10 @@ window.onload = function(){
 				if(result.success){
 				loading.src = "";
 				alert(result.success);
-				top.location='<c:url value='/gotologin.controller' />';
+				top.location='gotologin.controller';
 				} else{
 					alert(result.fail);
-					top.location='<c:url value='/gotoForgetPassword.controller' />';
+					top.location='gotoForgetPassword.controller';
 				}
 			}
 		}
@@ -94,11 +95,11 @@ window.onload = function(){
 </div>
 <%@include file="../universal/sidebar.jsp" %>  
 </div>
-<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
 
 </body>
 </html>

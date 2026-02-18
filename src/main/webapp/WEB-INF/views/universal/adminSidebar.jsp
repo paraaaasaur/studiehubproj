@@ -7,7 +7,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+	href="assets/css/main.css">
 <title>sidebar</title>
 
 <body>
@@ -31,39 +31,39 @@
 					<h2>Menu</h2>
 				</header>
 				<ul>
-					<li><a href="<c:url value='/' />">使用者首頁</a></li>
-					<li id='loginHref'><a href="<c:url value='/gotoAdminLogin.controller' />">管理員登入</a></li>
-					<li><a href="<c:url value='/gotoShowAllUser.controller' />">會員資訊</a></li>
+					<li><a href=".">使用者首頁</a></li>
+					<li id='loginHref'><a href="gotoAdminLogin.controller">管理員登入</a></li>
+					<li><a href="gotoShowAllUser.controller">會員資訊</a></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="/studiehub/queryProduct">所有課程</a></li>
-							<li><a href="/studiehub/findAllProductPending">待審核課程</a></li>
+							<li><a href="queryProduct">所有課程</a></li>
+							<li><a href="findAllProductPending">待審核課程</a></li>
 						</ul>
 					</li>
 
 
 					<li><span class="opener">交易管理</span>
 						<ul>
-							<li><a href="<c:url value='/order.controller/adminSelect' />">訂單</a></li>
-							<li><a href="<c:url value='/cart.controller/adminSelect' />">購物車</a></li>
+							<li><a href="order.controller/adminSelect">訂單</a></li>
+							<li><a href="cart.controller/adminSelect">購物車</a></li>
 						</ul>
 					</li>
-					<li><a href="<c:url value='/goSelectAllChatAdmin' />">討論區</a></li>
+					<li><a href="goSelectAllChatAdmin">討論區</a></li>
 					<li><span class="opener">題庫</span>
 						<ul>
-							<li><a href="<c:url value='/question.controller/queryQuestion' />">查詢、編輯試題資料(後端)</a></li>
-							<li><a href="<c:url value='/question.controller/intoVerifyQuestion' />">試題審核區(後端)</a></li>
+							<li><a href="question.controller/queryQuestion">查詢、編輯試題資料(後端)</a></li>
+							<li><a href="question.controller/intoVerifyQuestion">試題審核區(後端)</a></li>
 						</ul>
 					</li>
 
 					<li><span class="opener">活動</span>
 					    <ul>
-					        <li><a href="<c:url value='/managerAllEvent' />">活動審核(管理者)</a></li>	
-                  <li><a href="<c:url value='/adminAllEvent' />">管理者後台(管理者)</a></li>
+					        <li><a href="managerAllEvent">活動審核(管理者)</a></li>
+                  <li><a href="adminAllEvent">管理者後台(管理者)</a></li>
 					        		        
 					    </ul>
 					</li>
-					<li><a href="<c:url value='/credits' />">⭐️SPECIAL THANKS⭐️</a></li>
+					<li><a href="credits">⭐️SPECIAL THANKS⭐️</a></li>
 				</ul>
 			</nav>
 

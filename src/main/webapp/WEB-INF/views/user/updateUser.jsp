@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <style>
     .tdTitle{
         width: 110px;
@@ -22,27 +24,35 @@
     }
 </style>
 <title>會員資訊</title>
-<script>
+<script type="application/json" id="bootstrap-data">
+	{
+		"successMessage": "${fn:escapeXml(successMessage)}",
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
+<script defer>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { successMessage, u_id, userPicString } = bootstrapData;
 
-if("${successMessage}"=="修改成功"){alert('會員資料修改成功!');}
 
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+if(successMessage=="修改成功"){alert('會員資料修改成功!');}
+
 window.onload = function(){
     var logout = document.getElementById("logout");
     logout.onclick = function(){
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
+        xhr.open("GET", "logout.controller", true);
         xhr.send();
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 var result = JSON.parse(xhr.responseText);
                 if(result.success){
                     alert(result.success);
-                    top.location = '<c:url value='/' />';
+                    top.location = '';
                 }else if(result.fail){
                     alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
+                    top.location = '';
                 }
             }
         }
@@ -64,7 +74,7 @@ window.onload = function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
@@ -98,7 +108,7 @@ window.onload = function(){
 						<table style="width: 750px;">
 							<tr>
 								<td class="tdTitle">帳號:</td>
-								<td class="tdContent"><b>&nbsp;&nbsp;&nbsp;&nbsp;${userBean.u_id}</b></td>
+								<td class="tdContent"><b>${fn:escapeXml(userBean.u_id)}</b></td>
 								<td class="tdError">&nbsp;</td>
 							</tr>
 							<tr>
@@ -138,7 +148,7 @@ window.onload = function(){
 							</tr>
 							<tr>
 								<td class="tdTitle">照片:</td>
-								<td class="tdContent"><img id="output" width="30%" src="${loginBean.pictureString }"/><form:input path="uploadImage" type='file' onchange="loadFile(event)" /></td>
+								<td class="tdContent"><img id="output" width="30%" src="${fn:escapeXml(loginBean.pictureString)}"/><form:input path="uploadImage" type='file' onchange="loadFile(event)" /></td>
 								
 								<td class="tdError"><form:errors path="uploadImage" cssClass="error"/></td>
 							</tr>
@@ -153,11 +163,11 @@ window.onload = function(){
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
-	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 	<script>
   var loadFile = function(event) {
     var reader = new FileReader();

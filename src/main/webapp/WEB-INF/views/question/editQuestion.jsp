@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
@@ -16,22 +17,25 @@
 </style>
 <meta charset="UTF-8">
 </head>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
+<script type="application/json" id="bootstrap-data">
+	{
+		"adminId": "${fn:escapeXml(adminId)}"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { adminId } = bootstrapData;
 
-	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
-	
-	var adminId = "${adminId}";
 	// 踢除非管理員
 	if(!adminId){
 		alert('您不具有管理者權限，請登入後再試。');
-		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+		top.location = "gotoAdminIndex.controller";
 	}
-	
+
 	window.onload = function(){
 	// console.log(adminId);
 		
@@ -80,7 +84,7 @@
 	 	 <tr>
 	       <td>題目編號：<br>&nbsp;</td>
 	   	   <td><form:hidden path="q_id"/>
-	   	    	${Q1.q_id}<br>&nbsp;
+	   	    	${fn:escapeXml(Q1.q_id)}<br>&nbsp;
 	   	   </td>
 	    </tr>
        </c:otherwise>   
@@ -193,7 +197,7 @@
 	</form:form>
 	
 <br>
-<a href="<c:url value='/question.controller/queryQuestion'/> " >回前頁</a>
+<a href="question.controller/queryQuestion" >回前頁</a>
 </div>
 	</div>
 		</div>
@@ -206,13 +210,13 @@
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

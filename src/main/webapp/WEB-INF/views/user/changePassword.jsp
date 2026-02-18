@@ -1,22 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}",
+		"pswInOGBean": "${fn:escapeXml(loginBean.u_psw)}",
+		"errorMessageOfChangingPassword": "${fn:escapeXml(errorMessageOfChangingPassword)}"
+	}
+</script>
 <title>修改密碼</title>
 <script>
-	if("${errorMessageOfChangingPassword}"=="兩次密碼不同"){alert('兩次密碼不同! 請再試一次');}
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString, pswInOGBean, errorMessageOfChangingPassword } = bootstrapData;
+	if(errorMessageOfChangingPassword=="兩次密碼不同"){alert('兩次密碼不同! 請再試一次');}
 
-	var u_id = "${loginBean.u_id}";
-	var userPicString = "${loginBean.pictureString}";
-	var pswInOGBean = "${loginBean.u_psw}";
-	
 	var hasError = false;
 	window.onload = function() {
 		var save = document.getElementById("save");
@@ -74,7 +80,7 @@
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    	userPic.src = userPicString;	//有登入就秀大頭貼
-	    	userId.innerHTML = u_id;
+	    	userId.textContent = u_id;
 	    	loginEvent.style.display = "block";
 	    	loginEvent1.style.display = "block";
 	    	loginALLEvent1.style.display = "block";
@@ -117,11 +123,11 @@
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
-	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

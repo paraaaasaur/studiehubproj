@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.group5.springboot.utils.HtmlSanitizerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,4 +74,15 @@ public class ChatServiceImpl implements ChatService{
 		chatDao.updateChatReply(chat_Reply);
 	}
 
+	@Override
+	public void sanitizeConts(Chat_Reply rawReply) {
+		String sanitized = HtmlSanitizerUtil.sanitize(rawReply.getC_Conts());
+		rawReply.setC_Conts(sanitized);
+	}
+
+	@Override
+	public void sanitizeConts(Chat_Info rawTopPost) {
+		String sanitized = HtmlSanitizerUtil.sanitize(rawTopPost.getC_Conts());
+		rawTopPost.setC_Conts(sanitized);
+	}
 }

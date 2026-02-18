@@ -1,100 +1,272 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
 
+<script type="application/json" id="bootstrap-data">
+	{
+		"adminId": "${fn:escapeXml(adminId)}"
+	}
+</script>
+
 <script>
-if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
-	
-	var adminId = "${adminId}";
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
 
-window.onload = function(){
-	var loginHref = document.getElementById('loginHref');
-    var logoutHref = document.getElementById('logoutHref');
-    var userId = document.getElementById('userId');
-    var userPic = document.getElementById('userPic');
-    if(adminId){
-    	loginHref.hidden = true;
-    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    }
-    
-    
-    var dataArea = document.getElementById("dataArea");
-	var query = document.getElementById("query");
-	var productname = document.getElementById("productname");
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET","<c:url value='/findAllProduct' />",true);
-    xhr.send();
-    xhr.onreadystatechange = function(){
-
-        if(xhr.readyState == 4 && xhr.status == 200){
-            var result = JSON.parse(xhr.responseText);
-			dataArea.innerHTML = showData(result);
-        }
-    }
-
-	query.addEventListener('click',function(){
-		let pname = productname.value;
-		let producttypename	= "日文";
-		console.log(pname+""+producttypename)
-		if(!pname){
-			alert('請輸入關鍵字');
-			return
+const state = {
+	status: "loading", // 'idle' | 'loading' | 'success' | 'error'
+	adminId: bootstrapData.adminId,
+	products: null,
+	error: null
+};
+let loginHref, logoutHref, dataArea, query, productname;
+const api = {
+	fetchAllProducts: async function() {
+		const response = await fetch('findAllProduct');
+		if (!response.ok) {
+			throw new Error('Fetch failed');
 		}
-
-		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET',"<c:url value='/queryByProductName' />?pname="+pname+"&producttypename="+producttypename,true);
-		xhr2.send();
-		xhr2.onreadystatechange = function(){
-			if(xhr2.readyState == 4 && xhr2.status == 200){
-				var search = JSON.parse(xhr2.responseText)
-				dataArea.innerHTML = showData(search);
-			}
+		return response.json();
+	},
+	fetchProductsByName: async function(pname, producttypename) {
+		const url = 'queryByProductName' +
+				'?pname=' + pname + '&producttypename=' + producttypename;
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error('Something went wrong');
 		}
-	})
-    
+		return response.json();
+	}
+};
+
+window.onload = init;
+async function init() {
+	// dom wiring
+	loginHref = document.getElementById('loginHref');
+	logoutHref = document.getElementById('logoutHref');
+	dataArea = document.getElementById("dataArea");
+	query = document.getElementById("query");
+	productname = document.getElementById("productname");
+
+	bindEvents();
+	await loadProducts();
 }
 
-function showData(textObj) {
-    let obj = JSON.parse(JSON.stringify(textObj));
-    let size = obj.size;
-    let products = obj.list;
-	console.log(obj);
-	console.log(size);
-	console.log(products);
-    let segment = "<table border='1' style = 'width:100%;text-align: center;'>";
-        if (size == 0) {
-			segment += "<tr><th colspan='5'>查無資料</th></tr>";
-		} else {
-            segment += "<tr><th colspan='5'>共計" + size + "筆資料</th></tr>";
+function bindEvents() {
+	query.addEventListener('click', queryProducts);
+}
+async function loadProducts() {
+	state.status = "loading";
+	render();
 
-			segment += "<tr><th style='text-align: center;'>課程圖片</th><th style='text-align: center;'>課程名稱</th><th>課程類別</th><th>課程價格</th><th style='text-align: center;'>課程介紹</th><th width:50px; style='text-align: center;'>功能</th></tr>";
-			for (n = 0; n < products.length; n++) {
-				let product = products[n];
-    			let tmp0 = "<c:url value = '/updateProduct/'/>"+ product.p_ID;
-    			let tmp1 = "<c:url value = '/deleteProduct/'/>"+ product.p_ID;
-				segment += "<tr>";
-                segment += "<td><img width='100' height='60' src='${pageContext.request.contextPath}/"+ product.p_Img +"'/ ></td>";
-				segment += "<td style='text-align: center;'>" + product.p_Name + "</td>";
-				segment += "<td style='width: 100px;'>" + product.p_Class + "</td>";
-				segment += "<td style='width: 100px;'>" + product.p_Price + "</td>";
-				segment += "<td>" + product.p_DESC + "</td>";
-				segment += "<td><input type='button'value='更新' style='margin: 5px;' onclick=\"window.location.href='"+tmp0+"'\"'/>";
-				segment += "<input type='button'value='刪除' style='margin: 5px;' onclick=\"window.location.href='"+tmp1+"'\" /></td>";
-				segment += "</tr>";
-                }
-        }
-        segment += "</table>";
-        return segment;
+	try {
+		const data = await api.fetchAllProducts();
+		state.products = data.list;
+		state.status = "success";
+		state.error = null;
+	} catch (e) {
+		state.status = "error";
+		state.error = e;
+	}
+
+	render();
+}
+function render() {
+	if (state.status === "loading") {
+		showSpinner();
+		return;
+	}
+
+	if (state.status === "error") {
+		console.error('something went wrong: ', state.error);
+		return;
+	}
+
+	if (state.adminId != null) {
+		renderCommonAdminUI();
+	}
+
+	if (state.products != null) {
+		dataArea.replaceChildren(renderProductTable(state.products));
+	}
+}
+function showSpinner() {
+	console.log('Spinning');
+}
+function renderCommonAdminUI() {
+	loginHref.hidden = true;
+	logoutHref.style.visibility = "visible";
+}
+async function queryProducts() {
+	const pname = productname.value;
+	const producttypename = "日文"; // fixme
+	if(!pname){
+		alert('請輸入關鍵字');
+		return;
+	}
+
+	state.status = "loading";
+	render();
+
+	try {
+		const data = await api.fetchProductsByName(pname, producttypename);
+		state.products = data.list;
+		state.status = "success";
+		state.error = null;
+	} catch (error) {
+		state.status = "error";
+		state.error = error;
+	}
+
+	render();
+}
+function renderProductTable(products) {
+	const table = document.createElement('table');
+	table.border = '1';
+	table.style.width = '100%';
+	table.style.textAlign = 'center';
+
+	if (products.length === 0) {
+		table.appendChild(emptyResultRow());
+
+		return table;
+	}
+
+	table.appendChild(resultNumberRow(products.length));
+	table.appendChild(header());
+
+	products.forEach(product => {
+		table.appendChild(row(product));
+	});
+
+    return table;
+}
+function emptyResultRow() {
+	const tr = document.createElement('tr');
+	const th = document.createElement('th');
+	th.textContent = '查無資料';
+	th.colSpan = 5;
+
+	tr.appendChild(th);
+
+	return tr;
+}
+function resultNumberRow(length) {
+	const tr = document.createElement('tr');
+	const th = document.createElement('th');
+	th.colSpan = 5;
+	th.textContent = '共計"' + length + '"筆資料';
+
+	tr.appendChild(th);
+
+	return tr;
+}
+function header() {
+	const tr = document.createElement('tr');
+
+	const imgTh = document.createElement('th');
+	imgTh.textContent = '課程圖片';
+	imgTh.style.textAlign = 'center';
+
+	const nameTh = document.createElement('th');
+	nameTh.textContent = '課程名稱';
+	nameTh.style.textAlign = 'center';
+
+	const classTh = document.createElement('th');
+	classTh.textContent = '課程類別';
+
+	const priceTh = document.createElement('th');
+	priceTh.textContent = '課程價格';
+
+	const descTh = document.createElement('th');
+	descTh.textContent = '課程介紹';
+	descTh.style.textAlign = 'center';
+
+	const actionTh = document.createElement('th');
+	actionTh.textContent = '功能';
+	actionTh.style.textAlign = 'center';
+	actionTh.width = '50px';
+
+	tr.append(imgTh, nameTh, classTh, priceTh, descTh, actionTh);
+
+	return tr;
+}
+function row(product) {
+	const tr = document.createElement('tr');
+
+	tr.append(
+			imageCell(product),
+			nameCell(product),
+			td(product.p_Class),
+			td(product.p_Price),
+			descCell(product),
+			actionCell(product)
+	)
+
+	return tr;
+}
+function imageCell(product) {
+	const td = document.createElement('td');
+
+	const img = document.createElement("img");
+	img.src = product.p_Img;
+	img.width = "100";
+	img.height = "60";
+
+	td.appendChild(img);
+
+	return td;
+}
+function nameCell(product) {
+	const name = document.createElement("td");
+	name.textContent = product.p_Name;
+	name.style.textAlign = 'center';
+
+	return name;
+}
+function td(text) {
+	const td = document.createElement('td');
+	td.textContent = text;
+	td.style.width = '100px';
+
+	return td;
+}
+function descCell(product) {
+	const desc = document.createElement('td');
+	desc.textContent = product.p_DESC;
+
+	return desc;
+}
+function actionCell(product) {
+	const td = document.createElement('td');
+
+	const upd = document.createElement('input');
+	upd.type = 'button';
+	upd.value = '更新';
+	upd.style.margin = '5px';
+	upd.addEventListener('click', () => {
+		location.href = 'updateProduct/' + product.p_ID;
+	});
+
+	const del = document.createElement('input');
+	del.type = 'button';
+	del.value = '刪除';
+	del.style.margin = '5px';
+	del.addEventListener('click', () => {
+		location.href = 'deleteProduct/' + product.p_ID;
+	});
+
+	td.append(upd, del);
+
+	return td;
 }
 </script>
 
@@ -127,13 +299,13 @@ function showData(textObj) {
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

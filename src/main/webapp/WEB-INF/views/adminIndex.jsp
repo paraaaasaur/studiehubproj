@@ -1,18 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub(管理員)</title>
-
+<script type="application/json" id="bootstrap-data">
+	{
+		"success": "${fn:escapeXml(success)}",
+		"adminId": "${fn:escapeXml(adminId)}"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { success, adminId } = bootstrapData;
+if(success=="管理員登入成功"){alert("管理員登入成功!")}
 
-if("${success}"=="管理員登入成功"){alert("${"管理員登入成功!"}")}
-
-var adminId = "${adminId}";
 window.onload = function(){
 // console.log(adminId);
     
@@ -66,11 +73,11 @@ window.onload = function(){
 			</div>
 
 		<!-- Scripts -->
-			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
 
 	</body>
 </html>

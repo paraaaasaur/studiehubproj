@@ -1,35 +1,45 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
 
+
+<script type="application/json" id="bootstrap-data">
+	{
+		"successMessageOfChangingPassword": "${fn:escapeXml(successMessageOfChangingPassword)}",
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
+
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { successMessageOfChangingPassword, u_id, userPicString } = bootstrapData;
 
-if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
-
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+if(successMessageOfChangingPassword=="修改成功"){alert('密碼修改成功!');}
 
 window.onload = function(){
     var logout = document.getElementById("logout");
     logout.onclick = function(){
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
+        xhr.open("GET", 'logout.controller', true);
         xhr.send();
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 var result = JSON.parse(xhr.responseText);
                 if(result.success){
                     alert(result.success);
-                    top.location = '<c:url value='/' />';
+                    top.location = '';
                 }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
+                    alert(result.fail);
+                    top.location = '';
                 }
             }
         }
@@ -51,7 +61,7 @@ window.onload = function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
@@ -105,7 +115,7 @@ window.onload = function(){
 									</header>
 									<div class="posts">
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-03.png" alt="" /></a>
+											<a href="#" class="image"><img src="images/productImages/sample-image-03.png" alt="" /></a>
 											<h3>🐒 猴子互動口說課（Monkey Interactive English）</h3>
 											<p>高互動設計，保持學習動能：讓好奇心成為學習的引擎。</p>
 											<ul class="actions">
@@ -113,7 +123,7 @@ window.onload = function(){
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-04.png" alt="" /></a>
+											<a href="#" class="image"><img src="images/productImages/sample-image-04.png" alt="" /></a>
 											<h3>🦊 狐狸導師思考日文課（Fox Mentor Logic Japanese）</h3>
 											<p>重視思考脈絡的教學方式：不是快，而是看得深。</p>
 											<ul class="actions">
@@ -122,7 +132,7 @@ window.onload = function(){
 										</article>
 										
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-05.png" alt="" /></a>
+											<a href="#" class="image"><img src="images/productImages/sample-image-05.png" alt="" /></a>
 											<h3>🐺 狼群溝通實戰課（Wolf Team Communication）</h3>
 											<p>團隊導向的互動設計、建立信任，提升群體表達效率，清楚的角色與程度分級。</p>
 											<ul class="actions">
@@ -130,7 +140,7 @@ window.onload = function(){
 											</ul>																				
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-06.png" alt="" /></a>
+											<a href="#" class="image"><img src="images/productImages/sample-image-06.png" alt="" /></a>
 											<h3>🐻 棕熊穩健基礎英文課（Brown Bear Foundation English）</h3>
 											<p>慢而扎實的學習設計，建立長期自信，而非短期刺激。同程度學員安心學習，不追求花樣，重視理解。</p>
 											<ul class="actions">
@@ -138,7 +148,7 @@ window.onload = function(){
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-07.png" alt="" /></a>
+											<a href="#" class="image"><img src="images/productImages/sample-image-07.png" alt="" /></a>
 											<h3>🦌 鹿系自然表達英文課（Deer Natural Expression）</h3>
 											<p>學習過程能感到進步，建立信心，就不怕開口犯錯：台灣人口說不好的一大原因就是害怕開口跟犯錯，所以課程首要條件就是先建立信心與興趣</p>
 											<ul class="actions">
@@ -146,7 +156,7 @@ window.onload = function(){
 											</ul>
 										</article>
 										<article>
-											<a href="#" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-01.png" alt="" /></a>
+											<a href="#" class="image"><img src="images/productImages/sample-image-01.png" alt="" /></a>
 											<h3>🐱 貓咪英文口說課（Cat Speaking Program）</h3>
 											<p>專為內向型學員設計的安心學習環境：理解「慢熟型人格」的學習節奏，從觀察、模仿到自然開口，不強迫、不比較。</p>
 											<ul class="actions">
@@ -166,11 +176,11 @@ window.onload = function(){
 			</div>
 
 		<!-- Scripts -->
-			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
 
 	</body>
 </html>

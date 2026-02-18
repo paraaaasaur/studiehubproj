@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
@@ -16,23 +17,25 @@
 
 </style>
 <meta charset="UTF-8">
-</head>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
+<script type="application/json" id="bootstrap-data">
+	{
+		"adminId": "${fn:escapeXml(adminId)}"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { adminId } = bootstrapData;
 
-	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
-	
-	var adminId = "${adminId}";
 	// 踢除非管理員
 	if(!adminId){
 		alert('您不具有管理者權限，請登入後再試。');
-		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+		top.location = "gotoAdminIndex.controller";
 	}
-	
+
 	window.onload = function(){
 	// console.log(adminId);
 		
@@ -81,7 +84,7 @@
 	 	 <tr>
 	       <td>題目編號：<br>&nbsp;</td>
 	   	   <td><form:hidden path="q_id"/>
-	   	    	${Q1.q_id}<br>&nbsp;
+	   	    	${fn:escapeXml(Q1.q_id)}<br>&nbsp;
 	   	   </td>
 	    </tr>
        </c:otherwise>   
@@ -89,57 +92,57 @@
 		
 		<tr>
 	      <td>課程分類：<br>&nbsp;</td>
-	      <td><form:hidden path="q_class"/>${Q1.q_class}</td>
+	      <td><form:hidden path="q_class"/>${fn:escapeXml(Q1.q_class)}</td>
 		</tr>
 		
 		<tr>
 	      <td>題目類型：<br>&nbsp;</td>
-	      <td><form:hidden path="q_type"/>${Q1.q_type}</td>
+	      <td><form:hidden path="q_type"/>${fn:escapeXml(Q1.q_type)}</td>
 		</tr>	 	
 		
 	   <tr>
 	      <td>問題：<br>&nbsp;</td>
-	      <td><form:hidden path="q_question"/>${Q1.q_question}</td>
+	      <td><form:hidden path="q_question"/>${fn:escapeXml(Q1.q_question)}</td>
 		</tr>
 		
 		<tr>
 	      <td>選項A：<br>&nbsp;</td>
-	      <td><form:hidden path="q_selectionA"/>${Q1.q_selectionA}</td>
+	      <td><form:hidden path="q_selectionA"/>${fn:escapeXml(Q1.q_selectionA)}</td>
 		</tr>
 		
 		<tr>
 	      <td>選項B：<br>&nbsp;</td>
-	      <td><form:hidden path="q_selectionB"/>${Q1.q_selectionB}</td>
+	      <td><form:hidden path="q_selectionB"/>${fn:escapeXml(Q1.q_selectionB)}</td>
 		</tr>
 		
 		<tr>
 	      <td>選項C：<br>&nbsp;</td>
-	      <td><form:hidden path="q_selectionC"/>${Q1.q_selectionC}</td>
+	      <td><form:hidden path="q_selectionC"/>${fn:escapeXml(Q1.q_selectionC)}</td>
 		</tr>
 		
 		<tr>
 	      <td>選項D：<br>&nbsp;</td>
-	      <td><form:hidden path="q_selectionD"/>${Q1.q_selectionD}</td>
+	      <td><form:hidden path="q_selectionD"/>${fn:escapeXml(Q1.q_selectionD)}</td>
 		</tr>
 		
 		<tr>
 	      <td>選項E：<br>&nbsp;</td>
-	      <td><form:hidden path="q_selectionE"/>${Q1.q_selectionE}</td>
+	      <td><form:hidden path="q_selectionE"/>${fn:escapeXml(Q1.q_selectionE)}</td>
 		</tr>
 		   
 	   	<tr>
 	      <td>正解：<br>&nbsp;</td>
-	      <td><form:hidden path="q_answer"/>${Q1.q_answer}</td>
+	      <td><form:hidden path="q_answer"/>${fn:escapeXml(Q1.q_answer)}</td>
 		</tr>
 		
 		<tr>
 		<td style='vertical-align: middle;'>題目音檔：<br>&nbsp;</td>
-		<td><audio controls src='${Q1.q_audioString}' ></audio></td>
+		<td><audio controls src='${fn:escapeXml(Q1.q_audioString)}' ></audio></td>
 		</tr>	
 	   
 		<tr>
 		<td style='vertical-align: middle;'>題目照片：<br>&nbsp;</td>
-		<td><img width='300' height='180' src= '${Q1.q_pictureString}'></td>
+		<td><img width='300' height='180' src= '${fn:escapeXml(Q1.q_pictureString)}'></td>
 		</tr>	
 		
 		
@@ -151,7 +154,7 @@
 	
 <br>
 
-<a href="<c:url value='/question.controller/intoVerifyQuestion'/> ">
+<a href="question.controller/intoVerifyQuestion">
    <button>回前頁</button>
 </a>
 
@@ -168,13 +171,13 @@
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

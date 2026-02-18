@@ -1,16 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<link rel='stylesheet' href="assets/css/main.css">
 
 <title>登入</title>
+<script type="application/json" id="bootstrap-data">
+	{
+		"fail": "${fn:escapeXml(fail)}"
+	}
+</script>
 <script>
-	if ("${fail}" == "帳號或密碼錯誤") {
+const fail = JSON.parse(document.getElementById('bootstrap-data').textContent).fail;
+	if (fail == "帳號或密碼錯誤") {
 		alert('帳號或密碼錯誤, 請再試一次!');
 	}
 </script>
@@ -47,11 +54,11 @@
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
-	<script	src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script	src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script	src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script	src="assets/js/jquery.min.js"></script>
+	<script	src="assets/js/browser.min.js"></script>
+	<script	src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

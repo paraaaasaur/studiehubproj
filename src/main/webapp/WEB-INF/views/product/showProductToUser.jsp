@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
-	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
+<script src="assets/js/jquery.min.js"></script>
 <title>Studie Hub</title>
 <style type="text/css">
 
@@ -29,36 +29,41 @@
 }
 
 </style>
-
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
 <script>
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
 
 window.onload = function(){
     var logout = document.getElementById("logout");
     logout.onclick = function(){
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
+        xhr.open("GET", "logout.controller", true);
         xhr.send();
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 var result = JSON.parse(xhr.responseText);
                 if(result.success){
                     alert(result.success);
-                    top.location = '<c:url value='/' />';
+                    top.location = '';
                 }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
+                    alert(result.fail);
+                    top.location = '';
                 }
             }
         }
     }
-    
+
  // 有登入才會顯示購物車sidebar
 	let cartHref = document.querySelector('#cartHref');
 	cartHref.hidden = (u_id)? false : true;
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-    
+
 	//如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
     var signupHref = document.getElementById('signupHref');
@@ -73,24 +78,24 @@ window.onload = function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
-    } 
-    
+    }
+
     var dataArea = document.getElementById("dataArea");
 	var query = document.getElementById("query");
 	var productname = document.getElementById("productname");
 	var typename = document.getElementById("producttypename");
     let xhr = new XMLHttpRequest();
-    xhr.open("GET","<c:url value='/findAllProduct' />",true);
+    xhr.open("GET","findAllProduct",true);
     xhr.send();
     xhr.onreadystatechange = function(){
 
         if(xhr.readyState == 4 && xhr.status == 200){
             var result = JSON.parse(xhr.responseText);
-			dataArea.innerHTML = showData(result);
+			dataArea.replaceChildren(renderProductPreviews(result));
         }
     }
 
@@ -105,12 +110,12 @@ window.onload = function(){
 		}
 
 		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET',"<c:url value='/queryByProductName' />?pname="+pname+"&producttypename="+producttypename,true);
+		xhr2.open('GET',"queryByProductName?pname="+pname+"&producttypename="+producttypename,true);
 		xhr2.send();
 		xhr2.onreadystatechange = function(){
 			if(xhr2.readyState == 4 && xhr2.status == 200){
 				var result = JSON.parse(xhr2.responseText)
-				dataArea.innerHTML = showData(result);
+				dataArea.replaceChildren(renderProductPreviews(result));
 			}
 		}
 	})
@@ -120,18 +125,18 @@ window.onload = function(){
 			let star = "";
 
 			let xhr = new XMLHttpRequest();
-			xhr.open("GET","<c:url value='/ratingAVG'/>?p_ID="+p_ID, false);
+			xhr.open("GET","ratingAVG?p_ID="+p_ID, false);
 			xhr.send();
 
 				if(xhr.status ==200){
-					
+
 					let result = xhr.responseText;
-					
-					
+
+
 					if(!result){
 						star += "<span>尚無評論</span>";
 					}else{
-					
+
 						for(n=0;n<=result;n++){
 							star += "<i class='fa fa-star fa-x' style='color: gold;'></i>";
 						}
@@ -139,58 +144,94 @@ window.onload = function(){
 					}
 				}
 				return star;
-			
-					
-		}
-		
-		function showData(textObj) {
-		let obj = JSON.parse(JSON.stringify(textObj));
-		let size = obj.size;
-		let ratedIndex = obj.ratedIndex;
-		let products = obj.list;
-		let segment = "<div class='posts'>";
-		if (size == 0) {
-			segment+="<table border='1' style = 'width:100%;text-align: center;'>";
-			segment += "<tr><th colspan='8'>查無資料</th></tr></table>";
-		} else {
-			
-			for(n=0;n<products.length;n++){
-				let product = products[n];
-				let resultStars = "";
-				let star = ratedIndex[n];
-				let showStar = "";
-				if(star!=null){
 
-					for(i=0;i<star;i++){
-						showStar+="<i class='fa fa-star fa-x commentStar'style='color:gold'></i>";
+
+		}
+
+		function renderProductPreviews(resObj) {
+			const { list: products, ratedIndex: ratedIndices} = resObj;
+
+			console.log(ratedIndices);
+
+			const container = document.createElement('div');
+			container.classList.add('posts');
+			container.replaceChildren();
+
+			if (products.length === 0) {
+				container.innerHTML =
+						"<table border='1' style = 'width:100%;text-align: center;'>" +
+							"<tr>" +
+								"<th colspan='8'>查無資料</th>" +
+							"</tr>" +
+						"</table>";
+			} else {
+				for (let i = 0; i < products.length; i++) {
+					const product = products[i];
+					const ratedIndex = ratedIndices[i];
+
+					const productPreview = document.createElement('article');
+
+					const a = document.createElement('a');
+					a.className = 'image';
+					a.href = "takeClass/" + product.p_ID;
+					a.alt = '';
+					{
+						const img = document.createElement('img');
+						img.src = product.p_Img;
+						img.style.height = '5%';
+						a.appendChild(img);
 					}
-				}else{
-					showStar+="尚未評論";
+
+					const productName = document.createElement('h3');
+					productName.textContent = product.p_Name;
+
+					const starBlock = createStarBlock(ratedIndex);
+
+					const productPrice = document.createElement('p');
+					productPrice.textContent = product.p_Price;
+
+					const btnBlock = document.createElement('div');
+					btnBlock.className = 'actions';
+					{
+						const a = document.createElement('a');
+						a.className = 'button';
+						a.href = "takeClass/" + product.p_ID;
+						a.textContent = 'MORE';
+
+						btnBlock.appendChild(a);
+					}
+
+					productPreview.append(
+							a, productName, starBlock, productPrice,
+							document.createElement('br'), btnBlock
+					);
+
+					container.appendChild(productPreview);
 				}
-				// resultStars += setResultStars(product.p_ID);
-					segment += "<article>";
-					segment += "<a class='image' href='<c:url value = '/takeClass/"+ product.p_ID +"'/>' alt='' />";
-					segment += "<img src='${pageContext.request.contextPath}/"+ product.p_Img +"' width='10%' height='5%' ></a>";
-					// segment += setResultStars(product.p_ID);
-					segment += "<h3>"+ product.p_Name +"</h3>"
-					segment += showStar;
-					segment += "<p>NT"+product.p_Price+"</p>"
-					segment += "<br>"
-					segment += "<ul class='actions'";
-					segment += "<li><a class='button' href='<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'>More</a></li>";
-					segment += "</ul>";
-					segment += "</article>";
-					
-					
-				}
-				
-				
-				
 			}
-			
-			segment += "</div>";
-			return segment;
-	}
+
+			return container;
+		}
+
+		function createStarBlock(ratedIndex) {
+			const starBlock = document.createElement('div');
+			if (ratedIndex == null) {
+				const noRating = document.createElement('div');
+				noRating.textContent = "尚無評分";
+
+				starBlock.appendChild(noRating);
+			} else {
+				for (let i = 0; i < ratedIndex; i++) {
+					const star = document.createElement('i');
+					star.classList.add('fa', 'fa-star', 'fa-x', 'commentStar');
+					star.style.color = 'gold';
+
+					starBlock.appendChild(star);
+				}
+			}
+
+			return starBlock;
+		}
 
 
 </script>
@@ -221,7 +262,7 @@ window.onload = function(){
 					<br>
 
 				<br>
-				
+
 				</div>
 				<div id='dataArea'></div>
 			</div>
@@ -237,29 +278,29 @@ window.onload = function(){
 		var ratedIndex =-1;
 		var stars = document.getElementById("stars");
 		var comment = document.getElementById("showComment");
-		
+
 
 		$(document).ready(function(){
 			resetStarColors();
-			
+
 			if(localStorage.getItem('ratedIndex') != null)
 			setStars(parseInt(localStorage.getItem('ratedIndex')));
-			
+
 			$('.commentStar').on('click',function(){
 				ratedIndex = parseInt($(this).data('index'));
 				localStorage.setItem('ratedIndex',ratedIndex);
 			});
-			
+
 			$('.commentStar').mouseover(function(){
 				resetStarColors();
-				
+
 				var currentIndex = parseInt($(this).data('index'));
 				setStars(currentIndex);
 			});
-			
+
 			$('.commentStar').mouseleave(function(){
 				resetStarColors();
-				
+
 				if(ratedIndex !=-1)
 				setStars(ratedIndex);
 			});
@@ -275,17 +316,17 @@ window.onload = function(){
 		// 	var result = JSON.parse(xhr0.responseText);
 		// 	comment.innerHTML = showComment(result);
 
-			
+
 		// 	}
 		// }
 		});
-	
-		
+
+
 		function setStars(max){
 				for(var i=0;i<=max;i++)
 					$('.commentStar:eq('+i+')').css('color','gold');
 		}
-		
+
 
 		function resetStarColors(){
 			$('.commentStar').css('color','gray');
@@ -299,28 +340,28 @@ window.onload = function(){
 			console.log(p_ID);
 
 			var xhr = new XMLHttpRequest();
-			xhr.open("POST", "<c:url value='/saveRating' />",true);
+			xhr.open("POST", "saveRating",true);
 			xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			xhr.send("p_ID="+p_ID+"&ratedIndex="+ratedIndex+"&commentString="+text);
-			window.location.href="http://localhost:8080/studiehub/takeClass/"+p_ID;
-			
+			window.location.href="takeClass/"+p_ID;
+
 
 		});
 
-		
+
 
 		</script>
 
 	<!-- Scripts -->
 	<script src="https://kit.fontawesome.com/c43b2fbf26.js"	crossorigin="anonymous"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
@@ -8,8 +9,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ckeditor.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/ckeditor.css">
 <title>編輯回覆</title>
 <script>
 window.onload = function(){
@@ -51,20 +53,21 @@ window.onload = function(){
 					</form:form>
 					<div align='center'>
 						<hr>
-						<a href="<c:url value='/goSelectAllChat' />">上一頁</a>
+						<a href="goSelectAllChat">上一頁</a>
 					</div>
 				</div>
 				<p />
 			</div>
 		</div>
 	</div>
-	<script	src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script	src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script	src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-	<script src="${pageContext.request.contextPath}/build/ckeditor.js"></script>
+	<script	src="assets/js/jquery.min.js"></script>
+	<script	src="assets/js/browser.min.js"></script>
+	<script	src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="build/ckeditor.js"></script>
 	<script>
+
 	ClassicEditor.create( document.querySelector( '#c_Conts' ), {
 		// 這裡可以設定 plugin
 	})

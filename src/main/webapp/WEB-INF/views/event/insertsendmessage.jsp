@@ -16,35 +16,40 @@ span.error {
 
 </style>
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 	
 
 
 <title>Studie Hub</title>
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "<c:out value="${loginBean.u_id}" />",
+		"userPicString": "<c:out value="${loginBean.pictureString}" />"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
 let div1 = null;
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
 window.addEventListener("load", function() {
 	//window.addEvenListener 網頁監聽器 
 	//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
 	var logout = document.getElementById("logout");
 		logout.onclick = function() {
 			var xhr1 = new XMLHttpRequest();
-			xhr.open("GET", "<c:url value='/logout.controller' />", true);
+			xhr.open("GET", "logout.controller", true);
 			xhr.send();
 			xhr.onreadystatechange = function() {
 				if (xhr1.readyState == 4 && xhr1.status == 200) {
 					var result = JSON.parse(xhr1.responseText);
 					if (result.success) {
 						alert(result.success);
-						top.location = '<c:url value='/' />';
+						top.location = '';
 					} else if (result.fail) {
 						alert(result.fail);
-						top.location = '<c:url value='/' />';
+						top.location = '';
 					}
 				}
 			}
@@ -61,7 +66,7 @@ window.addEventListener("load", function() {
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    	userPic.src = userPicString;	//有登入就秀大頭貼
-	    	userId.innerHTML = u_id;
+	    	userId.textContent = u_id;
 	    	loginEvent.style.display = "block";
 	    	loginALLEvent.style.display = "block";
 
@@ -105,7 +110,7 @@ window.addEventListener("load", function() {
 									<td>活動編號：<br>&nbsp;
 									</td>
 									<td><form:hidden path='a_aid' /> <%-- form:hidden 這個欄位不能被修改  在修改的時候才會出現--%>
-										${EventInfo.a_aid}<br>&nbsp;</td>
+										<c:out value="${EventInfo.a_aid}" /><br>&nbsp;</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -163,14 +168,11 @@ window.addEventListener("load", function() {
 	</div>
 
 	<!-- Scripts -->
-	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

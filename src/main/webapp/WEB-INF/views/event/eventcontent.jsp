@@ -8,15 +8,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
+        <base href="<c:out value="${pageContext.request.contextPath}/" />">
         <title>活動內容</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/startbootstrap/assets/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="startbootstrap/assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="${pageContext.request.contextPath}/startbootstrap/css/styles.css" rel="stylesheet" />
-        <link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+        <link href="startbootstrap/css/styles.css" rel="stylesheet" />
+        <link rel='stylesheet' href="assets/css/main.css">
 
         <script src="https://cdn.bootcss.com/limonte-sweetalert2/7.20.5/sweetalert2.all.min.js"></script>
-    </head>
+        <script src="assets/js/purify.js/"></script>
     <style>
 .father{
     width: 300px;
@@ -34,30 +35,43 @@
     transform: translate(-50%, -50%);
     */
 }
-
+.event-content__thumbnail {
+    width: 320px;
+    height: 240px;
+}
+.event-content__description {
+    white-space: pre;
+}
 </style>
+        <script type="application/json" id="bootstrap-data">
+            {
+                "u_id": "<c:out value="${loginBean.u_id}" />",
+                "userPicString": "<c:out value="${loginBean.pictureString}" />",
+                "a_aid": "<c:out value="${eventcontent.a_aid}" />"
+            }
+        </script>
     <script>
-    var u_id = "${loginBean.u_id}";
-	var userPicString = "${loginBean.pictureString}";   
+    const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+    const { u_id, userPicString, a_aid } = bootstrapData;
 window.addEventListener("load", function() {
 
-	
-	
-	
+
+
+
 		var logout = document.getElementById("logout");
 			logout.onclick = function() {
 				var xhr1 = new XMLHttpRequest();
-				xhr.open("GET", "<c:url value='/logout.controller' />", true);
+				xhr.open("GET", "logout.controller'", true);
 				xhr.send();
 				xhr.onreadystatechange = function() {
 					if (xhr1.readyState == 4 && xhr1.status == 200) {
 						var result = JSON.parse(xhr1.responseText);
 						if (result.success) {
 							alert(result.success);
-							top.location = '<c:url value='/' />';
+							top.location = '';
 						} else if (result.fail) {
 							alert(result.fail);
-							top.location = '<c:url value='/' />';
+							top.location = '';
 						}
 					}
 				}
@@ -88,30 +102,30 @@ window.addEventListener("load", function() {
 			cartHref.hidden = (u_id)? false : true;
 			cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 		//universal
-		
-	
-	
 
-	
 
-    	dataArea = document.getElementById("div1");
-    	Signup = document.getElementById("Signup");
+
+
+
+
+    	const dataArea = document.getElementById("div1");
+    	const Signup = document.getElementById("Signup");
 
     	let xhr = new XMLHttpRequest();
-    	xhr.open("GET", "<c:url value='/eventcontentjson/' />"+${eventcontent.a_aid}, true);
+    	xhr.open("GET", "eventcontentjson/"+a_aid, true);
 
     	xhr.send();
     	xhr.onreadystatechange = function() {
-    		
+
     		if (xhr.readyState == 4 && xhr.status === 200) {
 //     			            console.log(xhr.responseText);
 //     			            console.log(u_id);
-    			dataArea.innerHTML = showData(xhr.responseText);
-    			//執行方法 將 jsoe字串  轉為 jsoe物件 
+    			dataArea.replaceChildren(showData(xhr.responseText));
+    			//執行方法 將 jsoe字串  轉為 jsoe物件
     		}
     	};
-    	
-    	
+
+
     	Signup.addEventListener("click", function() {
 			//當id= query 的DOM物件被按下後 執行此方法
 // 			let rname = restname.value;
@@ -122,15 +136,15 @@ window.addEventListener("load", function() {
 // 			}
 
 			let xhr2 = new XMLHttpRequest();
-			xhr2.open("GET", "<c:url value='/signupclick/' />"+${eventcontent.a_aid}, true);
+			xhr2.open("GET", "signupclick/"+a_aid, true);
 			xhr2.send();
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
 // 					console.log(u_id);
-					
+
 					result = JSON.parse(xhr2.responseText);
-					
+
 					if(result.succes){
 						console.log(result.succes);
 						swal(result.succes);
@@ -146,77 +160,192 @@ window.addEventListener("load", function() {
 				}
 			}
 		});
-    	
+
 
     });
-    
-    
-    
-    
+
+
+
+
 function showData(textobj) {
-	let obj = JSON.parse(textobj)
+	const obj = JSON.parse(textobj);
 
 
-    let segment="" ;
-	
-	let str = obj.comment ; 
-	
-	
-	
-    let  reg = /[?？]/g;
-    let  reg1 = /[,，]/g;
-    let  reg2 = /[!！]/g;
-    let  reg3 = /[。。]/g;
-    str1 = str.replace(reg,"?<br>");
-    str2 = str1.replace(reg1,",<br>");
-    str3 = str2.replace(reg2,"!<br>");
-    str4 = str3.replace(reg3,"。<br>");
-//     遇到標點符號就分割 暫時這樣 
+    const eventContainer = document.createElement("article");
 
-    let tmp1 = "https://www.google.com/maps?q="+obj.a_address ;
-    let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='37' height='37' src='<c:url value='/images/enevt/地圖小圖.png' />'" + "</a>";
-    let tmp2 = "<c:url value='/modifyRestaurant/'   />"+ obj.a_uid;
-			    segment += "<article>";
-			    segment += "<header class='mb-4'>";
-			    
-			    //判斷活動過期了沒有 有在H2裡加上已過期
-			    if(obj.expired=="未過期"){
-			    	
-			    	segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"</h1>";
-			    }else{
-			    	
-			    	segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"("+obj.expired+")"+ "</h1>";
-			    }
-			    
-			    segment += "<div class='text-muted fst-italic mb-2'>發布者 :"+obj.uidname+"</div>";
-				segment += "<div class='text-muted fst-italic mb-2'>建立時間 :"+obj.creationTime+"</div>";
-				segment += "<div class='text-muted fst-italic mb-2'>報名人數上限 :"+obj.applicants+"</div>";
-				segment += "<div class='text-muted fst-italic mb-2'>已報名人數 :"+obj.havesignedup+"</div>";
-				segment += "<a class='badge bg-secondary text-decoration-none link-light' href='#!'>"+obj.a_type+"</a><br>";
-// 				segment += "<a class='badge bg-secondary text-decoration-none link-light' href='"+tmp2+"'>"+"悄悄話"+"</a>";
-				segment += "</header>"
-				segment += "<span style = 'font-size:18px;'>報名活動時間 : "+obj.a_registration_starttime+"<span>至</span>"+obj.a_registration_endrttime+"<br/></span> "	
-				segment += "<br>"
-				segment += "<span style = 'font-size:18px;'>活動開始時間 : "+obj.a_startTime+"<span>至</span>"+obj.a_endTime+"<br/></span> "	
-				segment += "<br>"
-				segment += "<span style = 'font-size:18px;'>活動地點 : "+obj.a_address+"</span>"
-				segment += "<br>"
-				segment += "<br>"			   
-				segment += "<figure class='mb-4'><img width='320' height='240'src=" + '<c:url value="/" />' + obj.a_picturepath+"  /></figure>"				
-				segment += "<section class='mb-5'>"
-				segment += "<p class='fs-5 mb-4'>"+str4+"</p>"
-				segment += "</section>"
-				segment += "</article>"
+    const header = document.createElement("header");
+    header.classList.add('mb-4');
 
-		
-	
-	
+    header.append(
+        createTitle(obj.a_name, obj.expired),
+        createPublisher(obj.uidname),
+        createCapacityInfo(obj.applicants),
+        createCurrentAttendance(obj.havesignedup),
+        createHashtag(obj.a_type),
+    );
 
-	return segment;
+    eventContainer.append(
+        header,
+        createBr(),
+        createRegistrationPeriod(obj.a_registration_starttime, obj.a_registration_endrttime),
+        createBr(),
+        createBr(),
+        createEventSchedule(obj.a_startTime, obj.a_endTime),
+        createBr(),
+        createBr(),
+        createLocation(obj.a_address),
+        createBr(),
+        createBr(),
+        createThumbnail(obj.a_picturepath),
+        createDescriptionSection(obj.comment)
+    );
+
+	return eventContainer;
+}
+const DICT = {
+    publisher: '發布者',
+    createdAt: '建立時間',
+    capacity: '報名人數上限',
+    currentAttendance: '已報名人數',
+    registrationPeriod: '報名活動時間',
+    eventSchedule: '活動開始時間',
+    location: '活動地點'
+};
+function createTitle(title, expiredMsg) {
+    // if(obj.expired=="未過期"){
+    //
+    //     segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"</h1>";
+    // }else{
+    //
+    //     segment += "<h2 class='fw-bolder mb-1'>"+obj.a_name+"("+obj.expired+")"+ "</h1>";
+    // }
+
+    const titleEl = document.createElement("h2");
+    titleEl.textContent = title + (expiredMsg != '未過期'?
+        '(' + expiredMsg + ')'
+        : '');
+    titleEl.classList.add("fw-bolder", 'mb-1');
+
+    return titleEl;
+}
+function createPublisher(publisher) {
+    const publisherEl = document.createElement("div");
+    publisherEl.textContent = DICT.publisher + ' :' + publisher;
+    publisherEl.classList.add('text-muted', 'fst-italic', 'mb-2');
+
+    return publisherEl;
+}
+function createCreatedAt(createdAt) {
+    const createdAtEl = document.createElement("div");
+    createdAtEl.textContent = DICT.createdAt + ' :' + createdAt;
+    createdAtEl.classList.add('text-muted', 'fst-italic', 'mb-2');
+
+    return createdAtEl;
+}
+function createCapacityInfo(capacity) {
+    const capacityInfoEl = document.createElement("div");
+    capacityInfoEl.textContent = DICT.capacity + ' :' + capacity;
+    capacityInfoEl.classList.add('text-muted', 'fst-italic', 'mb-2');
+
+    return capacityInfoEl;
+}
+function createCurrentAttendance(currentAttendance) {
+    const currentAttendanceEl = document.createElement("div");
+    currentAttendanceEl.textContent = DICT.currentAttendance + ' :' + currentAttendance;
+    currentAttendanceEl.classList.add('text-muted', 'fst-italic', 'mb-2');
+
+    return currentAttendanceEl;
+}
+function createHashtag(category) {
+    const link = document.createElement("a");
+    link.href = 'javascript:void(0);';
+    link.textContent = category;
+    link.classList.add('badge', 'bg-secondary', 'text-decoration-none', 'link-light')
+
+    return link;
+}
+function createRegistrationPeriod(from, to) {
+    const registrationPeriodEl = document.createElement("span");
+    registrationPeriodEl.style.fontSize = '18px';
+    {
+        const labelText = document.createTextNode(DICT.registrationPeriod + ' :');
+
+        const fromText = document.createTextNode(from);
+
+        const separatorEl = document.createElement('span');
+        separatorEl.textContent = ' ~ ';
+
+        const toText = document.createTextNode(to);
+
+        registrationPeriodEl.append(labelText, fromText, separatorEl, toText);
+    }
+
+    return registrationPeriodEl;
+}
+function createEventSchedule(from, to) {
+    const eventScheduleEl = document.createElement("span");
+    eventScheduleEl.style.fontSize = '18px';
+    {
+        const labelText = document.createTextNode(DICT.eventSchedule + ' :');
+
+        const fromText = document.createTextNode(from);
+
+        const separatorEl = document.createElement('span');
+        separatorEl.textContent = ' ~ ';
+
+        const toText = document.createTextNode(to);
+
+        eventScheduleEl.append(labelText, fromText, separatorEl, toText);
+    }
+
+    return eventScheduleEl;
+}
+function createLocation(location) {
+    const locationEl = document.createElement("span");
+    locationEl.textContent = DICT.location + ' :' + location;
+    locationEl.style.fontSize = '18px';
+
+    return locationEl;
+}
+function createThumbnail(imgSrc) {
+    const thumbnailEl = document.createElement("figure");
+    thumbnailEl.classList.add('mb-4');
+
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.classList.add('event-content__thumbnail');
+
+    thumbnailEl.appendChild(img);
+
+    return thumbnailEl;
+}
+function createDescriptionSection(description) {
+    const section = document.createElement("section");
+    section.classList.add('mb-5');
+
+    const descEl = document.createElement("p");
+    descEl.classList.add('event-content__description', 'fs-5', 'mb-4');
+    descEl.textContent = splitDescByBreakTokens(description);
+
+    section.appendChild(descEl);
+
+
+    return descEl;
+}
+function splitDescByBreakTokens(description) {
+    return description
+        .replace(/[?？]+/g, '$&\n')
+        .replace(/[,，]+/g, '，\n')
+        .replace(/[!！]+/g, '$&\n')
+        .replace(/。+/g, '$&\n');
+}
+function createBr() {
+    return document.createElement('br');
 }
     </script>
+</head>
  <body class="is-preload">
-	
+
 
 	<!-- Wrapper -->
 	<div id="wrapper">
@@ -225,15 +354,15 @@ function showData(textobj) {
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
-				 
-                
+
+
 
                 <div  id = "div1"class="col-lg-8">
 <!--                    插入活動內容的位置 -->
                 </div>
 
             <button id='Signup'>我要報名</button>
-            
+
 
 
 
@@ -249,13 +378,13 @@ function showData(textobj) {
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

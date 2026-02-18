@@ -7,7 +7,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+	href="assets/css/main.css">
 <title>sidebar</title>
 
 <body>
@@ -28,28 +28,28 @@
 					<h2>Menu</h2>
 				</header>
 				<ul>
-					<li><a href="<c:url value='/' />">首頁</a></li>
-					<li id='loginHref'><a href="<c:url value='/gotologin.controller' />">登入</a></li>
-					<li id='signupHref'><a href="<c:url value='/gotosignup.controller' />">註冊</a></li>
+					<li><a href=".">首頁</a></li>
+					<li id='loginHref'><a href="gotologin.controller">登入</a></li>
+					<li id='signupHref'><a href="gotosignup.controller">註冊</a></li>
 					<li><span class="opener">會員資訊</span>
 						<ul>
-							<li><a href="<c:url value='/gotoChangePassword.controller' />">更改密碼</a></li>
-							<li><a href="<c:url value='/gotoUpdateUserinfo.controller' />">編輯個人資料</a></li>
+							<li><a href="gotoChangePassword.controller">更改密碼</a></li>
+							<li><a href="gotoUpdateUserinfo.controller">編輯個人資料</a></li>
 						</ul></li>
 					<li><span class="opener">課程資訊</span>
 						<ul>
-							<li><a href="/studiehub/queryProductForUser">所有課程</a></li>
-							<li style='display:none' id='loginEvent'><a href="/studiehub/insertProduct">新增課程</a></li>
+							<li><a href="queryProductForUser">所有課程</a></li>
+							<li style='display:none' id='loginEvent'><a href="insertProduct">新增課程</a></li>
 						</ul>
 					</li>
-					<li id="cartHref" hidden><a href="<c:url value='/cart.controller/cartIndex' />">購物車</a></li>
-					<li><a href="<c:url value='/goSelectAllChat' />">討論區</a></li>
+					<li id="cartHref" hidden><a href="cart.controller/cartIndex">購物車</a></li>
+					<li><a href="goSelectAllChat">討論區</a></li>
 					
 					<li><span class="opener">活動</span>
 					    <ul>
-					        <li><a href="<c:url value='/eventindex' />">活動區</a></li>
-					        <li style='display:none' id='loginEvent1'><a href="<c:url value='/insertEvent' />">新增活動</a></li>
-					        <li style='display:none' id='loginALLEvent1'><a href="<c:url value='/userAllEvent' />">使用者後臺</a></li>
+					        <li><a href="eventindex">活動區</a></li>
+					        <li style='display:none' id='loginEvent1'><a href="insertEvent">新增活動</a></li>
+					        <li style='display:none' id='loginALLEvent1'><a href="userAllEvent">使用者後臺</a></li>
 <%-- 					        <li><a href="<c:url value='/Eventindex' />">所有活動(測試)</a></li>			         --%>
 					        			        
 					    </ul>
@@ -57,16 +57,16 @@
 
 					<li><span class="opener">題庫</span>
 						<ul>
-							<li><a href="<c:url value='/question.controller/guestQueryQuestion' />">所有試題</a></li>
-							<li><a href="<c:url value='/question.controller/turnQuestionIndex' />">線上測驗區</a></li>
-							<li><a href="<c:url value='/question.controller/insertQuestion' />">申請新增試題</a></li>
+							<li><a href="question.controller/guestQueryQuestion">所有試題</a></li>
+							<li><a href="question.controller/turnQuestionIndex">線上測驗區</a></li>
+							<li><a href="question.controller/insertQuestion">申請新增試題</a></li>
 						</ul>
 					</li>
 					
 
-					<li><a href="<c:url value='/gotoAdminIndex.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li>
+					<li><a href="gotoAdminIndex.controller"><b style="color:#f56a6a;">管理者頁面</b></a></li>
 <%-- 					<li><a href="<c:url value='/gotoAdminLogin.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li> --%>
-					<li><a href="<c:url value='/credits' />">⭐️SPECIAL THANKS⭐️</a></li>
+					<li><a href="credits">⭐️SPECIAL THANKS⭐️</a></li>
 				</ul>
 			</nav>
 			<!-- Section -->
@@ -76,21 +76,21 @@
 				</header>
 				<div class="mini-posts">
 					<article>
-						<a href="<c:url value = '/takeClass/2'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-02.png"
+						<a href="takeClass/2" class="image"><img src="images/productImages/sample-image-02.png"
 							alt="" /></a>
 						<p>
 							掌握關鍵句型，讓每次溝通都有重點。活潑、互動、敢開口！
 						</p>
 					</article>
 					<article>
-						<a href="<c:url value = '/takeClass/3'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-03.png"
+						<a href="takeClass/3" class="image"><img src="images/productImages/sample-image-03.png"
 							alt="" /></a>
 						<p>
 							跳脫直翻，用英文邏輯組織你的想法！ 主打聰明、結構、理解而非背誦
 						</p>
 					</article>
 					<article>
-						<a href="<c:url value = '/takeClass/4'/>" class="image"><img src="${pageContext.request.contextPath}/images/productImages/sample-image-04.png"
+						<a href="takeClass/4" class="image"><img src="images/productImages/sample-image-04.png"
 							alt="" /></a>
 						<p>
 							把英文用起來，日常對話自然又不尷尬！<br>

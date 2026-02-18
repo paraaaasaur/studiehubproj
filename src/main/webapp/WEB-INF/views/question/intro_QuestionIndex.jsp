@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
@@ -35,26 +36,30 @@
     50%  { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
     100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
   }
-  
-  img:hover{                             
+
+  img:hover{
     filter: invert(0%);
-    -webkit-filter: opacity(0.7);                       
+    -webkit-filter: opacity(0.7);
 }
 
 </style>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 
 <title>線上測驗區</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
 <script>
-
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
 
 window.addEventListener('load', function(){
 	
@@ -73,7 +78,7 @@ window.addEventListener('load', function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
@@ -91,20 +96,20 @@ window.addEventListener('load', function(){
 });
 
 function showData(){
-  	let tmp1 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/n1.png' />'" + "</a>";
+  	let tmp1 = "question.controller/startRandomMixExam/";
+ 	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='180' height='55' src='images/question/n1.png'" + "</a>";
  	
- 	let tmp3 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp2 = "<a href='" + tmp3 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/n2.png' />'" + "</a>";
+ 	let tmp3 = "question.controller/startRandomMixExam/";
+ 	let tmp2 = "<a href='" + tmp3 + "' >" + "<img width='180' height='55' src='images/question/n2.png'" + "</a>";
  	
- 	let tmp5 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp4 = "<a href='" + tmp5 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/n3.png' />'" + "</a>";
+ 	let tmp5 = "question.controller/startRandomMixExam/";
+ 	let tmp4 = "<a href='" + tmp5 + "' >" + "<img width='180' height='55' src='images/question/n3.png'" + "</a>";
  	
- 	let tmp7 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp6 = "<a href='" + tmp7 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/n4.png' />'" + "</a>";
+ 	let tmp7 = "question.controller/startRandomMixExam/";
+ 	let tmp6 = "<a href='" + tmp7 + "' >" + "<img width='180' height='55' src='images/question/n4.png'" + "</a>";
  	
- 	let tmp9 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp8 = "<a href='" + tmp9 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/n5.png' />'" + "</a>";
+ 	let tmp9 = "question.controller/startRandomMixExam/";
+ 	let tmp8 = "<a href='" + tmp9 + "' >" + "<img width='180' height='55' src='images/question/n5.png'" + "</a>";
  	
  	
 	let content  = "<div>" + tmp0 +"&ensp;"+ tmp2 +"&ensp;"+ tmp4 +"&ensp;"+ tmp6 +"&ensp;"+ tmp8 + "</div>"; 
@@ -114,14 +119,14 @@ function showData(){
 };
 
 function showData2(){
-	let tmp1 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/e1.png' />'" + "</a>";
+	let tmp1 = "question.controller/startRandomMixExam";
+ 	let tmp0 = "<a href='" + tmp1 + "' >" + "<img width='180' height='55' src='images/question/e1.png'" + "</a>";
  	
- 	let tmp3 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp2 = "<a href='" + tmp3 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/e2.png' />'" + "</a>";
+ 	let tmp3 = "question.controller/startRandomMixExam";
+ 	let tmp2 = "<a href='" + tmp3 + "' >" + "<img width='180' height='55' src='images/question/e2.png'" + "</a>";
  	
- 	let tmp5 = "<c:url value='/question.controller/startRandomMixExam/'  />";
- 	let tmp4 = "<a href='" + tmp5 + "' >" + "<img width='180' height='55' src='<c:url value='/images/question/e3.png' />'" + "</a>";
+ 	let tmp5 = "question.controller/startRandomMixExam";
+ 	let tmp4 = "<a href='" + tmp5 + "' >" + "<img width='180' height='55' src='images/question/e3.png'" + "</a>";
  	
  	
 	let content  = "<div>" + tmp0 +"&ensp;"+ tmp2 +"&ensp;"+ tmp4 + "</div>"; 
@@ -179,13 +184,13 @@ function showData2(){
 	</div>
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 	
 </body>
 </html>

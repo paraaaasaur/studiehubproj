@@ -14,15 +14,36 @@
  table{
        table-layout:fixed;
        word-wrap:break-word;}
- 
+
+ .event-row {}
+ .event-row__thumbnail {
+	 width: 70px;
+	 height: 60px;
+ }
+ .event-row__capacity {
+	 text-align: center;
+	 vertical-align: middle;
+ }
+ .event-row__current-attendance {
+	 text-align: center;
+	 vertical-align: middle;
+ }
+ .event-row__action {
+	 width: 60px;
+	 height: 50px;
+	 font-size: 1px;
+	 border-radius: 10px;
+ }
+ .event-row__edit-cell {
+	 width: 10%;
+ }
 
 </style>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
 
 </head>
@@ -30,33 +51,41 @@
 
 
 
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "<c:out value="${loginBean.u_id}" />",
+		"userPicString": "<c:out value="${loginBean.pictureString}" />",
+		"successMessage": "<c:out value="${successMessage}" />"
+	}
+</script>
+<script src="assets/js/utility/dom.js"></script>
 <script>
-	let dataArea = null; //變數放在外面 空值(原始狀態)  放在方法裡 別的方法要用它會找不到 不要讓他被綁住 
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString, successMessage } = bootstrapData;
+	let dataArea = null; //變數放在外面 空值(原始狀態)  放在方法裡 別的方法要用它會找不到 不要讓他被綁住
 	let restname = null;
 	let query = null;
 	let queryall = null;
-	var u_id = "${loginBean.u_id}";
-	var userPicString = "${loginBean.pictureString}";   
 
 	window.addEventListener("load", function() {
-		//window.addEvenListener 網頁監聽器 
-		//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
+		//window.addEvenListener 網頁監聽器
+		//當瀏覽器從第一行到最後一行載完畢後才執行 function()
 
-		
+
 		var logout = document.getElementById("logout");
 			logout.onclick = function() {
 				var xhr1 = new XMLHttpRequest();
-				xhr.open("GET", "<c:url value='/logout.controller' />", true);
+				xhr.open("GET", "logout.controller", true);
 				xhr.send();
 				xhr.onreadystatechange = function() {
 					if (xhr1.readyState == 4 && xhr1.status == 200) {
 						var result = JSON.parse(xhr1.responseText);
 						if (result.success) {
 							alert(result.success);
-							top.location = '<c:url value='/' />';
+							top.location = '';
 						} else if (result.fail) {
 							alert(result.fail);
-							top.location = '<c:url value='/' />';
+							top.location = '';
 						}
 					}
 				}
@@ -77,7 +106,7 @@
 		    	signupHref.hidden = true;
 		    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 		    	userPic.src = userPicString;	//有登入就秀大頭貼
-		    	userId.innerHTML = u_id;
+		    	userId.textContent = u_id;
 		    	loginEvent.style.display = "block";
 		    	loginEvent1.style.display = "block";
 		    	loginALLEvent1.style.display = "block";
@@ -87,28 +116,28 @@
 			cartHref.hidden = (u_id)? false : true;
 			cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 		//universal
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		dataArea = document.getElementById("dataArea");
 		restname = document.getElementById("restname");
 		query = document.getElementById("query");
@@ -116,19 +145,19 @@
 
 		//抓到 Id 叫 dataArea 能對這個地方做修改 或 對他做監聽事件
 		let xhr = new XMLHttpRequest();
-		xhr.open("GET", "<c:url value='/Eventfindbyuid' />", true);
+		xhr.open("GET", "Eventfindbyuid", true);
 		//他會送出請求去/findAll 然後 controller 去接收 /findAll 執行方法
-		//說明請求的內容 fales 就是同步 true 就是非同步 
+		//說明請求的內容 fales 就是同步 true 就是非同步
 		xhr.send();
 		//真正送出請求
 		xhr.onreadystatechange = function() {
-			//當屬性發生變化的時候執行方法	
+			//當屬性發生變化的時候執行方法
 			if (xhr.readyState == 4 && xhr.status === 200) {
-				    if("${successMessage}") {
-						alert("${successMessage}");
-				    }     
-				dataArea.innerHTML = showData(xhr.responseText);
-				//執行方法 將 jsoe字串  轉為 jsoe物件 
+				    if(successMessage) {
+						alert(successMessage);
+				    }
+				renderEventsTable(xhr.responseText);
+				//執行方法 將 jsoe字串  轉為 jsoe物件
 			}
 		};
 
@@ -142,31 +171,31 @@
 			}
 
 			let xhr2 = new XMLHttpRequest();
-			xhr2.open('GET', "<c:url value='/queryEventByName' />?rname=" + rname);
+			xhr2.open('GET', "queryEventByName?rname=" + rname);
 			xhr2.send();
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
-					
-					
-					dataArea.innerHTML = showData(xhr2.responseText);
+
+
+					renderEventsTable(xhr2.responseText);
 
 				}
 			}
 		});
-		
+
 		queryall.addEventListener("click", function() {
 					//當id= query 的DOM物件被按下後 執行此方法
 
 					let xhr3 = new XMLHttpRequest();
-					xhr3.open('GET', "<c:url value='/Eventfindbyuid' />", true);
+					xhr3.open('GET', "Eventfindbyuid", true);
 					xhr3.send();
 					xhr3.onreadystatechange = function() {
 						if (xhr3.readyState == 4 && xhr3.status == 200) {
 
-							
-							
-							dataArea.innerHTML = showData(xhr3.responseText);
+
+
+							renderEventsTable(xhr3.responseText);
 
 						}
 					}
@@ -174,65 +203,177 @@
 
 	});
 
-	function showData(textobj) {
-		// 	改成map回傳 obj裡面變成 物件 有size 跟 list 陣列物件
-		// 	let places = JSON.parse(textData);
-		// 	將 jsoe字串  轉為 jsoe物件 
+	function renderEventsTable(textobj) {
 		let obj = JSON.parse(textobj)
 		let size = obj.size;
-		//  分別把物件裡的 size 跟 list 拆開
 		let events = obj.list
 
-		let segment = "<table>";
+		const eventsTable = document.createElement("table");
 
 		if (size == 0) {
-			segment += "<tr><th colspan='1'>'查無資料'</th><tr>"
+			eventsTable.appendChild(createNoResultMessage());
 		} else {
-			segment += "<tr><th colspan='10'>共計" + size + "筆資料</th><tr>";
-			segment += "<tr><th>活動類型</th><th>活動名稱</th><th>報名時間</th><th>活動時間</th><th>活動地址</th><th>活動圖片</th><th>上限人數</th><th>目前人數</th></tr>"
+			eventsTable.appendChild(createResultSizeMessage(size));
+			eventsTable.appendChild(createTableHeader());
 
-			for (n = 0; n < events.length; n++) {
-				let event = events[n];
-// 				console.log("<td><input type='button'value='刪除'onclick=if(confirm('是否確定刪除("+ event.a_name+ ")'))location='<c:url value = '/updateProduct/"+event.a_aid+"'/>' /></td>")
-						
+			for (const event of events) {
+				const eventRow = document.createElement("tr");
+				// eventRow.classList.add("event-row");
 
-				let tmp0 = "<c:url value = '/updateEvent/'/>" + event.a_aid;
-				let tmp1 = "<c:url value = '/deleteEvent/'/>" + event.a_aid;
-				let tmp2 = "<c:url value = '/signupEvent/'/>" + event.a_aid;
+				eventRow.append(
+					createTextCell(event.a_type, event.a_type),
+					createTextCell(event.a_name, event.a_name),
+					createRegistrationPeriodCell(event.a_registration_starttime, event.a_registration_endrttime),
+					createEventScheduleCell(event.a_startTime, event.a_endTime),
+					createTextCell(event.a_address, event.a_address),
+					createThumbnailCell(event.a_picturepath),
+					createCapacityCell(event.applicants),
+					createCurrentAttendanceCell(event.havesignedup),
+					createActionGroup(event)
+				);
 
-				// 		let tmp1 = "<a href= '"+tmp1+"'>"+place.name+"</a>";
-
-				// 		let tmp1 = "<c:url value='/modifyRestaurant/'   />" + place.placeId;
-				//修改的時候傳帶place.placeId參數的超連結 
-				// 		let tmp0 = "<a href= '"+tmp1+"'>"+place.name+"</a>";
-				// 		let tmp0 = "<a href= '....'>"+place.name+"</a>";
-
-				//JSON物件 第0個開始
-				// 		console.log("tmp0="+tmp0) ; 
-
-				segment += "<tr>"
-				segment += "<td title='"+event.a_type+"'>" + event.a_type + "</td>"
-				segment += "<td title='"+event.a_name+"'>" + event.a_name + "</td>"
-				segment += "<td title='"+event.a_registration_starttime+"至"+event.a_registration_endrttime+"'>" + event.a_registration_starttime +"至"+event.a_registration_starttime+ "</td>"
-				segment += "<td title='"+event.a_startTime+"至"+event.a_endTime+"'>" + event.a_startTime +"至"+event.a_endTime+"</td>"
-				segment += "<td title='"+event.a_address+"'>" + event.a_address + "</td>"
-				segment += "<td ><img width='70' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
-// 				segment += "<td><p title='表现示意形式'>模式</p></td>"
-                segment += "<td align='center' valign='middle' >" + event.applicants + "</td>"
-                segment += "<td align='center' valign='middle' >" + event.havesignedup + "</td>"
-				segment += "<td width='10%'><input type='button'value='修改'        style='width:60px;height:50px;font-size:1px;border-radius: 10px;'                  onclick=\"window.location.href='"+tmp0+"'\" /></td>";
-				segment += "<td ><input type='button'value='下架'         style='width:60px;height:50px;font-size:1px;border-radius: 10px;'                 onclick=if(confirm('是否確定下架("+ event.a_name+ ")'))location='<c:url value = '/deleteEvent/"+event.a_aid+"'/>' /></td>"
-				segment += "<td ><input type='button'value='查詢報名'   style='width:60px;height:50px;font-size:1px;border-radius: 10px;'               onclick=\"window.location.href='"+tmp2+"'\" /></td>";
-
-// 				style='width:60px;height:50px;font-size:1px;'   
-						
-				segment += "</tr>"
+				eventsTable.appendChild(eventRow);
 			}
 		}
-		segment += "</table>";
 
-		return segment;
+		dataArea.replaceChildren(eventsTable);
 	}
+function createNoResultMessage() {
+	return htmlToFragment('<tr><th colspan="1">查無資料</th><tr>');
+}
+function createResultSizeMessage(size) {
+	const row = document.createElement("tr");
+
+	const msgEl = document.createElement("th");
+	msgEl.textContent = '共計' + size + '筆資料';
+
+	row.appendChild(msgEl);
+
+	return row;
+}
+function createTableHeader() {
+	return htmlToFragment(
+			'<tr>' +
+				'<th>活動類型</th>' +
+				'<th>活動名稱</th>' +
+				'<th>報名時間</th>' +
+				'<th>活動時間</th>' +
+				'<th>活動地址</th>' +
+				'<th>活動圖片</th>' +
+				'<th>上限人數</th>' +
+				'<th>目前人數</th>' +
+			'</tr>');
+}
+function createTextCell(text, title = '') {
+	const cell = document.createElement("td");
+	cell.textContent = text;
+	cell.title = title;
+
+	return cell;
+}
+function createRegistrationPeriodCell(from, to) {
+	const cell = document.createElement("td");
+	cell.textContent = from + '至' + to;
+	cell.title = from + '至' + to;
+
+	return cell;
+}
+function createEventScheduleCell(from, to) {
+	const cell = document.createElement("td");
+	cell.textContent = from + '至' + to;
+	cell.title = from + '至' + to;
+
+	return cell;
+}
+function createThumbnailCell(imgSrc) {
+	const cell = document.createElement("td");
+
+	const thumbnailEl = document.createElement("img");
+	thumbnailEl.src = imgSrc;
+	thumbnailEl.classList.add('event-row__thumbnail');
+
+	cell.appendChild(thumbnailEl);
+
+	return cell;
+}
+function createCapacityCell(capacity) {
+	const capacityCell = document.createElement("td");
+	capacityCell.textContent = capacity;
+	capacityCell.classList.add("event-row__capacity");
+
+	return capacityCell;
+}
+function createCurrentAttendanceCell(currentAttendance) {
+	const currentAttendanceCell = document.createElement("td");
+	currentAttendanceCell.textContent = currentAttendance;
+	currentAttendanceCell.classList.add("event-row__current-attendance");
+
+	return currentAttendanceCell;
+}
+function createActionGroup(event) {
+	const actionGroup = document.createDocumentFragment();
+
+	actionGroup.appendChild(createEditCell(event.a_aid));
+	actionGroup.appendChild(createDeleteCell(event.a_aid, event.a_name));
+	actionGroup.appendChild(createViewRegistrationCell(event.a_aid));
+
+	return actionGroup;
+}
+function createEditCell(a_aid) {
+	const cell = document.createElement('td');
+	cell.classList.add('event-row__edit-cell');
+
+	const editButton = document.createElement('input');
+	editButton.type = 'button';
+	editButton.value = '修改';
+	editButton.classList.add('event-row__action');
+	editButton.onclick = e => onclickEdit(e, a_aid); // np
+
+	cell.appendChild(editButton);
+
+	return cell;
+}
+function onclickEdit(e, a_aid) {
+	e.preventDefault();
+	window.location.href = 'updateEvent/' + a_aid;
+}
+function createDeleteCell(a_aid, a_name) {
+	const cell = document.createElement("td");
+
+	const delButton = document.createElement('input');
+	delButton.type = 'button';
+	delButton.value = '下架';
+	delButton.classList.add('event-row__action');
+	delButton.onclick = e => onclickDelete(e, a_aid, a_name); // np
+
+	cell.appendChild(delButton);
+
+	return cell;
+}
+function onclickDelete(e, a_aid, a_name) {
+	e.preventDefault();
+	const cfm = confirm('是否確定下架('+ a_name + ')');
+	if (cfm) {
+		window.location.href = 'deleteEvent/' + a_aid;
+	}
+}
+function createViewRegistrationCell(a_aid) {
+	const cell = document.createElement('td');
+
+	const viewRegistrationButton = document.createElement('input');
+	viewRegistrationButton.type = 'button';
+	viewRegistrationButton.value = '查詢報名';
+	viewRegistrationButton.classList.add('event-row__action');
+	viewRegistrationButton.onclick = e => onclickViewRegistration(e, a_aid);
+
+	cell.appendChild(viewRegistrationButton);
+
+	return cell;
+}
+function onclickViewRegistration(e, a_aid) {
+	e.preventDefault();
+	window.location.href = 'signupEvent/' + a_aid;
+}
 </script>
 
 <body class="is-preload">
@@ -244,8 +385,8 @@
 				<%@include file="../universal/header.jsp"%>
 				<h2 align='center'>活動內容後台</h2>
 								<div align="center">
-					
-					<font color='red'>${successMessage}</font>
+
+					<font color='red'><c:out value="${successMessage}" /></font>
 					<!--   修改成功的重定向帶值 -->
 				<div style="text-align: center;">
 					<input type="text" id="restname" style="display: inline; width: 300px; "placeholder="請輸入活動關鍵字">
@@ -253,9 +394,9 @@
 					<br>
 					<br>
 				</div>
-					
+
 				</div>
-				
+
 
 
 				<div1 id='dataArea'>
@@ -272,14 +413,11 @@
 	</div>
 
 	<!-- Scripts -->
-	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

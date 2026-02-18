@@ -1,16 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 <title>刪除文章</title>
+<script type="application/json" id="bootstrap-data">
+	{
+		"c_ID": "${fn:escapeXml(c_ID)}"
+	}
+</script>
 <script>
-var c_ID = "${c_ID}";
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { c_ID } = bootstrapData;
 
 window.onload = function(){
 	var divResult = document.getElementById('resultMsg');
@@ -22,7 +30,7 @@ window.onload = function(){
 	var u_ID = document.getElementById("u_ID");
 	var xhr = new XMLHttpRequest();
 
-	xhr.open("GET", "<c:url value='/selectSingleChat/" + c_ID + "' />", true);
+	xhr.open("GET", "selectSingleChat/" + c_ID, true);
 	xhr.send();
 	var message = "";
 	xhr.onreadystatechange = function() {
@@ -41,16 +49,20 @@ window.onload = function(){
 		var result = confirm("確定要刪除文章 " + ID.value + " 嗎?");
 		if(result){
 			var xhr1 = new XMLHttpRequest();
-			xhr1.open("DELETE", "<c:url value='/deleteChatAdmin/" + c_ID + "' />", true);
+			xhr1.open("DELETE", "deleteChatAdmin/" + c_ID, true);
 			xhr1.send();
 			xhr1.onreadystatechange = function() {
 				if(xhr1.readyState == 4 && (xhr1.status == 200 || xhr1.status == 204)){
 					result = JSON.parse(xhr1.responseText);
 					if(result.fail){
-						divResult.innerHTML = "<font color='red' >" + result.fail + "</font>";
+						const font = document.createElement("font");
+						font.color = 'red';
+						font.textContent = result.fail;
+
+						divResult.replaceChildren(font);
 					} else if (result.success){
 						alert("刪除成功! 點擊確認將為您導回上一頁...");
-						top.location= '<c:url value='/goSelectAllChatAdmin' />';
+						top.location= 'goSelectAllChatAdmin';
 					}
 				}
 			}
@@ -99,17 +111,17 @@ window.onload = function(){
 					<div id='resultMsg' style="height: 18px; font-weight: bold;"></div>
 					<div align='center'>
 						<hr>
-						<a href="<c:url value='/goSelectAllChatAdmin' />">上一頁</a>
+						<a href="goSelectAllChatAdmin">上一頁</a>
 					</div>
 				</div>
 				<p />
 			</div>
 		</div>
 	</div>
-	<script	src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script	src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script	src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script	src="assets/js/jquery.min.js"></script>
+	<script	src="assets/js/browser.min.js"></script>
+	<script	src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 </body>
 </html>

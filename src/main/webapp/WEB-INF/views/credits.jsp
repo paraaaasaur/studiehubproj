@@ -1,41 +1,45 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
-
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
 <script>
-
-if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
-
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
 
 window.onload = function(){
     var logout = document.getElementById("logout");
     logout.onclick = function(){
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
+        xhr.open("GET", 'logout.controller', true);
         xhr.send();
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 var result = JSON.parse(xhr.responseText);
                 if(result.success){
                     alert(result.success);
-                    top.location = '<c:url value='/' />';
+                    top.location = '';
                 }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
+                    alert(result.fail);
+                    top.location = '';
                 }
             }
         }
     }
-    
-    
+
+
 //universal
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
@@ -51,7 +55,7 @@ window.onload = function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
@@ -79,7 +83,7 @@ window.onload = function(){
 
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
-								<%@include file="universal/header.jsp" %>  
+								<%@include file="universal/header.jsp" %>
 
 							<!-- Banner -->
 								<section id="banner">
@@ -125,7 +129,7 @@ window.onload = function(){
 									</div>
 								</section>
 
-							
+
 								<section>
 									<header class="major" id="popularCourse">
 										<h2>熱門課程</h2>
@@ -137,16 +141,16 @@ window.onload = function(){
 
 				<!-- Sidebar -->
 				<!-- 這邊把side bar include進來 -->
-				<%@include file="universal/sidebar.jsp" %>  
+				<%@include file="universal/sidebar.jsp" %>
 
 			</div>
 
 		<!-- Scripts -->
-			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
 
 	</body>
 </html>

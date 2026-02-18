@@ -5,7 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
 <style>
 .deleteBtn {
@@ -18,33 +19,40 @@
 .deleteBtn:active {
 	background-color: rgb(200, 231, 248);
 }
+.cart-item__cell {
+	text-align: center;
+}
 </style>
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "<c:out value="${loginBean.u_id}" />",
+		"userPicString": "<c:out value="${loginBean.pictureString}" />"
+	}
+</script>
 <script>
-if("${successMessageOfChangingPassword}"=="修改成功"){alert('密碼修改成功!');}
-
-var u_id = "${loginBean.u_id}";
-var userPicString = "${loginBean.pictureString}";
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
 
 window.onload = function(){
     var logout = document.getElementById("logout");
     logout.onclick = function(){
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "<c:url value='/logout.controller' />", true);
+        xhr.open("GET", "logout.controller", true);
         xhr.send();
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 var result = JSON.parse(xhr.responseText);
                 if(result.success){
                     alert(result.success);
-                    top.location = '<c:url value='/' />';
+                    top.location = '';
                 }else if(result.fail){
-                    alert(result.fail);                    
-                    top.location = '<c:url value='/' />';
+                    alert(result.fail);
+                    top.location = '';
                 }
             }
         }
     }
-    
+
   //universal
     //如果有登入，隱藏登入標籤
     var loginHref = document.getElementById('loginHref');
@@ -60,7 +68,7 @@ window.onload = function(){
     	signupHref.hidden = true;
     	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
     	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.innerHTML = u_id;
+    	userId.textContent = u_id;
     	loginEvent.style.display = "block";
     	loginEvent1.style.display = "block";
     	loginALLEvent1.style.display = "block";
@@ -82,15 +90,15 @@ window.onload = function(){
 
 		<!-- Wrapper -->
 		<div id="wrapper">
-		
+
 			<!-- Main -->
 			<div id="main">
 				<div class="inner">
-		
+
 					<!-- Header -->
 					<!-- 這邊把header include進來 -->
 					<%@include file="../universal/header.jsp" %>
-		
+
 						<h1 id='welcomeMessage'></h1>
 						<!-- 顯示當前購物車內容表格 -->
 						<table class="alt" style="border: 2px;">
@@ -98,7 +106,7 @@ window.onload = function(){
 							<tbody id='tbodyArea'></tbody>
 						</table>
 						<span id='totalPrice' style="background-color: yellow; font-size: 250%;"></span>
-		
+
 						<!-- 按鈕導向各頁 -->
 						<div id="btnAppender" class="fit">
 							<hr>
@@ -107,24 +115,24 @@ window.onload = function(){
 							<button id="toIndexBtn" hidden='true'>返回首頁</button>
 							<hr>
 						</div>
-		
+
 				</div>
 			</div>
-		
+
 			<!-- Sidebar -->
 			<!-- 這邊把side bar include進來 -->
 			<%@include file="../universal/sidebar.jsp" %>
-		
+
 		</div>
-		
+
 		<!-- Scripts -->
-		<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-		<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-		<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-		<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-		<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
 		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-		<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js" async></script>
+		<script src="assets/js/custom/TaJenUtils.js" async></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 		<script>
@@ -132,7 +140,7 @@ window.onload = function(){
 			let products;
 			let cartSize = 0;
 			let checkedCartIds = [];
-			let head = "<tr>"
+			const head = "<tr>"
 						  + "<th style='text-align: center'>移除</th>"
 						  + "<th style='text-align: center'>課程名稱</th>"
 						  + "<th style='text-align: center'>課程編號</th>"
@@ -146,7 +154,7 @@ window.onload = function(){
 				let confirmArticle = '※您即將購買以下內容';
 				for (let i = 0; i < products.length; i++) {
 					let product = products[i];
-					confirmArticle += '\n- 課程名稱：' + product.p_name; 
+					confirmArticle += '\n- 課程名稱：' + product.p_name;
 					confirmArticle += '\n【價格：' + product.p_price + '；授課老師：' + product.p_teacher + '】';
 				}
 				confirmArticle += '\n本次結帳共計：' + totalPrice + '元';
@@ -164,30 +172,29 @@ window.onload = function(){
 					}
 					console.log(queryString);
 					// 用TaJenUtils.js的自訂函數送出隱藏版post表單
-					post('<c:url value="/cart.controller/checkout" />', {'u_id': u_id, 'p_ids': [p_ids]});
-					
-				
+					post('cart.controller/checkout', {'u_id': u_id, 'p_ids': [p_ids]});
+
+
 				} else {
 					console.log('nope!');
 				}
 			}
 
 			/** 【自訂函數 0】每次按下checkbox時會記錄下來哪些是有勾的、並把cartid存進checkedCartIds陣列裡，等到要刪除時存取之送出 */
-			var memorize = function(checkboxObj){
-				let cartid = checkboxObj.value;
+			var memorize = function(e){
+				let cartid = e.target.value;
 				let idx = checkedCartIds.indexOf(cartid);
-				if(idx > -1) { 
+				if(idx > -1) {
 					checkedCartIds.splice(idx, 1);
 				} else {
 					checkedCartIds.push(cartid);
 				}
 				console.log('checkedCartIds = ' + checkedCartIds);
 				// 改變#deleteBtn外觀和disabled值
-				let thisBtn = document.querySelector('#deleteBtn');
 				if (checkedCartIds.length == 0) {
-					thisBtn.classList.remove('deleteBtn');
+					deleteBtn.classList.remove('deleteBtn');
 				} else {
-					thisBtn.classList.add('deleteBtn');
+					deleteBtn.classList.add('deleteBtn');
 				}
 				document.querySelector('#deleteBtn').disabled = (checkedCartIds.length == 0);
 				document.querySelector('#deleteBtn').innerHTML = (checkedCartIds.length != 0)?
@@ -206,62 +213,103 @@ window.onload = function(){
 					if (!u_id) {
 						$('#welcomeMessage').text('')
 						$('#btnAppender').html('');
-						theadArea.html("");
+						theadArea.empty();
 						tbodyArea.html("<h1>必須先登入才會顯示資料！</h1>"); // ❗
 					} else {
 						$('#welcomeMessage').text(u_id + '，您的購物車清單如下：');
-						
+
 						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/clientShowCart' />";
+						let url = "cart.controller/clientShowCart";
 						let queryString = "u_id=" + u_id;
 						xhr.open("POST", url, true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								let tbodyContent = parseCart(xhr.responseText);
+								const tbodyContent = parseCart(xhr.responseText);
 								if (cartSize == 0) {
 									$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何東西！');
 									$('#btnAppender').html('');
 									return;
 								}
-								$('#totalPrice').html('小計：' + totalPrice);
+								$('#totalPrice').text('小計：' + totalPrice);
 								theadArea.html(head);
-								tbodyArea.html(tbodyContent);
+								tbodyArea.empty();
+								tbodyArea.append(tbodyContent);
 							}
 						}
 					}
-					
+
 				});
-				
+
 				// 【function 3】parseCart()
 				/** 更新全域變數 @products @cartSize */
-				function parseCart(cart) {
-					products = JSON.parse(cart);
-					let segment = "";
+				function parseCart(res) {
+					products = JSON.parse(res);
 					totalPrice = 0;
 					cartSize = products.length;
-					
-					if(cartSize){
-						segment += "您的購物車內還沒有任何課程喔😉";
+
+					const rows = document.createDocumentFragment();
+
+					if(cartSize === 0) {
+						rows.textContent = "您的購物車內還沒有任何課程喔😉";
+						return rows;
 					}
-					for (let i = 0; i < cartSize; i++) {
-						let temphref1 = '<c:url value="/takeClass/" />';
-						let product = products[i];
-						segment += "<tr>"
-										+ "<td style='text-align: center'><input onclick='memorize(this)' type='checkbox' id='ckbox" + product.cart_id + "' value='" + product.cart_id + "'>"
-										+ "<label for='ckbox" + product.cart_id + "'></label></td>"
-										+ "<td style='text-align: center'><a href='" + temphref1 + product.p_id + "' >" + product.p_name + "</a></td>"
-										+ "<td style='text-align: center'>" + product.p_id + "</td>"
-										+ "<td style='text-align: center'>" + product.p_price + "</td>"
-// 										+ "<td style='text-align: center'>" + product.p_desc + "</td>"
-										+ "<td style='text-align: center'>" + product.p_teacher + "</td>"
-										+ "</tr>";
+
+					for (const product of products) {
+						const cartItemRow = document.createElement("tr");
+
+						cartItemRow.appendChild(createCheckboxCell(product.cart_id));
+						cartItemRow.appendChild(createLinkedNameCell(product.p_id, product.p_name));
+						cartItemRow.appendChild(createTextCell(product.p_id));
+						cartItemRow.appendChild(createTextCell(product.p_price));
+						cartItemRow.appendChild(createTextCell(product.p_teacher));
+
+						rows.appendChild(cartItemRow);
+
 						totalPrice += product.p_price;
 					}
-					return segment;
-				};
-			
+
+					return rows;
+				}
+				function createCheckboxCell(cartId) {
+					const cell = document.createElement('td');
+					cell.className = 'cart-item__cell';
+
+					const checkboxEl = document.createElement('input');
+					checkboxEl.type = 'checkbox';
+					checkboxEl.id = 'ckbox' + cartId;
+					checkboxEl.value = cartId;
+					checkboxEl.onclick = e => memorize(e);
+
+					const labelEl = document.createElement('label');
+					labelEl.htmlFor = checkboxEl.id;
+
+					cell.appendChild(checkboxEl);
+					cell.appendChild(labelEl);
+
+					return cell;
+				}
+				function createLinkedNameCell(productId, name) {
+					const cell = document.createElement('td');
+					cell.className = 'cart-item__cell';
+
+					const link = document.createElement('a');
+					link.href = 'takeClass/' + productId;
+					link.textContent = name;
+
+					cell.appendChild(link);
+
+					return cell;
+				}
+				function createTextCell(text) {
+					const cell = document.createElement('td');
+					cell.textContent = text;
+					cell.className = 'cart-item__cell';
+
+					return cell;
+				}
+
 				// 【function 4】DELETE
 				// 送出cartid + uid 的查詢字串到server
 				// 清空checkids[]
@@ -273,10 +321,10 @@ window.onload = function(){
 						queryString += checkedCartIds[i];
 						queryString += ((i + 1) == checkedCartIds.length)? '' : ',';
 					}
-					queryString +='&u_id=' + u_id;	
+					queryString +='&u_id=' + u_id;
 					// <2> 送出請求
 					let xhr = new XMLHttpRequest();
-					let url = "<c:url value='/cart.controller/clientRemoveProductFromCartByCartId' />";
+					let url = "cart.controller/clientRemoveProductFromCartByCartId";
 					xhr.open("POST", url, true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					console.log('即將送出的查詢字串 = ' + queryString);
@@ -285,7 +333,7 @@ window.onload = function(){
 						if (xhr.readyState == 4 && xhr.status == 200) {
 							// <3> 善後
 							checkedCartIds = [];
-							let tbodyContent = parseCart(xhr.responseText);
+							const tbodyContent = parseCart(xhr.responseText);
 							console.log(document.querySelector('#deleteBtn'));
 							document.querySelector('#deleteBtn').classList.remove('deleteBtn');
 							console.log(document.querySelector('#deleteBtn'));
@@ -294,23 +342,24 @@ window.onload = function(){
 							if (cartSize == 0) {
 								console.log('hi，現在cartSize = ' + cartSize);
 								$('#welcomeMessage').text(u_id + '，您的購物車內還沒有任何課程喔😉');
-								$('#totalPrice').html('小計：0');
+								$('#totalPrice').text('小計：0');
 								$('#theadArea').html('');
 								$('#tbodyArea').html('');
 								$('#btnAppender').html('');
 								return;
 							} else {
 								console.log('掛上了tbody');
-								$('#totalPrice').html('小計：' + totalPrice);
-								tbodyArea.html(tbodyContent);
+								$('#totalPrice').text('小計：' + totalPrice);
+								tbodyArea.empty();
+								tbodyArea.append(tbodyContent);
 							}
 						}
 					}
 				});
-	
+
 				// 【自訂函數 3】回首頁
 				$('#toIndexBtn').on('click', function(){
-					top.location = "<c:url value='/' />";
+					top.location = "";
 				})
 
 

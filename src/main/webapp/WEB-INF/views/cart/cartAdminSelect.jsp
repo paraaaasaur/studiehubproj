@@ -5,7 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>購物車後台管理系統</title>
 <style>
 .deleteBtn {
@@ -18,21 +19,33 @@
 .deleteBtn:active {
 	background-color: rgb(200, 231, 248);
 }
+.cart-item__checkbox-cell {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.cart-item__cell {
+	text-align: center;
+}
 </style>
+<script type="application/json" id="bootstrap-data">
+	{
+		"adminId": "<c:out value="${adminId}" />"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { adminId } = bootstrapData;
 
-	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
-	
-	var adminId = "${adminId}";
 	// 踢除非管理員
 	if(!adminId){
 		alert('您不具有管理者權限，請登入後再試。');
-		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+		top.location = "gotoAdminIndex.controller";
 	}
-	
+
 	window.onload = function(){
 	// console.log(adminId);
-		
+
 		//如果有登入，隱藏登入標籤
 		var loginHref = document.getElementById('loginHref');
 		var logoutHref = document.getElementById('logoutHref');
@@ -42,7 +55,7 @@
 			loginHref.hidden = true;
 			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 		}
-		
+
 	}
 </script>
 
@@ -61,7 +74,7 @@
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
-								
+
 								<h1>購物車管理系統</h1>
 								<!-- <ul class="actions special"> -->
 								<ul class="actions fit">
@@ -93,42 +106,41 @@
 
 								<h1 id='logo' style="background-color: red"></h1>
 								<hr>
-									
-								<button id="insertBtn" onclick="location.href='http:\/\/localhost:8080/studiehub/cart.controller/adminInsert'">新增</button>
+
+								<button id="insertBtn" onclick="location.href='cart.controller/adminInsert'">新增</button>
 								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
-								
+
 								<br><br><br><br><br><br>
-								
+
 
 						</div>
 					</div>
 
 				<!-- Sidebar -->
 				<!-- 這邊把side bar include進來 -->
-				<%@include file="../universal/adminSidebar.jsp" %>  
+				<%@include file="../universal/adminSidebar.jsp" %>
 
 			</div>
 
 		<!-- Scripts -->
-			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>
 				// 不用等DOM就可以先宣告的變數們
-				let segments = [];
+				const allCartItemRows = [];
 				let checkedCartids = [];
-				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
-				let rowPerPage = 10;
-				let maxPageNum = 10;
+				const rowsPerPage = 10;
+				const maxPageNum = 10;
 				let cartItems = [];
 				let theadContent = "<th style='text-align: center;'>刪除</th>"
 											+ "<th style='text-align: center;'>品項編號</th>"
@@ -138,22 +150,20 @@
 											+ "<th style='text-align: center;'>操作</th>"
 
 				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedCartids陣列裡，等到要刪除時存取之送出
-				var memorize = function(checkboxObj){
-					let cart_id = checkboxObj.value;
-					// let cart_id = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
+				var memorize = function(e){
+					let cart_id = e.target.value;
 					let idx = checkedCartids.indexOf(cart_id);
 					if(idx > -1) {
 						checkedCartids.splice(idx, 1);
 					} else {
 						checkedCartids.push(cart_id);
 					}
-					console.log('checkedCartids = ' + checkedCartids);
 					// 改變#deleteBtn外觀和disabled值
-					let thisBtn = document.querySelector('#deleteBtn');
+					const deleteBtn = document.getElementById("deleteBtn");
 					if (checkedCartids.length == 0) {
-						thisBtn.classList.remove('deleteBtn');
+						deleteBtn.classList.remove('deleteBtn');
 					} else {
-						thisBtn.classList.add('deleteBtn');
+						deleteBtn.classList.add('deleteBtn');
 					}
 					document.querySelector('#deleteBtn').disabled = (checkedCartids.length == 0);
 					document.querySelector('#deleteBtn').innerHTML = (checkedCartids.length != 0)?
@@ -164,7 +174,7 @@
 
 				// 【自訂函數 1】掛頁籤函數
 				let appendPegination = function(){
-					pageNum = Math.ceil((segments.length)/rowPerPage);
+					pageNum = Math.ceil((allCartItemRows.length)/rowsPerPage);
 					let temp0 = "";
 					let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
 					for(let i = 0; i < tempPageNum; i++){
@@ -178,10 +188,10 @@
 						})
 					}
 					$('#btnPage0').addClass('primary');
-					
+
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
-						switchPage(pageIndex);
+						renderCartItemsAt(pageIndex);
 						for (let i = 0; i < checkedCartids.length; i++) {
 							let thisCkbox = document.querySelector('#ckbox' + checkedCartids[i]);
 							if(thisCkbox) thisCkbox.checked = true;
@@ -191,14 +201,18 @@
 
 				// 【自訂函數 2】分頁掛資料
 
-				function switchPage(pageIndex){
-					let htmlStuff = "";
-					counter = pageIndex * rowPerPage;
-					let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
-					for(let i = counter; i < tempCounter0; i++){
-						htmlStuff += segments[i];
+				// fixme
+				function renderCartItemsAt(pageIndex = 0){
+					const tbodyArea = document.getElementById('tbodyArea');
+					tbodyArea.replaceChildren();
+
+					const from = pageIndex * rowsPerPage;
+					const to = (from + rowsPerPage > allCartItemRows.length)?
+							allCartItemRows.length
+							: from + rowsPerPage;
+					for(let i = from; i < to; i++){
+						tbodyArea.appendChild(allCartItemRows[i]);
 					}
-					$('#tbodyArea').html(htmlStuff);
 				}
 
 				// DOM載入完成後
@@ -231,15 +245,15 @@
 							searchBarHanger2.attr('hidden', false);
 							$(searchBarHanger1).html("<input type='search' id='searchMin' placeholder='最小值'>");
 							$(searchBarHanger2).html("<input type='search' id='searchMax' placeholder='最大值'>");
-						} 
-						
+						}
+
 					})
 					// 【自訂函數 4】重新導向頁面
 					$('#toAdminIndexBtn').on('click', function(){
-						top.location = "<c:url value='/gotoAdminIndex.controller' />";
+						top.location = "gotoAdminIndex.controller";
 					})
 					$('#toClientIndexBtn').on('click', function(){
-						top.location = "<c:url value='/' />";
+						top.location = "";
 					})
 
 
@@ -261,7 +275,7 @@
 							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchMin').val() + ',' + $('#searchMax').val());
 						}
 						console.log(queryString);
-						xhr.open('POST', "<c:url value='/cart.controller/adminSearchBar' />", true);
+						xhr.open('POST', "cart.controller/adminSearchBar", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
@@ -271,35 +285,35 @@
 								// 解析&暫存回傳資料
 								parseSelectedRows(xhr.responseText);
 								// 掛topLogo
-								topLogo.text("以下是資料庫最新" + segments.length + "筆購物車品項");
+								topLogo.text("以下是資料庫最新" + allCartItemRows.length + "筆購物車品項");
 								// 掛資料(index = 0 即第 1 頁)
-								switchPage(0);
+								renderCartItemsAt(0);
 								// 掛頁籤
 								appendPegination();
 							}
 
 						}
 					})
-						
+
 					// 【自訂函數 7】顯示資料庫最新100筆購物車品項 (SELECT TOP(100)) + 掛資料 + 掛頁籤
 					function showTop100() {
 						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/cart.controller/adminSelectTop100' />";
+						let url = "cart.controller/adminSelectTop100";
 						xhr.open("GET", url, true);
 						xhr.send();
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								parseSelectedRows(xhr.responseText);
-								switchPage(0);
+								renderCartItemsAt(0);
 								appendPegination();
-								topLogo.text("以下是資料庫最新" + segments.length + "筆購物車品項");
-								if (segments.length == 0) {
+								topLogo.text("以下是資料庫最新" + allCartItemRows.length + "筆購物車品項");
+								if (allCartItemRows.length == 0) {
 									theadArea.html("");
 								}
 							}
 						}
-					} 
-					
+					}
+
 					/** 【自訂函數 8】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
 					* 重置全域變數 @cartItems @segments @rowNum @checkedCartids
 					* 重置#deleteBtn 的樣式及disabled屬性
@@ -313,40 +327,77 @@
 						checkedCartids = [];
 						cartItems = parsedMap.list;
 						rowNum = (cartItems)? cartItems.length : 0;
-						segments = [];
-						for (let i = 0; i < cartItems.length; i++) {
-							let temp0 =	 "<tr>" + 
-												"<td style='text-align: center; margin : 0;  padding : 0;'><input onclick='memorize(this)' id='ckbox" + cartItems[i].cart_id + "' " +
-													"type='checkbox' value='" + cartItems[i].cart_id + "'><label for='ckbox" + cartItems[i].cart_id + "'></label></td>" +
-												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_id + "'>" + cartItems[i].cart_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + cartItems[i].p_id + "'>" + cartItems[i].p_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + cartItems[i].u_id + "'>" + cartItems[i].u_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + cartItems[i].cart_date + "'>" + cartItems[i].cart_date + "</label></td>" +
-												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/cart.controller/adminUpdate/" + cartItems[i].cart_id + "'>修改</a></td>" +
-												"</tr>";
-							segments.push(temp0);
+						allCartItemRows.length = 0; // clear array
+						for (const cartItem of cartItems) {
+							const cartItemRow = document.createElement("tr");
+
+							cartItemRow.appendChild(createCheckboxCell(cartItem.cart_id));
+							cartItemRow.appendChild(createTextCell(cartItem.cart_id));
+							cartItemRow.appendChild(createTextCell(cartItem.p_id));
+							cartItemRow.appendChild(createTextCell(cartItem.u_id));
+							cartItemRow.appendChild(createTextCell(cartItem.cart_date));
+							cartItemRow.appendChild(createEditButtonCell(cartItem.cart_id));
+
+
+							allCartItemRows.push(cartItemRow);
 						}
-						console.log(segments.length);
-					};
-					
+					}
+					function createCheckboxCell(cartItemId) {
+						const cell  = document.createElement("td");
+						cell.classList.add('cart-item__checkBox-cell');
+
+						const checkboxEl = document.createElement("input");
+						checkboxEl.type = "checkbox";
+						checkboxEl.id = 'ckbox' + cartItemId;
+						checkboxEl.value = cartItemId;
+						checkboxEl.addEventListener('click', e => memorize(e));
+
+						const labelEl = document.createElement("label");
+						labelEl.htmlFor = checkboxEl.id;
+
+						cell.appendChild(checkboxEl);
+						cell.appendChild(labelEl);
+
+						return cell;
+					}
+					function createTextCell(text) {
+						const cell = document.createElement("td");
+						cell.classList.add('cart-item__cell');
+
+						const labelEl = document.createElement("label");
+						labelEl.textContent = text;
+						labelEl.dataset.val = text; // fixme: redundant
+
+						cell.appendChild(labelEl);
+
+						return cell;
+					}
+					function createEditButtonCell(cartItemId) {
+						const cell = document.createElement("td");
+						cell.classList.add('cart-item__cell');
+
+						const editEl = document.createElement("a");
+						editEl.href = 'cart.controller/adminUpdate' + cartItemId;
+						editEl.textContent = '修改';
+						editEl.classList.add('button');
+
+						cell.appendChild(editEl);
+
+						return cell;
+					}
+
 					// 【自訂函數 9】DELETE
 					$('#deleteBtn').on('click', function(){
-						let queryString = 'cart_ids=';
-						for (let i = 0; i < checkedCartids.length; i++) {
-							queryString += checkedCartids[i];
-							queryString += ((i + 1) != checkedCartids.length)? ',' : '';
-						}
+						const queryString = 'cart_ids=' + checkedCartids.join(',');
 
-						console.log(queryString);
 
 						let xhr = new XMLHttpRequest();
-						xhr.open("POST", "<c:url value='/cart.controller/deleteAdmin' />", true);
+						xhr.open("POST", "cart.controller/deleteAdmin", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								result = JSON.parse(xhr.responseText);
-								console.log(result.state);
+								const result = JSON.parse(xhr.responseText);
 								showTop100();
 							}
 						}

@@ -5,7 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>訂單後台管理系統</title>
 <style>
 .deleteBtn {
@@ -18,21 +19,33 @@
 .deleteBtn:active {
 	background-color: rgb(200, 231, 248);
 }
+.order-item__checkbox-cell {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.order-item__cell {
+	text-align: center;
+}
 </style>
+<script type="application/json" id="bootstrap-data">
+	{
+		"adminId": "<c:out value="${adminId}" />"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { adminId } = bootstrapData;
 
-	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
-	
-	var adminId = "${adminId}";
 	// 踢除非管理員
 	if(!adminId){
 		alert('您不具有管理者權限，請登入後再試。');
-		top.location = "<c:url value='/gotoAdminIndex.controller' />";
+		top.location = "gotoAdminIndex.controller";
 	}
-	
+
 	window.onload = function(){
 	// console.log(adminId);
-		
+
 		//如果有登入，隱藏登入標籤
 		var loginHref = document.getElementById('loginHref');
 		var logoutHref = document.getElementById('logoutHref');
@@ -42,7 +55,7 @@
 			loginHref.hidden = true;
 			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 		}
-		
+
 	}
 </script>
 
@@ -61,7 +74,7 @@
 							<!-- Header -->
 							<!-- 這邊把header include進來 -->
 								<%@include file="../universal/adminHeader.jsp" %>
-								
+
 								<h1>訂單管理系統</h1>
 								<!-- <ul class="actions special"> -->
 								<ul class="actions fit">
@@ -95,44 +108,43 @@
 								</table>
 								<h1 id='logo' style="background-color: red"></h1>
 								<hr>
-									
-								<button id="insertBtn"	onclick="location.href='http:\/\/localhost:8080/studiehub/order.controller/adminInsert'">新增</button>
+
+								<button id="insertBtn"	onclick="location.href='order.controller/adminInsert'">新增</button>
 								<button id="deleteBtn" disabled>刪除勾選資料</button>
 								<button id='toAdminIndexBtn'>回管理者首頁</button>
 								<button id='toClientIndexBtn'>回使用者首頁</button>
-								
+
 								<br><br><br><br><br><br>
-								
+
 
 						</div>
 					</div>
 
 				<!-- Sidebar -->
 				<!-- 這邊把side bar include進來 -->
-				<%@include file="../universal/adminSidebar.jsp" %>  
+				<%@include file="../universal/adminSidebar.jsp" %>
 
 			</div>
 
 		<!-- Scripts -->
-			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 			<script>
 				// 不用等DOM就可以先宣告的變數們
-				let segments = [];
+				const allOrderRows = [];
 				let checkedIdentitySeeds = [];
-				let counter = 0;
 				let pageNum = 0;
 				let rowNum = 0;
 				let rowPerPage = 10;
 				let maxPageNum = 10;
 				let orders = [];
-				let theadContent = "<th style='text-align: center'>刪除</th>"
+				const theadContent = "<th style='text-align: center'>刪除</th>"
 											+ "<th style='text-align: center'>訂單編號<br></th>"
 											+ "<th style='text-align: center'>訂單編號<font color='red'>(綠界)</font><br></th>"
 											+ "<th style='text-align: center'>課程代號<br></th>"
@@ -143,9 +155,8 @@
 											+ "<th style='text-align: center'>操作</th>";
 
 				// 【自訂函數 0】按下checkbox時會記錄下來哪些是有勾的、並存進checkedIdentitySeeds陣列裡，等到要刪除時存取之送出
-				var memorize = function(checkboxObj){
-					let identitySeed = checkboxObj.value;
-					// let identitySeed = checkboxObj.parentElement.nextElementSibling.firstChild.dataset.val;
+				var memorize = function(e){
+					let identitySeed = e.target.value;
 					let idx = checkedIdentitySeeds.indexOf(identitySeed);
 					if(idx > -1) {
 						checkedIdentitySeeds.splice(idx, 1);
@@ -154,11 +165,11 @@
 					}
 					console.log('checkedIdentitySeeds = ' + checkedIdentitySeeds);
 					// 改變#deleteBtn外觀和disabled值
-					let thisBtn = document.querySelector('#deleteBtn');
+					const deleteBtn = document.getElementById("deleteBtn");
 					if (checkedIdentitySeeds.length == 0) {
-						thisBtn.classList.remove('deleteBtn');
+						deleteBtn.classList.remove('deleteBtn');
 					} else {
-						thisBtn.classList.add('deleteBtn');
+						deleteBtn.classList.add('deleteBtn');
 					}
 					document.querySelector('#deleteBtn').disabled = (checkedIdentitySeeds.length == 0);
 					document.querySelector('#deleteBtn').innerHTML = (checkedIdentitySeeds.length != 0)?
@@ -169,7 +180,7 @@
 
 				// 【自訂函數 1】掛頁籤函數
 				let appendPegination = function(){
-					pageNum = Math.ceil((segments.length)/rowPerPage);
+					pageNum = Math.ceil((allOrderRows.length)/rowPerPage);
 					let temp0 = "";
 					let tempPageNum = (pageNum > maxPageNum)? maxPageNum : pageNum;
 					for(let i = 0; i < tempPageNum; i++){
@@ -183,10 +194,10 @@
 						})
 					}
 					$('#btnPage0').addClass('primary');
-					
+
 					$('.pageBtn').on('click', function(){
 						let pageIndex = $(this).attr('data-index');
-						switchPage(pageIndex);
+						renderPageAt(pageIndex);
 						for (let i = 0; i < checkedIdentitySeeds.length; i++) {
 							let thisCkbox = document.querySelector('#ckbox' + checkedIdentitySeeds[i]);
 							if(thisCkbox) thisCkbox.checked = true;
@@ -196,14 +207,15 @@
 
 				// 【自訂函數 2】頁籤掛資料
 
-				function switchPage(pageIndex){
-					let htmlStuff = "";
-					counter = pageIndex * rowPerPage;
-					let tempCounter0 = (counter + rowPerPage > segments.length)? segments.length : counter + rowPerPage;
-					for(let i = counter; i < tempCounter0; i++){
-						htmlStuff += segments[i];
+				function renderPageAt(pageIndex){
+					const tbodyAreaEl = document.querySelector('#tbodyArea');
+					tbodyAreaEl.replaceChildren();
+
+					const from = pageIndex * rowPerPage;
+					const to = (from + rowPerPage > allOrderRows.length)? allOrderRows.length : from + rowPerPage;
+					for(let i = from; i < to; i++){
+						tbodyAreaEl.appendChild(allOrderRows[i]);
 					}
-					$('#tbodyArea').html(htmlStuff);
 				}
 
 				// DOM載入完成後
@@ -229,7 +241,7 @@
 							$(searchBarHanger2).html("<input type='datetime-local' step='1' id='searchDateEnd'>結束時間");
 							$('input[type="datetime-local"]').setNow();
 							// <2> 唯一值
-						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname' 
+						} else if(this.value == 'u_id' || this.value == 'u_firstname' || this.value == 'u_lastname'
 									|| this.value == 'p_name' || this.value == 'ecpay_o_id'){
 							searchBarHanger1.css('width', '70%');
 							searchBarHanger2.attr('hidden', true);
@@ -255,10 +267,10 @@
 					})
 					// 【自訂函數 4】重新導向頁面
 					$('#toAdminIndexBtn').on('click', function(){
-						top.location = "<c:url value='/gotoAdminIndex.controller' />";
+						top.location = "gotoAdminIndex.controller";
 					})
 					$('#toClientIndexBtn').on('click', function(){
-						top.location = "<c:url value='/' />";
+						top.location = "";
 					})
 
 					// 【自訂函數 6】查詢功能
@@ -279,7 +291,7 @@
 							queryString = 'searchBy=' + searchBy.val() + '&searchBar=' + ($('#searchMin').val() + ',' + $('#searchMax').val());
 						}
 						console.log(queryString);
-						xhr.open('POST', "<c:url value='/order.controller/adminSearchBar' />", true);
+						xhr.open('POST', "order.controller/adminSearchBar", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
@@ -289,91 +301,129 @@
 								// 解析&暫存回傳資料
 								parseSelectedRows(xhr.responseText);
 								// 掛topLogo
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
+								topLogo.text("以下是資料庫最新" + allOrderRows.length + "筆訂單");
 								// 掛資料(index = 0 即第 1 頁)
-								switchPage(0);
+								renderPageAt(0);
 								// 掛頁籤
 								appendPegination();
 								// 掛th
 								theadArea.html(theadContent);
-								if (segments.length == 0) {
+								if (allOrderRows.length == 0) {
 									theadArea.html('');
 								}
 							}
 
 						}
 					})
-						
+
 					// 【自訂函數 7】顯示資料庫最新100筆訂單 (SELECT TOP(100)) + 掛資料 + 掛頁籤
 					function showTop100() {
 						let xhr = new XMLHttpRequest();
-						let url = "<c:url value='/order.controller/adminSelectTop100' />";
+						let url = "order.controller/adminSelectTop100";
 						xhr.open("GET", url, true);
 						xhr.send();
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
 								parseSelectedRows(xhr.responseText);
-								switchPage(0);
+								renderPageAt(0);
 								appendPegination();
-								topLogo.text("以下是資料庫最新" + segments.length + "筆訂單");
-								if (segments.length == 0) {
+								topLogo.text("以下是資料庫最新" + allOrderRows.length + "筆訂單");
+								if (allOrderRows.length == 0) {
 									theadArea.html("");
 								}
 							}
 						}
-					} 
+					}
 
 					/** 【自訂函數 8】解析回傳資料 & 暫存進segments陣列 & 更新全域變數值
 					* 重置全域變數 @cartItems @segments @rowNum @checkedIdentitySeeds
 					* 重置#deleteBtn 的樣式及disabled屬性
 					*/
-					function parseSelectedRows(map) {
-						let parsedMap = JSON.parse(map);
-						let totalPrice = 0;
-						document.querySelector('#deleteBtn').classList.remove('deleteBtn');
-						document.querySelector('#deleteBtn').innerHTML = '刪除勾選資料';
-						document.querySelector('#deleteBtn').disabled = true;
-						checkedIdentitySeeds = [];
-						console.log(parsedMap);
-						orders = parsedMap.list;
-						rowNum = (orders)? orders.length : 0;
-						segments = [];
-						for (let i = 0; i < orders.length; i++) {
-							totalPrice += orders[i].p_price;
-							let temp0 =	 "<tr>" + 
-												"<td style='text-align: center; margin : 0;  padding : 0;'><input onclick='memorize(this)' id='ckbox" + orders[i].identity_seed + "' " +
-													"type='checkbox' value='" + orders[i].identity_seed + "'><label for='ckbox" + orders[i].identity_seed + "'></label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].o_id + "'>" + orders[i].o_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].ecpay_o_id + "'>" + orders[i].ecpay_o_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].p_id + "'>" + orders[i].p_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].u_id + "'>" + orders[i].u_id + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].o_status + "'>" + orders[i].o_status + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].o_date + "'>" + orders[i].o_date + "</label></td>" +
-												"<td style='text-align: center;'><label data-val='" + orders[i].o_amt + "'>" + orders[i].o_amt + "</label></td>" +
-												"<td style='text-align: center;'><a class='button' href='http://localhost:8080/studiehub/order.controller/adminUpdate/" + orders[i].identity_seed + "'>修改</a></td>" +
-												"</tr>";
-							segments.push(temp0);
+					function parseSelectedRows(resp) {
+						orders = JSON.parse(resp).list;
+						const deleteBtnEl = document.querySelector('#deleteBtn');
+						{
+							deleteBtnEl.classList.remove('deleteBtn');
+							deleteBtnEl.replaceChildren('刪除勾選資料');
+							deleteBtnEl.toggleAttribute('disabled', true);
 						}
-						console.log(segments.length);
-					};
-					
+						checkedIdentitySeeds = [];
+						rowNum = (orders)? orders.length : 0;
+						allOrderRows.length = 0;
+						for (const order of orders) {
+							const orderRow = document.createElement('tr');
+							{
+								orderRow.appendChild(createCheckboxCell(order.identity_seed));
+								orderRow.appendChild(createTextCell(order.o_id));
+								orderRow.appendChild(createTextCell(order.ecpay_o_id));
+								orderRow.appendChild(createTextCell(order.p_id));
+								orderRow.appendChild(createTextCell(order.u_id));
+								orderRow.appendChild(createTextCell(order.o_status));
+								orderRow.appendChild(createTextCell(order.o_date));
+								orderRow.appendChild(createTextCell(order.o_amt));
+								orderRow.appendChild(createEditButtonCell(order.identity_seed));
+							}
+
+							allOrderRows.push(orderRow);
+						}
+					}
+
+					function createCheckboxCell(identity_seed) {
+						const cell = document.createElement("td");
+						cell.className = 'order-item__checkbox-cell';
+
+						const checkboxEl = document.createElement("input");
+						checkboxEl.type = "checkbox";
+						checkboxEl.id = 'ckbox' + identity_seed;
+						checkboxEl.value = identity_seed;
+
+						const labelEl = document.createElement("label");
+						labelEl.htmlFor = checkboxEl.id;
+
+						cell.appendChild(checkboxEl);
+						cell.appendChild(labelEl);
+
+						return cell;
+					}
+					function createTextCell(text) {
+						const cell = document.createElement("td");
+						cell.className = 'order-item__cell';
+
+						const labelEl = document.createElement("label");
+						labelEl.textContent = text;
+						labelEl.dataset.val = text;
+
+						cell.appendChild(labelEl);
+
+						return cell;
+					}
+					function createEditButtonCell(identity_seed) {
+						const cell = document.createElement("td");
+						cell.className = 'order-item__cell';
+
+						const buttonEl = document.createElement("a");
+						buttonEl.href = 'order.controller/adminUpdate/' + identity_seed;
+						buttonEl.textContent = '修改';
+						buttonEl.className = 'button';
+
+						cell.appendChild(buttonEl);
+
+						return cell;
+					}
+
 					// 【自訂函數 9】DELETE
 					$('#deleteBtn').on('click', function(){
-						let queryString = 'identitySeeds=';
-						for (let i = 0; i < checkedIdentitySeeds.length; i++) {
-							queryString += checkedIdentitySeeds[i];
-							queryString += ((i + 1) != checkedIdentitySeeds.length)? ',' : '';
-						}
+						const queryString = 'identitySeeds=' + checkedIdentitySeeds.join(',');
 
 						console.log(queryString);
 
 						let xhr = new XMLHttpRequest();
-						xhr.open("POST", "<c:url value='/order.controller/deleteAdmin' />", true);
+						xhr.open("POST", "order.controller/deleteAdmin", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ❓
 						xhr.send(queryString);
 						xhr.onreadystatechange = function() {
 							if (xhr.readyState == 4 && xhr.status == 200) {
-								result = JSON.parse(xhr.responseText);
+								const result = JSON.parse(xhr.responseText);
 								console.log(result.state);
 								mainFunc();
 							}

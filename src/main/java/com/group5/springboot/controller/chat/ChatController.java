@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.annotation.dev.DeprecatedDetail;
@@ -50,7 +48,7 @@ public class ChatController {
 	public String chatIndex() {
 		return "chat/ChatIndex";
 	}
-	
+
 	@GetMapping("/goSelectAllChat")
 	public String goSelectAllChat(){
 		return "chat/selectAllChat";
@@ -155,6 +153,7 @@ public class ChatController {
 	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info){
 		Map<String, String> map = new HashMap<>();
 		try {
+			chatService.sanitizeConts(chat_Info);
 			// literally insert chat_info
 			chatService.insertChat(chat_Info);
 			// ...it's "insert chat_info as chat_reply which gets represented as the first block when grabbing the chat_replies"
@@ -174,6 +173,7 @@ public class ChatController {
 	public Map<String, String> InsertChatReply(@RequestBody Chat_Reply chat_Reply){
 		Map<String, String> map = new HashMap<>();
 		try {
+			chatService.sanitizeConts(chat_Reply);
 			chatService.insertChatReply(chat_Reply);
 			map.put("success", "新增成功");
 		} catch (Exception e) {
@@ -246,6 +246,9 @@ public class ChatController {
 			}
 			return "chat/updateChatReply";
 		}
+
+		chatService.sanitizeConts(chat_Reply);
+
 		chatService.updateChatReply(chat_Reply);
 		ra.addFlashAttribute("successMessage", "編號: " + chat_Reply.getC_ID() + "  修改成功!");
 		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();

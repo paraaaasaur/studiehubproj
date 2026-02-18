@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 
 <title>登入</title>
 <script>
@@ -31,18 +32,18 @@ window.onload = function(){
 		if(!u_id){
 			setErrorFor(result0c, "請輸入帳號");
 		} else{
-			result0c.innerHTML = "";
+			result0c.textContent = "";
 		}
 		if(!u_psw){
 			setErrorFor(result1c, "請輸入密碼");
 		} else{
-			result1c.innerHTML = "";
+			result1c.textContent = "";
 		}
 		if (hasError){
 			return false;
 		}
 		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "<c:url value='/login.controller' />");
+		xhr.open("POST", "login.controller");
 		var jsonLoginData = {
 			"u_id" : u_id,
 			"u_psw" : u_psw,
@@ -65,7 +66,7 @@ window.onload = function(){
 // 					alert(result.loginBean.u_id+ ", " + result.success + "! 點擊跳轉至首頁...");
 					alert(result.loginBean.u_id+ ", " + result.success);
 // 					top.location='<c:url value='/gotoUserIndex.controller' />';
-					top.location='<c:url value='/' />';
+					top.location='';
 				}
 			}
 		}
@@ -105,7 +106,7 @@ window.onload = function(){
 	  <div class="form-check">
 		  <input type="checkbox" value="rememberMe" id="rememberMe">
 		  <label for="rememberMe"> 記住帳號 </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		  <span><a href="<c:url value='/gotoForgetPassword.controller' />">忘記密碼</a></span>
+		  <span><a href="gotoForgetPassword.controller">忘記密碼</a></span>
 	  </div>
 	  <button id="login" class='primary' style="width: 210px;">登入</button>
 	  <hr>
@@ -118,11 +119,11 @@ window.onload = function(){
 </div>
 <%@include file="../universal/sidebar.jsp" %>  
 </div>
-<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
 
 </body>
 </html>

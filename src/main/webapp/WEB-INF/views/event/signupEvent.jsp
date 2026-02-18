@@ -10,10 +10,9 @@
  table{table-layout:fixed;word-wrap:break-word;}
 </style>
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
 
 </head>
@@ -21,32 +20,40 @@
 
 
 
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "<c:out value="${loginBean.u_id}" />",
+		"userPicString": "<c:out value="${loginBean.pictureString}" />",
+		"a_aid": "<c:out value="${signupEvent.a_aid}" />"
+	}
+</script>
+<script src="assets/js/utility/dom.js"></script>
 <script>
-	let dataArea = null; //變數放在外面 空值(原始狀態)  放在方法裡 別的方法要用它會找不到 不要讓他被綁住 
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString, a_aid } = bootstrapData;
+	let dataArea = null; //變數放在外面 空值(原始狀態)  放在方法裡 別的方法要用它會找不到 不要讓他被綁住
 	let restname = null;
 	let query = null;
-	var u_id = "${loginBean.u_id}";
-	var userPicString = "${loginBean.pictureString}";   
 
 	window.addEventListener("load", function() {
-		//window.addEvenListener 網頁監聽器 
-		//當瀏覽器從第一行到最後一行載完畢後才執行 function() 
+		//window.addEvenListener 網頁監聽器
+		//當瀏覽器從第一行到最後一行載完畢後才執行 function()
 
-		
+
 		var logout = document.getElementById("logout");
 			logout.onclick = function() {
 				var xhr1 = new XMLHttpRequest();
-				xhr.open("GET", "<c:url value='/logout.controller' />", true);
+				xhr.open("GET", "logout.controller", true);
 				xhr.send();
 				xhr.onreadystatechange = function() {
 					if (xhr1.readyState == 4 && xhr1.status == 200) {
 						var result = JSON.parse(xhr1.responseText);
 						if (result.success) {
 							alert(result.success);
-							top.location = '<c:url value='/' />';
+							top.location = '';
 						} else if (result.fail) {
 							alert(result.fail);
-							top.location = '<c:url value='/' />';
+							top.location = '';
 						}
 					}
 				}
@@ -67,7 +74,7 @@
 		    	signupHref.hidden = true;
 		    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 		    	userPic.src = userPicString;	//有登入就秀大頭貼
-		    	userId.innerHTML = u_id;
+		    	userId.textContent = u_id;
 		    	loginEvent.style.display = "block";
 		    	loginEvent1.style.display = "block";
 		    	loginALLEvent1.style.display = "block";
@@ -77,46 +84,46 @@
 			cartHref.hidden = (u_id)? false : true;
 			cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 		//universal
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		dataArea = document.getElementById("dataArea");
 		restname = document.getElementById("restname");
 		query = document.getElementById("query");
 		//抓到 Id 叫 dataArea 能對這個地方做修改 或 對他做監聽事件
 		let xhr = new XMLHttpRequest();
-		xhr.open("GET", "<c:url value='/signupEventjson/' />"+${signupEvent.a_aid}, true);
+		xhr.open("GET", "signupEventjson/" + a_aid, true);
 		//他會送出請求去/findAll 然後 controller 去接收 /findAll 執行方法
-		//說明請求的內容 fales 就是同步 true 就是非同步 
+		//說明請求的內容 fales 就是同步 true 就是非同步
 		xhr.send();
 		//真正送出請求
 		xhr.onreadystatechange = function() {
-			//當屬性發生變化的時候執行方法	
+			//當屬性發生變化的時候執行方法
 			if (xhr.readyState == 4 && xhr.status === 200) {
 				console.log(xhr.responseText);
 
-				dataArea.innerHTML = showData(xhr.responseText);
-				//執行方法 將 jsoe字串  轉為 jsoe物件 
+				renderEntryFormsTable(xhr.responseText);
+				//執行方法 將 jsoe字串  轉為 jsoe物件
 			}
 		};
 
@@ -130,14 +137,14 @@
 			}
 
 			let xhr2 = new XMLHttpRequest();
-			xhr2.open('GET', "<c:url value='/queryEventByName' />?rname=" + rname);
+			xhr2.open('GET', "queryEventByName?rname=" + rname);
 			xhr2.send();
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {
 
 					console.log(xhr2.responseText);
-					
-					dataArea.innerHTML = showData(xhr2.responseText);
+
+					renderEntryFormsTable(xhr2.responseText);
 
 				}
 			}
@@ -145,47 +152,62 @@
 
 	});
 
-	function showData(textobj) {
+	function renderEntryFormsTable(textobj) {
+		let entryForms = JSON.parse(textobj);
 
-		let obj = JSON.parse(textobj)
-		
-		let events = obj 
+		const entryFormsTable = document.createElement("table");
 
-		let segment = "<table >";
+		entryFormsTable.appendChild(createTableHeader());
 
-		
-		
-		
-			
-			segment += "<tr><th>會員帳號</th><th>姓名</th><th>Email</th><th>會員電話</th></tr>"
+			for (const ef of entryForms) {
+				const row = document.createElement("tr");
 
-			for (n = 0; n < events.length; n++) {
-				let event = events[n];
-				let tmp0 = event.id+"/"+${signupEvent.a_aid};
+			    row.appendChild(createTextCell(ef.e_id));
+				row.appendChild(createTextCell(ef.e_lastname + ef.e_firstname));
+				row.appendChild(createTextCell(ef.e_tel));
+				row.appendChild(createTextCell(ef.e_email));
+				row.appendChild(createDeleteCell(ef.e_firstname, ef.e_lastname, ef.id, a_aid));
 
-				segment += "<tr>"
-			    segment += "<td>" + event.e_id + "</td>"
-				segment += "<td>" + event.e_lastname + event.e_firstname + "</td>"
-				segment += "<td>" + event.e_tel + "</td>"
-				segment += "<td>" + event.e_email + "</td>"
-// 				segment += "<td>" + event.eventInfo.a_uid + "</td>"
-				
-				segment += "<td><input type='button'value='移除'onclick=if(confirm('是否確定移除("+ event.e_lastname + event.e_firstname + ")'))location='<c:url value = '/deletesignupEvent/"+tmp0+"'/>' /></td>"
-				
-// 				segment += "<td><img width='100' height='60' src='"+ '<c:url value="/" />' + event.a_picturepath+ "'></td>"
-						
-// 				segment += "<td><input type='button'value='更新'onclick=\"window.location.href='"+tmp0+"'\" /></td>";
-
-						
+				entryFormsTable.appendChild(row);
 			}
-						
-				segment += "</tr>"
-			
-		
-		        segment += "</table>";
 
-		return segment;
-	} 
+		dataArea.appendChild(entryFormsTable);
+	}
+function createTableHeader() {
+	return htmlToFragment(
+			"<tr>" +
+				"<th>會員帳號</th>" +
+				"<th>姓名</th>" +
+				"<th>Email</th>" +
+				"<th>會員電話</th>" +
+			"</tr>"
+	);
+}
+function createTextCell(text) {
+	const cell = document.createElement("td");
+	cell.textContent = text;
+
+	return cell;
+}
+function createDeleteCell(firstname, lastname, entryFormId, eventId) {
+	const cell = document.createElement("td");
+
+	const deleteButton = document.createElement("input");
+	deleteButton.value = '移除';
+	deleteButton.type = "button";
+	deleteButton.onclick = e => onclickDelete(e, firstname, lastname, entryFormId, eventId);
+
+	cell.appendChild(deleteButton);
+
+	return cell;
+}
+function onclickDelete(e, firstname, lastname, entryFormId, eventId) {
+	e.preventDefault();
+	const cfm = confirm('是否確定移除(' + lastname + firstname + ')');
+	if (cfm) {
+		window.location.href = 'deletesignupEvent/' + entryFormId + '/' + eventId;
+	}
+}
 </script>
 
 <body class="is-preload">
@@ -195,13 +217,13 @@
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
-				<h2 align='center'>${signupEvent.a_name}的報名表</h2>
-				
+				<h2 align='center'><c:out value="${signupEvent.a_name}" />的報名表</h2>
+
 				<div align="center">
-					
-					
+
+
 				</div>
-					
+
 
 
 				<div1 id='dataArea'>
@@ -219,13 +241,13 @@
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 </body>
 </html>

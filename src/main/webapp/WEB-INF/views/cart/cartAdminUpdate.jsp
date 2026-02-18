@@ -8,7 +8,8 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>購物車後台管理系統</title>
 	<style type="text/css">
 	   span.error {
@@ -17,16 +18,19 @@
 		font-size: 100%;
 	}
 	</style>
-
+<script type="application/json" id="bootstrap-data">
+	{
+		"adminId": "<c:out value="${adminID}" />"
+	}
+</script>
 <script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { adminId } = bootstrapData;
 
-	if("${success}"=="管理員登入成功"){alert('${"管理員登入成功!"}')}
-	
-	var adminId = "${adminId}";
 	// 踢除非管理員
 	if(!adminId){
 	alert('您不具有管理者權限，請登入後再試。');
-	top.location = "<c:url value='/gotoAdminIndex.controller' />";
+	top.location = "gotoAdminIndex.controller";
 }
 
 	window.onload = function(){
@@ -108,7 +112,7 @@
 										</tr>
 										<tr>
 											<td colspan='4' align='center'><br>&nbsp;
-												<a class='button' href="<c:url value='/cart.controller/adminSelect' />" >回上一頁</a>
+												<a class='button' href="cart.controller/adminSelect" >回上一頁</a>
 												<input type='submit' value='送出資料'>
 											</td>
 										</tr>
@@ -128,12 +132,12 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-			<script src="${pageContext.request.contextPath}/assets/js/custom/TaJenUtils.js"></script>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/custom/TaJenUtils.js"></script>
 
 		<!--********************************** M      Y      S      C      R      I      P      T ******************************************-->
 		<script>
@@ -154,7 +158,7 @@
 							return;
 					}
 					let xhr = new XMLHttpRequest();
-					xhr.open("POST", "<c:url value='/cart.controller/adminSelectProduct' />", true);
+					xhr.open("POST", "cart.controller/adminSelectProduct", true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					xhr.send("p_id=" + p_id.val());
 					$(xhr).on('readystatechange', function(){
@@ -179,7 +183,7 @@
 							return;
 					}
 					let xhr = new XMLHttpRequest();
-					xhr.open("POST", "<c:url value='/cart.controller/adminSelectUser' />", true);
+					xhr.open("POST", "cart.controller/adminSelectUser", true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					xhr.send("u_id=" + u_id.val());
 					$(xhr).on('readystatechange', function(){

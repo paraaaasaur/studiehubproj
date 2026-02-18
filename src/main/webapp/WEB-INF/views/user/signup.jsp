@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet' href="${pageContext.request.contextPath}/assets/css/main.css">
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>會員註冊</title>
 
 <script>
@@ -26,7 +28,7 @@ window.onload = function(){
 		}
 		var xhr = new XMLHttpRequest();
 		// 待寫後端判斷(done)
-		xhr.open("POST", "<c:url value='/checkUserId' />", true);
+		xhr.open("POST", "checkUserId", true);
 		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		xhr.send("u_id=" + u_id);
 		var message = "";
@@ -114,7 +116,7 @@ window.onload = function(){
 			return false;
 		}
 		var xhr1 = new XMLHttpRequest();
-		xhr1.open("POST", "<c:url value='/userSignup' />");
+		xhr1.open("POST", "userSignup");
 		var jsonSignupData = {
 			"u_id" : u_id,
 			"u_psw" : u_psw,
@@ -125,7 +127,7 @@ window.onload = function(){
 		xhr1.setRequestHeader("Content-Type", "application/json");
 		xhr1.send(JSON.stringify(jsonSignupData));
 		// loading GIF 秀出來
-		loading.src = "<c:url value='images/user/loading.gif' />";
+		loading.src = "images/user/loading.gif";
 		xhr1.onreadystatechange = function() {
 			if (xhr1.readyState == 4 && xhr1.status == 200){
 				result = JSON.parse(xhr1.responseText);
@@ -139,7 +141,7 @@ window.onload = function(){
 					loading.src = ""; //loading GIF 隱藏
 					loading.hidden = true;
 					alert(result.success + "! 系統已寄送註冊成功之信件至您的信箱, 請盡早完成會員資料...");
-					top.location='<c:url value='/gotologin.controller' />';
+					top.location='gotologin.controller';
 				}else if(result.formatError){
 					loading.src = ""; //loading GIF 隱藏
 					loading.hidden = true;
@@ -242,10 +244,10 @@ window.onload = function(){
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
-	<script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 </body>
 </html>

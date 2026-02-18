@@ -32,4 +32,17 @@ public interface ChatService {
 	
 	public void updateChatReply(Chat_Reply chat_Reply);
 
+	/**
+	 * Try to remove potential risk for XSS attack embedded in the HTML content
+	 * user attackers might send.
+	 * @param rawReply Raw user reply
+	 **/
+	void sanitizeConts(Chat_Reply rawReply);
+
+	/**
+	 * Try to remove potential risk for XSS attack embedded in the HTML content
+	 * user attackers might send.
+	 * @param rawTopPost Raw user top-post
+	 **/
+	void sanitizeConts(Chat_Info rawTopPost);
 }

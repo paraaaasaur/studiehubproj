@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix='c' uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
@@ -17,19 +18,24 @@
 </style>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="${pageContext.request.contextPath}/assets/css/main.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<link rel='stylesheet' href="assets/css/main.css">
 <title>Studie Hub</title>
 
- <script>
- var u_id = "${loginBean.u_id}";
- var userPicString = "${loginBean.pictureString}";
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
+<script>
+const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+const { u_id, userPicString } = bootstrapData;
  
  if(!u_id){
 	 alert("必須先登入才能新增試題!");
-	 top.location = "<c:url value='/gotologin.controller' />";
+	 top.location = "gotologin.controller";
  }
  
  window.onload = function(){
@@ -48,7 +54,7 @@
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    	userPic.src = userPicString;	//有登入就秀大頭貼
-	    	userId.innerHTML = u_id;
+	    	userId.textContent = u_id;
 	    	loginEvent.style.display = "block";
 	    	loginEvent1.style.display = "block";
 	    	loginALLEvent1.style.display = "block";
@@ -101,7 +107,7 @@
 	 	 <tr>
 	       <td>題目編號：<br>&nbsp;</td>
 	   	   <td><form:hidden path='q_id'/>
-	   	    	${question_Info.q_id}<br>&nbsp;
+	   	    	${fn:escapeXml(question_Info.q_id)}<br>&nbsp;
 	   	   </td>
 	    </tr>
        </c:otherwise>   
@@ -230,13 +236,13 @@
 
 	<!-- Scripts -->
 	<script
-		src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
+		src="assets/js/jquery.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/browser.min.js"></script>
+		src="assets/js/browser.min.js"></script>
 	<script
-		src="${pageContext.request.contextPath}/assets/js/breakpoints.min.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/util.js"></script>
-	<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 	
 </body>
 </html>

@@ -8,6 +8,8 @@
 - Magic getter `getComment` and setter `setComment`
 - Error-prone, redundant field `havesignedup`
   - use the direct query on `entryform` total size, either JPA or SQL query
+- What the fish is `modifyRestaurant`?
+- type (event category) should be plural (collection)
 
 ## Improvements
-- Make `Event#type` field an enum class  
+- Make `Event#type` field an enum class

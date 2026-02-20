@@ -31,10 +31,14 @@
   - move controller inline clutters to their own validators for centralization
 - Create JPA convenience methods for entity associations (if any exists)
 - Consolidate fragmented service methods into cohesive operations
+- Organize the messy `resources` directory
 
 ### Specifics
 
 #### Common
+- Remove the context path `/studiehub` to align url bases for the frontend and the backend at root
+  - replace it with using nginx reverse proxy
+  - remove one coupling that server has to hack in views via model attributes  
 - Replace `servletContext#getMimeType` with `Files#probeContentType`
   - But okay to overlap if naturally
 - Use `setParameter` instead of raw hql/jpql/sql (which allows injections) in persistent logic
@@ -43,9 +47,25 @@
 
 #### User
 - `@ModelAttribute("userBean") getLoginUserInfos`:
-  - kick out the first line, change param to `User_Info`, and make it a service method
+  - reduce it to a service method
+  - apply only where it's used, instead of getting eagerly triggered all over the controller
   - recommended name: e.g., `loadProfile(uid)`
   - update usage: `changePassword`, `updateUser`: replace `@ModelAttribute("userBean")` with `@SessionAttribute("loginBean")`
+- Switch session attr handling strategy 
+  - old: class annotations `@SessionAttributes` in controllers
+  - new
+    - remove all `@SessionAttributes`
+    - use explicit writer `httpSession.setAttribute("loginBean", user_info);` instead of generic `Model`
+    - use explicit reader `@SessionAttribute("loginBean") loginBean` instead of generic `Model`
+    - `ss#setComplete` -> `httpSession#invalidate` for logout & adminLogout
+  - update usage in handler methods
+  - update usage in helper methods:
+    - `#updateLoginBean` method signature
+      - from: `(Model, SessionStatus)` (`SessionStatus` is unused btw)
+      - to: `(HttpSession)`
+    - `@ModelAttribute("userBean") #getLoginUserInfos` method signature
+      - from: `(Model)`
+      - to: `(HttpSession)`
 
 #### Product
 
@@ -58,12 +78,14 @@
 
 
 ## Frontend
+See also the `view_issues`, `view_common_issues` on Notion.
+
 Recommended steps:
 1. Make a `common.js`, and first of all, move login-state auth logic, sidebar + header logic there  
 
 ### JavaScript
 - Structural cleanup & internal hygiene
-- No logic changes intended
+- No logic changes intended (for most)
 - Mind compass: Does what I'm trying to do worth even after 2.0.0?
 - Make me INSTANTLY understand what this page does when `window.onload`...
 
@@ -83,3 +105,9 @@ Recommended steps:
 
 ### CSS, HTML
 - Make discrete files as well if any heavy amount exists.
+- Rename each page title properly
+
+## New Feature
+
+### Question
+- add a new endpoint to retrieve only pending data for the pending page's search bar

@@ -1,11 +1,8 @@
 # [1.6.0] - Drafted Features Completion
 
 ## Goal
-> DISCLAIMER: all items in this version are optional based on your mood, so 
-> feel free to postpone literally everything to 2.0.0 in progress with redesign, especially when it feels
->   - need remakes anyway after redesign
->   - cleaner to implement after redesign
->   - and so on
+> DISCLAIMER: all items in this version are optional.  
+> Feel free to skip straight to 2.0.0, and implement them after schema redesign.
 - Finish almost-done features
 - Repair moderately broken features
 
@@ -14,44 +11,56 @@
 
 ### Common
 - Introduce String trimmer bean
-- Introduce Logger at different levels in place of `System.out.println`
+- I`System.out.println` -> Logger
 - Frontend common js: 
   - sortObjectsByACommonKey
   - sortTable (improve)
 
 ### User
 
-#### Wishlist
-- User dashboard: `GET /gotoUserIndex.controller` + `user/userIndex`
-
-#### Halfway
-- functionalities: rememberMe, #gotoDeleteUser, #deleteUser, #showSingleUser
-- Adds logout logic to all missing views
+#### Add
+1. User dashboard
+   - related artifacts:
+      - `GET /gotoUserIndex.controller`, v1.0.0
+      - `user/userIndex.jsp`, v1.0.0
+2. Admin user deletion
+   - related artifacts:
+      - `GET /gotoDeleteUser.controller/{u_id}`, v1.0.0
+      - `GET /showSingleUser.controller/{u_id}`, v1.0.0
+      - `DELETE /user.controller/{u_id}`, v1.0.0
+      - `user/deleteUser.jsp`, v1.0.0
+3. Remember me
+   - related artifacts:
+     - `remember me` checkbox in `user/login.jsp`, v1.0.0
+     - `rememberMe` field in `User_Info` entity, v1,0.0 (if not available atm)
 
 ### Product
 
-#### Missing
-- "Check detail" functionality for pending courses
+#### Add
+1. Check out course detail (for admin to review pending courses)
 
-#### Repair
-- `product/Product`: Whiteboard 404 when no preview is found
-  - make media upload product insertion required
-  - redesign as optional `block` when in 2.0.0
-- Rating system JS used in `product/Product`, `product/showProductToUser`
+#### Fix
+1. `product/Product`: Whiteboard 404 when preview video is not found
+2. Rating system JS used in `product/Product`, `product/showProductToUser`
 
 ### Question
-- Remove `01-display-all-quiz-overviews` feature, because I believe raw questions are inappropriate user products. Expose only quizzes, the meaningful design & combination of questions.
+
+#### Remove
+- Feature `01-display-all-quiz-overviews`
+  - reason: raw questions are inappropriate as user products
+  - solution: expose only quizzes (meaningful combinations of questions)
   - usage: 
     - frontend UI item 所有試題 in `sidebar`
     - view file `guestQueryQuestion`
     - backend endpoint `GET /question.controller/guestQueryQuestion`
     - integration test
+
 - Move insert-question feature to admin side
   - usage:
     - frontend UI item from sidebar to adminSidebar
     - backend endpoints `GET /question.controller/insertQuestion` and `POST /question.controller/insertQuestion`
     - integration tests
-- Apply new session rules 
+- Apply new session rules
   - requires admin: 
     - `GET /question.controller/findAllQuestions`
     - `GET /question.controller/queryByName`
@@ -101,16 +110,17 @@
 ### Event
 
 #### Wishlist
-- A themed event index page instead of raw event threads
-- `article` or `blog` domain which can be posted by an `instructor` and have `comment`s below
-  - https://startbootstrap.github.io/startbootstrap-blog-post/
-  - looks like no relevance to the `event` domain; an independent, separated one
-  - hashtag feature: navigate through other articles of the same category
-- `sendmessage`: ...???? Looks like the reply domain to an `event`?
-- Google Maps API instead of `<a href="">'`
-
-#### Missing Features
-- "Cancel" functionality in event detail page
-- A page for applicant to 
-  - view all registered events
-  - cancel registration
+1. Event index page (instead of raw event threads)
+   - related artifact: `GET /Eventindex`, v1.0.0
+2. `article` or `blog` domain which can be posted by an `instructor` and have `comment`s below
+   - https://startbootstrap.github.io/startbootstrap-blog-post/
+   - looks like no relevance to the `event` domain; an independent, separated one
+   - hashtag feature: navigate through other articles of the same category
+3. `sendmessage`: ...???? Looks like the reply domain to an `event`?
+4. Google Maps API instead of `<a href="">'`
+5. "Cancel" functionality in event detail page
+6. A page for applicant to 
+   - view all registered events
+   - cancel registration
+7. Update event functionality in admin page other than deletion
+8. Hashtag feature based on `a_type`

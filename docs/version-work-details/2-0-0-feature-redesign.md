@@ -1,5 +1,6 @@
 ## Idea
-- Make a `block` table to store any type of content in desired order
+- `block` table
+  - to store any type of content in desired order
   - media, html-paragraph...
   - column: id, page
   - usage: 1-M references `page` table
@@ -19,3 +20,15 @@
 
 ## How to implement reaction?
 - a reaction by a user to a post
+
+
+## User
+- `reset-password` feature
+  - stop revealing email existence to respect privacy
+  - treat existence and non-existence both as successful requests (status 200)
+  - the JSON message should say, "An email is sent to the address if it exists" or similar
+
+## Product
+- Rating: 
+  - from: optional rating
+  - to: use Apple App Store style, which requires rating first to enable comment.

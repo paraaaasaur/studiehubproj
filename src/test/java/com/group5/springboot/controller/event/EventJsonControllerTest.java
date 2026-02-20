@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.group5.springboot.controller.event.EventTestUtils.*;
 import static com.group5.springboot.controller.user.UserTestUtils.*;
 import static org.hamcrest.Matchers.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -110,6 +111,43 @@ class EventJsonControllerTest {
 	}
 
 	@Test
+	@DisplayName("/guest/EventfindAll")
+	void guestEventfindAll() throws Exception {
+		mockMvc.perform(get("/guest/EventfindAll"))
+
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(APPLICATION_JSON_UTF8))
+				.andExpect(jsonPath("$.list[*].verification", everyItem(is("Y"))));
+	}
+
+	@Test
+	@DisplayName("GET /admin/events - success")
+	void adminFindEvents_success() throws Exception {
+		userTestUtils.adminLoginAsAdming5(mockHttpSession);
+
+
+		String rname = event1Approved.getA_name().substring(1);
+		mockMvc.perform(get("/admin/events")
+						.session(mockHttpSession)
+						.queryParam("rname", rname)
+						.queryParam("approved", "false")
+						.queryParam("includeEntryforms", "false"))
+
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(APPLICATION_JSON))
+				.andExpect(jsonPath("$.list[*].a_name", everyItem(containsStringIgnoringCase(rname))))
+				.andExpect(jsonPath("$.list[*].verification", everyItem(is("Y"))));
+	}
+
+	@Test
+	@DisplayName("GET /admin/events - requires admin")
+	void adminFindEvents_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/admin/events"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DisplayName("GET /queryEventByName - success")
 	void queryByName_success() throws Exception {
 		// 0, admin-login
@@ -138,14 +176,46 @@ class EventJsonControllerTest {
 	}
 
 	@Test
-	@DisplayName("GET /eventcontentjson/{a_aid}")
-	void eventcontentjson() throws Exception {
-		mockMvc.perform(get("/eventcontentjson/{a_aid}", event1Approved.getA_aid())
-						.session(mockHttpSession))
+	@DisplayName("GET /me/events - success")
+	void userFindEvents_success() throws Exception {
+		userTestUtils.loginAs(yuz, mockHttpSession);
+
+		String rname = event2.getA_name().substring(1);
+		mockMvc.perform(get("/me/events")
+						.session(mockHttpSession)
+						.queryParam("rname", rname))
+
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(APPLICATION_JSON))
+				.andExpect(jsonPath("$.size", is(1)))
+				.andExpect(jsonPath("$.list[*].a_name", everyItem(containsStringIgnoringCase(rname))))
+				.andExpect(jsonPath("$.list[*].a_uid", everyItem(is(yuz.getU_id()))));
+	}
+
+	@Test
+	@DisplayName("GET /me/events - requires user")
+	void userFindEvents_whenNoUserLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/me/events"))
+
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@DisplayName("GET /eventcontentjson/{a_aid} - success")
+	void eventcontentjson_success() throws Exception {
+		mockMvc.perform(get("/eventcontentjson/{a_aid}", event1Approved.getA_aid()))
 
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON_UTF8))
 				.andExpect(jsonPath("$.a_aid", is(event1Approved.getA_aid().intValue())));
+	}
+
+	@Test
+	@DisplayName("GET /eventcontentjson/{a_aid} - unreviewed event")
+	void eventcontentjson_whenUnreviewedEvent_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/eventcontentjson/{a_aid}", event2.getA_aid()))
+
+				.andExpect(status().isForbidden());
 	}
 
 	@Test

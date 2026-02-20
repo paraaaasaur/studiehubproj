@@ -11,6 +11,10 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,12 +30,12 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class EventDaoImpl implements EventDao {
-	
-	
+
+
 	@Autowired
 	EntityManager em;
-	
-	
+
+
 	//把新增頁面POST請求 儲存進資料庫
 	@Override
 	public void saveEvent(EventInfo eventinfo) {
@@ -46,33 +50,33 @@ public class EventDaoImpl implements EventDao {
 		List<EventInfo> list = em.createQuery(hql).getResultList();
 		//System.out.println("反轉前==============="+list);
 		//for (EventInfo p : list) {
-		//System.out.println(p.getA_name()+p.getA_aid()); 
+		//System.out.println(p.getA_name()+p.getA_aid());
 		//}
 		Collections.reverse(list);
 		//讓排序反轉
         //System.out.println("反轉後==============="+list);
         //for (EventInfo p : list) {
-        //System.out.println(p.getA_name()+p.getA_aid()); 
+        //System.out.println(p.getA_name()+p.getA_aid());
         //}
-		
+
 //		transienta_startTime 活動開始時間
 //		transienta_endTime 活動結束時間
 
-        //判斷活動時間 有沒有超過現在的時間  有的話 把 未過期 設成 已過期 
+        //判斷活動時間 有沒有超過現在的時間  有的話 把 未過期 設成 已過期
 		//管理者 搜尋所有活動時 才會來這裡
 		for(int i = 0; i <= list.size()-1; i++) {
 			EventInfo aaa = list.get(i);
 			if (aaa.getA_endTime().getTime()<= new Date().getTime()) {
-				
+
 				aaa.setExpired("已過期");
-				
+
 				saveEvent(aaa);
 			}
 		}
-		
-	    
-		map.put("size", list.size()); 
-		map.put("list", list); 
+
+
+		map.put("size", list.size());
+		map.put("list", list);
 		 return map;
 	}
 	@SuppressWarnings("unchecked")
@@ -82,10 +86,10 @@ public class EventDaoImpl implements EventDao {
 		List<EventInfo> list = em.createQuery(hql)
 	                           .setParameter("uid", a_uid)
 	                           .getResultList();
-		
+
 	    System.out.println(list);
-		map.put("size", list.size()); 
-		map.put("list", list); 
+		map.put("size", list.size());
+		map.put("list", list);
 		 return map;
 	}
 	//模糊搜尋(AJAX)
@@ -96,8 +100,65 @@ public class EventDaoImpl implements EventDao {
 		                          .setParameter("name", "%" +  rname + "%")
 		                          .getResultList();
 		map.put("size", list.size());
-		map.put("list", list);		
+		map.put("list", list);
 		return map;
+	}
+	@Override
+	public List<EventInfo> search(String rname, String u_id, Boolean approved, boolean includeEntryform) {
+		var cb = em.getCriteriaBuilder();
+		var cq = cb.createQuery(EventInfo.class);
+		var from = cq.from(EventInfo.class);
+
+
+		// ---------- 1. fetch option ----------
+		if (includeEntryform) {
+			from.fetch("entryforms", JoinType.LEFT);
+		}
+
+
+		// ---------- 2. dynamic filtering ----------
+		Predicate predicate = cb.conjunction();
+
+		// a. reviewed or not
+		// y == approved only, n == unreviewed only, null = both
+		if (approved != null) {
+			predicate = cb.and(
+					predicate,
+					cb.equal(
+							cb.lower(from.get("verification")),
+							approved? "y" : "n"
+					));
+		}
+
+		// b. keyword like filtering
+		if (rname != null && !rname.isEmpty()) {
+			predicate = cb.and(
+					predicate,
+					// partial match
+					cb.like(
+							cb.lower(from.get("a_name")),
+							"%" + rname.toLowerCase() + "%"
+					));
+		}
+
+		if (u_id != null && !u_id.isEmpty()) {
+			predicate = cb.and(
+					predicate,
+					// full match
+					cb.equal(
+							cb.lower(from.get("a_uid")),
+							u_id.toLowerCase()
+					)
+			);
+		}
+
+		cq.where(predicate);
+
+
+		// ---------- 3. query ( ^)o(^ ) ----------
+		cq.select(from);
+
+		return em.createQuery(cq).getResultList();
 	}
 	//用a_aid搜尋(修改表單)
 	public EventInfo findByid(Long id) {

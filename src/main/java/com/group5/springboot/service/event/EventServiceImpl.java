@@ -3,9 +3,11 @@ package com.group5.springboot.service.event;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 
+import com.group5.springboot.exception.AccessDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,16 +44,40 @@ public class EventServiceImpl {
 		
 		return EventDao.EventfindAll();
 	};
+	public List<EventInfo> adminSearch(String rname, Boolean approved, boolean includeEntryforms) {
+		return EventDao.search(rname, null, approved, includeEntryforms);
+	}
+	public List<EventInfo> guestEventfindAll() {
+		Map<String, Object> map = EventDao.EventfindAll();
+		List<EventInfo> events = (List<EventInfo>) map.get("list");
+
+		var publicEvents = events.stream()
+				.filter(e -> "Y".equalsIgnoreCase(e.getVerification()))
+				.collect(Collectors.toList());
+
+		return publicEvents;
+	}
     //模糊搜尋 
 	public Map<String, Object> queryByName(String rname){
 		 
 		return EventDao.queryByName(rname);
 	};
+	public List<EventInfo> userSearch(String rname, String u_id) {
+		return EventDao.search(rname, u_id, null, false);
+	}
 	//用a_aid搜尋(修改表單)
 	public EventInfo findByid(Long id) {
-		
+
 		return EventDao.findByid(id);
 	};
+	public EventInfo guestFindByid(Long id) {
+		EventInfo publicEvent = EventDao.findByid(id);
+		if (publicEvent != null && "N".equalsIgnoreCase(publicEvent.getVerification())) {
+			throw new AccessDeniedException("Requested event#" + id + " is not public yet; need approval from an admin!");
+		}
+
+		return publicEvent;
+	}
 	//修改
 	public void update(EventInfo eventinfo) {
 		 EventDao.update(eventinfo);

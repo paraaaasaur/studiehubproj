@@ -94,7 +94,7 @@ window.addEventListener("load", function() {
 // 	query = document.getElementById("query");
 	//抓到 Id 叫 dataArea 能對這個地方做修改 或 對他做監聽事件
 	let xhr = new XMLHttpRequest();
-	xhr.open("GET", "EventfindAll", true);
+	xhr.open("GET", "guest/EventfindAll", true);
 	//他會送出請求去/findAll 然後 controller 去接收 /findAll 執行方法
 	//說明請求的內容 fales 就是同步 true 就是非同步 
 	xhr.send();
@@ -115,12 +115,10 @@ window.addEventListener("load", function() {
 function showData(textobj) {
 	const obj = JSON.parse(textobj);
 	const events = obj.list;
-	// fixme@1.0.1: redundant filter after security fix on the endpoint which leaks out unreviewed events to the frontend
-	const approvedEvents = events.filter(event => event.verification == 'Y');
 
 	const eventsWrapper = document.createDocumentFragment();
 
-		for (const event of approvedEvents) {
+		for (const event of events) {
 			const eventBox = document.createElement("article");
 			eventBox.classList.add('container');
 			// eventBox.classList.add('event-box');

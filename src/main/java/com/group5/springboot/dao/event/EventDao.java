@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.group5.springboot.model.event.Article;
 import com.group5.springboot.model.event.Comment;
@@ -26,6 +25,13 @@ public interface EventDao {
 	public Map<String, Object>  EventfindAll();
     //模糊搜尋(AJAX)
 	public Map<String, Object> queryByName(String rname);
+	/**
+	 * @param rname partial match
+	 * @param u_id full match
+	 * @param approved true, false, null <=> filter verification = "Y", "N", both
+	 * @param includeEntryform whether include the child entity {@link Entryform} Set
+	 **/
+	List<EventInfo> search(String rname, String u_id, Boolean approved, boolean includeEntryform);
 	//用UID搜尋
 	public Map<String, Object>  EventfindBYuid(String a_uid);
 	//用a_aid搜尋(修改表單)

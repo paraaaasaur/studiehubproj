@@ -171,7 +171,7 @@ const { u_id, userPicString, successMessage } = bootstrapData;
 			}
 
 			let xhr2 = new XMLHttpRequest();
-			xhr2.open('GET', "queryEventByName?rname=" + rname);
+			xhr2.open('GET', "me/events?rname=" + rname);
 			xhr2.send();
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState == 4 && xhr2.status == 200) {

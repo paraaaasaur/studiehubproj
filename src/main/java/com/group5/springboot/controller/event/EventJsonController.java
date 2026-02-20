@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
+import com.group5.springboot.exception.AccessDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,9 @@ import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.event.EventServiceImpl;
+
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 public class EventJsonController {
 
@@ -31,6 +36,28 @@ public class EventJsonController {
 		
 		return eventserviceImpl.EventfindAll();
 	}
+
+	@GetMapping(value = "/guest/EventfindAll", produces = "application/json; charset=UTF8")
+	public @ResponseBody Map<String, Object> guestEventfindAll() {
+		var publicEvents = eventserviceImpl.guestEventfindAll();
+
+		return Map.of(
+				"list", publicEvents,
+				"size", publicEvents.size()
+		);
+	}
+
+	@RequiresAdmin
+	@GetMapping("/admin/events")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> adminFindEvents(String rname, Boolean approved, boolean includeEntryforms) {
+		var events = eventserviceImpl.adminSearch(rname, approved, includeEntryforms);
+
+		return ResponseEntity.ok(Map.of(
+				"list", events,
+				"size", events.size()
+		));
+	}
 	
 	//用Name尋找 顯示前端
 	@RequiresAdmin
@@ -41,17 +68,35 @@ public class EventJsonController {
 		return eventserviceImpl.queryByName(rname);
 		
 	}
+
+	@RequiresUser
+	@GetMapping("/me/events")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> userFindEvents(String rname, @SessionAttribute("loginBean") User_Info loginBean) {
+		List<EventInfo> userEvents = eventserviceImpl.userSearch(rname, loginBean.getU_id());
+
+		return ResponseEntity.ok(Map.of(
+				"list", userEvents,
+				"size", userEvents.size()
+		));
+	}
 	
 	//用id尋找 顯示活動內容 
 	@GetMapping(value = "/eventcontentjson/{a_aid}", produces = "application/json; charset=UTF8")
-	public @ResponseBody EventInfo eventcontentjson(@PathVariable Long a_aid ) {
-		//依照AID搜尋出一筆活動表
-		EventInfo eventInfo = eventserviceImpl.findByid(a_aid);
-		//用AID搜尋到的活動表 找出相關聯的 報名表 用.size 取得 跟 活動表相關聯的數量 代表有幾個報名人數
-		int size=eventserviceImpl.findentryformByaidreturnsize(eventInfo);
-		//把搜尋到的數量放進活動表
-		eventInfo.setHavesignedup(size);
-		
+	public @ResponseBody EventInfo eventcontentjson(@PathVariable Long a_aid, HttpServletResponse res) {
+		EventInfo eventInfo = null;
+		try {
+			//依照AID搜尋出一筆活動表
+			eventInfo = eventserviceImpl.guestFindByid(a_aid);
+			//用AID搜尋到的活動表 找出相關聯的 報名表 用.size 取得 跟 活動表相關聯的數量 代表有幾個報名人數
+			int size=eventserviceImpl.findentryformByaidreturnsize(eventInfo);
+			//把搜尋到的數量放進活動表
+			eventInfo.setHavesignedup(size);
+		} catch (AccessDeniedException e) {
+			res.setStatus(403);
+			res.setContentType("application/json");
+		}
+
 		return eventInfo ;
 		
 	}

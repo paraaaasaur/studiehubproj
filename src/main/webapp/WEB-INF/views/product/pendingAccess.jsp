@@ -60,7 +60,7 @@ window.onload = function(){
 		}
 
 		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET',"queryByProductName?pname="+pname);
+		xhr2.open('GET',"admin/products?pname="+pname+"&approved=false");
 		xhr2.send();
 		xhr2.onreadystatechange = function(){
 			if(xhr2.readyState == 4 && xhr2.status == 200){

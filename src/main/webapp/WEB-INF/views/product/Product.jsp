@@ -98,28 +98,6 @@ window.onload = function(){
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 //universal
 
-
-	var query = document.getElementById("query");
-	var productname = document.getElementById("productname");
-
-	query.addEventListener('click',function(){
-		let pname = productname.value;
-		if(!pname){
-			alert('請輸入關鍵字');
-			return
-		}
-
-		let xhr2 = new XMLHttpRequest();
-		xhr2.open('GET',"queryByProductName?pname="+pname);
-		xhr2.send();
-		xhr2.onreadystatechange = function(){
-			if(xhr2.readyState == 4 && xhr2.status == 200){
-				var result = JSON.parse(xhr2.responseText)
-				dataArea.innerHTML = showData(result);
-			}
-		}
-	})
-
 	// nin's
 	$(function(){
 		let xhr3 = new XMLHttpRequest();
@@ -194,36 +172,7 @@ window.onload = function(){
 
 }
 
-// fixme: remove (only found use === broken search bar)
-function showData(textObj) {
-    let obj = JSON.parse(JSON.stringify(textObj));
-    let size = obj.size;
-    let products = obj.list;
-	console.log(obj);
-	console.log(size);
-	console.log(products);
-    let segment = "";
-        if (size == 0) {
-			segment += "<tr><th colspan='5'>查無資料</th></tr>";
-		} else {
 
-			for(n=0;n<products.length;n++){
-				let product = products[n];
-				segment += "<div class='product'>";
-				segment += "<a href='"+"<c:url value = '/takeClass/"+ product.p_ID +"'/>" +"'class='image'style='height:270px'>";
-				segment += "<img src='"+ product.p_Img +"' width='230px' height='120px'>";
-				segment += "<br>";
-				segment += "<h3>"+ product.p_Name +"</h3>"
-			    segment += "</a>";
-			    segment += "</div>";
-			}
-
-
-
-        }
-
-        return segment;
-}
 
 
 
@@ -237,14 +186,6 @@ function showData(textObj) {
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
-				<div style="text-align: center; margin-top: 10px;">
-					<input type="text" id="productname"
-						style="display: inline; width: 500px; float: none; border-radius: 50px;"
-						placeholder="請輸入課程關鍵字">
-					<button id="query" style="display: inline;">搜尋</button>
-					<br> <br>
-
-				</div>
 				<div id='dataArea'>
 
 					<h2>${fn:escapeXml(product.p_Name)}</h2>

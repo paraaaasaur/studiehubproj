@@ -4,6 +4,7 @@ import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
+import org.json.JSONArray;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -52,7 +53,7 @@ class ProductResultControllerTest {
 		this.product1Approved = dao.saveProductButSkipStorage(aRandomProduct(), ken);
 		this.product2 = dao.saveProductButSkipStorage(aRandomProduct(), ken);
 		this.product3 = dao.saveProductButSkipStorage(aRandomProduct(), ken);
-		dao.adminApprovesProduct(product1Approved);
+		this.product1Approved = dao.adminApprovesProduct(product1Approved);
 	}
 
 	@AfterEach
@@ -106,21 +107,50 @@ class ProductResultControllerTest {
 				.andExpect(status().isUnauthorized());
 	}
 
-	@Disabled("reactivate after fixes on resource leakage(1.0.1) and wrong query(1.0.2)")
 	@Test
-	@DisplayName("GET /queryByProductName")
-	void queryByName() throws Exception {
+	@DisplayName("GET /queryByProductName - success")
+	void queryByName_success() throws Exception {
 		String pname = product1Approved.getP_Name().substring(1);
 		String producttypename = product1Approved.getP_Class();
 		mockMvc.perform(get("/queryByProductName")
-						.param("pname", pname)
-						.param("producttypename", producttypename))
+						.queryParam("pname", pname)
+						.queryParam("producttypename", producttypename))
 
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(APPLICATION_JSON_UTF8))
 				.andExpect(jsonPath("$", aMapWithSize(3)))
-				.andExpect(jsonPath("$.ratedIndex", everyItem(nullValue())))
+				.andExpect(jsonPath("$.ratedIndex", everyItem(is(0))))
 				.andExpect(jsonPath("$.size", is(1)))
 				.andExpect(jsonPath("$.list[*].p_Name", hasItem(product1Approved.getP_Name())));
+	}
+
+	@Test
+	@DisplayName("GET /admin/products - success")
+	void adminFindProducts_success() throws Exception {
+		userTestUtils.adminLoginAsAdming5(mockHttpSession);
+
+
+		String pname = product1Approved.getP_Name().substring(1);
+		String producttypename = product1Approved.getP_Class();
+		mockMvc.perform(get("/admin/products")
+						.session(mockHttpSession)
+						.queryParam("pname", pname)
+						.queryParam("producttypename", producttypename)
+						.queryParam("approved", "true"))
+
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(APPLICATION_JSON_UTF8))
+				.andExpect(jsonPath("$", is(aMapWithSize(2))))
+				.andExpect(jsonPath("$.list[*].p_Name", hasItem(product1Approved.getP_Name())))
+				.andExpect(jsonPath("$.list[*].p_Status", everyItem(is(product1Approved.getP_Status()))))
+				.andExpect(jsonPath("$.list[*].p_Rating", everyItem(emptyIterableOf(JSONArray.class))));
+	}
+
+	@Test
+	@DisplayName("GET /admin/products - requires admin")
+	void adminFindProducts_whenNoAdminLoggedIn_thenAccessIsDenied() throws Exception {
+		mockMvc.perform(get("/admin/products"))
+
+				.andExpect(status().isUnauthorized());
 	}
 }

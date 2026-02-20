@@ -1,7 +1,9 @@
 package com.group5.springboot.dao.product;
 
+import java.util.List;
 import java.util.Map;
 
+import com.group5.springboot.dto.product.ProductSearchCriteria;
 import com.group5.springboot.model.product.ProductInfo;
 
 public interface ProductDao {
@@ -14,6 +16,8 @@ public interface ProductDao {
 
 	// 名字模糊搜尋
 	public Map<String, Object> queryByName(String p_Name, String typeName);
+
+	List<ProductInfo> search(ProductSearchCriteria criteria, boolean includeRating);
 
 	// findbyp_id
 	ProductInfo findByProductID(Integer p_ID);

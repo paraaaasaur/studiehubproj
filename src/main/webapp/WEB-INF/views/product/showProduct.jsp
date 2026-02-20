@@ -37,7 +37,7 @@ const api = {
 		return response.json();
 	},
 	fetchProductsByName: async function(pname, producttypename) {
-		const url = 'queryByProductName' +
+		const url = 'admin/products' +
 				'?pname=' + pname + '&producttypename=' + producttypename;
 		const response = await fetch(url);
 		if (!response.ok) {

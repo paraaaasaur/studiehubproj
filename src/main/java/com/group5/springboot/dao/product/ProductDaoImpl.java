@@ -1,13 +1,11 @@
 package com.group5.springboot.dao.product;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.criteria.*;
 
+import com.group5.springboot.dto.product.ProductSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -72,6 +70,68 @@ public class ProductDaoImpl implements ProductDao {
 		map.put("list", list);
 		map.put("size",list.size());
 		return map;
+	}
+
+	@Override
+	public List<ProductInfo> search(ProductSearchCriteria criteria, boolean includeRating) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<ProductInfo> cq = cb.createQuery(ProductInfo.class);
+		Root<ProductInfo> from = cq.from(ProductInfo.class);
+
+
+		// ---------- 1. optional FETCH options ----------
+		if (includeRating) {
+			from.fetch("p_Rating", JoinType.LEFT);
+		}
+
+
+		// ---------- 2. Dynamic WHERE conditions ----------
+		List<Predicate> mainPredicates = new ArrayList<>();
+		cb.conjunction();
+		List<Predicate> keywordPredicateParts = new ArrayList<>();
+
+		// main predicate group
+		Boolean approved = criteria.getApproved();
+		if (approved != null) {
+			mainPredicates.add(cb.equal(
+					from.get("p_Status"),
+					approved? 1 : 0
+			));
+		}
+
+		// [optional] keyword predicate parts
+		// (1/2)
+		String pname = criteria.getPname();
+		if (pname != null && !pname.isEmpty()) {
+			keywordPredicateParts.add(cb.like(
+					cb.lower(from.get("p_Name")),
+					"%" + pname.toLowerCase() + "%"
+			));
+		}
+
+		// (2/2)
+		String ptype = criteria.getProducttypename();
+		if (ptype != null && !ptype.isEmpty()) {
+			keywordPredicateParts.add(cb.like(
+					cb.lower(from.get("p_Class")),
+					"%" + ptype.toLowerCase() + "%"
+			));
+		}
+
+
+		if (!keywordPredicateParts.isEmpty()) {
+			var keywordPredicate = cb.or(keywordPredicateParts.toArray(Predicate[]::new));
+			mainPredicates.add(keywordPredicate);
+		}
+
+		cq.where(mainPredicates.toArray(Predicate[]::new));
+
+
+		// ---------- 3. Query( ^)o(^ ) ----------
+		cq.select(from);
+
+
+		return em.createQuery(cq).getResultList();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-# StudieHub Renewal Project (1.0.0-SNAPSHOT)
+# StudieHub Renewal Project (1.0.1)
 
 [English](README.md) | [日本語](README-jp.md) | [繁體中文](README-zh-tw.md)
 

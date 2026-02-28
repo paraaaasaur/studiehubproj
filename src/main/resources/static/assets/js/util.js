@@ -128,7 +128,7 @@
 							// Reset forms.
 								if (config.resetForms)
 									$this.find('form').each(function() {
-										this.reset();
+										this.resetToAllFalse();
 									});
 
 						}, config.delay);

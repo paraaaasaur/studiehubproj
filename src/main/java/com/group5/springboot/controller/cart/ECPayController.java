@@ -48,10 +48,6 @@ public class ECPayController {
 	// Can't use @RequestBody since ECPay sends application/x-www-form-urlencoded,
 	// not application/json :(
 	public void paymentResultWebhook(ECPayPaymentResult dto) {
-		System.out.println("*********************** 回傳結果如下(2) **************************");
-		System.out.println(dto);
-		System.out.println("*********************** 回傳結果如上(2) **************************");
-
 		boolean success = "Credit_CreditCard".equals(dto.getPaymentType())
 						  && "1".equals(dto.getRtnCode());
 		// ❗ 信用卡以外的成功判定都還沒設計

@@ -27,9 +27,4 @@ public class RatingServiceImpl {
 	public Map<String, Object> findRatingByProductID(Integer p_ID){
 		return ratingDao.findRatingByProductID(p_ID);
 	}
-	
-	public Integer ratingAVG(Integer p_ID) {
-		return ratingDao.ratingAVG(p_ID);
-	}
-	
 }

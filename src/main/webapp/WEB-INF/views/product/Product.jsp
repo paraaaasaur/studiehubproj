@@ -335,13 +335,27 @@ window.onload = function(){
 						var text = $('#comment').val();
 						var p_ID = $('#p_ID').val();
 
-						var xhr = new XMLHttpRequest();
-						xhr.open("POST", "saveRating",true);
-						xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-						xhr.send("p_ID="+p_ID+"&ratedIndex="+ratedIndex+"&commentString="+text);
-						window.location.href="takeClass/"+p_ID;
+						const form = document.createElement('form');
+						form.method = 'POST';
+						form.action = window.location.href = 'saveRating';
 
+						const params = {
+							p_ID: p_ID,
+							ratedIndex: ratedIndex,
+							commentString: text
+						};
 
+						for (const key of Object.keys(params)) {
+							const input = document.createElement('input');
+							input.type = 'hidden';
+							input.name = key;
+							input.value = params[key];
+
+							form.appendChild(input);
+						}
+
+						document.body.appendChild(form);
+						form.submit();
 					});
 
 					

@@ -29,7 +29,17 @@ class BaseControllerTest {
 	@DisplayName("GET /")
 	void index() throws Exception {
 		mockMvc.perform(get("/"))
+
 				.andExpect(status().isOk())
 				.andExpect(view().name("index"));
+	}
+
+	@Test
+	@DisplayName("GET /credits")
+	void credits() throws Exception {
+		mockMvc.perform(get("/credits"))
+
+				.andExpect(status().isOk())
+				.andExpect(view().name("credits"));
 	}
 }

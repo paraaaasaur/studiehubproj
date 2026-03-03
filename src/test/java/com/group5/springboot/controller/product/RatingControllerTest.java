@@ -75,7 +75,6 @@ class RatingControllerTest {
 				.andExpect(jsonPath("$.list..ratedIndex", hasItems(2, 5)));
 	}
 
-	@Disabled("todo@1.0.2: fix POST /saveRating confusing intention before enabling this test")
 	@Test
 	@DisplayName("POST /saveRating")
 	void saveRatingResult() throws Exception {
@@ -85,10 +84,7 @@ class RatingControllerTest {
 						.param("commentString", "善哉")
 						.param("ratedIndex", "4"))
 
-//				.andExpect(status().isOk())
-//				.andExpect(view().name("product/Product"));
-
 				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/takeClass/1"));
+				.andExpect(redirectedUrl("/takeClass/" + product1.getP_ID()));
 	}
 }

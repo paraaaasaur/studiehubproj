@@ -8,14 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,34 +31,18 @@ import static com.group5.springboot.utils.SystemUtils.getBaseUrl;
 
 @RestController
 public class CartController {
-	@Autowired // SDI ✔
-	private ProductServiceImpl productService;
-	@Autowired // SDI ✔
-	private UserService userService;
-	@Autowired // SDI ✔
-	private CartItemService cartItemService;
-	@Autowired // SDI ✔
-	private OrderService orderService;
-	
-	/***************************************************************************** */
+	@Autowired ProductServiceImpl productService;
+	@Autowired UserService userService;
+	@Autowired CartItemService cartItemService;
+	@Autowired OrderService orderService;
+
+
 	@RequiresUser
 	@PostMapping(value="/cart.controller/clientShowCart")
 	public List<Map<String, Object>> clientShowCart(@RequestParam String u_id) {
-		List<Map<String, Object>> cart = cartItemService.getCart(u_id);
-		cart.forEach(System.out::println);
-		return cart;
-	}
-	
-	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/clientRemoveProductFromCart", produces = "application/json; charset=UTF-8")
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "no usage")
-	public List<Map<String, Object>> clientRemoveProductFromCart(@RequestParam Integer[] p_ids, @RequestParam String u_id) {
-		Arrays.asList(p_ids).forEach(p_id -> cartItemService.deleteASingleProduct(u_id, p_id));
 		return cartItemService.getCart(u_id);
 	}
 	
-	/***************************************************************************** */
 	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientRemoveProductFromCartByCartId", produces = "application/json; charset=UTF-8")
 	public List<Map<String, Object>> clientRemoveProductFromCartByCartId(@RequestParam Integer[] cart_ids, @RequestParam String u_id) {
@@ -68,14 +50,13 @@ public class CartController {
 		return cartItemService.getCart(u_id);
 	}
 	
-	/***************************************************************************** */
 	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientAddProductToCart")
 	public Boolean clientAddProductToCart(
-			@RequestParam Integer p_ID
-			, @RequestParam String u_ID
-			, @RequestParam String toDo
-			) {
+			@RequestParam Integer p_ID,
+			@RequestParam String u_ID,
+			@RequestParam String toDo
+	) {
 		Boolean canBuy = (orderService.selectIfBoughtOrNot(p_ID, u_ID) && cartItemService.selectByProductId(p_ID, u_ID));
 		if ("query".equals(toDo)) {
 			return canBuy;
@@ -87,13 +68,12 @@ public class CartController {
 		return false;
 	}
 	
-	/***************************************************************************** */
 	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientInitializeProductBtnFunc")
 	public Integer clientInitializeProductBtnFunc(
-			@RequestParam Integer p_ID
-			, @RequestParam String u_ID
-			) {
+			@RequestParam Integer p_ID,
+			@RequestParam String u_ID
+	) {
 		Boolean alreadyBought = !(orderService.selectIfBoughtOrNot(p_ID, u_ID));
 		Boolean alreadyInCart = !(cartItemService.selectByProductId(p_ID, u_ID));
 		if (alreadyBought) {
@@ -107,28 +87,24 @@ public class CartController {
 		return 0;
 	}
 
-	/***************************************************************************** */
 	@RequiresAdmin
 	@GetMapping(value = "/cart.controller/adminSelectTop100", produces = "application/json; charset=UTF-8")
-	public Map<String, Object> adminCartSelectTop100(){
+	public Map<String, Object> adminCartSelectTop100() {
 		return cartItemService.selectTop100();
 	}
 	
-	/***************************************************************************** */
 	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSelectProduct")
 	public ProductInfo adminCartSelectProduct(@RequestParam("p_id") String p_id) {
 		return productService.findByProductID(Integer.parseInt(p_id));
 	}
 	
-	/***************************************************************************** */
 	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSelectUser")
 	public User_Info adminCartSelectUser(@RequestParam("u_id") String u_id) {
 		return userService.getSingleUser(u_id);
 	}
 	
-	/***************************************************************************** */
 	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSearchBar")
 	public Map<String, Object> adminCartSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
@@ -142,16 +118,13 @@ public class CartController {
 				return cartItemService.selectLikeOperator(condition, value);
 			} else if ("cart_date".equals(condition)) {
 				// (3) 日期範圍查詢
-				// 隨時可換
-				String regex = ","; 
+				String regex = ",";
 				String[] dates = value.split(regex);
 				String startDateString = dates[0].split("T")[0] + " " + dates[0].split("T")[1];
 				String endDateString = dates[1].split("T")[0] + " " + dates[1].split("T")[1];
-				// ❗ ❓ 這邊寫得頗爛，感覺要用更通用的方法拆(轉)格式
 				return cartItemService.selectWithTimeRange(startDateString, endDateString);
 			} else if ("cart_id".equals(condition) || "p_id".equals(condition) || "p_price".equals(condition)) {
 				// (4) 數值範圍查詢
-				// 隨時可換
 				String regex = ",";
 				String[] numberStrings = value.split(regex);
 				Integer minValue = 0;
@@ -172,19 +145,6 @@ public class CartController {
 		return map;
 	}
 	
-	/***************************************************************************** */
-	@PostMapping(value = "/cart.controller/insertAdmin")
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "duplicate", replaceWith = "GET & POST /cart.controller/adminInsert")
-	public Map<String, Object> adminCartInsert(@RequestBody CartItem cartItem) {
-		Map<String, Object> map = cartItemService.insert(cartItem.getP_id(), cartItem.getU_id());
-		String msg = (map.get("errorMessage") == null)? "新增成功！" : "新增失敗 :^)";
-		map.put("state", msg);
-		
-		return map;
-	}
-	
-	/***************************************************************************** */
 	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/deleteAdmin")
 	public Map<String, String> adminCartDelete(@RequestParam Integer[] cart_ids) {
@@ -194,13 +154,12 @@ public class CartController {
 		return map;
 	}
 	
-	/***************************************************************************** */
 	@RequiresUser
 	@PostMapping("/cart.controller/checkout")
 	public String payViaEcpay(
 			@RequestParam("u_id") String u_id,
 			@RequestParam("p_ids") Integer[] p_ids
-			) {
+	) {
 		List<ProductInfo> cart = new ArrayList<ProductInfo>();
 		for(Integer p_id : p_ids) {
 			ProductInfo product = productService.findByProductID(p_id);
@@ -224,7 +183,8 @@ public class CartController {
 		return body;
 	}
 	
-	
+
+	// ==================== helper ====================
 	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
 		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
 		// ❗ 交易失敗的時候這會變得不能用第二次
@@ -240,7 +200,7 @@ public class CartController {
 		}
 		String myTotalAmount = String.valueOf(myTotalAmountInt);
 		// 【產生 TradeDesc String(200)】
-		String myTradeDesc = "Thank you for joining StudieHub!"; // ❗有更有意義的內容嗎？
+		String myTradeDesc = "Thank you for joining StudieHub!";
 		// 【產生 ItemName String(400)】
 		StringBuilder myItemNameBuilder = new StringBuilder("");
 		cart.forEach(product -> myItemNameBuilder.append("#").append(product.getP_Name()));
@@ -262,17 +222,10 @@ public class CartController {
 		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
 		aioObj.setCustomField1(uBean.getU_id()); // u_id
 		aioObj.setCustomField2(uBean.getU_lastname() + uBean.getU_firstname()); // user's full name
-		
-		
-		CartViewController.cartInfoMap.put(uBean.getU_id(), tempCart);
-		
-
-//		aioObj.setCustomField3("ガンキマリ");
-//		aioObj.setCustomField4("僕を応援しろよ僕を");
 		aioObj.setClientBackURL(myClientBackURL);
+
+		CartViewController.cartInfoMap.put(uBean.getU_id(), tempCart);
+
 		return aioObj;
 	}
-	
-	
-	
 }

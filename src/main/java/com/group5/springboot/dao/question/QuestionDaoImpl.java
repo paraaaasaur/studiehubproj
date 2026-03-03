@@ -43,7 +43,15 @@ public class QuestionDaoImpl implements QuestionDao {
 	public Question_Info findById(Long q_id) {
 		return em.find(Question_Info.class, q_id);
 	}
-	
+
+	@Override
+	public Question_Info findApprovedById(Long q_id) {
+		String jpql = "SELECT qi FROM Question_Info qi WHERE qi.verification = 'Y' AND qi.q_id = :qid";
+		return em.createQuery(jpql, Question_Info.class)
+				.setParameter("qid", q_id)
+				.getSingleResult();
+	}
+
 	////刪除
 	@Override
 	public void deleteQuestion(Question_Info question_Info) {
@@ -88,17 +96,17 @@ public class QuestionDaoImpl implements QuestionDao {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> sendRandomMixExam() {
 		Map<String, Object> map = new HashMap<>();
-		String hql = "FROM Question_Info WHERE q_Type='聽力題' ORDER BY NEWID()";
+		String hql = "FROM Question_Info WHERE q_Type='聽力題' AND verification = 'Y' ORDER BY NEWID()";
 		List<Question_Info> list = em.createQuery(hql).setMaxResults(4).getResultList();
 		//設定隨機抽樣數量:setMaxResults()
 		System.out.println("list.get(0)=" + list.get(0));
 		
-		String hql2 = "FROM Question_Info WHERE q_Type='多選題' ORDER BY NEWID()";
+		String hql2 = "FROM Question_Info WHERE q_Type='多選題' AND verification = 'Y' ORDER BY NEWID()";
 		List<Question_Info> list2 = em.createQuery(hql2).setMaxResults(3).getResultList();
 		//設定隨機抽樣數量:setMaxResults()
 		System.out.println("list2.get(0)=" + list2.get(0));
 		
-		String hql3 = "FROM Question_Info WHERE q_Type='單選題' ORDER BY NEWID()";
+		String hql3 = "FROM Question_Info WHERE q_Type='單選題' AND verification = 'Y' ORDER BY NEWID()";
 		List<Question_Info> list3 = em.createQuery(hql3).setMaxResults(3).getResultList();
 		//設定隨機抽樣數量:setMaxResults()
 		System.out.println("list3.get(0)=" + list3.get(0));

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
-import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.annotation.dev.RenameSuggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,31 +22,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.group5.springboot.controller.user.UserController;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.service.chat.ChatService;
 import com.group5.springboot.validate.ChatValidator;
 
 @Controller
-@SessionAttributes(names = {"loginBean","adminBean"})
+@SessionAttributes(names = {"loginBean"})
 public class ChatController {
+	@Autowired ChatService chatService;
+	@Autowired ChatValidator chatValidator;
 
-	@Autowired
-	ChatService chatService;
-	@Autowired
-	Chat_Info chat_Info;
-	@Autowired
-	UserController uc;
-	@Autowired
-	ChatValidator chatValidator;
-
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = {"no usage", "redesign"})
-	@GetMapping(path = "/chatIndex")
-	public String chatIndex() {
-		return "chat/ChatIndex";
-	}
 
 	@GetMapping("/goSelectAllChat")
 	public String goSelectAllChat(){
@@ -72,21 +57,6 @@ public class ChatController {
 		return "chat/insertChat";
 	}
 
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = {"design choice", "broken"}, replaceWith = "same-page toggling")
-	@GetMapping("/goInsertChatReply")
-	public String goInsertChat(){
-		return "chat/insertChatReply";
-	}
-
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = {"design choice", "no usage"})
-	@GetMapping("/goDeleteChat/{c_ID}")
-	public String goDeleteChat(@PathVariable int c_ID, Model model){
-		model.addAttribute("c_ID", c_ID);
-		return "chat/DeleteChat";
-	}
-
 	@RequiresAdmin
 	@GetMapping("/goDeleteChatAdmin/{c_ID}")
 	public String goDeleteChatAdmin(@PathVariable int c_ID, Model model){
@@ -109,16 +79,6 @@ public class ChatController {
 	public Chat_Info selectChatById(@PathVariable int c_ID) {
 		Chat_Info chat_Info = chatService.selectChatById(c_ID);
 		return chat_Info;
-	}
-
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "no usage", replaceWith = "same-page toggling")
-	@GetMapping("/selectSingleChatReply/{c_ID}")
-	@ResponseBody
-	@RenameSuggestion("findReply")
-	public Chat_Reply selectChatReplyById(@PathVariable int c_ID) {
-		Chat_Reply chat_Reply = chatService.selectChatReplyById(c_ID);
-		return chat_Reply;
 	}
 
 	@GetMapping(path = "/selectAllChat", produces = {"application/json"})
@@ -150,7 +110,7 @@ public class ChatController {
 	@PostMapping(path = "/insertChat", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("insertTopPost")
-	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info){
+	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info) {
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.sanitizeConts(chat_Info);
@@ -178,39 +138,6 @@ public class ChatController {
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
-			e.printStackTrace();
-		}
-		return map;
-	}
-
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = {"design choice", "broken"}, replaceWith = "same-page toggling")
-	@PostMapping("/goInsertChatReply")
-	public String insertChatReply(@ModelAttribute("chatReply") Chat_Reply chat_Reply, BindingResult result, RedirectAttributes ra){
-		chatValidator.validate(chat_Reply, result);
-		if (result.hasErrors()) {
-			List<ObjectError> list = result.getAllErrors();
-			for (ObjectError error : list) {
-				System.out.println("有錯誤：" + error);
-			}
-			return "chat/insertChatReply";
-		}
-		chatService.insertChatReply(chat_Reply);
-		ra.addFlashAttribute("successMessage", "編號: " + chat_Reply.getC_ID() + "  新增成功!");
-		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
-	}
-
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = {"no usage for now"}, replaceWith = "same-page toggling")
-	@DeleteMapping("/deleteChat/{c_ID}")
-	@ResponseBody
-	public Map<String, String> deleteChat(@PathVariable(required = true) int c_ID){
-		Map<String, String> map = new HashMap<>();
-		try {
-			chatService.deleteChat(c_ID);
-			map.put("success", "刪除成功");
-		} catch (Exception e) {
-			map.put("fail", "刪除失敗，請再試一次...");
 			e.printStackTrace();
 		}
 		return map;
@@ -253,5 +180,4 @@ public class ChatController {
 		ra.addFlashAttribute("successMessage", "編號: " + chat_Reply.getC_ID() + "  修改成功!");
 		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
 	}
-
 }

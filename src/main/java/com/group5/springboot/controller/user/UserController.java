@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import com.group5.springboot.annotation.dev.DeprecatedDetail;
 import com.group5.springboot.annotation.auth.RejectsUser;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
@@ -18,10 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,18 +35,14 @@ import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 
 @Controller
-@SessionAttributes(names = {"loginBean","adminBean"})
+@SessionAttributes(names = "loginBean")
 public class UserController {
-	@Autowired
-	IUserService iUserService;
-	@Autowired
-	User_Info user_info;
-	@Autowired
-	UserValidator userValidator;
-	@Autowired
-	ServletContext context;
-	@Autowired
-	EmailSenderService emailService;
+	@Autowired IUserService iUserService;
+	@Autowired User_Info user_info;
+	@Autowired UserValidator userValidator;
+	@Autowired ServletContext context;
+	@Autowired EmailSenderService emailService;
+
 	private final String AVATAR_STORAGE_DIR;
 
 
@@ -59,65 +52,30 @@ public class UserController {
 	}
 
 
-	// 到會員的index
-	@GetMapping(path = "/gotoUserIndex.controller")
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
-	public String gotoUserIndex() {
-		return "user/userIndex";
-	}
-	
-	//到登入頁面
 	@RejectsUser
 	@GetMapping(path = "/gotologin.controller")
 	public String gotoLoginPage() {
 		return "user/login";
 	}
 	
-	
-	//到註冊頁面
 	@RejectsUser
 	@GetMapping(path = "/gotosignup.controller")
 	public String gotoSignupPage() {
 		return "user/signup";
 	}
-		
-	//到刪除會員的頁面
-	@GetMapping(path = "/gotoDeleteUser.controller/{u_id}")
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
-	public String gotoDeleteUser(@PathVariable String u_id, Model model) {
-		model.addAttribute("u_id", u_id);
-		return "user/deleteUser";
-	}
 	
-	//到修改會員資料頁面
 	@RequiresUser
 	@GetMapping(path = "/gotoUpdateUserinfo.controller")
 	public String gotoUpdateUserinfo() {
 		return "user/updateUser";
 	}
 	
-	
-	//到修改會員密碼頁面
 	@RequiresUser
 	@GetMapping(path = "/gotoChangePassword.controller")
 	public String gotoChangePassword() {
 		return "user/changePassword";
 	}
-	
-	
-	//讀取單筆會員資料(全部會員資料到刪除單筆資料)
-	@GetMapping("/showSingleUser.controller/{u_id}")
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
-	public @ResponseBody User_Info showSingleUser(@PathVariable String u_id) {
-		User_Info user = iUserService.getSingleUser(u_id);
-		return user;
-	}
-	
-	
-	//登入
+
 	@RejectsUser
 	@PostMapping(path = "/login.controller", produces = {"application/json"})
 	@ResponseBody
@@ -128,24 +86,18 @@ public class UserController {
 			user_info = iUserService.login(user_Info);
 			if(user_info != null && user_info.getU_id().length()>0) {
 				map.put("success", "登入成功");
-//				map.put("u_id", user_info.getU_id());
 				map.put("loginBean", user_info);
 				
-				//登入成功:把使用者資訊加到sessionScope上
 				model.addAttribute("loginBean", user_info);
 			} else if(user_info == null) {
 				map.put("fail", "帳號或密碼錯誤，請再試一次...");
 			}
 		} catch (Exception e) {
-			System.out.println("********************************");
-			System.out.println("有exception，在\'登入controller\'");
-			System.out.println("********************************");
 			map.put("fail", e.getMessage());
 		}
 		return map;
 	}
 	
-	//檢查帳號是否可用
 	@PostMapping(path = "/checkUserId", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> checkUserId(@RequestParam String u_id){
@@ -155,13 +107,11 @@ public class UserController {
 		return map;
 	}
 	
-	//會員註冊
 	@RejectsUser
 	@PostMapping(path = "/userSignup", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> signup(@RequestBody User_Info user_Info){
 		Map<String, String> map = new HashMap<>();
-		// 檢查信箱格式
 		try {
 			if(!(user_Info.getU_email().trim().contains("@"))) {
 				map.put("formatError", "信箱格式錯誤!");
@@ -186,63 +136,38 @@ public class UserController {
 				map.put("fail", "帳號重複");
 			}
 		} catch (Exception e) {
-			System.out.println("********************************");
-			System.out.println("有exception，在\'會員註冊controller\'");
-			System.out.println("********************************");
 			map.put("fail", e.getMessage());
 		}
 		return map;
 	}
-	
-	
-	//刪除會員資料
-	@DeleteMapping("/user.controller/{u_id}")
-	@ResponseBody
-	@Deprecated
-	@DeprecatedDetail(removeIn = "1.0.2", reason = "halfway feature")
-	public Map<String, String> deleteUser(@PathVariable(required = true) String u_id){
-		Map<String, String> map = new HashMap<>();
-		try {
-			iUserService.deleteUserById(u_id);
-			map.put("success", "刪除成功");
-		} catch (Exception e) {
-			map.put("fail", "刪除失敗，請再試一次...");
-			e.printStackTrace();
-		}
-		return map;
-	}
-	
-	
-	//修改密碼
+
 	@RequiresUser
 	@PostMapping("/changePassword.controller")
-	public String changePassword(@ModelAttribute("userBean") User_Info user_Info,
+	public String changePassword(
+			@ModelAttribute("userBean") User_Info user_Info,
 			RedirectAttributes ra,
 			@RequestParam String u_psw, @RequestParam String cfm_psw,
-			Model model, SessionStatus status) {
-		
-		System.out.println("u_psw="+u_psw+", cfm_psw="+cfm_psw);
+			Model model, SessionStatus status
+	) {
 		if(!(u_psw.equals(cfm_psw))) {
 			ra.addFlashAttribute("errorMessageOfChangingPassword", "兩次密碼不同");
 			return "redirect:/gotoChangePassword.controller";
 		}
 		
 		iUserService.updateUser(user_Info);
-		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
+		updateLoginBean(model, status);
 		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
 		return "redirect:/";
 	}
 	
-
-	
-	//修改會員資料
 	@RequiresUser
 	@PostMapping("/updateUserinfo.controller")
-	public String updateUser(@ModelAttribute("userBean") User_Info user_Info,
+	public String updateUser(
+			@ModelAttribute("userBean") User_Info user_Info,
 			BindingResult bindingResult,
 			RedirectAttributes ra,
-			Model model, SessionStatus status) {
-		
+			Model model, SessionStatus status
+	) {
 		userValidator.validate(user_Info, bindingResult);
 		if(bindingResult.hasErrors()) {
 			return "user/updateUser";
@@ -260,7 +185,6 @@ public class UserController {
 				mimeType = context.getMimeType(ogfName);
 				user_Info.setU_img(blob);
 				user_Info.setMimeType(mimeType);
-				//將上傳的檔案移到指定的資料夾
 				String ext = StringUtils.getFilenameExtension(ogfName);
 				try {
 					File imageFolder = new File(AVATAR_STORAGE_DIR);
@@ -279,44 +203,33 @@ public class UserController {
 		}
 		
 		iUserService.updateUser(user_Info);
-		updateLoginBean(model, status);	//更新sessionAttribute裡的bean資料
-		ra.addFlashAttribute("successMessage", "修改成功");	//暫時沒做秀出成功訊息
+		updateLoginBean(model, status);
+		ra.addFlashAttribute("successMessage", "修改成功");
 		return "redirect:/gotoUpdateUserinfo.controller";
 	}
 
 
-	
-	//更新sessionAttribute裡的bean資料
+	// ==================== helpers ====================
 	public void updateLoginBean(Model model, SessionStatus status) {
 		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
-		System.out.println("oldBean id:" + loginBean.getU_id() + ", old psw:" + loginBean.getU_psw() + ", old lastname:" + loginBean.getU_lastname());
 		User_Info updateBean = iUserService.getSingleUser(loginBean.getU_id());
-		System.out.println("updatedBean id:" + updateBean.getU_id() + ", update psw:" + updateBean.getU_psw() + ", update lastname" + updateBean.getU_lastname());
 		model.addAttribute("loginBean", updateBean);
 	}
-	
-	
-	
-	//0624新增ModelAttribute
+
+
+	// ==================== @ModelAttributes ====================
 	@ModelAttribute("userBean")
-//	public User_Info getLoginUserInfos(User_Info userBean, Model model){
-	public User_Info getLoginUserInfos(Model model){
+	public User_Info getLoginUserInfos(Model model) {
 		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
-		System.out.println("******************************************");
 		User_Info userInfo = null;
 		try {
 			userInfo = iUserService.getSingleUser(loginBean.getU_id());
-			System.out.println("******************************************");
-			System.out.println("in getLoginUserIndos, id= " + userInfo.getU_id());
-			System.out.println("******************************************");
 		} catch (Exception e) {
 			userInfo = new User_Info();
-			System.out.println("no login Bean in getLoginUserInfos().......");
 		}
 		return userInfo;
 	}
 	
-	//GENDER LIST
 	@ModelAttribute("genderList")
     public Map<String, String>  getGenderList(){
 		Map<String, String> map = new LinkedHashMap<>();
@@ -324,18 +237,4 @@ public class UserController {
 		map.put("女", "女");
 		return map;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

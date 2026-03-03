@@ -461,7 +461,6 @@ class EventControllerTest {
 				.andExpect(jsonPath("$.fail").exists());
 	}
 
-	@Disabled("todo@1.0.2: enable after fixing controller signup# check logic")
 	@Test
 	@DisplayName("GET /signupclick/{a_aid} - applicant limit exceeded")
 	void signupclick_whenApplicantLimitExceeded_thenRequestIsRejected() throws Exception {

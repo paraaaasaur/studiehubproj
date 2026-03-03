@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.group5.springboot.dao.question.QuestionDao;
@@ -34,7 +35,21 @@ public class QuestionServiceImpl implements QuestionService {
 	public Question_Info findById(Long q_id){
 		return questionDao.findById(q_id);
 	}
-	
+
+	@Override
+	public Question_Info findApprovedById(Long q_id) {
+		Question_Info question;
+		try {
+			question = questionDao.findApprovedById(q_id);
+		// Spring's auto translation for NoResultException
+		} catch (EmptyResultDataAccessException e) {
+			System.err.println("> Question#" + q_id + " not found");
+			question = null;
+		}
+
+		return question;
+	}
+
 	////刪除單筆試題
 	@Override
 	public void deleteQuestion(Question_Info question_Info) {

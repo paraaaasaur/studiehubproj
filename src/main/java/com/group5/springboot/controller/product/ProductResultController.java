@@ -3,8 +3,6 @@ package com.group5.springboot.controller.product;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.dto.product.ProductSearchCriteria;
 import com.group5.springboot.model.product.ProductInfo;
@@ -14,24 +12,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.group5.springboot.service.product.ProductServiceImpl;
-import com.group5.springboot.service.product.RatingServiceImpl;
 
 @Controller
 public class ProductResultController {
+	@Autowired ProductServiceImpl productService;
 
-	@Autowired
-	ProductServiceImpl productService;
-	@Autowired
-	ServletContext context;
-	@Autowired
-	RatingServiceImpl ratingService;
-	
+
 	@GetMapping(value="/findAllProduct", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> findAll(){
-		
-		
 		return productService.findAll();
 	}
+
 	@RequiresAdmin
 	@GetMapping(value="/findAllProductPendingAccess", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> findAllProductPendingAccess(){

@@ -20,66 +20,56 @@ import com.group5.springboot.service.user.IUserService;
 @Controller
 @SessionAttributes(names = {"adminId"})
 public class AdminUserController {
-
-	@Autowired
-	IUserService iUserService;
+	@Autowired IUserService iUserService;
 	
 	
-	//去管理員頁面
 	@RequiresAdmin
 	@GetMapping(path = "/gotoAdminIndex.controller")
 	public String adminIndex() {
 		return "adminIndex";
 	}
 	
-	//去管理員登入頁面
 	@RejectsAdmin
 	@GetMapping(path = "/gotoAdminLogin.controller")
 	public String gotoAdminLoginPage() {
 		return "user/adminLogin";
 	}
 	
-	//到查看全部會員資料頁面
 	@RequiresAdmin
 	@GetMapping(path = "/gotoShowAllUser.controller")
 	public String gotoShowAllUser() {
 		return "user/showAllUser";
 	}
-	
-	
-	//管理員登入
+
 	@RejectsAdmin
 	@PostMapping(path = "/AdminLogin.controller")
-	public String adminLogin(@RequestParam(name = "id")String id,
+	public String adminLogin(
+			@RequestParam(name = "id")String id,
 			@RequestParam(name = "psw")String psw,
 			RedirectAttributes ra,
-			Model model) {
+			Model model
+	) {
 		String returnPage = "";
 		
 		if(id.equals("adming5") && psw.equals("manager")) {
 			model.addAttribute("adminId", id);
-			System.out.println("session adminId: " + model.getAttribute("adminId"));
 			returnPage = "redirect:/gotoAdminIndex.controller";
 			ra.addFlashAttribute("success", "管理員登入成功");
-//			ra.addFlashAttribute("success", "管理員登入成功, 為您導去管理者頁面...");
 		}else {
 			returnPage = "redirect:/gotoAdminLogin.controller";
 			ra.addFlashAttribute("fail", "帳號或密碼錯誤");
-//			ra.addFlashAttribute("fail", "帳號或密碼錯誤, 請再試一次!");
 		}
 		
 		return returnPage;
 	}
 	
-	//管理員登出
 	@RequiresAdmin
 	@GetMapping(path = "/adminLogout.controller")
-	public String adminLogout(Model model, SessionStatus ss){
+	public String adminLogout(SessionStatus ss){
 		ss.setComplete();
-		return "redirect:/";	//登出後回使用者首頁
+		return "redirect:/";
 	}
 	
-	//查看全部會員資料
 	@RequiresAdmin
 	@GetMapping(path = "/showAllUser.controller", produces = {"application/json"})
 	@ResponseBody

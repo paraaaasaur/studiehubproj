@@ -41,14 +41,4 @@ public class RatingDao {
 		
 				
 	}
-	
-	public Integer ratingAVG(Integer p_ID) {
-		String id = String.valueOf(p_ID);
-		String hql ="select avg(ratedIndex) from Rating where p_ID = "+ id;
-		Integer result = (Integer) em.createNativeQuery(hql).getSingleResult();
-		return result;
-		
-		
-	}
-
 }

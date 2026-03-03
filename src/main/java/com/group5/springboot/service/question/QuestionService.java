@@ -17,6 +17,8 @@ public interface QuestionService {
 
 	////查詢單筆試題
 	public Question_Info findById(Long q_id);
+
+	Question_Info findApprovedById(Long q_id);
 	
 	////刪除單筆試題
 	public void deleteQuestion(Question_Info question_Info);

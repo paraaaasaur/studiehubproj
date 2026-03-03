@@ -22,34 +22,30 @@ import com.group5.springboot.validate.CartValidator;
 
 @Controller
 public class CartViewController {
-	@Autowired
-	private CartItemService cartItemService;
-	@Autowired
-	private CartValidator cartValidator;
-	// ❗ 比起static attribute感覺應該要放在更好的地方...sessionAttribute之類，或直接讀DB / 真實檔案？
+	@Autowired private CartItemService cartItemService;
+	@Autowired private CartValidator cartValidator;
+	// fixme: literally in-memory db...
 	public static HashMap<String, Object> cartInfoMap = new HashMap<>();
 	
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminInsert"})
 	public String toCartAdminInsert(Model model) {
 		model.addAttribute("emptyCartItem", new CartItem());
-		return "/cart/cartAdminInsert";
+		return "cart/cartAdminInsert";
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresAdmin
 	@PostMapping(value = {"/cart.controller/adminInsert"})
-	public String cartAdminInsert(@ModelAttribute("emptyCartInfo") CartItem cartItem,
+	public String cartAdminInsert(
+			@ModelAttribute("emptyCartInfo") CartItem cartItem,
 			BindingResult result, 
-			RedirectAttributes ra) {
-		
+			RedirectAttributes ra
+	) {
 		cartValidator.validate(cartItem, result);
 		if (result.hasErrors()) {			
 			result.getAllErrors().forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "/cart/cartAdminInsert";
-//			return "redirect:/cart.controller/adminInsert"; // ❓
+			return "cart/cartAdminInsert";
 		}
 		
 		cartItemService.insert(cartItem.getP_id(), cartItem.getU_id());
@@ -57,57 +53,48 @@ public class CartViewController {
 		return "redirect:/cart.controller/adminSelect";
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
 	public String toCartAdminUpdate(@PathVariable("cartid") Integer cartid, Model model) {
 		model.addAttribute("cartItem", cartItemService.select(cartid).get("cartItem"));
-		return "/cart/cartAdminUpdate";
-//		return "redirect:/cart.controller/adminUpdate"; // ❓
+		return "cart/cartAdminUpdate";
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresAdmin
 	@PostMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
-	public String cartAdminUpdate(@ModelAttribute(name = "cartItem") CartItem cartItem,
+	public String cartAdminUpdate(
+			@ModelAttribute(name = "cartItem") CartItem cartItem,
 			BindingResult result, 
-			RedirectAttributes ra) {
-		
+			RedirectAttributes ra
+	) {
 		cartValidator.validate(cartItem, result);
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "/cart/cartAdminUpdate";
+			return "cart/cartAdminUpdate";
 		}
-		System.out.println(cartItem);
+
 		Integer updateStatus = cartItemService.update(cartItem.getU_id(), cartItem.getP_id(), cartItem.getCart_id());
 		String successMessage = (updateStatus == 1)? "o_id = " + cartItem.getCart_id() + "修改成功" : "修改失敗";
 		ra.addFlashAttribute("successMessage", successMessage);
 		return "redirect:/cart.controller/adminSelect";
-		
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresUser
 	@GetMapping(value = {"/cart.controller/cartIndex"})
 	public String toCartIndex() {
 		return "cart/cartIndex";
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminSelect"})
 	public String toCartAdminSelect() {
 		return "cart/cartAdminSelect";
 	}
 	
-	/**OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
 	@RequiresUser
 	@GetMapping(value = "/cart.controller/clientResultPage")
 	public String toClientResultPage() {
 		return "cart/cartClientResultPage";
 	}
-
-
-
 }

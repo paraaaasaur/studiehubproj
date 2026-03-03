@@ -355,9 +355,12 @@ class QuestionControllerTest {
 	void sendRandomMixExam() throws Exception {
 		// 0. prepare test data
 		for (int i = 0; i < 10; i++) {
-			dao.saveQuestionButSkipExtStorage(aRandomQuestionOfType("聽力題"));
-			dao.saveQuestionButSkipExtStorage(aRandomQuestionOfType("多選題"));
-			dao.saveQuestionButSkipExtStorage(aRandomQuestionOfType("單選題"));
+			var db1 = dao.saveQuestionButSkipExtStorage(aRandomQuestionOfType("聽力題"));
+			dao.adminApprovesQuestion(db1);
+			var db2 = dao.saveQuestionButSkipExtStorage(aRandomQuestionOfType("多選題"));
+			dao.adminApprovesQuestion(db2);
+			var db3 = dao.saveQuestionButSkipExtStorage(aRandomQuestionOfType("單選題"));
+			dao.adminApprovesQuestion(db3);
 		}
 
 		mockMvc.perform(get("/question.controller/sendRandomMixExam"))

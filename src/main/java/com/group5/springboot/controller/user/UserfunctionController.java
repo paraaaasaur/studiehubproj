@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.group5.springboot.dao.user.UserDao;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.IUserService;
 import com.group5.springboot.utils.EmailSenderService;
@@ -24,24 +23,16 @@ import com.group5.springboot.utils.GenerateRandomPassword;
 @Controller
 @SessionAttributes(names = {"loginBean"})
 public class UserfunctionController {
-	
-	@Autowired
-	IUserService iUserService;
-	@Autowired
-	EmailSenderService emailService;
-	
-//	@Autowired
-//	GenerateRandomPassword generateRandomPassword;
+	@Autowired IUserService iUserService;
+	@Autowired EmailSenderService emailService;
 	
 
-	//到忘記密碼頁面
 	@RejectsUser
 	@GetMapping(path = "/gotoForgetPassword.controller")
 	public String gotoForgetPassword() {
 		return "user/forgetPassword";
 	}
 
-	//登出
 	@RequiresUser
 	@GetMapping(path = "/logout.controller", produces = {"application/json"})
 	@ResponseBody
@@ -62,24 +53,20 @@ public class UserfunctionController {
 		return map;
 	}
 	
-	//送隨機密碼至信箱(忘記密碼)
 	@RejectsUser
 	@PostMapping(path = "/sendRandomPasswordToRegisteredEmail.controller", produces = {"application/json"})
 	@ResponseBody
 	public Map<String, String> resetPasswordAndSendEmail(@RequestBody User_Info userInfo) {
 		Map<String, String> maps = new HashMap<>();
 		String u_email = userInfo.getU_email();
-		//maps.put("result", u_email);	//測試
 		User_Info searchResult = iUserService.getUserInfoForForgetPassword(u_email);
 		
 		if(searchResult == null) {
 			maps.put("fail", "此信箱尚未註冊!");
 			return maps;
 		}else {
-		String rdmPassword = GenerateRandomPassword.generatePasswordProcess();	//產生密碼
-		iUserService.setNewPasswordForForgetPsw(u_email, rdmPassword);	//更新結果
-		//System.out.println(updateResult);
-		//寄成功註冊的信件
+		String rdmPassword = GenerateRandomPassword.generatePasswordProcess();
+		iUserService.setNewPasswordForForgetPsw(u_email, rdmPassword);
 		String body = "用戶: " + searchResult.getU_id() + " 您好，新的密碼為:" + rdmPassword + "，請使用這組密碼登入並盡快更改密碼!";
 		emailService.sendSimpleEmail(u_email,
 									 body,
@@ -89,6 +76,4 @@ public class UserfunctionController {
 		
 		return maps;
 	}
-	
-	
 }

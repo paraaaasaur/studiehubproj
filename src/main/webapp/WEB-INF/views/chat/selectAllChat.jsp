@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
@@ -11,31 +10,34 @@
 <link rel='stylesheet' href="assets/css/main.css">
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 <style>
-tr {
-	text-align: center;
-}
-#createBtn{
-  padding: 30px 20px;
-  position:fixed;
-  top:85%;
-  left:90%;
-  z-index:1;
-  font-size: 100%;
-}
-#iconPos{
-  position:relative;
-  bottom: 20px;
-  font-size:30px;
-}
-.top-post-box {} /* <todo@1.1.0>: reserved for each top-post container (looping <tr>) */
-.top-post-box__item {
-	text-align: center;
-	vertical-align: middle;
-}
-.top-post-box__title {
-	text-align: left;
-	vertical-align: auto;
-}
+	tr {
+		text-align: center;
+	}
+
+	#createBtn {
+	  padding: 30px 20px;
+	  position:fixed;
+	  top:85%;
+	  left:90%;
+	  z-index:1;
+	  font-size: 100%;
+	}
+
+	#iconPos {
+	  position:relative;
+	  bottom: 20px;
+	  font-size:30px;
+	}
+
+	.top-post-box {} /* <todo@1.1.0>: reserved for each top-post container (looping <tr>) */
+	.top-post-box__item {
+		text-align: center;
+		vertical-align: middle;
+	}
+	.top-post-box__title {
+		text-align: left;
+		vertical-align: auto;
+	}
 </style>
 <title>討論區</title>
 <script type="application/json" id="bootstrap-data">
@@ -45,8 +47,8 @@ tr {
 	}
 </script>
 <script>
-const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-const { u_id, userPicString } = bootstrapData;
+	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const { u_id, userPicString } = bootstrapData;
 
 	window.onload = function() {
 		var xhr = new XMLHttpRequest();
@@ -132,30 +134,36 @@ const { u_id, userPicString } = bootstrapData;
 	    	loginEvent1.style.display = "block";
 	    	loginALLEvent1.style.display = "block";
 	    }
+
 		// 有登入才會顯示購物車sidebar
 		let cartHref = document.querySelector('#cartHref');
 		cartHref.hidden = (u_id)? false : true;
 		cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 		//universal
-	    
 	}
 </script>
+
 </head>
+
 <body class="is-preload">
 	<div id="wrapper">
 		<div id="main">
 			<div class="inner">
+				<%@include file="../universal/header.jsp"%>
+
+
 				<div align='center'>
-					<%@include file="../universal/header.jsp"%>
 					<br>
 					<div align='center' id='selectAll'></div>
+					<button id="createBtn" type="button" onclick="location.href='goInsertChat'"><i id="iconPos" class="fas fa-pen"></i></button>
 				</div>
-				<p />
+
+
 			</div>
 		</div>
-		<button id="createBtn" type="button" onclick="location.href='goInsertChat'"><i id="iconPos" class="fas fa-pen"></i></button>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
+
 	<script	src="assets/js/jquery.min.js"></script>
 	<script	src="assets/js/browser.min.js"></script>
 	<script	src="assets/js/breakpoints.min.js"></script>

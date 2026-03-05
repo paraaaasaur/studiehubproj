@@ -17,12 +17,13 @@
 </script>
 <script>
 const fail = JSON.parse(document.getElementById('bootstrap-data').textContent).fail;
-	if (fail == "帳號或密碼錯誤") {
-		alert('帳號或密碼錯誤, 請再試一次!');
+	if (fail) {
+		alert(fail);
 	}
 </script>
 
 </head>
+
 <body class="is-preload">
 	<div id="wrapper">
 		<div id="main">
@@ -36,8 +37,7 @@ const fail = JSON.parse(document.getElementById('bootstrap-data').textContent).f
 
 				<div style="text-align: center;">
 					<div style="display: inline-block; text-align: left;">
-						<form action="<c:url value='/AdminLogin.controller' />"
-							method="POST">
+						<form action="AdminLogin.controller" method="POST">
 							帳號: <input type="text" name="id">
 							<br> 密碼: <input type="password" name="psw" id='u_psw'>
 							<br>
@@ -54,6 +54,7 @@ const fail = JSON.parse(document.getElementById('bootstrap-data').textContent).f
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
+
 	<script	src="assets/js/jquery.min.js"></script>
 	<script	src="assets/js/browser.min.js"></script>
 	<script	src="assets/js/breakpoints.min.js"></script>

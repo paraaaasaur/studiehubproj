@@ -18,66 +18,60 @@
 <script>
 const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
 const { success, adminId } = bootstrapData;
-if(success=="管理員登入成功"){alert("管理員登入成功!")}
+if (success) {
+	alert(success);
+}
 
 window.onload = function(){
-// console.log(adminId);
-    
-    //如果有登入，隱藏登入標籤
-    var loginHref = document.getElementById('loginHref');
     var logoutHref = document.getElementById('logoutHref');
-    var userId = document.getElementById('userId');
-    var userPic = document.getElementById('userPic');
-    if(adminId){
-    	loginHref.hidden = true;
-    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+    if(adminId) {
+    	logoutHref.style.visibility = "visible";
     }
-    
 }
 </script>
 
 </head>
 
 <body class="is-preload">
+	<!-- Wrapper -->
+	<div id="wrapper">
+		<!-- Main -->
+		<div id="main">
+			<div class="inner">
+				<!-- adminHeader include -->
+				<%@include file="universal/adminHeader.jsp" %>
 
-		<!-- Wrapper -->
-			<div id="wrapper">
-				<!-- Main -->
-					<div id="main">
-						<div class="inner">
-							<!-- Header -->
-							<!-- 這邊把header include進來 -->
-								<%@include file="universal/adminHeader.jsp" %>
-								<section id="banner">
-									<div class="content">
-										<header>
-											<h1>Studie Hub</h1>
-											<p>影片學習，生活化主題影片，樂趣學習英文！</p>
-										</header>
-										<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen 主張，學習外語不是累積學科知識，而更像是技能訓練。因此<strong> Studie Hub </strong>採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
-										<ul class="actions">
-											<li><a href="#" class="button big">Learn More</a></li>
-										</ul>
-									</div>
-									<span class="image object">
-										<img src="images/adminIndexImage.jpg" alt="" />
-									</span>
-									<hr>
-								</section>
-								<section></section>
-						</div>
+
+				<section id="banner">
+					<div class="content">
+						<header>
+							<h1>Studie Hub</h1>
+							<p>影片學習，生活化主題影片，樂趣學習英文！</p>
+						</header>
+						<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen 主張，學習外語不是累積學科知識，而更像是技能訓練。因此<strong> Studie Hub </strong>採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
+						<ul class="actions">
+							<li><a href="#" class="button big">Learn More</a></li>
+						</ul>
 					</div>
-				<!-- Sidebar -->
-				<!-- 這邊把side bar include進來 -->
-				<%@include file="universal/adminSidebar.jsp" %>
+					<span class="image object">
+						<img src="images/adminIndexImage.jpg" alt="" />
+					</span>
+					<hr>
+				</section>
+
+
 			</div>
+		</div>
+		<!-- adminSidebar include -->
+		<%@include file="universal/adminSidebar.jsp" %>
+	</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
-	</body>
+</body>
 </html>

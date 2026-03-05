@@ -7,12 +7,11 @@
 <html>
 <head>
 
-<style type = "text/css">
-	span.error{
-		color:red;
+<style>
+	span.error {
+		color: red;
 		display: inline-block;
-		font-size:5pt;
-	
+		font-size: 5pt;
 	}
 </style>
 <meta charset="UTF-8">
@@ -28,152 +27,154 @@
     }
 </script>
 <script>
-const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-const { u_id, userPicString } = bootstrapData;
+    const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+    const { u_id, userPicString } = bootstrapData;
 
-window.onload = function(){
-    var logout = document.getElementById("logout");
-    logout.onclick = function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "logout.controller", true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                var result = JSON.parse(xhr.responseText);
-                if(result.success){
-                    alert(result.success);
-                    top.location = '';
-                }else if(result.fail){
-                    alert(result.fail);
-                    top.location = '';
+    window.onload = function() {
+        var logout = document.getElementById("logout");
+        logout.onclick = function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "logout.controller", true);
+            xhr.send();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    var result = JSON.parse(xhr.responseText);
+                    if(result.success){
+                        alert(result.success);
+                        top.location = '';
+                    }else if(result.fail){
+                        alert(result.fail);
+                        top.location = '';
+                    }
                 }
             }
         }
+
+        //universal
+        //如果有登入，隱藏登入標籤
+        var loginHref = document.getElementById('loginHref');
+        var signupHref = document.getElementById('signupHref');
+        var logoutHref = document.getElementById('logoutHref');
+        var userId = document.getElementById('userId');
+        var userPic = document.getElementById('userPic');
+        var loginEvent = document.getElementById('loginEvent');
+        var loginEvent1 = document.getElementById('loginEvent1');
+        var loginALLEvent1 = document.getElementById('loginALLEvent1');
+        if(u_id){
+            loginHref.hidden = true;
+            signupHref.hidden = true;
+            logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+            userPic.src = userPicString;	//有登入就秀大頭貼
+            userId.textContent = u_id;
+            loginEvent.style.display = "block";
+            loginEvent1.style.display = "block";
+            loginALLEvent1.style.display = "block";
+        }
+        // 有登入才會顯示購物車sidebar
+        let cartHref = document.querySelector('#cartHref');
+        cartHref.hidden = (u_id)? false : true;
+        cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
+        //universal
+
+        $('#quickInsert').on('click',function(){
+            $('#p_Name').val('日文教學_初級日語【日本人老師yuka教你日語】');
+            $('#p_Class').val('日文');
+            $('#p_Price').val('100');
+            $('#descString').val('1. 100%國際認證師資，不只English speaker而是English teacher：認證教師才能真正激發潛力&自信，英協教師具備平均8年以上教學經驗及劍橋認證');
+        });
     }
-
-//universal
-    //如果有登入，隱藏登入標籤
-    var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
-    var logoutHref = document.getElementById('logoutHref');
-    var userId = document.getElementById('userId');
-    var userPic = document.getElementById('userPic');
-	var loginEvent = document.getElementById('loginEvent');
-	var loginEvent1 = document.getElementById('loginEvent1');
-    var loginALLEvent1 = document.getElementById('loginALLEvent1');
-    if(u_id){
-    	loginHref.hidden = true;
-    	signupHref.hidden = true;
-    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.textContent = u_id;
-    	loginEvent.style.display = "block";
-    	loginEvent1.style.display = "block";
-    	loginALLEvent1.style.display = "block";
-    }
-	// 有登入才會顯示購物車sidebar
-	let cartHref = document.querySelector('#cartHref');
-	cartHref.hidden = (u_id)? false : true;
-	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-//universal
-
-    $('#quickInsert').on('click',function(){
-        $('#p_Name').val('日文教學_初級日語【日本人老師yuka教你日語】');
-        $('#p_Class').val('日文');
-        $('#p_Price').val('100');
-        $('#descString').val('1. 100%國際認證師資，不只English speaker而是English teacher：認證教師才能真正激發潛力&自信，英協教師具備平均8年以上教學經驗及劍橋認證');
-    });
-
-}
 </script>
 
 </head>
 
 <body class="is-preload">
+    <div id="wrapper">
+        <div id="main">
+            <div class="inner">
+                <%@include file="../universal/header.jsp" %>
 
-		<!-- Wrapper -->
-			<div id="wrapper">
 
-				<!-- Main -->
-					<div id="main">
-						<div class="inner">
-						<%@include file="../universal/header.jsp" %>
+                <h2 align='center'>請輸入課程資訊</h2>
+                <hr>
+                <form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
+                    <table border="1">
+                        <tr>
+                            <td>導師名稱:</td>
+                            <td><input type="hidden" name="u_ID" value="${fn:escapeXml(loginBean.u_id)}"/><c:out value="${fn:escapeXml(loginBean.u_id)}" /></td>
+                        </tr>
 
-						<h2 align='center'>請輸入課程資訊</h2>
-						<hr>
+                        <tr>
+                            <td>課程名稱:</td>
+                            <td>
+                                <form:input path="p_Name" id="p_Name"/>
+                                <form:errors path='p_Name' cssClass="error"/>
+                            </td>
+                        </tr>
 
-							<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
-                            <table border="1">
-                                <tr>
-                                    <td>導師名稱:</td>
+                        <tr>
+                            <td>課程類別:</td>
+                            <td>
+                                <form:select path="p_Class" id="p_Class">
+                                    <form:option label="請挑選" value="-1"/>
+                                    <form:option label="英文" value="英文"/>
+                                    <form:option label="日文" value="日文"/>
+                                </form:select>
+                                <form:errors path='p_Class' cssClass="error"/>
+                            </td>
+                        </tr>
 
-                                        <td><input type="hidden" name="u_ID" value="${fn:escapeXml(loginBean.u_id)}"/><c:out value="${fn:escapeXml(loginBean.u_id)}" />
-                                        </td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>課程名稱:</td>
-                                        <td><form:input path="p_Name" id="p_Name"/>
-                                        	<form:errors path='p_Name' cssClass="error"/>
-                                        </td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>課程類別:</td>
-                                        <td><form:select path="p_Class" id="p_Class">
-                                        		<form:option label="請挑選" value="-1"/>
-                                        		<form:option label="英文" value="英文"/>
-                                        		<form:option label="日文" value="日文"/>
-                                        	</form:select>
-                                        	<form:errors path='p_Class' cssClass="error"/>
-                                        	</td>
-                                    </tr>
-                                    <tr>
-                                        <td>課程價錢:</td>
-                                        <td><form:input path="p_Price" id="p_Price"/>
-                                        	<form:errors path='p_Price' cssClass="error"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>課程介紹:</td>
-                                    	<td><textarea style="resize:none" rows="10" cols="100" name="descString" id="descString"></textarea>
-                                    		<form:errors path='descString' cssClass="error"/>
-                                    	</td>
-                                    </tr>
-                                    <tr>
-                                    	<td>課程圖片:</td>
-                                        <td><form:input path="imgFile" type="file" />
-                                        	<form:errors path='imgFile' cssClass="error"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                    	<td>課程影片:</td>
-                                        <td><form:input path="videoFile" type="file" />
-                                        	<form:errors path='videoFile' cssClass="error"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                    <td><input type="submit">
-                                    <button type="button" id="quickInsert">一鍵</button></td>
-                                    </tr>
-                                </table>
-							</form:form>
+                        <tr>
+                            <td>課程價錢:</td>
+                            <td>
+                                <form:input path="p_Price" id="p_Price"/>
+                                <form:errors path='p_Price' cssClass="error"/>
+                            </td>
+                        </tr>
 
-						</div>
-					</div>
+                        <tr>
+                            <td>課程介紹:</td>
+                            <td>
+                                <textarea style="resize:none" rows="10" cols="100" name="descString" id="descString"></textarea>
+                                <form:errors path='descString' cssClass="error"/>
+                            </td>
+                        </tr>
 
-				<!-- Sidebar -->
-				<!-- 這邊把side bar include進來 -->
-				<%@include file="../universal/sidebar.jsp" %>  
+                        <tr>
+                            <td>課程圖片:</td>
+                            <td>
+                                <form:input path="imgFile" type="file" />
+                                <form:errors path='imgFile' cssClass="error"/>
+                            </td>
+                        </tr>
 
-			</div>
+                        <tr>
+                            <td>課程影片:</td>
+                            <td>
+                                <form:input path="videoFile" type="file" />
+                                <form:errors path='videoFile' cssClass="error"/>
+                            </td>
+                        </tr>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+                        <tr>
+                            <td>
+                                <input type="submit">
+                                <button type="button" id="quickInsert">一鍵</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form:form>
 
-	</body>
+
+            </div>
+        </div>
+        <%@include file="../universal/sidebar.jsp" %>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
 </html>

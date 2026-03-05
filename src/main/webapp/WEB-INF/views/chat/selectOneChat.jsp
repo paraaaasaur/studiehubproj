@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
@@ -11,35 +10,36 @@
 <link rel='stylesheet' href="assets/css/main.css">
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 <style>
-#iconPos{
-  width: 20px;
-  position: relative;
-  bottom: 8px;
-  font-size:20px;
-  color: #ADADAD;
-}
-.reply-box {} /* <todo@1.1.0>: reserved for each reply container (looping <tr>) */
-.reply-box__avatar-cell {
-	text-align: center;
-	width: 20%;
-}
-.reply-box__avatar {
-	width: 80%;
-	border-radius: 10%;
-}
-.reply-box__content-cell {
-	text-align: left;
-	width: 80%;
-}
-.reply-box__content {
-	min-height: 180px;
-}
-.reply-box__date {
-	text-align: right;
-}
-.reply-box__content-date-separator {
-	margin: -20px;
-}
+	#iconPos {
+		width: 20px;
+		position: relative;
+		bottom: 8px;
+		font-size: 20px;
+		color: #ADADAD;
+	}
+
+	.reply-box {} /* <todo@1.1.0>: reserved for each reply container (looping <tr>) */
+	.reply-box__avatar-cell {
+		text-align: center;
+		width: 20%;
+	}
+	.reply-box__avatar {
+		width: 80%;
+		border-radius: 10%;
+	}
+	.reply-box__content-cell {
+		text-align: left;
+		width: 80%;
+	}
+	.reply-box__content {
+		min-height: 180px;
+	}
+	.reply-box__date {
+		text-align: right;
+	}
+	.reply-box__content-date-separator {
+		margin: -20px;
+	}
 </style>
 <title>討論區</title>
 <script type="application/json" id="bootstrap-data">
@@ -51,10 +51,10 @@
 </script>
 <script src="assets/js/purify.js/"></script>
 <script>
-const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-const { u_id, userPicString, c_ID } = bootstrapData;
+	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const { u_id, userPicString, c_ID } = bootstrapData;
 
-var hasError = false;
+	var hasError = false; // <todo@1.1.0>: reason this; why is everyone using this, what the fish??
 
 	window.onload = function() {
 		var xhr0 = new XMLHttpRequest();
@@ -97,7 +97,7 @@ var hasError = false;
 		}
 
 		var sendData = document.getElementById("sendData");
-		sendData.onclick = function(){
+		sendData.onclick = function() {
 			//抓欄位資料
 			var today = new Date();
 			var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -112,16 +112,11 @@ var hasError = false;
 			var c_Conts = document.getElementById("c_Conts").value;
 			var span1 = document.getElementById('result1c');
 
-			//if(!c_Conts){
-			//	setErrorFor(span2, "請輸入內容");
-			//} else{
-			//	span2.innerHTML = "";
-			//}
-
-			if (hasError){
+			if (hasError) {
 				return false;
 			}
-			if(u_id != ""){
+
+			if (u_id != "") {
 				var xhr1 = new XMLHttpRequest();
 				xhr1.open("POST", "insertChatReply");
 				var jsonInsertData = {
@@ -148,30 +143,32 @@ var hasError = false;
 						}
 					}
 				}
-			}else{
+			} else {
 				top.location='gotologin.controller';
 			}
 
-		}
+		};
 
 		var logout = document.getElementById("logout");
-	    logout.onclick = function(){
-	        var xhr = new XMLHttpRequest();
-	        xhr.open("GET", "logout.controller", true);
-	        xhr.send();
-	        xhr.onreadystatechange = function(){
-	            if(xhr.readyState == 4 && xhr.status == 200){
-	                var result = JSON.parse(xhr.responseText);
-	                if(result.success){
-	                    alert(result.success);
-	                    top.location = '';
-	                }else if(result.fail){
-	                    alert(result.fail);
-	                    top.location = '';
-	                }
-	            }
-	        }
-	    }
+	    logout.onclick = function(e) {
+			e.preventDefault();
+
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "logout.controller", true);
+			xhr.send();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var result = JSON.parse(xhr.responseText);
+					if (result.success) {
+						alert(result.success);
+						top.location = '';
+					} else if (result.fail) {
+						alert(result.fail);
+						top.location = '';
+					}
+				}
+			};
+		};
 
 		//universal
 	    //如果有登入，隱藏登入標籤
@@ -183,7 +180,8 @@ var hasError = false;
 		var loginEvent = document.getElementById('loginEvent');
 		var loginEvent1 = document.getElementById('loginEvent1');
 	    var loginALLEvent1 = document.getElementById('loginALLEvent1');
-	    if(u_id){
+
+	    if (u_id) {
 	    	loginHref.hidden = true;
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
@@ -193,6 +191,7 @@ var hasError = false;
 	    	loginEvent1.style.display = "block";
 	    	loginALLEvent1.style.display = "block";
 	    }
+
 		// 有登入才會顯示購物車sidebar
 		let cartHref = document.querySelector('#cartHref');
 		cartHref.hidden = (u_id)? false : true;
@@ -201,34 +200,35 @@ var hasError = false;
 
 
 
-	    $('#autoInput').on('click', function(){
+	    $('#autoInput').on('click', function() {
 	    	$('#c_Conts').val("我也想知道，同問");
-	    })
-	}
-function avatarCell(pictureString, u_id) {
-	const td = document.createElement('td');
-	td.classList.add('reply-box__avatar-cell');
-
-	const div = document.createElement('div');
-	{
-		const br1 = document.createElement('br');
-
-		const img = document.createElement('img');
-		img.src = pictureString;
-		img.classList.add('reply-box__avatar');
-
-		const br2 = document.createElement('br');
-
-		const u_idText = document.createTextNode(u_id);
-
-		div.append(br1, img, br2, u_idText);
+	    });
 	}
 
-	td.appendChild(div);
+	function avatarCell(pictureString, u_id) {
+		const td = document.createElement('td');
+		td.classList.add('reply-box__avatar-cell');
 
-	return td;
-}
-function contentCell(c_Date, c_Conts, isAuthor, c_ID) {
+		const div = document.createElement('div');
+		{
+			const br1 = document.createElement('br');
+
+			const img = document.createElement('img');
+			img.src = pictureString;
+			img.classList.add('reply-box__avatar');
+
+			const br2 = document.createElement('br');
+
+			const u_idText = document.createTextNode(u_id);
+
+			div.append(br1, img, br2, u_idText);
+		}
+
+		td.appendChild(div);
+
+		return td;
+	}
+	function contentCell(c_Date, c_Conts, isAuthor, c_ID) {
 	const cell = document.createElement('td');
 	cell.classList.add('reply-box__content-cell');
 
@@ -263,7 +263,7 @@ function contentCell(c_Date, c_Conts, isAuthor, c_ID) {
 		link.href = 'goUpdateChat/' + c_ID;
 
 		const icon = document.createElement('i');
-		icon.id = 'iconPos'; // fixme@1.0.2: should be css class
+		icon.id = 'iconPos'; // fixme@1.1.0: should be css class
 		icon.classList.add('fas', 'fa-ellipsis-v');
 
 		link.appendChild(icon);
@@ -275,45 +275,52 @@ function contentCell(c_Date, c_Conts, isAuthor, c_ID) {
 	return cell;
 }
 </script>
+
 </head>
+
 <body class="is-preload">
 	<div id="wrapper">
 		<div id="main">
 			<div class="inner">
+				<%@include file="../universal/header.jsp"%>
+
+
 				<div align='center'>
-					<%@include file="../universal/header.jsp"%>
 					<br>
 					<h2><span id='selectSingle' style='display: block; text-align: left;'></span></h2>
 					<div align='center' id='selectAll'></div>
 					<div style='text-align: center'>
-					<form>
-					<table align='right' style='width: 80%;'>
-						<tr>
-							<td>
-							<textarea id='c_Conts' style='min-height: 100px;' placeholder='請輸入回覆內容...'></textarea>
-							<span id='result1c'>&nbsp;</span>
-							<span style="float:right;"><a href="goInsertChatReply">進階</a></span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-							<button type="button" id="autoInput">一鍵</button> &nbsp;
-							<input type='submit' class='primary' id='sendData' value="送出">
-							</td>
-						</tr>
-					</table>
-					</form>
+						<form>
+							<table align='right' style='width: 80%;'>
+								<tr>
+									<td>
+										<textarea id='c_Conts' style='min-height: 100px;' placeholder='請輸入回覆內容...'></textarea>
+										<span id='result1c'></span>
+										<span style="float:right;"><a href="goInsertChatReply">進階</a></span>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<button type="button" id="autoInput">一鍵</button> &nbsp;
+										<input type='submit' class='primary' id='sendData' value="送出">
+									</td>
+								</tr>
+							</table>
+						</form>
 					</div>
 				</div>
-				<p />
+
+
 			</div>
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
+
 	<script	src="assets/js/jquery.min.js"></script>
 	<script	src="assets/js/browser.min.js"></script>
 	<script	src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+
 </body>
 </html>

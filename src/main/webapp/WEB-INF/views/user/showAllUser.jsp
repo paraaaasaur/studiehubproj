@@ -24,9 +24,9 @@ tr {
 	}
 </script>
 <script>
-var segments = [];
-var pageNum = 0;
-var rowPerPage = 5;
+	var segments = [];
+	var pageNum = 0;
+	var rowPerPage = 5;
 
 
 	window.onload = function() {
@@ -55,7 +55,6 @@ var rowPerPage = 5;
 
 				for (var i = 0; i < users.length; i++) {
 				var contentBody = "";
-					var gotoDeleteUser = "<c:url value='/gotoDeleteUser.controller/' />";
 					contentBody += "<tr>" + tdText(users[i].u_id).outerHTML
 								 + tdText(users[i].u_psw).outerHTML
 								 + tdText(users[i].u_lastname).outerHTML
@@ -65,7 +64,6 @@ var rowPerPage = 5;
 								 + tdText(users[i].u_tel).outerHTML
 								 + tdText(users[i].u_gender).outerHTML
 								 + tdText(users[i].u_address).outerHTML
-							// 							"<td><img width='50' height='50' style='border-radius: 50%;' src='" + users[i].pictureString + "'></td>" +
 								 + imageCell(users[i]).outerHTML + "</tr>";
 					segments.push(contentBody);
 				}
@@ -108,12 +106,8 @@ var rowPerPage = 5;
 		const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
 		const { adminId } = bootstrapData;
 		//如果有登入，隱藏登入標籤
-	    var loginHref = document.getElementById('loginHref');
 	    var logoutHref = document.getElementById('logoutHref');
-	    var userId = document.getElementById('userId');
-	    var userPic = document.getElementById('userPic');
 	    if(adminId){
-	    	loginHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    }
 
@@ -142,33 +136,32 @@ function imageCell(user) {
 </head>
 <!-- <body> -->
 <body class="is-preload">
-<div id="wrapper">
-	<div id="main">
-		<div class="inner">
-		<div align='center'>
-					<%@include file="../universal/adminHeader.jsp"%>
+	<div id="wrapper">
+		<div id="main">
+			<div class="inner">
+				<%@include file="../universal/adminHeader.jsp"%>
+
+
+				<div align='center'>
 					<br>
-<!-- 					<h3>會員資料</h3> -->
-					<!-- 	<hr> -->
 					<table border='1'>
-<!-- 					<div align='center' id='showUser'></div> -->
-					<thead id="headArea"></thead>
-					<tbody id="bodyArea"></tbody>
+						<thead id="headArea"></thead>
+						<tbody id="bodyArea"></tbody>
 					</table>
 				</div>
 
-				<p />
 				<div align='center'>
-				<div id="pageHref"></div>
-				<br>
-<!-- 					<hr> -->
-					<a href="gotoAdminIndex.controller>">上一頁</a>
+					<div id="pageHref"></div>
+					<br>
+					<a href="gotoAdminIndex.controller">上一頁</a>
 				</div>
+
 
 			</div>
 		</div>
 		<%@include file="../universal/adminSidebar.jsp"%>
 	</div>
+
 	<script	src="assets/js/jquery.min.js"></script>
 	<script	src="assets/js/browser.min.js"></script>
 	<script	src="assets/js/breakpoints.min.js"></script>

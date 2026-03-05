@@ -14,296 +14,305 @@
 
 <script type="application/json" id="bootstrap-data">
 	{
-		"adminId": "${fn:escapeXml(adminId)}"
+		"adminId": "${fn:escapeXml(adminId)}",
+		"successMessage" : "${fn:escapeXml(successMessage)}"
 	}
 </script>
 
 <script>
-const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const { successMessage } = bootstrapData;
 
-const state = {
-	status: "loading", // 'idle' | 'loading' | 'success' | 'error'
-	adminId: bootstrapData.adminId,
-	products: null,
-	error: null
-};
-let loginHref, logoutHref, dataArea, query, productname;
-const api = {
-	fetchAllProducts: async function() {
-		const response = await fetch('findAllProduct');
-		if (!response.ok) {
-			throw new Error('Fetch failed');
+	if (successMessage) alert(successMessage);
+
+	const state = {
+		status: "loading", // 'idle' | 'loading' | 'success' | 'error'
+		adminId: bootstrapData.adminId,
+		products: null,
+		error: null
+	};
+	let loginHref, logoutHref, dataArea, query, productname, typename;
+	const api = {
+		fetchAllProducts: async function() {
+			const response = await fetch('findAllProduct');
+			if (!response.ok) {
+				throw new Error('Fetch failed');
+			}
+			return response.json();
+		},
+		fetchProductsByName: async function(pname, producttypename) {
+			const url = 'admin/products' +
+					'?pname=' + pname + '&producttypename=' + producttypename;
+			const response = await fetch(url);
+			if (!response.ok) {
+				throw new Error('Something went wrong');
+			}
+			return response.json();
 		}
-		return response.json();
-	},
-	fetchProductsByName: async function(pname, producttypename) {
-		const url = 'admin/products' +
-				'?pname=' + pname + '&producttypename=' + producttypename;
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error('Something went wrong');
+	};
+
+	window.onload = init;
+	async function init() {
+		// dom wiring
+		loginHref = document.getElementById('loginHref');
+		logoutHref = document.getElementById('logoutHref');
+		dataArea = document.getElementById("dataArea");
+		query = document.getElementById("query");
+		productname = document.getElementById("productname");
+		typename = document.getElementById("producttypename");
+
+		bindEvents();
+		await loadProducts();
+	}
+
+	function bindEvents() {
+		query.addEventListener('click', queryProducts);
+	}
+	async function loadProducts() {
+		state.status = "loading";
+		render();
+
+		try {
+			const data = await api.fetchAllProducts();
+			state.products = data.list;
+			state.status = "success";
+			state.error = null;
+		} catch (e) {
+			state.status = "error";
+			state.error = e;
 		}
-		return response.json();
+
+		render();
 	}
-};
+	function render() {
+		if (state.status === "loading") {
+			showSpinner();
+			return;
+		}
 
-window.onload = init;
-async function init() {
-	// dom wiring
-	loginHref = document.getElementById('loginHref');
-	logoutHref = document.getElementById('logoutHref');
-	dataArea = document.getElementById("dataArea");
-	query = document.getElementById("query");
-	productname = document.getElementById("productname");
+		if (state.status === "error") {
+			console.error('something went wrong: ', state.error);
+			return;
+		}
 
-	bindEvents();
-	await loadProducts();
-}
+		if (state.adminId != null) {
+			renderCommonAdminUI();
+		}
 
-function bindEvents() {
-	query.addEventListener('click', queryProducts);
-}
-async function loadProducts() {
-	state.status = "loading";
-	render();
-
-	try {
-		const data = await api.fetchAllProducts();
-		state.products = data.list;
-		state.status = "success";
-		state.error = null;
-	} catch (e) {
-		state.status = "error";
-		state.error = e;
+		if (state.products != null) {
+			dataArea.replaceChildren(renderProductTable(state.products));
+		}
 	}
-
-	render();
-}
-function render() {
-	if (state.status === "loading") {
-		showSpinner();
-		return;
+	function showSpinner() {
+		console.log('Spinning');
 	}
-
-	if (state.status === "error") {
-		console.error('something went wrong: ', state.error);
-		return;
+	function renderCommonAdminUI() {
+		loginHref.hidden = true;
+		logoutHref.style.visibility = "visible";
 	}
+	async function queryProducts() {
+		const pname = productname.value;
+		const producttypename = typename.value;
+		if(!pname){
+			alert('請輸入關鍵字');
+			return;
+		}
 
-	if (state.adminId != null) {
-		renderCommonAdminUI();
+		state.status = "loading";
+		render();
+
+		try {
+			const data = await api.fetchProductsByName(pname, producttypename);
+			state.products = data.list;
+			state.status = "success";
+			state.error = null;
+		} catch (error) {
+			state.status = "error";
+			state.error = error;
+		}
+
+		render();
 	}
+	function renderProductTable(products) {
+		const table = document.createElement('table');
+		table.border = '1';
+		table.style.width = '100%';
+		table.style.textAlign = 'center';
 
-	if (state.products != null) {
-		dataArea.replaceChildren(renderProductTable(state.products));
-	}
-}
-function showSpinner() {
-	console.log('Spinning');
-}
-function renderCommonAdminUI() {
-	loginHref.hidden = true;
-	logoutHref.style.visibility = "visible";
-}
-async function queryProducts() {
-	const pname = productname.value;
-	const producttypename = "日文"; // fixme
-	if(!pname){
-		alert('請輸入關鍵字');
-		return;
-	}
+		if (products.length === 0) {
+			table.appendChild(emptyResultRow());
 
-	state.status = "loading";
-	render();
+			return table;
+		}
 
-	try {
-		const data = await api.fetchProductsByName(pname, producttypename);
-		state.products = data.list;
-		state.status = "success";
-		state.error = null;
-	} catch (error) {
-		state.status = "error";
-		state.error = error;
-	}
+		table.appendChild(resultNumberRow(products.length));
+		table.appendChild(header());
 
-	render();
-}
-function renderProductTable(products) {
-	const table = document.createElement('table');
-	table.border = '1';
-	table.style.width = '100%';
-	table.style.textAlign = 'center';
-
-	if (products.length === 0) {
-		table.appendChild(emptyResultRow());
+		products.forEach(product => {
+			table.appendChild(row(product));
+		});
 
 		return table;
 	}
+	function emptyResultRow() {
+		const tr = document.createElement('tr');
+		const th = document.createElement('th');
+		th.textContent = '查無資料';
+		th.colSpan = 5;
 
-	table.appendChild(resultNumberRow(products.length));
-	table.appendChild(header());
+		tr.appendChild(th);
 
-	products.forEach(product => {
-		table.appendChild(row(product));
-	});
+		return tr;
+	}
+	function resultNumberRow(length) {
+		const tr = document.createElement('tr');
+		const th = document.createElement('th');
+		th.colSpan = 5;
+		th.textContent = '共計"' + length + '"筆資料';
 
-    return table;
-}
-function emptyResultRow() {
-	const tr = document.createElement('tr');
-	const th = document.createElement('th');
-	th.textContent = '查無資料';
-	th.colSpan = 5;
+		tr.appendChild(th);
 
-	tr.appendChild(th);
+		return tr;
+	}
+	function header() {
+		const tr = document.createElement('tr');
 
-	return tr;
-}
-function resultNumberRow(length) {
-	const tr = document.createElement('tr');
-	const th = document.createElement('th');
-	th.colSpan = 5;
-	th.textContent = '共計"' + length + '"筆資料';
+		const imgTh = document.createElement('th');
+		imgTh.textContent = '課程圖片';
+		imgTh.style.textAlign = 'center';
 
-	tr.appendChild(th);
+		const nameTh = document.createElement('th');
+		nameTh.textContent = '課程名稱';
+		nameTh.style.textAlign = 'center';
 
-	return tr;
-}
-function header() {
-	const tr = document.createElement('tr');
+		const classTh = document.createElement('th');
+		classTh.textContent = '課程類別';
 
-	const imgTh = document.createElement('th');
-	imgTh.textContent = '課程圖片';
-	imgTh.style.textAlign = 'center';
+		const priceTh = document.createElement('th');
+		priceTh.textContent = '課程價格';
 
-	const nameTh = document.createElement('th');
-	nameTh.textContent = '課程名稱';
-	nameTh.style.textAlign = 'center';
+		const descTh = document.createElement('th');
+		descTh.textContent = '課程介紹';
+		descTh.style.textAlign = 'center';
 
-	const classTh = document.createElement('th');
-	classTh.textContent = '課程類別';
+		const actionTh = document.createElement('th');
+		actionTh.textContent = '功能';
+		actionTh.style.textAlign = 'center';
+		actionTh.width = '50px';
 
-	const priceTh = document.createElement('th');
-	priceTh.textContent = '課程價格';
+		tr.append(imgTh, nameTh, classTh, priceTh, descTh, actionTh);
 
-	const descTh = document.createElement('th');
-	descTh.textContent = '課程介紹';
-	descTh.style.textAlign = 'center';
+		return tr;
+	}
+	function row(product) {
+		const tr = document.createElement('tr');
 
-	const actionTh = document.createElement('th');
-	actionTh.textContent = '功能';
-	actionTh.style.textAlign = 'center';
-	actionTh.width = '50px';
+		tr.append(
+				imageCell(product),
+				nameCell(product),
+				td(product.p_Class),
+				td(product.p_Price),
+				descCell(product),
+				actionCell(product)
+		)
 
-	tr.append(imgTh, nameTh, classTh, priceTh, descTh, actionTh);
+		return tr;
+	}
+	function imageCell(product) {
+		const td = document.createElement('td');
 
-	return tr;
-}
-function row(product) {
-	const tr = document.createElement('tr');
+		const img = document.createElement("img");
+		img.src = product.p_Img;
+		img.width = "100";
+		img.height = "60";
 
-	tr.append(
-			imageCell(product),
-			nameCell(product),
-			td(product.p_Class),
-			td(product.p_Price),
-			descCell(product),
-			actionCell(product)
-	)
+		td.appendChild(img);
 
-	return tr;
-}
-function imageCell(product) {
-	const td = document.createElement('td');
+		return td;
+	}
+	function nameCell(product) {
+		const name = document.createElement("td");
+		name.textContent = product.p_Name;
+		name.style.textAlign = 'center';
 
-	const img = document.createElement("img");
-	img.src = product.p_Img;
-	img.width = "100";
-	img.height = "60";
+		return name;
+	}
+	function td(text) {
+		const td = document.createElement('td');
+		td.textContent = text;
+		td.style.width = '100px';
 
-	td.appendChild(img);
+		return td;
+	}
+	function descCell(product) {
+		const desc = document.createElement('td');
+		desc.textContent = product.p_DESC;
 
-	return td;
-}
-function nameCell(product) {
-	const name = document.createElement("td");
-	name.textContent = product.p_Name;
-	name.style.textAlign = 'center';
+		return desc;
+	}
+	function actionCell(product) {
+		const td = document.createElement('td');
 
-	return name;
-}
-function td(text) {
-	const td = document.createElement('td');
-	td.textContent = text;
-	td.style.width = '100px';
+		const upd = document.createElement('input');
+		upd.type = 'button';
+		upd.value = '更新';
+		upd.style.margin = '5px';
+		upd.addEventListener('click', () => {
+			location.href = 'updateProduct/' + product.p_ID;
+		});
 
-	return td;
-}
-function descCell(product) {
-	const desc = document.createElement('td');
-	desc.textContent = product.p_DESC;
+		const del = document.createElement('input');
+		del.type = 'button';
+		del.value = '刪除';
+		del.style.margin = '5px';
+		del.addEventListener('click', () => {
+			location.href = 'deleteProduct/' + product.p_ID;
+		});
 
-	return desc;
-}
-function actionCell(product) {
-	const td = document.createElement('td');
+		td.append(upd, del);
 
-	const upd = document.createElement('input');
-	upd.type = 'button';
-	upd.value = '更新';
-	upd.style.margin = '5px';
-	upd.addEventListener('click', () => {
-		location.href = 'updateProduct/' + product.p_ID;
-	});
-
-	const del = document.createElement('input');
-	del.type = 'button';
-	del.value = '刪除';
-	del.style.margin = '5px';
-	del.addEventListener('click', () => {
-		location.href = 'deleteProduct/' + product.p_ID;
-	});
-
-	td.append(upd, del);
-
-	return td;
-}
+		return td;
+	}
 </script>
 
 </head>
 
 <body class="is-preload">
-	<!-- Wrapper -->
 	<div id="wrapper">
-		<!-- Main -->
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/adminHeader.jsp"%>
+
+
 				<h2 align='center'>課程資訊</h2>
 				<hr>
 				<div style="text-align: center;">
+					<select id="producttypename" style="width: 150px;display: inline;float: none;border-radius: 50px;">
+						<option label="類別" value="-1" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="英文" value="英文" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="日文" value="日文" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="西語" value="西語" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="葡萄牙語" value="葡萄牙語" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="拉丁語" value="拉丁語" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+						<option label="韓文" value="韓文" style="width: 10px;display: inline;float: none;border-radius: 50px;">英文</option>
+					</select>
 					<input type="text" id="productname" style="display: inline; width: 500px; float: none;border-radius: 50px;" placeholder="請輸入課程關鍵字">
 					<button id="query" style="display: inline;">搜尋</button>
 					<br>
-				<br>
+					<br>
 				</div>
 				
 				<div id='dataArea'></div>
 			</div>
-		</div>
-		<!-- Sidebar -->
-		<!-- 這邊把side bar include進來 -->
-		<%@include file="../universal/adminSidebar.jsp"%>
 
+
+		</div>
+		<%@include file="../universal/adminSidebar.jsp"%>
 	</div>
 
-	<!-- Scripts -->
-	<script
-		src="assets/js/jquery.min.js"></script>
-	<script
-		src="assets/js/browser.min.js"></script>
-	<script
-		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 

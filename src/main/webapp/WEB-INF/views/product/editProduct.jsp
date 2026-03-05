@@ -78,20 +78,15 @@ textarea {
 </head>
 
 <body class="is-preload">
-
-	<!-- Wrapper -->
 	<div id="wrapper">
-
-		<!-- Main -->
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
 
+
 				<h2 align='center'>請更改課程資訊</h2>
 				<hr>
-
-				<form:form method="POST" modelAttribute="productInfo"
-					enctype='multipart/form-data'>
+				<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
 					<table border="1">
 						<c:choose>
 							<c:when test="${productInfo.p_ID == null }">
@@ -112,37 +107,48 @@ textarea {
 
 						<tr>
 							<td>課程名稱:</td>
-							<td><form:input path="p_Name" /> <form:errors path='p_Name'
-									cssClass="error" /></td>
-
+							<td>
+								<form:input path="p_Name" />
+								<form:errors path='p_Name' cssClass="error" />
+							</td>
 						</tr>
 						<tr>
 							<td>課程類別:</td>
-							<td><form:select path="p_Class">
+							<td>
+								<form:select path="p_Class">
 									<form:option label="請挑選" value="-1" />
 									<form:option label="英文" value="英文" />
 									<form:option label="日文" value="日文" />
-								</form:select> <form:errors path='p_Class' cssClass="error" /></td>
+								</form:select>
+								<form:errors path='p_Class' cssClass="error" />
+							</td>
 						</tr>
 						<tr>
 							<td>課程價錢:</td>
-							<td><form:input path="p_Price" /> <form:errors
-									path='p_Price' cssClass="error" /></td>
+							<td>
+								<form:input path="p_Price" />
+								<form:errors path='p_Price' cssClass="error" />
+							</td>
 						</tr>
 						<tr>
 							<td>課程介紹:</td>
-							<td><form:textarea path="descString" style="resize:none" rows="10" cols="100" />
-								<form:errors path='descString' cssClass="error" /></td>
+							<td>
+								<form:textarea path="descString" style="resize:none" rows="10" cols="100" />
+								<form:errors path='descString' cssClass="error" />
+							</td>
 						</tr>
 						<tr>
 							<td>課程圖片:</td>
-							<td><form:input path="imgFile" type="file" /> <form:errors
-									path='imgFile' cssClass="error" /></td>
+							<td>
+								<form:input path="imgFile" type="file" />
+								<form:errors path='imgFile' cssClass="error" />
+							</td>
 						</tr>
 						<tr>
 							<td>課程影片:</td>
-							<td><form:input path="videoFile" type="file" /> <form:errors
-									path='videoFile' cssClass="error" /></td>
+							<td><form:input path="videoFile" type="file" />
+								<form:errors path='videoFile' cssClass="error" />
+							</td>
 						</tr>
 						<tr>
 							<td><input type="submit"></td>
@@ -150,22 +156,15 @@ textarea {
 					</table>
 				</form:form>
 
+
 			</div>
 		</div>
-
-		<!-- Sidebar -->
-		<!-- 這邊把side bar include進來 -->
 		<%@include file="../universal/sidebar.jsp"%>
-
 	</div>
 
-	<!-- Scripts -->
-	<script
-		src="assets/js/jquery.min.js"></script>
-	<script
-		src="assets/js/browser.min.js"></script>
-	<script
-		src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 

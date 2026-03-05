@@ -23,7 +23,9 @@
 const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
 const { successMessageOfChangingPassword, u_id, userPicString } = bootstrapData;
 
-if(successMessageOfChangingPassword=="修改成功"){alert('密碼修改成功!');}
+if (successMessageOfChangingPassword) {
+	alert(successMessageOfChangingPassword);
+}
 
 window.onload = function(){
     var logout = document.getElementById("logout");
@@ -72,115 +74,108 @@ window.onload = function(){
 	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
 //universal
 }
-
-
 </script>
-
 </head>
 
 <body class="is-preload">
+	<!-- Wrapper -->
+	<div id="wrapper">
+		<!-- Main -->
+		<div id="main">
+			<div class="inner">
+				<!-- header include -->
+				<%@include file="universal/header.jsp" %>
 
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-				<!-- Main -->
-					<div id="main">
-						<div class="inner">
-
-							<!-- Header -->
-							<!-- 這邊把header include進來 -->
-								<%@include file="universal/header.jsp" %>  
-
-							<!-- Banner -->
-								<section id="banner">
-									<div class="content">
-										<header>
-											<h1>Studie Hub</h1>
-											<p>影片學習，生活化主題影片，樂趣學習英文！</p>
-										</header>
-										<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen 主張，學習外語不是累積學科知識，而更像是技能訓練。因此<strong> Studie Hub </strong>採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
-										<ul class="actions">
-											<li><a href="#popularCourse" class="button big primary">Learn More</a></li>
-										</ul>
-									</div>
-									<span class="image object">
-										<img src="images/demopic4.jpg" alt="" />
-									</span>
-								</section>
-
-							
-								<section>
-									<header class="major" id="popularCourse">
-										<h2>熱門課程</h2>
-									</header>
-									<div class="posts">
-										<article>
-											<a href="#" class="image"><img src="images/productImages/sample-image-03.png" alt="" /></a>
-											<h3>🐒 猴子互動口說課（Monkey Interactive English）</h3>
-											<p>高互動設計，保持學習動能：讓好奇心成為學習的引擎。</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/productImages/sample-image-04.png" alt="" /></a>
-											<h3>🦊 狐狸導師思考日文課（Fox Mentor Logic Japanese）</h3>
-											<p>重視思考脈絡的教學方式：不是快，而是看得深。</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										
-										<article>
-											<a href="#" class="image"><img src="images/productImages/sample-image-05.png" alt="" /></a>
-											<h3>🐺 狼群溝通實戰課（Wolf Team Communication）</h3>
-											<p>團隊導向的互動設計、建立信任，提升群體表達效率，清楚的角色與程度分級。</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>																				
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/productImages/sample-image-06.png" alt="" /></a>
-											<h3>🐻 棕熊穩健基礎英文課（Brown Bear Foundation English）</h3>
-											<p>慢而扎實的學習設計，建立長期自信，而非短期刺激。同程度學員安心學習，不追求花樣，重視理解。</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/productImages/sample-image-07.png" alt="" /></a>
-											<h3>🦌 鹿系自然表達英文課（Deer Natural Expression）</h3>
-											<p>學習過程能感到進步，建立信心，就不怕開口犯錯：台灣人口說不好的一大原因就是害怕開口跟犯錯，所以課程首要條件就是先建立信心與興趣</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/productImages/sample-image-01.png" alt="" /></a>
-											<h3>🐱 貓咪英文口說課（Cat Speaking Program）</h3>
-											<p>專為內向型學員設計的安心學習環境：理解「慢熟型人格」的學習節奏，從觀察、模仿到自然開口，不強迫、不比較。</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-									</div>
-								</section>
-
-						</div>
+				<!-- Banner -->
+				<section id="banner">
+					<div class="content">
+						<header>
+							<h1>Studie Hub</h1>
+							<p>影片學習，生活化主題影片，樂趣學習英文！</p>
+						</header>
+						<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen 主張，學習外語不是累積學科知識，而更像是技能訓練。因此<strong> Studie Hub </strong>採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
+						<ul class="actions">
+							<li><a href="#popularCourse" class="button big primary">Learn More</a></li>
+						</ul>
 					</div>
+					<span class="image object">
+						<img src="images/demopic4.jpg" alt="" />
+					</span>
+				</section>
 
-				<!-- Sidebar -->
-				<!-- 這邊把side bar include進來 -->
-				<%@include file="universal/sidebar.jsp" %>  
+
+				<section>
+					<header class="major" id="popularCourse">
+						<h2>熱門課程</h2>
+					</header>
+					<div class="posts">
+						<article>
+							<a href="#" class="image"><img src="images/productImages/sample-image-03.png" alt="" /></a>
+							<h3>🐒 猴子互動口說課（Monkey Interactive English）</h3>
+							<p>高互動設計，保持學習動能：讓好奇心成為學習的引擎。</p>
+							<ul class="actions">
+								<li><a href="#" class="button">More</a></li>
+							</ul>
+						</article>
+						<article>
+							<a href="#" class="image"><img src="images/productImages/sample-image-04.png" alt="" /></a>
+							<h3>🦊 狐狸導師思考日文課（Fox Mentor Logic Japanese）</h3>
+							<p>重視思考脈絡的教學方式：不是快，而是看得深。</p>
+							<ul class="actions">
+								<li><a href="#" class="button">More</a></li>
+							</ul>
+						</article>
+
+						<article>
+							<a href="#" class="image"><img src="images/productImages/sample-image-05.png" alt="" /></a>
+							<h3>🐺 狼群溝通實戰課（Wolf Team Communication）</h3>
+							<p>團隊導向的互動設計、建立信任，提升群體表達效率，清楚的角色與程度分級。</p>
+							<ul class="actions">
+								<li><a href="#" class="button">More</a></li>
+							</ul>
+						</article>
+						<article>
+							<a href="#" class="image"><img src="images/productImages/sample-image-06.png" alt="" /></a>
+							<h3>🐻 棕熊穩健基礎英文課（Brown Bear Foundation English）</h3>
+							<p>慢而扎實的學習設計，建立長期自信，而非短期刺激。同程度學員安心學習，不追求花樣，重視理解。</p>
+							<ul class="actions">
+								<li><a href="#" class="button">More</a></li>
+							</ul>
+						</article>
+						<article>
+							<a href="#" class="image"><img src="images/productImages/sample-image-07.png" alt="" /></a>
+							<h3>🦌 鹿系自然表達英文課（Deer Natural Expression）</h3>
+							<p>學習過程能感到進步，建立信心，就不怕開口犯錯：台灣人口說不好的一大原因就是害怕開口跟犯錯，所以課程首要條件就是先建立信心與興趣</p>
+							<ul class="actions">
+								<li><a href="#" class="button">More</a></li>
+							</ul>
+						</article>
+						<article>
+							<a href="#" class="image"><img src="images/productImages/sample-image-01.png" alt="" /></a>
+							<h3>🐱 貓咪英文口說課（Cat Speaking Program）</h3>
+							<p>專為內向型學員設計的安心學習環境：理解「慢熟型人格」的學習節奏，從觀察、模仿到自然開口，不強迫、不比較。</p>
+							<ul class="actions">
+								<li><a href="#" class="button">More</a></li>
+							</ul>
+						</article>
+					</div>
+				</section>
 
 			</div>
+		</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+		<!-- Sidebar -->
+		<!-- 這邊把side bar include進來 -->
+		<%@include file="universal/sidebar.jsp" %>
 
-	</body>
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
 </html>

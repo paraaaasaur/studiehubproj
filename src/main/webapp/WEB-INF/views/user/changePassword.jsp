@@ -19,34 +19,16 @@
 </script>
 <title>修改密碼</title>
 <script>
-const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-const { u_id, userPicString, pswInOGBean, errorMessageOfChangingPassword } = bootstrapData;
-	if(errorMessageOfChangingPassword=="兩次密碼不同"){alert('兩次密碼不同! 請再試一次');}
+	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const { u_id, userPicString, pswInOGBean, errorMessageOfChangingPassword } = bootstrapData;
+
+	if (errorMessageOfChangingPassword) {
+		alert(errorMessageOfChangingPassword);
+	}
 
 	var hasError = false;
 	window.onload = function() {
 		var save = document.getElementById("save");
-		//待修bug (密碼&確認密碼不一致目前可以送出@@)
-// 		save.onclick = function() {
-// 			var old_psw = document.getElementById("old_psw").value;
-// 			var u_psw = document.getElementById("u_psw").value;
-// 			var cfm_psw = document.getElementById("cfm_psw").value;
-// 			if (!(u_psw == cfm_psw)) {
-// 				alert("兩次密碼不同! 請再試一次")
-// 				hasError = true;
-// // 				save.disabled = true;
-// 				return;
-// 			}
-// 			if(!old_psw){
-// 				alert("請輸入目前的密碼!");
-// 				hasError = true;
-// 			}else{
-// 				hasError = false;
-// 			}
-// 			if (hasError) {
-// 				return false;
-// 			}
-// 		}
 		
 		var old_pswBox = document.getElementById("old_psw");
 		old_pswBox.onchange = function() {
@@ -63,9 +45,7 @@ const { u_id, userPicString, pswInOGBean, errorMessageOfChangingPassword } = boo
 			}
 		}
 
-		
-
-//universal
+		//universal
 	    //如果有登入，隱藏登入標籤
 	    var loginHref = document.getElementById('loginHref');
 	    var signupHref = document.getElementById('signupHref');
@@ -95,17 +75,17 @@ const { u_id, userPicString, pswInOGBean, errorMessageOfChangingPassword } = boo
 </script>
 
 </head>
-<!-- <body> -->
+
 <body class="is-preload">
 	<div id="wrapper">
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
+
 				<hr>
 				<div style="text-align: center;">
 					<div style="display: inline-block; text-align: left;">
-						<form:form method="POST" action="changePassword.controller"
-							modelAttribute="userBean">
+						<form:form method="POST" action="changePassword.controller" modelAttribute="userBean">
       						目前的密碼: <input type="password" name="old_psw" id='old_psw' placeholder="Current password">
 							<br>
 							新密碼: <form:password path="u_psw" name="u_psw" id="u_psw" placeholder="New password" />
@@ -123,6 +103,7 @@ const { u_id, userPicString, pswInOGBean, errorMessageOfChangingPassword } = boo
 		</div>
 		<%@include file="../universal/sidebar.jsp"%>
 	</div>
+
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/browser.min.js"></script>
 	<script src="assets/js/breakpoints.min.js"></script>

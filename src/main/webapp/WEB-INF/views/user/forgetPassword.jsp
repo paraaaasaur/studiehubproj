@@ -18,8 +18,7 @@ window.onload = function(){
 	
 	sendBtn.onclick = function(){
 		var email = document.getElementById("userEmail").value;
-		var emailInputBox = document.getElementById("userEmail");
-		
+
 		if(!isEmail(email)){
 			if(!email){
 				alert("尚未輸入信箱!");
@@ -43,7 +42,6 @@ window.onload = function(){
 		loading.src = "images/user/loading.gif";
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200){
-				//判斷回傳
 				result = JSON.parse(xhr.responseText);
 				if(result.success){
 				loading.src = "";
@@ -61,45 +59,42 @@ window.onload = function(){
 	function isEmail(email) {
 	    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 	}
-	
-	
 }
 </script>
 
 </head>
 <!-- <body> -->
 <body class="is-preload">
-<div id="wrapper">
-<div id="main">
-<div class="inner">
-<%@include file="../universal/header.jsp" %>
+    <div id="wrapper">
+        <div id="main">
+            <div class="inner">
+            <%@include file="../universal/header.jsp" %>
 
 
-<div style="text-align: center;">
-  <div style="display: inline-block; text-align: left;">
-  <br>
-  <br>
-<!--   <br> -->
-      <input type="text" id="userEmail" style="display: inline; width: 500px; float: none;border-radius: 10px;" placeholder="請輸註冊信箱..." autofocus="autofocus">
-	  <button id="send" style="display: inline;">送出</button>
-	  <div style="text-align: center">
-	  <br>
-	  <img id="loadingGif" alt="" src="" width='80px'>
-	  </div>
-  </div>
-
-</div>
+            <div style="text-align: center;">
+                <div style="display: inline-block; text-align: left;">
+                    <br>
+                    <br>
+                    <input type="text" id="userEmail" style="display: inline; width: 500px; float: none;border-radius: 10px;" placeholder="請輸註冊信箱..." autofocus="autofocus">
+                    <button id="send" style="display: inline;">送出</button>
+                    <div style="text-align: center">
+                        <br>
+                        <img id="loadingGif" alt="" src="" width='80px'>
+                    </div>
+              </div>
+            </div>
 
 
-</div>
-</div>
-<%@include file="../universal/sidebar.jsp" %>  
-</div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
-<script src="assets/js/main.js"></script>
+            </div>
+            </div>
+        <%@include file="../universal/sidebar.jsp" %>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
 
 </body>
 </html>

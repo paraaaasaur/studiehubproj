@@ -1,138 +1,115 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel='stylesheet'
-	href="assets/css/main.css">
-<title>sidebar</title>
+<div id="sidebar">
+	<div class="inner">
 
-<body>
+		<!-- Search -->
+		<section id="search" class="alt">
+			<form method="post" action="#">
+				<input type="text" name="query" id="query" placeholder="Search" />
+			</form>
+		</section>
 
-	<div id="sidebar">
-		<div class="inner">
+		<!-- Menu -->
+		<nav id="menu">
+			<header class="major">
+				<h2>Menu</h2>
+			</header>
+			<ul>
+				<li><a href=".">首頁</a></li>
+				<li id='loginHref'><a href="gotologin.controller">登入</a></li>
+				<li id='signupHref'><a href="gotosignup.controller">註冊</a></li>
+				<li><span class="opener">會員資訊</span>
+					<ul>
+						<li><a href="gotoChangePassword.controller">更改密碼</a></li>
+						<li><a href="gotoUpdateUserinfo.controller">編輯個人資料</a></li>
+					</ul>
+				</li>
+				<li><span class="opener">課程資訊</span>
+					<ul>
+						<li><a href="queryProductForUser">所有課程</a></li>
+						<li style='display:none' id='loginEvent'><a href="insertProduct">新增課程</a></li>
+					</ul>
+				</li>
+				<li id="cartHref" hidden><a href="cart.controller/cartIndex">購物車</a></li>
+				<li><a href="goSelectAllChat">討論區</a></li>
 
-			<!-- Search -->
-			<section id="search" class="alt">
-				<form method="post" action="#">
-					<input type="text" name="query" id="query" placeholder="Search" />
-				</form>
-			</section>
+				<li><span class="opener">活動</span>
+					<ul>
+						<li><a href="eventindex">活動區</a></li>
+						<li style='display:none' id='loginEvent1'><a href="insertEvent">新增活動</a></li>
+						<li style='display:none' id='loginALLEvent1'><a href="userAllEvent">使用者後臺</a></li>
+					</ul>
+				</li>
 
-			<!-- Menu -->
-			<nav id="menu">
-				<header class="major">
-					<h2>Menu</h2>
-				</header>
-				<ul>
-					<li><a href=".">首頁</a></li>
-					<li id='loginHref'><a href="gotologin.controller">登入</a></li>
-					<li id='signupHref'><a href="gotosignup.controller">註冊</a></li>
-					<li><span class="opener">會員資訊</span>
-						<ul>
-							<li><a href="gotoChangePassword.controller">更改密碼</a></li>
-							<li><a href="gotoUpdateUserinfo.controller">編輯個人資料</a></li>
-						</ul></li>
-					<li><span class="opener">課程資訊</span>
-						<ul>
-							<li><a href="queryProductForUser">所有課程</a></li>
-							<li style='display:none' id='loginEvent'><a href="insertProduct">新增課程</a></li>
-						</ul>
-					</li>
-					<li id="cartHref" hidden><a href="cart.controller/cartIndex">購物車</a></li>
-					<li><a href="goSelectAllChat">討論區</a></li>
-					
-					<li><span class="opener">活動</span>
-					    <ul>
-					        <li><a href="eventindex">活動區</a></li>
-					        <li style='display:none' id='loginEvent1'><a href="insertEvent">新增活動</a></li>
-					        <li style='display:none' id='loginALLEvent1'><a href="userAllEvent">使用者後臺</a></li>
-<%-- 					        <li><a href="<c:url value='/Eventindex' />">所有活動(測試)</a></li>			         --%>
-					        			        
-					    </ul>
-					</li>
+				<li><span class="opener">題庫</span>
+					<ul>
+						<li><a href="question.controller/guestQueryQuestion">所有試題</a></li>
+						<li><a href="question.controller/turnQuestionIndex">線上測驗區</a></li>
+						<li><a href="question.controller/insertQuestion">申請新增試題</a></li>
+					</ul>
+				</li>
 
-					<li><span class="opener">題庫</span>
-						<ul>
-							<li><a href="question.controller/guestQueryQuestion">所有試題</a></li>
-							<li><a href="question.controller/turnQuestionIndex">線上測驗區</a></li>
-							<li><a href="question.controller/insertQuestion">申請新增試題</a></li>
-						</ul>
-					</li>
-					
 
-					<li><a href="gotoAdminIndex.controller"><b style="color:#f56a6a;">管理者頁面</b></a></li>
-<%-- 					<li><a href="<c:url value='/gotoAdminLogin.controller' />"><b style="color:#f56a6a;">管理者頁面</b></a></li> --%>
-					<li><a href="credits">⭐️SPECIAL THANKS⭐️</a></li>
-				</ul>
-			</nav>
-			<!-- Section -->
-			<section>
-				<header class="major">
-					<h2>精選課程</h2>
-				</header>
-				<div class="mini-posts">
-					<article>
-						<a href="takeClass/2" class="image"><img src="images/productImages/sample-image-02.png"
-							alt="" /></a>
-						<p>
-							掌握關鍵句型，讓每次溝通都有重點。活潑、互動、敢開口！
-						</p>
-					</article>
-					<article>
-						<a href="takeClass/3" class="image"><img src="images/productImages/sample-image-03.png"
-							alt="" /></a>
-						<p>
-							跳脫直翻，用英文邏輯組織你的想法！ 主打聰明、結構、理解而非背誦
-						</p>
-					</article>
-					<article>
-						<a href="takeClass/4" class="image"><img src="images/productImages/sample-image-04.png"
-							alt="" /></a>
-						<p>
-							把英文用起來，日常對話自然又不尷尬！<br>
-							用活潑的俚語秀出你的風趣！
-						</p>
-					</article>
-				</div>
-				<ul class="actions">
-					<li><a href="#" class="button">More</a></li>
-				</ul>
-			</section>
+				<li><a href="gotoAdminIndex.controller"><b style="color:#f56a6a;">管理者頁面</b></a></li>
+				<li><a href="credits">⭐️SPECIAL THANKS⭐️</a></li>
+			</ul>
+		</nav>
+		<!-- Section -->
+		<section>
+			<header class="major">
+				<h2>精選課程</h2>
+			</header>
+			<div class="mini-posts">
+				<article>
+					<a href="takeClass/2" class="image"><img src="images/productImages/sample-image-02.png"
+						alt="" /></a>
+					<p>
+						掌握關鍵句型，讓每次溝通都有重點。活潑、互動、敢開口！
+					</p>
+				</article>
+				<article>
+					<a href="takeClass/3" class="image"><img src="images/productImages/sample-image-03.png" alt="" /></a>
+					<p>
+						跳脫直翻，用英文邏輯組織你的想法！ 主打聰明、結構、理解而非背誦
+					</p>
+				</article>
+				<article>
+					<a href="takeClass/4" class="image"><img src="images/productImages/sample-image-04.png" alt="" /></a>
+					<p>
+						把英文用起來，日常對話自然又不尷尬！<br>
+						用活潑的俚語秀出你的風趣！
+					</p>
+				</article>
+			</div>
+			<ul class="actions">
+				<li><a href="#" class="button">More</a></li>
+			</ul>
+		</section>
 
-			<!-- Section -->
-			<section>
-				<header class="major">
-					<h2>聯絡我們</h2>
-				</header>
-				<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen
-					主張，學習外語不是累積學科知識，而更像是技能訓練。因此 Studie Hub
-					採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
-				<ul class="contact">
-					<li class="icon solid fa-envelope"><a
-						href="mailto:i3t5128@gmail.com">i3t5128@gmail.com</a></li>
-					<li class="icon solid fa-phone">(886) 987-12345</li>
-					<li class="icon solid fa-home">中壢教室：桃園市中壢區中大路300號<br />
-						國立中央大學(工程二館側面 / 資策會大樓)
-					</li>
-				</ul>
-			</section>
+		<!-- Section -->
+		<section>
+			<header class="major">
+				<h2>聯絡我們</h2>
+			</header>
+			<p>你知道語言不應該用學的，而是要用練的嗎？南加大語言學教授 Stephen Krashen
+				主張，學習外語不是累積學科知識，而更像是技能訓練。因此 Studie Hub
+				採用大量真實的情境的影片，搭配互動練習，幫助您快速活用英文。</p>
+			<ul class="contact">
+				<li class="icon solid fa-envelope"><a
+					href="mailto:i3t5128@gmail.com">i3t5128@gmail.com</a></li>
+				<li class="icon solid fa-phone">(886) 987-12345</li>
+				<li class="icon solid fa-home">中壢教室：桃園市中壢區中大路300號<br />
+					國立中央大學(工程二館側面 / 資策會大樓)
+				</li>
+			</ul>
+		</section>
 
-			<!-- Footer -->
-			<footer id="footer">
-				<p class="copyright">
-					&copy; Untitled. All rights reserved. Demo Images: <a
-						href="https://unsplash.com">Unsplash</a>. Design: <a
-						href="https://html5up.net">HTML5 UP</a>.
-				</p>
-			</footer>
-
-		</div>
+		<!-- Footer -->
+		<footer id="footer">
+			<p class="copyright">
+				&copy; Untitled. All rights reserved. Demo Images:<a href="https://unsplash.com">Unsplash</a>. Design:<a href="https://html5up.net">HTML5 UP</a>.
+			</p>
+		</footer>
 	</div>
-	<!-- </div> -->
-</body>
-
-</html>
+</div>
+<!-- </div> -->

@@ -8,37 +8,26 @@
 <html>
 <head>
 <!-- 綜合題 -->
-<style type="text/css">
-   span.error {
-	color: red;
-	display: inline-block;
-	font-size: 5pt;
-}
+<style>
+	.spinner {
+		display: block;
+    	margin: 50px auto;
+    }
 
-.spinner {
-    width: 70px;
-    height: 70px;
-    background-color: #5b99de;
-    margin: 50px auto 50px auto;
-  }
-  .spin {
-    animation: RotatePlane 1.5s infinite ease-in-out;
-  }
-   .text { */
-     text-align: center;
-     font-weight: bolder;
-     font-size: 2rem;
-     color: #5b99de;
-   }
-  @keyframes RotatePlane {
-    0%   { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
-    50%  { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
-    100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
-  }
+	.spin {
+		animation: RotatePlane 1.5s infinite ease-in-out;
+	}
+
+	@keyframes RotatePlane {
+		0%   { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
+		50%  { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }
+		100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
+	}
+
 	/*   覆寫套版樣式 */
-  input[type="checkbox"] + label:before{
-  	border-radius: 100% !important ;
-  }
+	input[type="checkbox"] + label:before {
+		border-radius: 100% !important;
+	}
 
 	.question-tracker {
 		table-layout: fixed;
@@ -128,26 +117,20 @@
 
 </head>
 <body class="is-preload">
-
-	<!-- Wrapper -->
 	<div id="wrapper">
-
-		<!-- Main -->
 		<div id="main">
 			<div class="inner">
 				<%@include file="../universal/header.jsp"%>
 
+
 				<div id="root" align="center"></div>
+
+
 			</div>
 		</div>
-
-
-		<!-- Sidebar -->
 		<%@include file="../universal/sidebar.jsp"%>
-
 	</div>
 
-	<!-- Scripts -->
 	<script>
 		// Left improvements:
 		// 1. centralize state changes (+ snapshot and render) to a single setState function
@@ -228,10 +211,15 @@
 			lifecycle.beginRender();
 
 			if (state.status === 'loading') {
-				console.log('Loading resources from the server');
+				root.replaceChildren(
+						createSpinner()
+				);
 			}
 
 			else if (state.status === 'error') {
+				root.replaceChildren(
+						document.createTextNode('error happened( ･᷄ᯅ･᷅ )')
+				);
 				console.error('Error: ' + state.error.stack);
 			}
 
@@ -316,6 +304,18 @@
 			state.status = 'quizzing';
 			state.index = 0;
 			render();
+		}
+		function createSpinner() {
+			const spinnerWrapperEl = document.createElement('figure');
+			spinnerWrapperEl.classList.add('spinner');
+
+			const spinnerEl = document.createElement('img');
+			spinnerEl.src = 'images/user/loading.gif';
+			spinnerEl.classList.add('spin');
+
+			spinnerWrapperEl.appendChild(spinnerEl);
+
+			return spinnerWrapperEl;
 		}
 		function createStartInterface() {
 			const startQuizButton = document.createElement("button");

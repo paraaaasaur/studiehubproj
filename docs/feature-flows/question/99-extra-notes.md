@@ -7,7 +7,7 @@
      - noise columns only to support db lobs 
      - completely redundant when using storage
 - Magic getters `getQ_pictureString`, `getQ_audioString`
-- Magic toString
+- Magic toString `return  Arrays.toString(answers) ;`
 
 
 ## Nick's Wishlist (Probably)

@@ -1,33 +1,5 @@
 # Roadmap
 
-## [1.0.0]
-
-### Goal
-- Make the legacy project fully reproducible, platform-independent, and testable
-
-## [1.0.1] - Security Patch: Required Session on Certain Endpoints
-
-### Goal
-1. Resolve the security vulnerability of current incomplete, inline session auth implementation that leaks out privileged server-side operations
-2. Resolve XSS risk brought up by the API `CKEditor` used around `chat` domains for lack of HTML sanitization
-3. Fix related or critical bugs
-
-
-## [1.0.2] - Big Cleanup & Bugfix
-(For endpoint and view specific/centered items, see Notion tables)
-
-### Goal
-- Profile the frontend (HTML, CSS, but mainly JS) mess
-- Clean the frontend mess, notably:
-  - Unused named/unnamed functions/variables/files
-  - duplicates
-- Make room for the upcoming 1.1.0 structural refactoring
-- Fix known issues recorded in 1.0.0
-
-- Target: known unused classes/methods/files, duplicate utilities + quick bugfixes
-- feature bug quick fix
-
-
 ## [1.1.0] - Structural Debt Cleanup
 
 ### Goal

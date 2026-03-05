@@ -9,11 +9,11 @@
 - I should be able to instantly spot what a controller method promises without having to dive 3+ layers to check out implementation for web contract
 - No need to do unit tests for new/changed service methods extracted from inline controller logic
 - Change field/setter injection to constructor injection
-- Remove usages of `@autowired` entity fields & simply make new instance inline
-  - Spotted in DAOs/Services/Controllers...
-  - Identify all usages before removal
+- Misused fields
+  - e.g.,`@autowired` entity fields that only serve as local variables spotted across layers
 - ...And remember to verify everything with IT tests! That's why you spent eternity to make them!!
 - Split controller by subject (user/admin) + optional sub-categorization
+- Replace all direct uses of dao/service concrete classes with interface
 
 ## Backend
 
@@ -32,20 +32,26 @@
 - Create JPA convenience methods for entity associations (if any exists)
 - Consolidate fragmented service methods into cohesive operations
 - Organize the messy `resources` directory
+- Replace method-level `@ModelAttribute` methods with inline code for explicitness
 
 ### Specifics
 
 #### Common
 - Remove the context path `/studiehub` to align url bases for the frontend and the backend at root
   - replace it with using nginx reverse proxy
-  - remove one coupling that server has to hack in views via model attributes  
+  - remove one coupling that server has to hack in views via model attributes
+- Replace local library Apache `lib/log4.jar`
+  - dev time pain: pauses build processes each time during a `git rebase`
+  - replace with in-built logging utils
 - Replace `servletContext#getMimeType` with `Files#probeContentType`
   - But okay to overlap if naturally
 - Use `setParameter` instead of raw hql/jpql/sql (which allows injections) in persistent logic
 - Hide 會員資訊 on the sidebar from guests
 
 
-#### User
+#### User Domain
+- `UserController`
+  - `login`: make `user_info` local variable
 - `@ModelAttribute("userBean") getLoginUserInfos`:
   - reduce it to a service method
   - apply only where it's used, instead of getting eagerly triggered all over the controller
@@ -67,14 +73,25 @@
       - from: `(Model)`
       - to: `(HttpSession)`
 
-#### Product
+#### Product Domain
+- Fix raw use of `EntityManager` in `ProductController` and use user service instead
+- Fix magic `toString` in the entity class and usage
+  - `ProductDaoImpl#queryByName`
+    - old: implicit coupling `String.valueOf(list.get(i))` to insert id
+    - new: fix to `String.valueOf(list.get(i).getP_ID)`
 
-
-#### Question
+#### Question Domain
 - Simplify `@ModelAttribute` method for `Q1` into a service method to call in controller explicitly
 
-#### Chat
+#### Chat Domain
 - Rename `ChatValidator` as `ChatReplyValidator` for clarity
+- `ChatController`
+  - fix the generic type in controller method `findOneChat` and service/dao methods `findAllChatReply` because it's not true
+    - change from `<Chat_Reply>`to `<Chat_ReplyAndUser_Info>`
+- `ChatServiceImpl#updateChatReply`: the hook in `Chat_Info` is not updated
+
+#### Event Domain
+- `@ModelAttribute("EventInfo") public EventInfo getPlace`: replace it with inline raw logic or service call
 
 
 ## Frontend
@@ -106,6 +123,12 @@ Recommended steps:
 ### CSS, HTML
 - Make discrete files as well if any heavy amount exists.
 - Rename each page title properly
+
+### Chat Domain
+- Make top-posts and replies visually differentiable
+  - idea: use Bootstrap classes
+
+---
 
 ## New Feature
 

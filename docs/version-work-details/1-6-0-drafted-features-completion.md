@@ -11,12 +11,14 @@
 
 ### Common
 - Introduce String trimmer bean
-- I`System.out.println` -> Logger
-- Frontend common js: 
+- `System.out.println` -> Logger
+#### Frontend
+- common js: 
   - sortObjectsByACommonKey
   - sortTable (improve)
 
-### User
+
+### User Domain
 
 #### Add
 1. User dashboard
@@ -34,7 +36,7 @@
      - `remember me` checkbox in `user/login.jsp`, v1.0.0
      - `rememberMe` field in `User_Info` entity, v1,0.0 (if not available atm)
 
-### Product
+### Product Domain
 
 #### Add
 1. Check out course detail (for admin to review pending courses)
@@ -43,7 +45,7 @@
 1. `product/Product`: Whiteboard 404 when preview video is not found
 2. Rating system JS used in `product/Product`, `product/showProductToUser`
 
-### Question
+### Question Domain
 
 #### Remove
 - Feature `01-display-all-quiz-overviews`
@@ -79,21 +81,26 @@
   - bring any remaining sidebar item to this page
     - idea: choose a type of quiz and a subject you want to practice
 
-### Chat
-- Make a chat-index to show:
-  - weekly trendy categories
-  - weekly/daily trendy topics 
-    - we don't have view counts, but just make the UI for now
-      - add `view_count` and/or `emoji` column in 2.0.0 schema redesign
-  - random suggestion
-    - for now: literally random suggestion for display purpose
-    - later: suggested by most emoted post with a random type of stamp
-      - e.g., thumb-up, heart, happy...
+### Chat Domain
 
-- Add choices to dotdotdot image to have further choice for same-page update/delete
-- Add js to allow the use of `ckeditor` on same-page insert/update, to replace new page editing style in 1.0.0 era that got removed in 1.0.2 fix
-  - update: toggle between display message & update message
-  - insert
+#### Add
+1. Chat index
+   - related artifacts: nothing meaningful; free to start from scratches
+   - concepts: 
+     - weekly trendy categories
+     - weekly/daily trendy topics 
+       - we don't have view counts, but just make the UI for now
+         - add `view_count` and/or `emoji` column in 2.0.0 schema redesign
+   - random suggestion
+     - for now: literally random suggestion for display purpose
+     - later: suggested by most emoted post with a random type of stamp
+       - e.g., thumb-up, heart, happy...
+2. Same page insert/update with `ckeditor`
+   - insert: default to use rich-text content
+   - update: toggle between the display message & update message by clicking dotdotdot icon
+3. Full menu for dotdotdot icon 
+   - update, delete
+
 - Grant user power to delete their own posts 
   - post: 404
     - Add a special 404 page that indicates the post has been deleted in case someone accesses from url or bookmark
@@ -107,7 +114,7 @@
     - while I feel that counterintuitive, "repairing" doesn't seem worth the time.
       - Plus, it's destined to get redesigned in 2.0.0
 
-### Event
+### Event Domain
 
 #### Wishlist
 1. Event index page (instead of raw event threads)
@@ -116,11 +123,16 @@
    - https://startbootstrap.github.io/startbootstrap-blog-post/
    - looks like no relevance to the `event` domain; an independent, separated one
    - hashtag feature: navigate through other articles of the same category
+3. `Article.java`, `Comment.java`, `
 3. `sendmessage`: ...???? Looks like the reply domain to an `event`?
 4. Google Maps API instead of `<a href="">'`
 5. "Cancel" functionality in event detail page
-6. A page for applicant to 
+6. A page for applicant to
    - view all registered events
    - cancel registration
 7. Update event functionality in admin page other than deletion
 8. Hashtag feature based on `a_type`
+9. Private message about an event
+   - related artifacts:
+     - `event/insertsendmessage.jsp`, v1.0.1
+     - draft entity class `Sendmessage`, v1.0.1

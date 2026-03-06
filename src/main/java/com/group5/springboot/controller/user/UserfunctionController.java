@@ -23,10 +23,16 @@ import com.group5.springboot.utils.GenerateRandomPassword;
 @Controller
 @SessionAttributes(names = {"loginBean"})
 public class UserfunctionController {
+	final UserService userService;
+	final EmailSenderService emailService;
+
+
 	@Autowired
-	UserService userService;
-	@Autowired EmailSenderService emailService;
-	
+	public UserfunctionController(UserService userService, EmailSenderService emailService) {
+		this.userService = userService;
+		this.emailService = emailService;
+	}
+
 
 	@RejectsUser
 	@GetMapping(path = "/gotoForgetPassword.controller")

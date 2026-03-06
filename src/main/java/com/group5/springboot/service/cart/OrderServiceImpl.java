@@ -12,7 +12,13 @@ import com.group5.springboot.model.cart.OrderInfo;
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
-	@Autowired private OrderDao orderDao;
+	private final OrderDao orderDao;
+
+
+	@Autowired
+	public OrderServiceImpl(OrderDao orderDao) {
+		this.orderDao = orderDao;
+	}
 
 
 	@Override

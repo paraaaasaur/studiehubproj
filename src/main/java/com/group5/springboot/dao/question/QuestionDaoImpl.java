@@ -13,7 +13,13 @@ import com.group5.springboot.model.question.Question_Info;
 
 @Repository
 public class QuestionDaoImpl implements QuestionDao {
-	@Autowired EntityManager em;
+	final EntityManager em;
+
+
+	@Autowired
+	public QuestionDaoImpl(EntityManager em) {
+		this.em = em;
+	}
 
 
 	@Override

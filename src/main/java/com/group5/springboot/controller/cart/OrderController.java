@@ -16,7 +16,13 @@ import com.group5.springboot.model.cart.OrderInfo;
 
 @RestController
 public class OrderController {
-	@Autowired private OrderService orderService;
+	private final OrderService orderService;
+
+
+	@Autowired
+	public OrderController(OrderService orderService) {
+		this.orderService = orderService;
+	}
 
 
 	@RequiresAdmin
@@ -24,13 +30,10 @@ public class OrderController {
 	public Map<String, Object> adminOrderSelectTop100() {
 		return orderService.selectTop100();
 	}
-	
+
 	@RequiresAdmin
 	@PostMapping(value = "/order.controller/adminSearchBar")
-	public Map<String, Object> adminOrderSearchBar(
-			@RequestParam(name = "searchBy") String condition,
-			@RequestParam(name = "searchBar") String value
-	) {
+	public Map<String, Object> adminOrderSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
 		try {
 			if ("o_status".equals(condition) || "u_id".equals(condition) || "u_email".equals(condition) || "ecpay_o_id".equals(condition)) {
 				// (1) 準確查詢
@@ -60,7 +63,7 @@ public class OrderController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("errorMessage", "查詢出錯");
 		map.put("list", new ArrayList<OrderInfo>());

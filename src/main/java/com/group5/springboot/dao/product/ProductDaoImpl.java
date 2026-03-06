@@ -13,8 +13,14 @@ import com.group5.springboot.model.product.ProductInfo;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
-	@Autowired EntityManager em;
-	
+	final EntityManager em;
+
+
+	@Autowired
+	public ProductDaoImpl(EntityManager em) {
+		this.em = em;
+	}
+
 
 	@Override
 	public void save(ProductInfo productInfo,String u_ID) {

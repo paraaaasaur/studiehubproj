@@ -13,7 +13,13 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class ChatDaoImpl implements ChatDao {
-	@Autowired EntityManager em;
+	final EntityManager em;
+
+
+	@Autowired
+	public ChatDaoImpl(EntityManager em) {
+		this.em = em;
+	}
 
 
 	@Override

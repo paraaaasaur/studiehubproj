@@ -28,9 +28,9 @@ import com.group5.springboot.validate.ProductValidator;
 
 @Controller
 public class ProductController {
-	@Autowired ProductService productService;
-	@Autowired ProductValidator prodcutValidator;
-	@Autowired EntityManager em;
+	final ProductService productService;
+	final ProductValidator prodcutValidator;
+	final EntityManager em;
 
 	private final String IMAGE_STORAGE_DIR;
 	private final String VIDEO_STORAGE_DIR;
@@ -39,7 +39,10 @@ public class ProductController {
 
 
 	@Autowired
-	public ProductController(StorageConfigProperties props) {
+	public ProductController(ProductService productService, ProductValidator prodcutValidator, EntityManager em, StorageConfigProperties props) {
+		this.productService = productService;
+		this.prodcutValidator = prodcutValidator;
+		this.em = em;
 		this.IMAGE_STORAGE_DIR = props.getProductImageUploadStorageDir();
 		this.VIDEO_STORAGE_DIR = props.getProductVideoUploadStorageDir();
 		this.IMAGE_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(IMAGE_STORAGE_DIR);

@@ -21,7 +21,13 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class EventDaoImpl implements EventDao {
-	@Autowired EntityManager em;
+	final EntityManager em;
+
+
+	@Autowired
+	public EventDaoImpl(EntityManager em) {
+		this.em = em;
+	}
 
 
 	@Override

@@ -20,10 +20,15 @@ import com.group5.springboot.service.user.UserService;
 @Controller
 @SessionAttributes(names = {"adminId"})
 public class AdminUserController {
+	final UserService userService;
+
+
 	@Autowired
-	UserService userService;
-	
-	
+	public AdminUserController(UserService userService) {
+		this.userService = userService;
+	}
+
+
 	@RequiresAdmin
 	@GetMapping(path = "/gotoAdminIndex.controller")
 	public String adminIndex() {

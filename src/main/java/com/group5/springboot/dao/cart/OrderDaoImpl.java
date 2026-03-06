@@ -24,7 +24,13 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
-	@Autowired private EntityManager em;
+	private final EntityManager em;
+
+
+	@Autowired
+	public OrderDaoImpl(EntityManager em) {
+		this.em = em;
+	}
 
 
 	@Override

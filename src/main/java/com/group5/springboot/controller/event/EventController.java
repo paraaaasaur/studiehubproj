@@ -35,15 +35,17 @@ import com.group5.springboot.validate.EventValidator;
 
 @Controller
 public class EventController {
-	@Autowired EventService EventService;
-	@Autowired EventValidator eventValidator;
+	final EventService EventService;
+	final EventValidator eventValidator;
 
 	private final String IMAGE_STORAGE_DIR;
 	private final String IMAGE_URL_BASE;
 
 
 	@Autowired
-	public EventController(StorageConfigProperties props) {
+	public EventController(EventService eventService, EventValidator eventValidator, StorageConfigProperties props) {
+		this.EventService = eventService;
+		this.eventValidator = eventValidator;
 		IMAGE_STORAGE_DIR = props.getEventImageUploadStorageDir();
 		IMAGE_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(IMAGE_STORAGE_DIR);
 	}

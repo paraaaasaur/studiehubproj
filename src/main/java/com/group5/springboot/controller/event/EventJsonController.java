@@ -24,7 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class EventJsonController {
-	@Autowired EventService eventService;
+	final EventService eventService;
+
+
+	@Autowired
+	public EventJsonController(EventService eventService) {
+		this.eventService = eventService;
+	}
 
 
 	@RequiresAdmin

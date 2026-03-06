@@ -37,18 +37,22 @@ import com.group5.springboot.validate.UserValidator;
 @Controller
 @SessionAttributes(names = "loginBean")
 public class UserController {
-	@Autowired
-	UserService userService;
-	@Autowired User_Info user_info;
-	@Autowired UserValidator userValidator;
-	@Autowired ServletContext context;
-	@Autowired EmailSenderService emailService;
+	final UserService userService;
+	User_Info user_info;
+	final UserValidator userValidator;
+	final ServletContext context;
+	final EmailSenderService emailService;
 
 	private final String AVATAR_STORAGE_DIR;
 
 
 	@Autowired
-	public UserController(StorageConfigProperties props) {
+	public UserController(UserService userService, User_Info userInfo, UserValidator userValidator, ServletContext context, EmailSenderService emailService, StorageConfigProperties props) {
+		this.userService = userService;
+		user_info = userInfo;
+		this.userValidator = userValidator;
+		this.context = context;
+		this.emailService = emailService;
 		this.AVATAR_STORAGE_DIR = props.getUserAvatarUploadStorageDir();
 	}
 

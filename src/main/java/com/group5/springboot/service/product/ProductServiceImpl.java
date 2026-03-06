@@ -14,7 +14,13 @@ import com.group5.springboot.model.product.ProductInfo;
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
-	@Autowired ProductDao productDao;
+	final ProductDao productDao;
+
+
+	@Autowired
+	public ProductServiceImpl(ProductDao productDao) {
+		this.productDao = productDao;
+	}
 
 
 	@Override

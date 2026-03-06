@@ -12,8 +12,15 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-	@Autowired EntityManager em;
-	@Autowired User_Info user_info; // <fixme@1.1.0>
+	final EntityManager em;
+	User_Info user_info; // <fixme@1.1.0>
+
+
+	@Autowired
+	public UserDaoImpl(EntityManager em, User_Info userInfo) {
+		this.em = em;
+		user_info = userInfo;
+	}
 
 
 	@Override

@@ -14,7 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ProductResultController {
-	@Autowired ProductService productService;
+	final ProductService productService;
+
+
+	@Autowired
+	public ProductResultController(ProductService productService) {
+		this.productService = productService;
+	}
 
 
 	@GetMapping(value="/findAllProduct", produces = "application/json; charset=UTF-8")

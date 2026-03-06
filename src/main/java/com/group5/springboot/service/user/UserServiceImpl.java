@@ -13,7 +13,13 @@ import com.group5.springboot.model.user.User_Info;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-	@Autowired UserDao userDao;
+	final UserDao userDao;
+
+
+	@Autowired
+	public UserServiceImpl(UserDao userDao) {
+		this.userDao = userDao;
+	}
 
 
 	@Override

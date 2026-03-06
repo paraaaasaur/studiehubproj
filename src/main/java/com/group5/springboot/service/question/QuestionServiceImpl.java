@@ -14,7 +14,13 @@ import com.group5.springboot.model.question.Question_Info;
 @Service
 @Transactional
 public class QuestionServiceImpl implements QuestionService {
-	@Autowired QuestionDao questionDao;
+	final QuestionDao questionDao;
+
+
+	@Autowired
+	public QuestionServiceImpl(QuestionDao questionDao) {
+		this.questionDao = questionDao;
+	}
 
 
 	@Override

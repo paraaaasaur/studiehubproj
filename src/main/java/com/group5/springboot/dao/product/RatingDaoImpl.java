@@ -13,7 +13,13 @@ import com.group5.springboot.model.product.Rating;
 
 @Repository
 public class RatingDaoImpl implements RatingDao {
-	@Autowired EntityManager em;
+	final EntityManager em;
+
+
+	@Autowired
+	public RatingDaoImpl(EntityManager em) {
+		this.em = em;
+	}
 
 
 	@Override

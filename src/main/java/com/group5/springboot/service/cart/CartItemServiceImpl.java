@@ -17,8 +17,15 @@ import com.group5.springboot.model.product.ProductInfo;
 @Service
 @Transactional
 public class CartItemServiceImpl implements CartItemService {
-	@Autowired private CartItemDao cartItemDao;
-	@Autowired private ProductDao productDao;
+	private final CartItemDao cartItemDao;
+	private final ProductDao productDao;
+
+
+	@Autowired
+	public CartItemServiceImpl(CartItemDao cartItemDao, ProductDao productDao) {
+		this.cartItemDao = cartItemDao;
+		this.productDao = productDao;
+	}
 
 
 	@Override

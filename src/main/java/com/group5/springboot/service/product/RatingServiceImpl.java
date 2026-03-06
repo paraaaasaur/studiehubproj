@@ -12,7 +12,13 @@ import com.group5.springboot.model.product.Rating;
 @Service
 @Transactional
 public class RatingServiceImpl implements RatingService {
-	@Autowired RatingDao ratingDao;
+	final RatingDao ratingDao;
+
+
+	@Autowired
+	public RatingServiceImpl(RatingDao ratingDao) {
+		this.ratingDao = ratingDao;
+	}
 
 
 	@Override

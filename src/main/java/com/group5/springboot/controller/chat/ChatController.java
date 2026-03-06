@@ -30,8 +30,15 @@ import com.group5.springboot.validate.ChatValidator;
 @Controller
 @SessionAttributes(names = {"loginBean"})
 public class ChatController {
-	@Autowired ChatService chatService;
-	@Autowired ChatValidator chatValidator;
+	final ChatService chatService;
+	final ChatValidator chatValidator;
+
+
+	@Autowired
+	public ChatController(ChatService chatService, ChatValidator chatValidator) {
+		this.chatService = chatService;
+		this.chatValidator = chatValidator;
+	}
 
 
 	@GetMapping("/goSelectAllChat")

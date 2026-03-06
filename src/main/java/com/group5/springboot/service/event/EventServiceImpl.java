@@ -17,7 +17,13 @@ import com.group5.springboot.model.user.User_Info;
 @Service
 @Transactional
 public class EventServiceImpl implements EventService {
-	@Autowired EventDao EventDao;
+	final EventDao EventDao;
+
+
+	@Autowired
+	public EventServiceImpl(EventDao eventDao) {
+		EventDao = eventDao;
+	}
 
 
 	@Override

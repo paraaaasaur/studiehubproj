@@ -16,7 +16,13 @@ import com.group5.springboot.utils.SystemUtils;
 
 @Controller
 public class RatingController {
-	@Autowired RatingService ratingService;
+	final RatingService ratingService;
+
+
+	@Autowired
+	public RatingController(RatingService ratingService) {
+		this.ratingService = ratingService;
+	}
 
 
 	@GetMapping(value = "/findRatingById", produces = "application/json; charset=UTF-8")

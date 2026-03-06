@@ -31,10 +31,19 @@ import static com.group5.springboot.utils.SystemUtils.getBaseUrl;
 
 @RestController
 public class CartController {
-	@Autowired ProductService productService;
-	@Autowired UserService userService;
-	@Autowired CartItemService cartItemService;
-	@Autowired OrderService orderService;
+	final ProductService productService;
+	final UserService userService;
+	final CartItemService cartItemService;
+	final OrderService orderService;
+
+
+	@Autowired
+	public CartController(ProductService productService, UserService userService, CartItemService cartItemService, OrderService orderService) {
+		this.productService = productService;
+		this.userService = userService;
+		this.cartItemService = cartItemService;
+		this.orderService = orderService;
+	}
 
 
 	@RequiresUser

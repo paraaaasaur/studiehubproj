@@ -22,12 +22,19 @@ import com.group5.springboot.validate.CartValidator;
 
 @Controller
 public class CartViewController {
-	@Autowired private CartItemService cartItemService;
-	@Autowired private CartValidator cartValidator;
+	private final CartItemService cartItemService;
+	private final CartValidator cartValidator;
 	// fixme: literally in-memory db...
 	public static HashMap<String, Object> cartInfoMap = new HashMap<>();
-	
-	
+
+
+	@Autowired
+	public CartViewController(CartItemService cartItemService, CartValidator cartValidator) {
+		this.cartItemService = cartItemService;
+		this.cartValidator = cartValidator;
+	}
+
+
 	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminInsert"})
 	public String toCartAdminInsert(Model model) {

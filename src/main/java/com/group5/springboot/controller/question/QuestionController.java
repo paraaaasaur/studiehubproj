@@ -35,15 +35,18 @@ import com.group5.springboot.validate.QuestionValidator;
 
 @Controller
 public class QuestionController {
-	@Autowired QuestionService questionService;
-	@Autowired ServletContext context;
-	@Autowired QuestionValidator questionValidator;
+	final QuestionService questionService;
+	final ServletContext context;
+	final QuestionValidator questionValidator;
 
 	private final String IMAGE_AUDIO_STORAGE_DIR;
 
 
 	@Autowired
-	public QuestionController(StorageConfigProperties props) {
+	public QuestionController(QuestionService questionService, ServletContext context, QuestionValidator questionValidator, StorageConfigProperties props) {
+		this.questionService = questionService;
+		this.context = context;
+		this.questionValidator = questionValidator;
 		IMAGE_AUDIO_STORAGE_DIR = props.getQuestionAudioAndImageUploadStorageDir();
 	}
 

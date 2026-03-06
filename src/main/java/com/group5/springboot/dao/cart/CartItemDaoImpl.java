@@ -21,7 +21,13 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class CartItemDaoImpl implements CartItemDao {
-	@Autowired private EntityManager em;
+	private final EntityManager em;
+
+
+	@Autowired
+	public CartItemDaoImpl(EntityManager em) {
+		this.em = em;
+	}
 
 
 	@Override
@@ -43,7 +49,7 @@ public class CartItemDaoImpl implements CartItemDao {
 				.setParameter("uid", u_id)
 				.getResultList().size() != 0)? false : true;
 	}
-	
+
 	@Override
 	public Map<String, Object> selectByUserId(String u_id) {
 		Map<String, Object> map = new HashMap<>();
@@ -93,7 +99,7 @@ public class CartItemDaoImpl implements CartItemDao {
 		Object parsedValue = (isInteger)? Integer.parseInt(value) : value;
 		TypedQuery<CartItem> query = em.createQuery("FROM CartItem cart WHERE " + condition + " = :value", CartItem.class);
 		query.setParameter("value", parsedValue);
-		
+
 		List<CartItem> resultList = query.getResultList();
 
 		map.put("list", resultList);
@@ -137,11 +143,11 @@ public class CartItemDaoImpl implements CartItemDao {
 
 		return map;
 	}
-	
+
 	@Override
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		Map<String, Object> map = new HashMap<>();
-		
+
 		ProductInfo pBean = em.find(ProductInfo.class, p_id);
 		if(pBean == null) {
 			String errorMessage = "********** 新增失敗：以 p_id (" + p_id + ") 在資料庫中找不到對應的 Product 資料。 **********";
@@ -155,7 +161,7 @@ public class CartItemDaoImpl implements CartItemDao {
 			map.put("errorMessage", errorMessage);
 			return map;
 		}
-		
+
 		CartItem cartBean = new CartItem();
 		cartBean.setU_firstname(uBean.getU_firstname());
 		cartBean.setU_lastname(uBean.getU_lastname());
@@ -173,7 +179,7 @@ public class CartItemDaoImpl implements CartItemDao {
 	@Override
 	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
 		CartItem cartBean = em.find(CartItem.class, cart_id);
-		
+
 		if (cartBean != null) {
 			User_Info uBean = em.find(User_Info.class, newU_id);
 			if(uBean == null) {
@@ -192,13 +198,13 @@ public class CartItemDaoImpl implements CartItemDao {
 			cartBean.setUser_Info(uBean);
 			cartBean.setProductInfo(pBean);
 			em.merge(cartBean);
-			
+
 			return 1;
 		} else {
 			return -1;
 		}
 	}
-	
+
 	@Override
 	public boolean deleteByUserId(String u_id) {
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid");
@@ -206,7 +212,7 @@ public class CartItemDaoImpl implements CartItemDao {
 		int deletedNum = query.executeUpdate();
 		return deletedNum != 0;
 	}
-	
+
 	@Override
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
 		Query query = em.createQuery("DELETE CartItem WHERE u_id = :uid AND p_id = :pid");

@@ -4,9 +4,9 @@ import com.group5.springboot.dto.cart.ECPayPaymentResult;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.cart.ICartItemService;
+import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.cart.OrderService;
-import com.group5.springboot.service.user.IUserService;
+import com.group5.springboot.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +23,12 @@ import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VAL
 @Controller
 public class ECPayController {
 	private final OrderService orderService;
-	private final IUserService userService;
-	private final ICartItemService cartItemService;
+	private final UserService userService;
+	private final CartItemService cartItemService;
 
 
 	@Autowired
-	public ECPayController(OrderService orderService, IUserService userService, ICartItemService cartItemService) {
+	public ECPayController(OrderService orderService, UserService userService, CartItemService cartItemService) {
 		this.orderService = orderService;
 		this.userService = userService;
 		this.cartItemService = cartItemService;

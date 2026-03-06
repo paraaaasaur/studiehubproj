@@ -16,11 +16,12 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.user.IUserService;
+import com.group5.springboot.service.user.UserService;
 @Controller
 @SessionAttributes(names = {"adminId"})
 public class AdminUserController {
-	@Autowired IUserService iUserService;
+	@Autowired
+	UserService userService;
 	
 	
 	@RequiresAdmin
@@ -74,7 +75,7 @@ public class AdminUserController {
 	@GetMapping(path = "/showAllUser.controller", produces = {"application/json"})
 	@ResponseBody
 	public List<User_Info> gotoFindAllUserPage() {
-		List<User_Info> users = iUserService.showAllUsers();
+		List<User_Info> users = userService.showAllUsers();
 		return users;
 	}
 }

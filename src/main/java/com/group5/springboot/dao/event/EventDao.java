@@ -1,18 +1,12 @@
 package com.group5.springboot.dao.event;
 
-
-
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.stereotype.Repository;
 
 import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.user.User_Info;
 
-@Repository
-//增刪改茶的接口
 public interface EventDao {
 	void saveEvent(EventInfo eventinfo);
 

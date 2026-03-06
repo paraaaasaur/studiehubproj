@@ -2,129 +2,27 @@ package com.group5.springboot.dao.user;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.group5.springboot.model.user.User_Info;
 
 @Repository
-public class UserDao implements IUserDao {
-	@Autowired EntityManager em;
-	@Autowired User_Info user_info; // <fixme@1.1.0>
+public interface UserDao {
 
+	String checkUserId(String u_id);
 
-	@Override
-	public String checkUserId(String u_id) {
-		try {
-			User_Info user_Info = em.find(User_Info.class, u_id);
-			if (user_Info == null) {
-				return "";
-			} else {
-				return "帳號已存在";
-			}
-		} catch (Exception e) {
-			return "Error，請再試一次!";
-		}
-	}
-	
-	@Override
-	public int saveUser(User_Info user_Info) {
-		int n = 0;
-		boolean exist = false;
+	int saveUser(User_Info user_Info);
 
-		User_Info ckResult = em.find(User_Info.class, user_Info.getU_id());
-		if (!(ckResult == null) && !(ckResult.getU_id().length() == 0)) {
-			exist = true;
-		}
+	User_Info login(User_Info user_Info);
 
-		if(exist) {
-			return -1;
-		}
+	List<User_Info> showAllUsers();
 
-		try {
-			em.persist(user_Info);
-			n = 1;
-		} catch (Exception e) {
-			n = -2;
-		}
-		return n;
-	}
+	User_Info getSingleUser(String u_id);
 
-	@Override
-	public User_Info login(User_Info user_Info) {
-		user_info = null;
-		String hql = "from User_Info where u_id=:id and u_psw=:psw";
-		try {
-			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)
-					.setParameter("id", user_Info.getU_id())
-					.setParameter("psw", user_Info.getU_psw());
-			User_Info loginBean = query.uniqueResult();
-			if (loginBean != null && !(loginBean.getU_id().length() == 0)) {
-				user_info = loginBean;
-			} else {
-				user_info = null;
-			}
-		} catch (Exception e) {
-			// do nothing
-		}
-		return user_info;
-	}
-	
-	@Override
-	public List<User_Info> showAllUsers() {
-		String hql = "from User_Info";
-		List<User_Info> list = em.createQuery(hql).getResultList();
-		return list;
-	}
+	void updateUser(User_Info user_Info);
 
-	@Override
-	public User_Info getSingleUser(String u_id) {
-		return em.find(User_Info.class, u_id);
-	}
+	User_Info getUserInfoForForgetPassword(String userEmail);
 
-	@Override
-	public void updateUser(User_Info user_Info) {
-		em.merge(user_Info);
-	}
-	
-	@Override
-	public User_Info getUserInfoForForgetPassword(String userEmail) {
-		user_info = null;
-		String hql = "from User_Info where u_email=:email";
-		try {
-			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)
-					.setParameter("email", userEmail);
-			User_Info result = query.uniqueResult();
-			if (result != null && !(result.getU_id().length() == 0)) {
-				user_info = result;
-			} else {
-				user_info = null;
-			}
-		} catch (Exception e) {
-			// do nothing
-		}
+	boolean setNewPasswordForForgetPsw(String email, String newPassword);
 
-		return user_info;
-	}
-
-	@Override
-	public boolean setNewPasswordForForgetPsw(String email, String newPassword) {
-		boolean result = false;
-		try {
-			javax.persistence.Query query = em.createNativeQuery("UPDATE user_info SET u_psw = :password WHERE u_email = :inputEmail", User_Info.class);
-			query.setParameter("password", newPassword);
-			query.setParameter("inputEmail", email);
-			int executeUpdate = query.executeUpdate();
-			if (executeUpdate > 0) {
-				result = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return result;
-	}
 }

@@ -12,9 +12,8 @@ import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.model.user.User_Info;
 
 @Repository
-public class ChatDaoImpl implements ChatDao{
-	@Autowired
-	EntityManager em;
+public class ChatDaoImpl implements ChatDao {
+	@Autowired EntityManager em;
 
 
 	@Override

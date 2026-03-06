@@ -2,12 +2,9 @@ package com.group5.springboot.service.chat;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 
-@Service
 public interface ChatService {
 	void insertChat(Chat_Info chat_Info);
 	

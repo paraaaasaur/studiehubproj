@@ -11,6 +11,7 @@ import java.util.Map;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.service.event.EventService;
 import com.group5.springboot.utils.ResourceLocationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,12 +31,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.event.EventServiceImpl;
 import com.group5.springboot.validate.EventValidator;
 
 @Controller
 public class EventController {
-	@Autowired EventServiceImpl EventService;
+	@Autowired EventService EventService;
 	@Autowired EventValidator eventValidator;
 
 	private final String IMAGE_STORAGE_DIR;

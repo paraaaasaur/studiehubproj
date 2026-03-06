@@ -14,7 +14,7 @@ import com.group5.springboot.model.chat.Chat_Reply;
 
 @Service
 @Transactional
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
 	@Autowired ChatDao chatDao;
 
 

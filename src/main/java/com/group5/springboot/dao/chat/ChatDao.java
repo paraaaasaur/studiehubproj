@@ -2,12 +2,9 @@ package com.group5.springboot.dao.chat;
 
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
-
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 
-@Repository
 public interface ChatDao {
 	void insertChat(Chat_Info chat);
 	

@@ -11,6 +11,10 @@ import java.util.Map;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
+import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.service.cart.OrderService;
+import com.group5.springboot.service.product.ProductService;
+import com.group5.springboot.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,10 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.cart.CartItemService;
-import com.group5.springboot.service.cart.OrderService;
-import com.group5.springboot.service.product.ProductServiceImpl;
-import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
 import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
 
@@ -31,7 +31,7 @@ import static com.group5.springboot.utils.SystemUtils.getBaseUrl;
 
 @RestController
 public class CartController {
-	@Autowired ProductServiceImpl productService;
+	@Autowired ProductService productService;
 	@Autowired UserService userService;
 	@Autowired CartItemService cartItemService;
 	@Autowired OrderService orderService;
@@ -188,7 +188,7 @@ public class CartController {
 	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
 		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
 		// ❗ 交易失敗的時候這會變得不能用第二次
-		Integer latestOid = orderService.getCurrentIdSeed() + 10000 + (int)Math.ceil(Math.random()*60000); 
+		Integer latestOid = orderService.getCurrentIdSeed() + 10000 + (int)Math.ceil(Math.random() * 60000);
 		String thisMoment = new SimpleDateFormat("yyMMdd").format(new Date());
 		String myMerchantTradeNo = String.format("studiehub%s%05d", thisMoment, latestOid);
 		// 【產生 MerchantTradeDate String(20)】

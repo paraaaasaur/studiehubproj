@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.user.IUserService;
+import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.EmailSenderService;
 import com.group5.springboot.utils.GenerateRandomPassword;
 
 @Controller
 @SessionAttributes(names = {"loginBean"})
 public class UserfunctionController {
-	@Autowired IUserService iUserService;
+	@Autowired
+	UserService userService;
 	@Autowired EmailSenderService emailService;
 	
 
@@ -59,14 +60,14 @@ public class UserfunctionController {
 	public Map<String, String> resetPasswordAndSendEmail(@RequestBody User_Info userInfo) {
 		Map<String, String> maps = new HashMap<>();
 		String u_email = userInfo.getU_email();
-		User_Info searchResult = iUserService.getUserInfoForForgetPassword(u_email);
+		User_Info searchResult = userService.getUserInfoForForgetPassword(u_email);
 		
 		if(searchResult == null) {
 			maps.put("fail", "此信箱尚未註冊!");
 			return maps;
 		}else {
 		String rdmPassword = GenerateRandomPassword.generatePasswordProcess();
-		iUserService.setNewPasswordForForgetPsw(u_email, rdmPassword);
+		userService.setNewPasswordForForgetPsw(u_email, rdmPassword);
 		String body = "用戶: " + searchResult.getU_id() + " 您好，新的密碼為:" + rdmPassword + "，請使用這組密碼登入並盡快更改密碼!";
 		emailService.sendSimpleEmail(u_email,
 									 body,

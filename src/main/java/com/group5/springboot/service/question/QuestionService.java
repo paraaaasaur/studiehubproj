@@ -2,11 +2,8 @@ package com.group5.springboot.service.question;
 
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
 import com.group5.springboot.model.question.Question_Info;
 
-@Service
 public interface QuestionService {
 	void insertQuestion(Question_Info question_Info) ;
 	

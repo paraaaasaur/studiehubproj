@@ -2,35 +2,39 @@ package com.group5.springboot.service.product;
 
 import java.util.*;
 
+import com.group5.springboot.dao.product.ProductDao;
 import com.group5.springboot.dto.product.ProductSearchCriteria;
 import com.group5.springboot.model.product.Rating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.group5.springboot.dao.product.ProductDaoImpl;
 import com.group5.springboot.model.product.ProductInfo;
 
 @Service
 @Transactional
-public class ProductServiceImpl {
-	@Autowired ProductDaoImpl productDao;
+public class ProductServiceImpl implements ProductService {
+	@Autowired ProductDao productDao;
 
 
+	@Override
 	public void save(ProductInfo productInfo,String u_ID) {
 		productDao.save(productInfo,u_ID);
 	}
 
+	@Override
 	public Map<String, Object> findAll(){
 		return productDao.findAll();
 	}
 
+	@Override
 	public List<ProductInfo> guestSearch(ProductSearchCriteria criteria, boolean includeRating) {
 		criteria.setApproved(true);
 
 		return productDao.search(criteria, includeRating);
 	}
 
+	@Override
 	public List<ProductInfo> adminSearch(ProductSearchCriteria criteria, boolean includeRating) {
 		return productDao.search(criteria, includeRating);
 	}
@@ -44,6 +48,7 @@ public class ProductServiceImpl {
 	 * ({@link Rating} Set) are not specified to be fetched for their parent entity
 	 * ({@link ProductInfo}), they stay lazy and accesses are forbidden by Hibernate
 	 **/
+	@Override
 	public int getAverageRatedIndex(ProductInfo product) {
 		double averageRatedIndex = product.getP_Rating().stream()
 				.map(Rating::getRatedIndex)
@@ -54,18 +59,22 @@ public class ProductServiceImpl {
 		return (int) Math.floor(averageRatedIndex);
 	}
 
+	@Override
 	public ProductInfo findByProductID(Integer p_ID) {
 		return productDao.findByProductID(p_ID);
 	}
 
+	@Override
 	public void update(ProductInfo productInfo) {
 		productDao.update(productInfo);
 	}
 
+	@Override
 	public void deleteProduct(Integer p_ID) {
 		productDao.deleteProduct(p_ID);
 	}
 
+	@Override
 	public Map<String, Object> pendingAccess() {
 		return productDao.pendingAccess();
 	}

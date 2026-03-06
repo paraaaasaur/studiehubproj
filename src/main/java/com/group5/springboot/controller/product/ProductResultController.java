@@ -6,16 +6,15 @@ import java.util.Map;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.dto.product.ProductSearchCriteria;
 import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.group5.springboot.service.product.ProductServiceImpl;
-
 @Controller
 public class ProductResultController {
-	@Autowired ProductServiceImpl productService;
+	@Autowired ProductService productService;
 
 
 	@GetMapping(value="/findAllProduct", produces = "application/json; charset=UTF-8")

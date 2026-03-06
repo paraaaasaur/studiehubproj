@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.user.IUserService;
+import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.EmailSenderService;
 import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
@@ -37,7 +37,8 @@ import com.group5.springboot.validate.UserValidator;
 @Controller
 @SessionAttributes(names = "loginBean")
 public class UserController {
-	@Autowired IUserService iUserService;
+	@Autowired
+	UserService userService;
 	@Autowired User_Info user_info;
 	@Autowired UserValidator userValidator;
 	@Autowired ServletContext context;
@@ -83,7 +84,7 @@ public class UserController {
 		Map<String, Object> map = new HashMap<>();
 		user_info = null;
 		try {
-			user_info = iUserService.login(user_Info);
+			user_info = userService.login(user_Info);
 			if(user_info != null && user_info.getU_id().length()>0) {
 				map.put("success", "登入成功");
 				map.put("loginBean", user_info);
@@ -102,7 +103,7 @@ public class UserController {
 	@ResponseBody
 	public Map<String, String> checkUserId(@RequestParam String u_id){
 		Map<String, String> map = new HashMap<>();
-		String user_id = iUserService.checkUserId(u_id);
+		String user_id = userService.checkUserId(u_id);
 		map.put("u_id", user_id);
 		return map;
 	}
@@ -124,7 +125,7 @@ public class UserController {
 		
 		int n = 0;
 		try {
-			n = iUserService.saveUser(user_Info);
+			n = userService.saveUser(user_Info);
 			if(n == 1) {
 				map.put("success", "註冊成功");
 				//寄成功註冊的信件
@@ -154,7 +155,7 @@ public class UserController {
 			return "redirect:/gotoChangePassword.controller";
 		}
 		
-		iUserService.updateUser(user_Info);
+		userService.updateUser(user_Info);
 		updateLoginBean(model, status);
 		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
 		return "redirect:/";
@@ -202,7 +203,7 @@ public class UserController {
 			}
 		}
 		
-		iUserService.updateUser(user_Info);
+		userService.updateUser(user_Info);
 		updateLoginBean(model, status);
 		ra.addFlashAttribute("successMessage", "修改成功");
 		return "redirect:/gotoUpdateUserinfo.controller";
@@ -212,7 +213,7 @@ public class UserController {
 	// ==================== helpers ====================
 	public void updateLoginBean(Model model, SessionStatus status) {
 		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
-		User_Info updateBean = iUserService.getSingleUser(loginBean.getU_id());
+		User_Info updateBean = userService.getSingleUser(loginBean.getU_id());
 		model.addAttribute("loginBean", updateBean);
 	}
 
@@ -223,7 +224,7 @@ public class UserController {
 		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
 		User_Info userInfo = null;
 		try {
-			userInfo = iUserService.getSingleUser(loginBean.getU_id());
+			userInfo = userService.getSingleUser(loginBean.getU_id());
 		} catch (Exception e) {
 			userInfo = new User_Info();
 		}

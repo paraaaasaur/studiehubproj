@@ -3,6 +3,7 @@ package com.group5.springboot.controller.product;
 import java.sql.Clob;
 import java.util.Map;
 
+import com.group5.springboot.service.product.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.group5.springboot.model.product.Rating;
-import com.group5.springboot.service.product.RatingServiceImpl;
 import com.group5.springboot.utils.SystemUtils;
 
 @Controller
 public class RatingController {
-	@Autowired RatingServiceImpl ratingService;
+	@Autowired RatingService ratingService;
 
 
 	@GetMapping(value = "/findRatingById", produces = "application/json; charset=UTF-8")

@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## [1.0.2] — Big Bugfix & Cleanup, 2026-03-01 ~ 2026-03-06
+A mild overall files/code organization for the upcoming 1.1.0 refactoring.
+Main scopes are endpoints and views, followed by service/dao layers, and 
+then other project items, e.g., data, resources, config, libraries, trivial files.
+
+### Removed
+- Direct removal: unused, duplicate, trash, toy code/files
+- Documented removal: draft features, improper features, abandoned features from design choices
+- Spammed comments and logging
+- Dependency `spring-boot-devtools`
+
+### Fixed
+- Minor logic or structural bugs on endpoints and views, plus related changes
+
+### Added
+- Trivial items
+
+### Changed
+- Suspended search bar feature in the view `question/verifyQuestion` that requires an endpoint addition in the upcoming version  
+
+---
+
 ## [1.0.1] — Security Fix, 2026-01-26 ~ 2026-02-28
 > The effective date would be 2026-02-21, as the author had been refactoring 
 > a single view file `examMixQuestion.jsp` for an irrelevant topic since then😅

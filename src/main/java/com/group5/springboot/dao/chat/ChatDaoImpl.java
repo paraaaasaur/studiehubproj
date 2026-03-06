@@ -13,15 +13,9 @@ import com.group5.springboot.model.user.User_Info;
 
 @Repository
 public class ChatDaoImpl implements ChatDao{
-	
 	@Autowired
 	EntityManager em;
-	
-	@Autowired
-	Chat_Info chat_Info;
-	
-	@Autowired
-	Chat_Reply chat_Reply;
+
 
 	@Override
 	public void insertChat(Chat_Info chat_Info) {
@@ -36,35 +30,26 @@ public class ChatDaoImpl implements ChatDao{
 	}
 
 	@Override
-	public void updateChat(Chat_Info chat_Info) {
-		em.merge(chat_Info);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
 	public List<Chat_Info> findAllChat() {
-		String sql = "from Chat_Info";
-		List<Chat_Info> chat_Info = em.createQuery(sql).getResultList();
+		String hql = "from Chat_Info";
+		List<Chat_Info> chat_Info = em.createQuery(hql).getResultList();
 		return chat_Info;
 	}
 
 	@Override
 	public Chat_Info selectChatById(int c_ID) {
-		Chat_Info chat_Info = em.find(Chat_Info.class, c_ID);
-		return chat_Info;
+		return em.find(Chat_Info.class, c_ID);
 	}
 	
 	@Override
 	public Chat_Reply selectChatReplyById(int c_ID) {
-		Chat_Reply chat_Reply = em.find(Chat_Reply.class, c_ID);
-		return chat_Reply;
+		return em.find(Chat_Reply.class, c_ID);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Chat_Reply> findAllChatReply(int c_IDr) {
-		String sql = "from Chat_Reply c left join User_Info u on c.u_ID = u.u_id where c.c_IDr = " + c_IDr;
-		List<Chat_Reply> chat_Reply = em.createQuery(sql).getResultList();
+		String hql = "from Chat_Reply c left join User_Info u on c.u_ID = u.u_id where c.c_IDr = " + c_IDr;
+		List<Chat_Reply> chat_Reply = em.createQuery(hql).getResultList();
 		return chat_Reply;
 	}
 	
@@ -109,5 +94,4 @@ public class ChatDaoImpl implements ChatDao{
 		crBean.setC_Conts(chat_Reply.getC_Conts());
 		em.merge(crBean);
 	}
-
 }

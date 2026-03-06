@@ -9,27 +9,23 @@ import com.group5.springboot.model.chat.Chat_Reply;
 
 @Repository
 public interface ChatDao {
+	void insertChat(Chat_Info chat);
 	
-	public void insertChat(Chat_Info chat);
+    void deleteChat(int c_ID);
 	
-    public void deleteChat(int c_ID);
+	List<Chat_Info> findAllChat();
 	
-    public void updateChat(Chat_Info chat);
+	Chat_Info selectChatById(int c_ID);
 	
-	public List<Chat_Info> findAllChat();
+	List<Chat_Reply> findAllChatReply(int c_IDr);
 	
-	public Chat_Info selectChatById(int c_ID);
+	Chat_Reply selectChatReplyById(int c_ID);
 	
-	public List<Chat_Reply> findAllChatReply(int c_IDr);
+	void insertFirstChatReply(Chat_Info chat);
 	
-	public Chat_Reply selectChatReplyById(int c_ID);
+	void insertChatReply(Chat_Reply chat);
 	
-	public void insertFirstChatReply(Chat_Info chat);
+	void deleteChatReply(int c_IDr);
 	
-	public void insertChatReply(Chat_Reply chat);
-	
-	public void deleteChatReply(int c_IDr);
-	
-	public void updateChatReply(Chat_Reply chat);
-
+	void updateChatReply(Chat_Reply chat);
 }

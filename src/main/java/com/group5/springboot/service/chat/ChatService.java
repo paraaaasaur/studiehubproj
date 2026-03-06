@@ -9,28 +9,25 @@ import com.group5.springboot.model.chat.Chat_Reply;
 
 @Service
 public interface ChatService {
+	void insertChat(Chat_Info chat_Info);
 	
-	public void insertChat(Chat_Info chat_Info);
+    void deleteChat(int c_ID);
 	
-    public void deleteChat(int c_ID);
+	List<Chat_Info> findAllChat();
 	
-    public void updateChat(Chat_Info chat_Info);
+	Chat_Info selectChatById(int c_ID);
 	
-	public List<Chat_Info> findAllChat();
+	Chat_Reply selectChatReplyById(int c_ID);
 	
-	public Chat_Info selectChatById(int c_ID);
+	List<Chat_Reply> findAllChatReply(int c_IDr);
 	
-	public Chat_Reply selectChatReplyById(int c_ID);
+	void insertFirstChatReply(Chat_Info chat_Info);
 	
-	public List<Chat_Reply> findAllChatReply(int c_IDr);
+	void insertChatReply(Chat_Reply chat_Reply);
 	
-	public void insertFirstChatReply(Chat_Info chat_Info);
+	void deleteChatReply(int c_IDr);
 	
-	public void insertChatReply(Chat_Reply chat_Reply);
-	
-	public void deleteChatReply(int c_IDr);
-	
-	public void updateChatReply(Chat_Reply chat_Reply);
+	void updateChatReply(Chat_Reply chat_Reply);
 
 	/**
 	 * Try to remove potential risk for XSS attack embedded in the HTML content

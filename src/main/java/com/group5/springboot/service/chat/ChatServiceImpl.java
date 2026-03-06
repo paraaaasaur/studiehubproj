@@ -15,10 +15,9 @@ import com.group5.springboot.model.chat.Chat_Reply;
 @Service
 @Transactional
 public class ChatServiceImpl implements ChatService{
+	@Autowired ChatDao chatDao;
 
-	@Autowired
-	ChatDao chatDao;
-	
+
 	@Override
 	public void insertChat(Chat_Info chat_Info) {
 		chatDao.insertChat(chat_Info);
@@ -27,11 +26,6 @@ public class ChatServiceImpl implements ChatService{
 	@Override
 	public void deleteChat(int c_ID) {
 		chatDao.deleteChat(c_ID);
-	}
-
-	@Override
-	public void updateChat(Chat_Info chat_Info) {
-		chatDao.updateChat(chat_Info);
 	}
 
 	@Override

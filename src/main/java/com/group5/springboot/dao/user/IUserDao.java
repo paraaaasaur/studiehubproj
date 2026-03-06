@@ -9,32 +9,20 @@ import com.group5.springboot.model.user.User_Info;
 @Repository
 public interface IUserDao {
 
-	// 檢查帳號是否可用
-	public String checkUserId(String u_id);
+	String checkUserId(String u_id);
 
-	// 會員註冊
-	public int saveUser(User_Info user_Info);
+	int saveUser(User_Info user_Info);
 
-	// 檢查u_id是否存在
-	public boolean isUserExist(User_Info user_Info);
+	User_Info login(User_Info user_Info);
 
-	// 登入
-	public User_Info login(User_Info user_Info);
+	List<User_Info> showAllUsers();
 
-	// 查看全部會員資料
-	public List<User_Info> showAllUsers();
+	User_Info getSingleUser(String u_id);
 
-	// 讀取單筆會員資料(全部會員資料到刪除單筆資料)
-	public User_Info getSingleUser(String u_id);
+	void updateUser(User_Info user_Info);
 
-	// 刪除會員資料
-	public void deleteUserById(String u_id);
+	User_Info getUserInfoForForgetPassword(String userEmail);
 
-	// 修改會員資料
-	public void updateUser(User_Info user_Info);
-
-	public User_Info getUserInfoForForgetPassword(String userEmail);
-
-	public boolean setNewPasswordForForgetPsw(String email, String newPassword);
+	boolean setNewPasswordForForgetPsw(String email, String newPassword);
 
 }

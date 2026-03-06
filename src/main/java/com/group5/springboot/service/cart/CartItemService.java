@@ -17,59 +17,51 @@ import com.group5.springboot.model.product.ProductInfo;
 @Service
 @Transactional
 public class CartItemService implements ICartItemService {
-	@Autowired // SDI✔
-	private CartItemDao cartItemDao;
-	@Autowired // SDI✔
-	private ProductDaoImpl productDao;
-	
+	@Autowired private CartItemDao cartItemDao;
+	@Autowired private ProductDaoImpl productDao;
+
+
+	@Override
 	public Map<String, Object> select(Integer cart_id) {
 		return cartItemDao.select(cart_id);
 	}
-	
+
 	@Override
-	public Map<String, Object> selectByUserId(String u_id) {
-		return cartItemDao.selectByUserId(u_id);
-	}
-	
 	public Map<String, Object> selectTop100() {
 		return cartItemDao.selectTop100();
 	}
-	
-	/**********************************************************************************************************/
-	
-	
+
+	@Override
 	public Map<String, Object> selectLikeOperator(String condition, String value) {
 		return cartItemDao.selectLikeOperator(condition, value);
 	}
-	
-	/**
-	 * 用來查某商品是不是已經存在於購物車裡了。<br>
-	 * true > 尚未存在 = 可以加入購物車 <br>
-	 * false > 已存在 = 不允許加入購物車 <br>
-	 **/
+
+	@Override
 	public boolean selectByProductId(Integer p_id, String u_id) {
 		return cartItemDao.selectByPidUid(p_id, u_id);
 	}
-	
+
+	@Override
 	public Map<String, Object> selectBy(String condition, String value) {
 		return cartItemDao.selectBy(condition, value);
 	}
-	
+
+	@Override
 	public Map<String, Object> selectWithTimeRange(String startTime, String endTime) {
 		return cartItemDao.selectWithTimeRange(startTime, endTime);
 	}
-	
+
+	@Override
 	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
 		return cartItemDao.selectWithNumberRange(condition, minValue, maxValue);
-	}	
-	
-	/**********************************************************************************************************/
+	}
 	
 	@Override
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		return cartItemDao.insert(p_id, u_id);
 	}
-	
+
+	@Override
 	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
 		return cartItemDao.update(newU_id, newP_id, cart_id);
 	}
@@ -83,28 +75,26 @@ public class CartItemService implements ICartItemService {
 	public boolean deleteASingleProduct(String u_id, Integer p_id) {
 		return cartItemDao.deleteASingleProduct(u_id, p_id);
 	}
-	
+
+	@Override
 	public boolean deleteASingleProduct(Integer cart_id) {
 		return cartItemDao.deleteASingleProduct(cart_id);
 	}
-	
+
+	@Override
 	public Integer delete(Integer[] cart_ids) {
 		return cartItemDao.delete(cart_ids);
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	@Override
 	public List<Map<String, Object>> getCart(String u_id) {
 		List<CartItem> cartItems = (List<CartItem>) cartItemDao.selectByUserId(u_id).get("cartItems");
-		// 測試用
-//		if(cartItems.size() == 0 || cartItems == null) {
-//			refillCart(u_id);
-//		}
-		//
+
 		List<Map<String, Object>> cart = new ArrayList<>();
 		
-		for(CartItem cartItem : cartItems) {
+		for (CartItem cartItem : cartItems) {
 			ProductInfo pBean = productDao.findByProductID(cartItem.getP_id());
-			Map<String, Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<>();
 			
 			map.put("cart_id", cartItem.getCart_id());
 			map.put("p_name", pBean.getP_Name());
@@ -117,18 +107,4 @@ public class CartItemService implements ICartItemService {
 		}
 		return cart;
 	}
-
-	
-	// 測試用，插入p_id = 1 和 2的商品進購物車
-	private void refillCart(String u_id) {
-		for(int i = 0; i <= 5; i++) {
-			try {
-				cartItemDao.insert(i, u_id);
-			} catch (Exception e) {
-				continue;
-			}
-		}
-		return;
-	}
-
 }

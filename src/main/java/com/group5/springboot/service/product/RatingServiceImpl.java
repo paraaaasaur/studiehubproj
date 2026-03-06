@@ -12,16 +12,11 @@ import com.group5.springboot.model.product.Rating;
 @Service
 @Transactional
 public class RatingServiceImpl {
+	@Autowired RatingDao ratingDao;
 
-	@Autowired
-	RatingDao ratingDao;
-	
+
 	public void saveRating(Rating rating) {
 		ratingDao.saveRating(rating);
-	}
-	
-	public Map<String, Object> findAllRating(){
-		return ratingDao.findAllRating();
 	}
 	
 	public Map<String, Object> findRatingByProductID(Integer p_ID){

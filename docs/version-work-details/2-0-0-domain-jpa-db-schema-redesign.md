@@ -28,6 +28,12 @@
 
 
 ## Ideas
+- Remove the context path `/studiehub` to align url bases for the frontend and the backend at root
+  - replace it with using nginx reverse proxy
+  - remove one coupling that server has to hack in views via model attributes
+- Purist clean architecture for learning purpose?
+  - aka full separation of DTO <-> domain model <-> persistence entity
+  - right now, I'm just planning: DTO <-> domain model/persistence entity
 - Take ownership into consideration when making columns
   - AKA who can CRUD this resource, and why?
 - JPA -> schema truth; db table -> compatible & fallback net

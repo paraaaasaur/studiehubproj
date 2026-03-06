@@ -27,6 +27,12 @@
   - stop revealing email existence to respect privacy
   - treat existence and non-existence both as successful requests (status 200)
   - the JSON message should say, "An email is sent to the address if it exists" or similar
+- A safe-to-expose `CurrentUser` DTO stored in session
+  - with spring security, it's often quickly derived from a `principal` (from `Authentication` (from `SecurityContext`))
+  - it contains things like
+    - user id
+    - user name
+    - roles
 
 ## Product
 - Rating: 

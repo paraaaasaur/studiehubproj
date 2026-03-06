@@ -53,7 +53,7 @@ Introduce proper exception handling mechanisms
 - Introduce Logger at different levels in place of `System.out.println`
 
 
-## [2.0.0]
+## [2.0.0] - redesign
 
 ### Common
 - Add: DTO records, Mapping framework (e.g., MapStruct)

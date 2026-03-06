@@ -2,19 +2,13 @@ package com.group5.springboot.model.user;
 
 import java.sql.Blob;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,7 +16,6 @@ import com.group5.springboot.utils.SystemUtils;
 
 @Entity
 @Table(name = "user_info")
-@Component("user_info")
 public class User_Info {
 
 	@Id

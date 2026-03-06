@@ -13,13 +13,11 @@ import com.group5.springboot.model.user.User_Info;
 @Repository
 public class UserDaoImpl implements UserDao {
 	final EntityManager em;
-	User_Info user_info; // <fixme@1.1.0>
 
 
 	@Autowired
-	public UserDaoImpl(EntityManager em, User_Info userInfo) {
+	public UserDaoImpl(EntityManager em) {
 		this.em = em;
-		user_info = userInfo;
 	}
 
 
@@ -62,7 +60,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public User_Info login(User_Info user_Info) {
-		user_info = null;
+		User_Info user_info = null;
 		String hql = "from User_Info where u_id=:id and u_psw=:psw";
 		try {
 			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)
@@ -99,7 +97,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	public User_Info getUserInfoForForgetPassword(String userEmail) {
-		user_info = null;
+		User_Info user_info = null;
 		String hql = "from User_Info where u_email=:email";
 		try {
 			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)

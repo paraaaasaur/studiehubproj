@@ -20,7 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -32,7 +31,6 @@ import com.group5.springboot.model.user.User_Info;
 
 @Entity
 @Table(name = "ProductInfo")
-@Component
 public class ProductInfo {
 	
 	

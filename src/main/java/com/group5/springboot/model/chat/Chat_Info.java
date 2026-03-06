@@ -10,14 +10,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.model.user.User_Info;
 
 @Entity
 @Table(name = "chat_Info")
-@Component
 public class Chat_Info {
 	
 	@Id

@@ -10,15 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
 
 // ❗ 我是希望有ON CASCADE SET NULL 但JPA好像沒有建置這功能
 @Entity @Table(name = "cart_item")
-@Component
 public class CartItem {
 	
 	// ❗ 沒有什麼實質意義

@@ -3,7 +3,6 @@ package com.group5.springboot.model.event;
 import java.io.CharArrayWriter;
 import java.io.Reader;
 import java.sql.Clob;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -28,7 +26,6 @@ import com.group5.springboot.utils.SystemUtils;
 
 @Entity
 @Table(name = "EventInfo")
-@Component
 public class EventInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

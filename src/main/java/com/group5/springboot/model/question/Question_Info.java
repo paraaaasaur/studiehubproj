@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.group5.springboot.utils.SystemUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 	@Entity
 	@Table(name="Question_Info")
-	@Component
 	public class Question_Info {
 
 		@Id

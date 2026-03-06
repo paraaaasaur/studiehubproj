@@ -38,7 +38,6 @@ import com.group5.springboot.validate.UserValidator;
 @SessionAttributes(names = "loginBean")
 public class UserController {
 	final UserService userService;
-	User_Info user_info;
 	final UserValidator userValidator;
 	final ServletContext context;
 	final EmailSenderService emailService;
@@ -47,9 +46,8 @@ public class UserController {
 
 
 	@Autowired
-	public UserController(UserService userService, User_Info userInfo, UserValidator userValidator, ServletContext context, EmailSenderService emailService, StorageConfigProperties props) {
+	public UserController(UserService userService, UserValidator userValidator, ServletContext context, EmailSenderService emailService, StorageConfigProperties props) {
 		this.userService = userService;
-		user_info = userInfo;
 		this.userValidator = userValidator;
 		this.context = context;
 		this.emailService = emailService;
@@ -86,7 +84,7 @@ public class UserController {
 	@ResponseBody
 	public Map<String, Object> login(@RequestBody User_Info user_Info, Model model){
 		Map<String, Object> map = new HashMap<>();
-		user_info = null;
+		User_Info user_info = null;
 		try {
 			user_info = userService.login(user_Info);
 			if(user_info != null && user_info.getU_id().length()>0) {

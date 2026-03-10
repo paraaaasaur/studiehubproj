@@ -57,7 +57,7 @@
 			}
 		}
 
-	  //universal
+		//universal
 		//如果有登入，隱藏登入標籤
 		var loginHref = document.getElementById('loginHref');
 		var signupHref = document.getElementById('signupHref');
@@ -70,6 +70,7 @@
 		if(u_id){
 			loginHref.hidden = true;
 			signupHref.hidden = true;
+			document.getElementById('user-info-actions').toggleAttribute('hidden', false);
 			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 			userPic.src = userPicString;	//有登入就秀大頭貼
 			userId.textContent = u_id;

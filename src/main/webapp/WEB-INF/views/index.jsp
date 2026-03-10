@@ -20,60 +20,61 @@
 </script>
 
 <script>
-const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-const { successMessageOfChangingPassword, u_id, userPicString } = bootstrapData;
+	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const { successMessageOfChangingPassword, u_id, userPicString } = bootstrapData;
 
-if (successMessageOfChangingPassword) {
-	alert(successMessageOfChangingPassword);
-}
+	if (successMessageOfChangingPassword) {
+		alert(successMessageOfChangingPassword);
+	}
 
-window.onload = function(){
-    var logout = document.getElementById("logout");
-    logout.onclick = function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", 'logout.controller', true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                var result = JSON.parse(xhr.responseText);
-                if(result.success){
-                    alert(result.success);
-                    top.location = '';
-                }else if(result.fail){
-                    alert(result.fail);
-                    top.location = '';
-                }
-            }
-        }
-    }
-    
-    
-//universal
-    //如果有登入，隱藏登入標籤
-    var loginHref = document.getElementById('loginHref');
-    var signupHref = document.getElementById('signupHref');
-    var logoutHref = document.getElementById('logoutHref');
-    var userId = document.getElementById('userId');
-    var userPic = document.getElementById('userPic');
-	var loginEvent = document.getElementById('loginEvent');
-	var loginEvent1 = document.getElementById('loginEvent1');
-    var loginALLEvent1 = document.getElementById('loginALLEvent1');
-    if(u_id){
-    	loginHref.hidden = true;
-    	signupHref.hidden = true;
-    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-    	userPic.src = userPicString;	//有登入就秀大頭貼
-    	userId.textContent = u_id;
-    	loginEvent.style.display = "block";
-    	loginEvent1.style.display = "block";
-    	loginALLEvent1.style.display = "block";
-    }
-	// 有登入才會顯示購物車sidebar
-	let cartHref = document.querySelector('#cartHref');
-	cartHref.hidden = (u_id)? false : true;
-	cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-//universal
-}
+	window.onload = function() {
+		var logout = document.getElementById("logout");
+		logout.onclick = function(){
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", 'logout.controller', true);
+			xhr.send();
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var result = JSON.parse(xhr.responseText);
+					if(result.success){
+						alert(result.success);
+						top.location = '';
+					}else if(result.fail){
+						alert(result.fail);
+						top.location = '';
+					}
+				}
+			}
+		}
+
+
+	//universal
+		//如果有登入，隱藏登入標籤
+		var loginHref = document.getElementById('loginHref');
+		var signupHref = document.getElementById('signupHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		var loginEvent = document.getElementById('loginEvent');
+		var loginEvent1 = document.getElementById('loginEvent1');
+		var loginALLEvent1 = document.getElementById('loginALLEvent1');
+		if (u_id){
+			loginHref.hidden = true;
+			signupHref.hidden = true;
+			document.getElementById('user-info-actions').toggleAttribute('hidden', false);
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+			userPic.src = userPicString;	//有登入就秀大頭貼
+			userId.textContent = u_id;
+			loginEvent.style.display = "block";
+			loginEvent1.style.display = "block";
+			loginALLEvent1.style.display = "block";
+		}
+		// 有登入才會顯示購物車sidebar
+		let cartHref = document.querySelector('#cartHref');
+		cartHref.hidden = (u_id)? false : true;
+		cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
+	//universal
+	}
 </script>
 </head>
 

@@ -28,14 +28,19 @@ textarea {
 
 <script type="application/json" id="bootstrap-data">
 	{
-	  "u_id": "${fn:escapeXml(loginBean.u_id)}"
+		"adminId": "${fn:escapeXml(adminId)}"
 	}
 </script>
 <script>
 	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-	const { u_id } = bootstrapData;
+	const { adminId } = bootstrapData;
 
 	window.onload = function() {
+		var logoutHref = document.getElementById('logoutHref');
+		if (adminId) {
+			logoutHref.style.visibility = "visible";
+		}
+
 		var logout = document.getElementById("logout");
 		logout.onclick = function() {
 			var xhr = new XMLHttpRequest();
@@ -54,24 +59,6 @@ textarea {
 				}
 			}
 		}
-
-		//如果有登入，隱藏登入標籤
-		var loginHref = document.getElementById('loginHref');
-	    var signupHref = document.getElementById('signupHref');
-	    var logoutHref = document.getElementById('logoutHref');
-	    var userId = document.getElementById('userId');
-	    var userPic = document.getElementById('userPic');
-		var loginEvent = document.getElementById('loginEvent');
-	    if(u_id){
-	    	loginHref.hidden = true;
-	    	signupHref.hidden = true;
-	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
-	    	userPic.src = userPicString;	//有登入就秀大頭貼
-	    	userId.textContent = u_id;
-			loginEvent.style.display = "block";
-    		loginALLEvent.style.display = "block";
-		}
-
 	}
 </script>
 
@@ -81,7 +68,7 @@ textarea {
 	<div id="wrapper">
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/header.jsp"%>
+				<%@include file="../universal/adminHeader.jsp"%>
 
 
 				<h2 align='center'>請更改課程資訊</h2>
@@ -159,7 +146,7 @@ textarea {
 
 			</div>
 		</div>
-		<%@include file="../universal/sidebar.jsp"%>
+		<%@include file="../universal/adminSidebar.jsp"%>
 	</div>
 
 	<script src="assets/js/jquery.min.js"></script>

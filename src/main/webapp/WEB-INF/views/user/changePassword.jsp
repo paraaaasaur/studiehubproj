@@ -49,13 +49,15 @@
 	    //如果有登入，隱藏登入標籤
 	    var loginHref = document.getElementById('loginHref');
 	    var signupHref = document.getElementById('signupHref');
+		document.getElementById('user-info-actions').toggleAttribute('hidden', false);
 	    var logoutHref = document.getElementById('logoutHref');
 	    var userId = document.getElementById('userId');
 	    var userPic = document.getElementById('userPic');
 		var loginEvent = document.getElementById('loginEvent');
 		var loginEvent1 = document.getElementById('loginEvent1');
 	    var loginALLEvent1 = document.getElementById('loginALLEvent1');
-	    if(u_id){
+
+	    if (u_id) {
 	    	loginHref.hidden = true;
 	    	signupHref.hidden = true;
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
@@ -65,11 +67,12 @@
 	    	loginEvent1.style.display = "block";
 	    	loginALLEvent1.style.display = "block";
 	    }
+
 		// 有登入才會顯示購物車sidebar
 		let cartHref = document.querySelector('#cartHref');
 		cartHref.hidden = (u_id)? false : true;
 		cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
-//universal
+		//universal
 
 	}
 </script>

@@ -12,8 +12,45 @@
 <link rel='stylesheet' href="assets/css/main.css">
 <link rel="stylesheet" href="assets/css/ckeditor.css">
 <title>編輯回覆</title>
+<script type="application/json" id="bootstrap-data">
+	{
+		"u_id": "${fn:escapeXml(loginBean.u_id)}",
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+	}
+</script>
 <script>
+	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
+	const { u_id, userPicString } = bootstrapData;
+
 	window.onload = function() {
+		//universal
+		var loginHref = document.getElementById('loginHref');
+		var signupHref = document.getElementById('signupHref');
+		var logoutHref = document.getElementById('logoutHref');
+		var userId = document.getElementById('userId');
+		var userPic = document.getElementById('userPic');
+		var loginEvent = document.getElementById('loginEvent');
+		var loginEvent1 = document.getElementById('loginEvent1');
+		var loginALLEvent1 = document.getElementById('loginALLEvent1');
+
+		if (u_id) {
+			loginHref.hidden = true;
+			signupHref.hidden = true;
+			document.getElementById('user-info-actions').toggleAttribute('hidden', false);
+			logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
+			userPic.src = userPicString;	//有登入就秀大頭貼
+			userId.textContent = u_id;
+			loginEvent.style.display = "block";
+			loginEvent1.style.display = "block";
+			loginALLEvent1.style.display = "block";
+		}
+
+		// 有登入才會顯示購物車sidebar
+		let cartHref = document.querySelector('#cartHref');
+		cartHref.hidden = (u_id)? false : true;
+		cartHref.style.visibility = (u_id)? 'visible' : 'hidden';
+		//universal
+
 		$('#autoInput').on('click', function(){
 			$('#c_Conts').val("推一個");
 		})
@@ -26,7 +63,7 @@
 	<div id="wrapper">
 		<div id="main">
 			<div class="inner">
-				<%@include file="../universal/adminHeader.jsp"%>
+				<%@include file="../universal/header.jsp"%>
 
 
 				<div align='center'>
@@ -83,7 +120,7 @@
 
 			</div>
 		</div>
-		<%@include file="../universal/adminSidebar.jsp"%>
+		<%@include file="../universal/sidebar.jsp"%>
 	</div>
 
 	<script	src="assets/js/jquery.min.js"></script>

@@ -127,6 +127,7 @@
 	    if(u_id){
 	    	loginHref.hidden = true;
 	    	signupHref.hidden = true;
+			document.getElementById('user-info-actions').toggleAttribute('hidden', false);
 	    	logoutHref.style.visibility = "visible";	//有登入才會show登出標籤(預設為hidden)
 	    	userPic.src = userPicString;	//有登入就秀大頭貼
 	    	userId.textContent = u_id;

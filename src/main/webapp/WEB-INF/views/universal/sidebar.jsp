@@ -18,7 +18,7 @@
 				<li><a href=".">首頁</a></li>
 				<li id='loginHref'><a href="gotologin.controller">登入</a></li>
 				<li id='signupHref'><a href="gotosignup.controller">註冊</a></li>
-				<li><span class="opener">會員資訊</span>
+				<li id="user-info-actions" hidden><span class="opener">會員資訊</span>
 					<ul>
 						<li><a href="gotoChangePassword.controller">更改密碼</a></li>
 						<li><a href="gotoUpdateUserinfo.controller">編輯個人資料</a></li>

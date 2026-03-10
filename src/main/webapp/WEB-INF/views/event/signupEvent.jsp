@@ -63,6 +63,7 @@ const { u_id, userPicString, a_aid } = bootstrapData;
 		    //如果有登入，隱藏登入標籤
 		    var loginHref = document.getElementById('loginHref');
 		    var signupHref = document.getElementById('signupHref');
+			document.getElementById('user-info-actions').toggleAttribute('hidden', false);
 		    var logoutHref = document.getElementById('logoutHref');
 		    var userId = document.getElementById('userId');
 		    var userPic = document.getElementById('userPic');

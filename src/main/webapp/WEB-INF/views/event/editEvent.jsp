@@ -64,6 +64,7 @@
 			if (u_id) {
 				loginHref.hidden = true;
 				signupHref.hidden = true;
+				document.getElementById('user-info-actions').toggleAttribute('hidden', false);
 				logoutHref.style.visibility = "visible";
 				userPic.src = userPicString;
 				userId.textContent = u_id;

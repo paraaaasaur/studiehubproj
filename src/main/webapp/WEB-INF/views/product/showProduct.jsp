@@ -31,7 +31,7 @@
 		products: null,
 		error: null
 	};
-	let loginHref, logoutHref, dataArea, query, productname, typename;
+	let logoutHref, dataArea, query, productname, typename;
 	const api = {
 		fetchAllProducts: async function() {
 			const response = await fetch('findAllProduct');
@@ -54,7 +54,6 @@
 	window.onload = init;
 	async function init() {
 		// dom wiring
-		loginHref = document.getElementById('loginHref');
 		logoutHref = document.getElementById('logoutHref');
 		dataArea = document.getElementById("dataArea");
 		query = document.getElementById("query");
@@ -107,7 +106,6 @@
 		console.log('Spinning');
 	}
 	function renderCommonAdminUI() {
-		loginHref.hidden = true;
 		logoutHref.style.visibility = "visible";
 	}
 	async function queryProducts() {

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.0.3] — Extra Cleanup & Bugfix, 2026-03-10
+A trivial quick patch for previous work with the same goal.
+
+---
+
 ## [1.0.2] — Big Bugfix & Cleanup, 2026-03-01 ~ 2026-03-06
 A mild overall files/code organization for the upcoming 1.1.0 refactoring.
 Main scopes are endpoints and views, followed by service/dao layers, and 

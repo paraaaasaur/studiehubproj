@@ -81,7 +81,7 @@ class CartViewControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("emptyCartItem"))
-				.andExpect(view().name("cart/cartAdminInsert"));
+				.andExpect(view().name("cart-items/admin/add"));
 	}
 
 	@Test
@@ -141,7 +141,7 @@ class CartViewControllerTest {
 						.param("u_firstname", newCartItem.getU_firstname())
 						.param("u_lastname", newCartItem.getU_lastname()))
 
-				.andExpect(view().name("cart/cartAdminInsert"))
+				.andExpect(view().name("cart-items/admin/add"))
 				.andExpect(model().errorCount(2));
 	}
 
@@ -158,7 +158,7 @@ class CartViewControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("cartItem"))
-				.andExpect(view().name("cart/cartAdminUpdate"));
+				.andExpect(view().name("cart-items/admin/edit"));
 	}
 
 	@Test
@@ -226,7 +226,7 @@ class CartViewControllerTest {
 						.param("u_firstname", update.getU_firstname())
 						.param("u_lastname", update.getU_lastname()))
 
-				.andExpect(view().name("cart/cartAdminUpdate"))
+				.andExpect(view().name("cart-items/admin/edit"))
 				.andExpect(model().errorCount(2));
 	}
 
@@ -242,7 +242,7 @@ class CartViewControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("cart/cartIndex"));
+				.andExpect(view().name("cart-items/my-list"));
 	}
 
 	@Test
@@ -265,7 +265,7 @@ class CartViewControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("cart/cartAdminSelect"));
+				.andExpect(view().name("cart-items/admin/list"));
 	}
 
 	@Test
@@ -288,7 +288,7 @@ class CartViewControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("cart/cartClientResultPage"));
+				.andExpect(view().name("cart-items/payment-result"));
 	}
 
 	@Test

@@ -69,7 +69,7 @@ class AdminUserControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("adminIndex"));
+				.andExpect(view().name("common/admin/dashboard"));
 	}
 
 	@Test
@@ -86,7 +86,7 @@ class AdminUserControllerTest {
 		mockMvc.perform(get("/gotoAdminLogin.controller"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/adminLogin"));
+				.andExpect(view().name("auth/admin/login"));
 	}
 
 	@Test
@@ -111,7 +111,7 @@ class AdminUserControllerTest {
 		mockMvc.perform(get("/gotoShowAllUser.controller")
 					.session(mockHttpSession))
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/showAllUser"));
+				.andExpect(view().name("users/admin/list"));
 	}
 
 	@Test
@@ -147,7 +147,7 @@ class AdminUserControllerTest {
 		// follow redirect using the current session
 		mockMvc.perform(get(redirectedUrl).session(session))
 				.andExpect(status().isOk())
-				.andExpect(view().name("adminIndex"));
+				.andExpect(view().name("common/admin/dashboard"));
 	}
 
 	@Test

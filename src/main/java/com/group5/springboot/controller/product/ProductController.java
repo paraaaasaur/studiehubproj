@@ -54,7 +54,7 @@ public class ProductController {
 	public String takeClass(@PathVariable Integer p_ID,Model model) {
 		ProductInfo product = productService.findByProductID(p_ID);
 		model.addAttribute("product", product);
-		return "product/Product";
+		return "products/detail";
 	}
 
 	@RequiresAdmin
@@ -63,24 +63,24 @@ public class ProductController {
 		ProductInfo productInfo = productService.findByProductID(p_ID);
 		productInfo.setDescString(productInfo.getP_DESC());
 		model.addAttribute("productInfo",productInfo);
-		return "product/editProduct";
+		return "products/admin/edit";
 	}
 
 	@GetMapping("/queryProductForUser")
 	public String queryProductForUser() {
-		return "product/showProductToUser";
+		return "products/list";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/queryProduct")
 	public String sendQueryProduct() {
-		return "product/showProduct";
+		return "products/admin/list";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/findAllProductPending")
 	public String findAllProductPending() {
-		return "product/pendingAccess";
+		return "products/admin/pending-list";
 	}
 
 	@RequiresAdmin
@@ -89,13 +89,13 @@ public class ProductController {
 		ProductInfo productInfo = productService.findByProductID(p_ID);
 		productInfo.setP_Status(1);
 		productService.update(productInfo);
-		return "product/pendingAccess";
+		return "products/admin/pending-list";
 	}
 
 	@RequiresUser
 	@GetMapping("/insertProduct")
 	public String addProduct() {
-		return "product/insertProduct";
+		return "products/add";
 	}
 
 	@RequiresAdmin
@@ -112,7 +112,7 @@ public class ProductController {
 			for (ObjectError objectError : list) {
 				System.out.println("有錯誤:"+objectError);
 			}
-			return "product/editProduct";
+			return "products/admin/edit";
 		}
 		MultipartFile img = productInfo.getImgFile();
 		MultipartFile video = productInfo.getVideoFile();
@@ -181,7 +181,7 @@ public class ProductController {
 				System.out.println("有錯誤"+ error );
 			}
 			
-			return "product/insertProduct";
+			return "products/add";
 		}
 		MultipartFile img = productInfo.getImgFile();
 		MultipartFile video = productInfo.getVideoFile();

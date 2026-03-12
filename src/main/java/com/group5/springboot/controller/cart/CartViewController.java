@@ -1,11 +1,10 @@
 package com.group5.springboot.controller.cart;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
+import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.service.cart.CartItemService;
+import com.group5.springboot.validate.CartValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.validate.CartValidator;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 public class CartViewController {
@@ -39,7 +38,7 @@ public class CartViewController {
 	@GetMapping(value = {"/cart.controller/adminInsert"})
 	public String toCartAdminInsert(Model model) {
 		model.addAttribute("emptyCartItem", new CartItem());
-		return "cart/cartAdminInsert";
+		return "cart-items/admin/add";
 	}
 	
 	@RequiresAdmin
@@ -52,7 +51,7 @@ public class CartViewController {
 		cartValidator.validate(cartItem, result);
 		if (result.hasErrors()) {			
 			result.getAllErrors().forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "cart/cartAdminInsert";
+			return "cart-items/admin/add";
 		}
 		
 		cartItemService.insert(cartItem.getP_id(), cartItem.getU_id());
@@ -64,7 +63,7 @@ public class CartViewController {
 	@GetMapping(value = {"/cart.controller/adminUpdate/{cartid}"})
 	public String toCartAdminUpdate(@PathVariable("cartid") Integer cartid, Model model) {
 		model.addAttribute("cartItem", cartItemService.select(cartid).get("cartItem"));
-		return "cart/cartAdminUpdate";
+		return "cart-items/admin/edit";
 	}
 	
 	@RequiresAdmin
@@ -78,7 +77,7 @@ public class CartViewController {
 		if (result.hasErrors()) {
 			List<ObjectError> list = result.getAllErrors();
 			list.forEach(objectError -> System.out.println("有錯誤：" + objectError));
-			return "cart/cartAdminUpdate";
+			return "cart-items/admin/edit";
 		}
 
 		Integer updateStatus = cartItemService.update(cartItem.getU_id(), cartItem.getP_id(), cartItem.getCart_id());
@@ -90,18 +89,18 @@ public class CartViewController {
 	@RequiresUser
 	@GetMapping(value = {"/cart.controller/cartIndex"})
 	public String toCartIndex() {
-		return "cart/cartIndex";
+		return "cart-items/my-list";
 	}
 	
 	@RequiresAdmin
 	@GetMapping(value = {"/cart.controller/adminSelect"})
 	public String toCartAdminSelect() {
-		return "cart/cartAdminSelect";
+		return "cart-items/admin/list";
 	}
 	
 	@RequiresUser
 	@GetMapping(value = "/cart.controller/clientResultPage")
 	public String toClientResultPage() {
-		return "cart/cartClientResultPage";
+		return "cart-items/payment-result";
 	}
 }

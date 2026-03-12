@@ -31,7 +31,7 @@ class BaseControllerTest {
 		mockMvc.perform(get("/"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("index"));
+				.andExpect(view().name("common/index"));
 	}
 
 	@Test
@@ -40,6 +40,6 @@ class BaseControllerTest {
 		mockMvc.perform(get("/credits"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("credits"));
+				.andExpect(view().name("common/credits"));
 	}
 }

@@ -56,7 +56,7 @@ class OrderViewControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("cart/orderAdminSelect"));
+				.andExpect(view().name("orders/admin/list"));
 	}
 
 	@Test

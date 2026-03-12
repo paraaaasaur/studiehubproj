@@ -69,7 +69,7 @@ class UserfunctionControllerTest {
 		mockMvc.perform(get("/gotoForgetPassword.controller"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/forgetPassword"));
+				.andExpect(view().name("users/forgot-password"));
 	}
 
 	@Test

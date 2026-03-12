@@ -10,6 +10,6 @@ public class OrderViewController {
 	@RequiresAdmin
 	@GetMapping(value = {"/order.controller/adminSelect"})
 	public String toCartAdminSelect() {
-		return "cart/orderAdminSelect";
+		return "orders/admin/list";
 	}
 }

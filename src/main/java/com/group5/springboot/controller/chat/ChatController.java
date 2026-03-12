@@ -1,31 +1,23 @@
 package com.group5.springboot.controller.chat;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.annotation.dev.RenameSuggestion;
+import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
+import com.group5.springboot.service.chat.ChatService;
+import com.group5.springboot.validate.ChatValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.group5.springboot.model.chat.Chat_Info;
-import com.group5.springboot.model.chat.Chat_Reply;
-import com.group5.springboot.service.chat.ChatService;
-import com.group5.springboot.validate.ChatValidator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @SessionAttributes(names = {"loginBean"})
@@ -43,32 +35,32 @@ public class ChatController {
 
 	@GetMapping("/goSelectAllChat")
 	public String goSelectAllChat(){
-		return "chat/selectAllChat";
+		return "chat/threads/list";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/goSelectAllChatAdmin")
 	public String goSelectAllChatAdmin(){
-		return "chat/selectAllChatAdmin";
+		return "chat/threads/admin/list";
 	}
 
 	@GetMapping("/goSelectOneChat/{c_ID}")
 	public String goSelectOneChat(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
-		return "chat/selectOneChat";
+		return "chat/threads/detail";
 	}
 
 	@RequiresUser
 	@GetMapping("/goInsertChat")
 	public String insertChat(){
-		return "chat/insertChat";
+		return "chat/threads/add";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/goDeleteChatAdmin/{c_ID}")
 	public String goDeleteChatAdmin(@PathVariable int c_ID, Model model){
 		model.addAttribute("c_ID", c_ID);
-		return "chat/deleteChatAdmin";
+		return "chat/threads/admin/delete";
 	}
 
 	@RequiresUser
@@ -77,7 +69,7 @@ public class ChatController {
 	public String updateChat(@PathVariable int c_ID, Model model){
 		Chat_Reply chat_Reply = chatService.selectChatReplyById(c_ID);
 		model.addAttribute("chatReply", chat_Reply);
-		return "chat/updateChatReply";
+		return "chat/threads/edit-post";
 	}
 
 	@GetMapping("/selectSingleChat/{c_ID}")
@@ -178,7 +170,7 @@ public class ChatController {
 			for (ObjectError error : list) {
 				System.out.println("有錯誤：" + error);
 			}
-			return "chat/updateChatReply";
+			return "chat/threads/edit-post";
 		}
 
 		chatService.sanitizeConts(chat_Reply);

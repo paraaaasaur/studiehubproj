@@ -76,7 +76,7 @@ class UserControllerTest {
 	void gotoLoginPage_success() throws Exception {
 		mockMvc.perform(get("/gotologin.controller"))
 
-				.andExpect(view().name("user/login"));
+				.andExpect(view().name("auth/login"));
 	}
 
 	@Test
@@ -97,7 +97,7 @@ class UserControllerTest {
 		mockMvc.perform(get("/gotosignup.controller"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/signup"));
+				.andExpect(view().name("users/signup"));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ class UserControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/updateUser"));
+				.andExpect(view().name("users/edit-profile"));
 	}
 
 	@Test
@@ -145,7 +145,7 @@ class UserControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/changePassword"));
+				.andExpect(view().name("users/change-password"));
 	}
 
 	@Test
@@ -380,7 +380,7 @@ class UserControllerTest {
 
 		mockMvc.perform(get(redirectedUrl).session(session))
 				.andExpect(status().isOk())
-				.andExpect(view().name("user/updateUser"));
+				.andExpect(view().name("users/edit-profile"));
 	}
 
 	@Test
@@ -404,7 +404,7 @@ class UserControllerTest {
 						.session(mockHttpSession)
 						.param("u_lastname", "")) // mandatory field empty
 
-				.andExpect(view().name("user/updateUser"))
+				.andExpect(view().name("users/edit-profile"))
 				.andExpect(model().errorCount(1));
 	}
 }

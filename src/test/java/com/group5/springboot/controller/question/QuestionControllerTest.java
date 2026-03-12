@@ -84,7 +84,7 @@ class QuestionControllerTest {
 		mockMvc.perform(get("/question.controller/turnQuestionIndex"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("question/intro_QuestionIndex"));
+				.andExpect(view().name("questions/exam/index"));
 	}
 
 	@Test
@@ -97,7 +97,7 @@ class QuestionControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("question/insertQuestion"));
+				.andExpect(view().name("questions/add"));
 	}
 
 	@Test
@@ -163,7 +163,7 @@ class QuestionControllerTest {
 						.param("q_selectionD", newQuestion.getQ_selectionD())
 						.param("q_answer", newQuestion.getQ_answer()))
 
-				.andExpect(view().name("question/insertQuestion"))
+				.andExpect(view().name("questions/add"))
 				.andExpect(model().errorCount(1));
 	}
 
@@ -173,7 +173,7 @@ class QuestionControllerTest {
 		mockMvc.perform(get("/question.controller/guestQueryQuestion"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("question/guestQueryQuestion"));
+				.andExpect(view().name("questions/list"));
 	}
 
 	@Test
@@ -184,7 +184,7 @@ class QuestionControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("Q1", isA(Question_Info.class)))
-				.andExpect(view().name("question/guestOneQuestion"));
+				.andExpect(view().name("questions/detail"));
 	}
 
 	@Test
@@ -198,7 +198,7 @@ class QuestionControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("question/queryQuestion"));
+				.andExpect(view().name("questions/admin/list"));
 	}
 
 	@Test
@@ -251,7 +251,7 @@ class QuestionControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("Q1"))
-				.andExpect(view().name("question/editQuestion"));
+				.andExpect(view().name("questions/admin/edit"));
 	}
 
 	@Test
@@ -321,7 +321,7 @@ class QuestionControllerTest {
 						.contentType(MULTIPART_FORM_DATA)
 						.session(mockHttpSession))
 
-				.andExpect(view().name("question/editQuestion"))
+				.andExpect(view().name("questions/admin/edit"))
 				.andExpect(model().errorCount(1));
 	}
 
@@ -379,7 +379,7 @@ class QuestionControllerTest {
 		mockMvc.perform(get("/question.controller/startRandomMixExam"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("question/examMixQuestion"));
+				.andExpect(view().name("questions/exam/jp-mixed-types"));
 	}
 
 	@Test
@@ -393,7 +393,7 @@ class QuestionControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("question/verifyQuestion"));
+				.andExpect(view().name("questions/admin/pending-list"));
 	}
 
 	@Test
@@ -494,7 +494,7 @@ class QuestionControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("Q1"))
-				.andExpect(view().name("question/verifyOneQuestion"))
+				.andExpect(view().name("questions/admin/pending-detail"))
 				.andReturn();
 
 		Question_Info q1 = (Question_Info) mvcResult.getModelAndView().getModel().get("Q1");

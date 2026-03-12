@@ -90,7 +90,7 @@ class ChatControllerTest {
 		mockMvc.perform(get("/goSelectAllChat"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("chat/selectAllChat"));
+				.andExpect(view().name("chat/threads/list"));
 	}
 
 	@Test
@@ -104,7 +104,7 @@ class ChatControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("chat/selectAllChatAdmin"));
+				.andExpect(view().name("chat/threads/admin/list"));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ class ChatControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("c_ID", is(c_ID)))
-				.andExpect(view().name("chat/selectOneChat"));
+				.andExpect(view().name("chat/threads/detail"));
 	}
 
 	@Test
@@ -137,7 +137,7 @@ class ChatControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("chat/insertChat"));
+				.andExpect(view().name("chat/threads/add"));
 	}
 
 	@Test
@@ -161,7 +161,7 @@ class ChatControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("c_ID", is(c_ID)))
-				.andExpect(view().name("chat/deleteChatAdmin"));
+				.andExpect(view().name("chat/threads/admin/delete"));
 	}
 
 	@Test
@@ -185,7 +185,7 @@ class ChatControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("chatReply", notNullValue(Chat_Reply.class)))
-				.andExpect(view().name("chat/updateChatReply"));
+				.andExpect(view().name("chat/threads/edit-post"));
 	}
 
 	@Test

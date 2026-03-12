@@ -1,5 +1,23 @@
 package com.group5.springboot.controller.event;
 
+import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.annotation.auth.RequiresUser;
+import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.model.event.EventInfo;
+import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.service.event.EventService;
+import com.group5.springboot.utils.ResourceLocationResolver;
+import com.group5.springboot.validate.EventValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -7,31 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.group5.springboot.annotation.auth.RequiresAdmin;
-import com.group5.springboot.annotation.auth.RequiresUser;
-import com.group5.springboot.config.StorageConfigProperties;
-import com.group5.springboot.service.event.EventService;
-import com.group5.springboot.utils.ResourceLocationResolver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.group5.springboot.model.event.EventInfo;
-import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.validate.EventValidator;
 
 @Controller
 public class EventController {
@@ -54,30 +47,30 @@ public class EventController {
 	@RequiresUser
 	@GetMapping("/insertEvent")
 	public String insertEvent() {
-		return "event/insertEvent";
+		return "events/add";
 	}
 
 	@RequiresUser
 	@GetMapping("/userAllEvent")
 	public String userAllEvent() {
-		return "event/userAllEvent";
+		return "events/my-list";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/adminAllEvent")
 	public String queryRestaurant() {
-		return "event/adminAllEvent";
+		return "events/admin/list";
 	}
 
 	@GetMapping("/eventindex")
 	public String eventindex() {
-		return "event/eventindex";
+		return "events/list";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/managerAllEvent")
 	public String managerAllEvent() {
-		return "event/managerAllEvent";
+		return "events/admin/pending-list";
 	}
 
 	@RequiresUser
@@ -94,7 +87,7 @@ public class EventController {
 			for (ObjectError error : list) {
 				System.out.println("有錯誤" + error);
 			}
-			return "event/insertEvent";
+			return "events/add";
 		}
 
 		EventService.saveEvent(eventinfo);
@@ -143,7 +136,7 @@ public class EventController {
 	public String SendEditPage(@PathVariable Long a_aid, Model model) {
 		EventInfo eventinfo = EventService.findByid(a_aid);
 		model.addAttribute("EventInfo", eventinfo);
-		return "event/editEvent";
+		return "events/edit";
 	}
 
 	@RequiresUser
@@ -152,7 +145,7 @@ public class EventController {
 		eventValidator.validate(eventinfo, result);
 		if (result.hasErrors()) {
 			result.getAllErrors().forEach(System.err::println);
-			return "event/editEvent";
+			return "events/edit";
 		}
 
 		eventinfo.setCreationTime(new Timestamp(System.currentTimeMillis()));
@@ -214,7 +207,7 @@ public class EventController {
 		EventInfo eventcontent = EventService.findByid(a_aid);
 		model.addAttribute("eventcontent", eventcontent);
 
-		return "event/eventcontent";	
+		return "events/detail";
 	}
 	
 	@RequiresAdmin
@@ -276,7 +269,7 @@ public class EventController {
 		EventInfo Event = EventService.findByid(a_aid);
 		model.addAttribute("signupEvent",Event);
 		
-		return "event/signupEvent";	
+		return "events/registration/list";
 	}
 
 	@RequiresUser
@@ -295,7 +288,7 @@ public class EventController {
 		
 		model.addAttribute("signupEvent",Event);
 		
-		return "event/signupEvent";
+		return "events/registration/list";
 	}
 	
 

@@ -8,11 +8,11 @@ public class BaseController {
 	
 	@GetMapping("/")
 	public String index() {
-		return "index";
+		return "common/index";
 	}
 	
 	@GetMapping("/credits")
 	public String credits() {
-		return "credits";
+		return "common/credits";
 	}
 }

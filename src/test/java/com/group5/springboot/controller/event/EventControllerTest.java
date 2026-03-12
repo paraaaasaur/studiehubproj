@@ -89,7 +89,7 @@ class EventControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("event/insertEvent"));
+				.andExpect(view().name("events/add"));
 	}
 
 	@Test
@@ -112,7 +112,7 @@ class EventControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("event/userAllEvent"));
+				.andExpect(view().name("events/my-list"));
 	}
 
 	@Test
@@ -134,7 +134,7 @@ class EventControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("event/adminAllEvent"));
+				.andExpect(view().name("events/admin/list"));
 	}
 
 	@Test
@@ -151,7 +151,7 @@ class EventControllerTest {
 		mockMvc.perform(get("/eventindex"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("event/eventindex"));
+				.andExpect(view().name("events/list"));
 	}
 
 	@Test
@@ -165,7 +165,7 @@ class EventControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("event/managerAllEvent"));
+				.andExpect(view().name("events/admin/pending-list"));
 	}
 
 	@Test
@@ -241,7 +241,7 @@ class EventControllerTest {
 						.session(mockHttpSession)
 						.contentType(MULTIPART_FORM_DATA))
 
-				.andExpect(view().name("event/insertEvent"))
+				.andExpect(view().name("events/add"))
 				.andExpect(model().errorCount(1));
 	}
 
@@ -259,7 +259,7 @@ class EventControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("EventInfo"))
-				.andExpect(view().name("event/editEvent"));
+				.andExpect(view().name("events/edit"));
 	}
 
 	@Test
@@ -367,7 +367,7 @@ class EventControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("eventcontent"))
-				.andExpect(view().name("event/eventcontent"));
+				.andExpect(view().name("events/detail"));
 	}
 
 	@Test
@@ -511,7 +511,7 @@ class EventControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("signupEvent"))
-				.andExpect(view().name("event/signupEvent"));
+				.andExpect(view().name("events/registration/list"));
 	}
 
 	@Test
@@ -538,7 +538,7 @@ class EventControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("signupEvent"))
-				.andExpect(view().name("event/signupEvent"));
+				.andExpect(view().name("events/registration/list"));
 	}
 
 	@Test

@@ -4,7 +4,10 @@ import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.group5.springboot.controller.product.ProductTestUtils.aRandomProduct;
 import static com.group5.springboot.controller.user.UserTestUtils.aUserKen;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -79,7 +80,7 @@ class ProductControllerTest {
 		mockMvc.perform(get("/takeClass/{p_ID}", product1.getP_ID()))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/Product"))
+				.andExpect(view().name("products/detail"))
 				.andExpect(model().attributeExists("product"));
 	}
 
@@ -95,7 +96,7 @@ class ProductControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/editProduct"))
+				.andExpect(view().name("products/admin/edit"))
 				.andExpect(model().attributeExists("productInfo"));
 	}
 
@@ -113,7 +114,7 @@ class ProductControllerTest {
 		mockMvc.perform(get("/queryProductForUser"))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/showProductToUser"));
+				.andExpect(view().name("products/list"));
 	}
 
 	@Test
@@ -128,7 +129,7 @@ class ProductControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/showProduct"));
+				.andExpect(view().name("products/admin/list"));
 	}
 
 	@Test
@@ -151,7 +152,7 @@ class ProductControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/pendingAccess"));
+				.andExpect(view().name("products/admin/pending-list"));
 	}
 
 	@Test
@@ -174,7 +175,7 @@ class ProductControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/pendingAccess"));
+				.andExpect(view().name("products/admin/pending-list"));
 	}
 
 	@Test
@@ -197,7 +198,7 @@ class ProductControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(view().name("product/insertProduct"));
+				.andExpect(view().name("products/add"));
 	}
 
 	@Test
@@ -258,7 +259,7 @@ class ProductControllerTest {
 						.param("p_Price", "12805")
 						.param("descString", product2CreateRequest.getDescString()))
 
-				.andExpect(view().name("product/editProduct"))
+				.andExpect(view().name("products/admin/edit"))
 				.andExpect(model().attributeHasFieldErrors("productInfo", "p_Name"));
 	}
 
@@ -315,7 +316,7 @@ class ProductControllerTest {
 						.param("p_Price", rawTestProduct.getP_Price() + "")
 						.param("descString", rawTestProduct.getDescString()))
 
-				.andExpect(view().name("product/insertProduct"))
+				.andExpect(view().name("products/add"))
 				.andExpect(model().attributeHasFieldErrors("productInfo", "p_Name"));
 	}
 

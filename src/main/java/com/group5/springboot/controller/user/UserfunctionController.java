@@ -1,24 +1,19 @@
 package com.group5.springboot.controller.user;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.group5.springboot.annotation.auth.RejectsUser;
 import com.group5.springboot.annotation.auth.RequiresUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
-
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.EmailSenderService;
 import com.group5.springboot.utils.GenerateRandomPassword;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @SessionAttributes(names = {"loginBean"})
@@ -37,7 +32,7 @@ public class UserfunctionController {
 	@RejectsUser
 	@GetMapping(path = "/gotoForgetPassword.controller")
 	public String gotoForgetPassword() {
-		return "user/forgetPassword";
+		return "users/forgot-password";
 	}
 
 	@RequiresUser

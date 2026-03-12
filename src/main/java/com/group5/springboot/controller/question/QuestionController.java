@@ -53,13 +53,13 @@ public class QuestionController {
 
 	@GetMapping(path = "/question.controller/turnQuestionIndex")
 	public String turnQuestionIndex() {
-		return "question/intro_QuestionIndex";
+		return "questions/exam/index";
 	}	
 	
 	@RequiresUser
 	@GetMapping("/question.controller/insertQuestion")
 	public String sendInsertQuestion() {
-		return "question/insertQuestion";
+		return "questions/add";
 	}
 	
 	@RequiresUser
@@ -75,7 +75,7 @@ public class QuestionController {
 			for (ObjectError error : list) {
 				System.out.println("有錯誤：" + error);
 			}
-			return "question/insertQuestion";
+			return "questions/add";
 		}
 		
 		
@@ -134,20 +134,20 @@ public class QuestionController {
 	
 	@GetMapping("/question.controller/guestQueryQuestion")
 	public String sendGuestQueryQuestion() {
-		return "question/guestQueryQuestion";
+		return "questions/list";
 	}	
 
 	@GetMapping("/question.controller/guestOneQuestion/{q_id}")
     public String guestOneQuestion(@PathVariable Long q_id, Model model) {
 		Question_Info question_Info = questionService.findApprovedById(q_id);
 		model.addAttribute("Q1", question_Info);
-		return "question/guestOneQuestion";
+		return "questions/detail";
 	}	
 
     @RequiresAdmin
 	@GetMapping("/question.controller/queryQuestion")
 	public String sendQueryQuestion() {
-		return "question/queryQuestion";
+		return "questions/admin/list";
 	}
 	
 	@GetMapping(value="/question.controller/findAllQuestions", produces = "application/json; charset=UTF-8")
@@ -170,7 +170,7 @@ public class QuestionController {
 	    question_Info.setAnswers(q_answer.split(","));
 		
 		model.addAttribute("Q1", question_Info);
-		return "question/editQuestion";
+		return "questions/admin/edit";
 	}
 
 	@RequiresAdmin
@@ -187,7 +187,7 @@ public class QuestionController {
 			for (ObjectError error : list) {
 				System.out.println("有錯誤：" + error);
 			}
-			return "question/editQuestion";
+			return "questions/admin/edit";
 		}
 		
 		Blob blob = null;
@@ -282,13 +282,13 @@ public class QuestionController {
 	
 	@GetMapping("/question.controller/startRandomMixExam")
 	public String startRandomMixExam() {
-		return "question/examMixQuestion";
+		return "questions/exam/jp-mixed-types";
 	}
 	
 	@RequiresAdmin
 	@GetMapping("/question.controller/intoVerifyQuestion")
 	public String intoVerifyQuestion() {
-		return "question/verifyQuestion";
+		return "questions/admin/pending-list";
 	}
 
 	@RequiresAdmin
@@ -321,7 +321,7 @@ public class QuestionController {
     public String verifyOneQuestion(@PathVariable Long q_id, Model model) {
 		Question_Info question_Info = questionService.findById(q_id);
 		model.addAttribute("Q1", question_Info);
-		return "question/verifyOneQuestion";
+		return "questions/admin/pending-detail";
 	}	
 
 

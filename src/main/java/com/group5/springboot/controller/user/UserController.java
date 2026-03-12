@@ -1,38 +1,30 @@
 package com.group5.springboot.controller.user;
 
+import com.group5.springboot.annotation.auth.RejectsUser;
+import com.group5.springboot.annotation.auth.RequiresUser;
+import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.service.user.UserService;
+import com.group5.springboot.utils.EmailSenderService;
+import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.validate.UserValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
-
-import com.group5.springboot.annotation.auth.RejectsUser;
-import com.group5.springboot.annotation.auth.RequiresUser;
-import com.group5.springboot.config.StorageConfigProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.group5.springboot.model.user.User_Info;
-import com.group5.springboot.service.user.UserService;
-import com.group5.springboot.utils.EmailSenderService;
-import com.group5.springboot.utils.SystemUtils;
-import com.group5.springboot.validate.UserValidator;
 
 @Controller
 @SessionAttributes(names = "loginBean")
@@ -58,25 +50,25 @@ public class UserController {
 	@RejectsUser
 	@GetMapping(path = "/gotologin.controller")
 	public String gotoLoginPage() {
-		return "user/login";
+		return "auth/login";
 	}
 	
 	@RejectsUser
 	@GetMapping(path = "/gotosignup.controller")
 	public String gotoSignupPage() {
-		return "user/signup";
+		return "users/signup";
 	}
 	
 	@RequiresUser
 	@GetMapping(path = "/gotoUpdateUserinfo.controller")
 	public String gotoUpdateUserinfo() {
-		return "user/updateUser";
+		return "users/edit-profile";
 	}
 	
 	@RequiresUser
 	@GetMapping(path = "/gotoChangePassword.controller")
 	public String gotoChangePassword() {
-		return "user/changePassword";
+		return "users/change-password";
 	}
 
 	@RejectsUser
@@ -173,7 +165,7 @@ public class UserController {
 	) {
 		userValidator.validate(user_Info, bindingResult);
 		if(bindingResult.hasErrors()) {
-			return "user/updateUser";
+			return "users/edit-profile";
 		}
 		
 		Blob blob = null;

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@SessionAttributes(names = {"loginBean"})
 public class ChatController {
 	final ChatService chatService;
 	final ChatValidator chatValidator;

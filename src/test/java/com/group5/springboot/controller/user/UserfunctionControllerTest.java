@@ -99,7 +99,7 @@ class UserfunctionControllerTest {
 				.andExpect(content().contentType(APPLICATION_JSON))
 				.andExpect(jsonPath("$.success").exists());
 
-		assertNull(mockHttpSession.getAttribute("loginBean"));
+		assertTrue(mockHttpSession.isInvalid());
 	}
 
 	@Test

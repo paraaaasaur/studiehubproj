@@ -10,15 +10,14 @@ import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Blob;
@@ -27,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller
-@SessionAttributes(names = "loginBean")
 public class UserController {
 	final UserService userService;
 	final UserValidator userValidator;
@@ -74,7 +72,7 @@ public class UserController {
 	@RejectsUser
 	@PostMapping(path = "/login.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, Object> login(@RequestBody User_Info user_Info, Model model){
+	public Map<String, Object> login(@RequestBody User_Info user_Info, HttpSession session) {
 		Map<String, Object> map = new HashMap<>();
 		User_Info user_info = null;
 		try {
@@ -82,8 +80,8 @@ public class UserController {
 			if(user_info != null && user_info.getU_id().length()>0) {
 				map.put("success", "登入成功");
 				map.put("loginBean", user_info);
-				
-				model.addAttribute("loginBean", user_info);
+
+				session.setAttribute("loginBean", user_info);
 			} else if(user_info == null) {
 				map.put("fail", "帳號或密碼錯誤，請再試一次...");
 			}
@@ -141,8 +139,9 @@ public class UserController {
 	public String changePassword(
 			@ModelAttribute("userBean") User_Info user_Info,
 			RedirectAttributes ra,
-			@RequestParam String u_psw, @RequestParam String cfm_psw,
-			Model model, SessionStatus status
+			@RequestParam String u_psw,
+			@RequestParam String cfm_psw,
+			HttpSession session
 	) {
 		if(!(u_psw.equals(cfm_psw))) {
 			ra.addFlashAttribute("errorMessageOfChangingPassword", "兩次密碼不同");
@@ -150,7 +149,7 @@ public class UserController {
 		}
 		
 		userService.updateUser(user_Info);
-		updateLoginBean(model, status);
+		updateLoginBean(session);
 		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
 		return "redirect:/";
 	}
@@ -161,7 +160,7 @@ public class UserController {
 			@ModelAttribute("userBean") User_Info user_Info,
 			BindingResult bindingResult,
 			RedirectAttributes ra,
-			Model model, SessionStatus status
+			HttpSession session
 	) {
 		userValidator.validate(user_Info, bindingResult);
 		if(bindingResult.hasErrors()) {
@@ -198,24 +197,23 @@ public class UserController {
 		}
 		
 		userService.updateUser(user_Info);
-		updateLoginBean(model, status);
+		updateLoginBean(session);
 		ra.addFlashAttribute("successMessage", "修改成功");
 		return "redirect:/gotoUpdateUserinfo.controller";
 	}
 
 
 	// ==================== helpers ====================
-	public void updateLoginBean(Model model, SessionStatus status) {
-		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
-		User_Info updateBean = userService.getSingleUser(loginBean.getU_id());
-		model.addAttribute("loginBean", updateBean);
+	public void updateLoginBean(HttpSession session) {
+		String u_id = ((User_Info) session.getAttribute("loginBean")).getU_id();
+		User_Info updateBean = userService.getSingleUser(u_id);
+		session.setAttribute("loginBean", updateBean);
 	}
 
 
 	// ==================== @ModelAttributes ====================
 	@ModelAttribute("userBean")
-	public User_Info getLoginUserInfos(Model model) {
-		User_Info loginBean = (User_Info)model.getAttribute("loginBean");
+	public User_Info getLoginUserInfos(@SessionAttribute(required = false) User_Info loginBean) {
 		User_Info userInfo = null;
 		try {
 			userInfo = userService.getSingleUser(loginBean.getU_id());

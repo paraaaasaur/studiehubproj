@@ -175,7 +175,7 @@ class AdminUserControllerTest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/"));
 
-		assertNull(mockHttpSession.getAttribute("adminId"));
+		assertTrue(mockHttpSession.isInvalid());
 	}
 
 	@Test

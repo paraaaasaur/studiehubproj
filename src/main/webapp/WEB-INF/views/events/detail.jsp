@@ -26,13 +26,13 @@
 <script type="application/json" id="bootstrap-data">
     {
         "u_id": "<c:out value="${loginBean.u_id}" />",
-        "userPicString": "<c:out value="${loginBean.pictureString}" />",
-        "a_aid": "<c:out value="${eventcontent.a_aid}" />"
+        "userPicString": "<c:out value="${loginBean.pictureString}" />"
     }
 </script>
 <script>
     const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-    const { u_id, userPicString, a_aid } = bootstrapData;
+    const { u_id, userPicString } = bootstrapData;
+	const a_aid = window.location.pathname.split('/').pop();
 
     window.addEventListener("load", function() {
         var logout = document.getElementById("logout");

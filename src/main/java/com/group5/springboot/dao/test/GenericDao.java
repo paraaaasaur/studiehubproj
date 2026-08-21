@@ -1,21 +1,20 @@
 package com.group5.springboot.dao.test;
 
-import com.group5.springboot.dto.CreateEventRequest;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
+import com.group5.springboot.dto.event.CreateEventForm;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
+import com.group5.springboot.model.chat.scaffolding.dev.ChatInfoWithRedundancy;
 import com.group5.springboot.model.chat.scaffolding.dev.PostWithPoster;
 import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.product.Rating;
 import com.group5.springboot.model.question.Question_Info;
-import com.group5.springboot.model.chat.scaffolding.dev.ChatInfoWithRedundancy;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.utils.SystemUtils;
-import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutOneTime;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -30,7 +29,9 @@ import java.sql.Blob;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /** In courtesy of da almighty chatgpt */
 @Profile("test")
@@ -122,7 +123,10 @@ public class GenericDao {
 	}
 
 	private Question_Info saveQuestionButSkipExtStorage(Question_Info rawQuestion, User_Info instructor) throws IOException {
-		// all from controller
+		String q_answer = String.join(",", rawQuestion.getAnswers());
+		rawQuestion.setQ_answer(q_answer);
+
+		// from controller
 		{
 			// db media storage
 			Blob imgBlob = SystemUtils.inputStreamToBlob(rawQuestion.getMultipartFilePic().getInputStream());
@@ -204,9 +208,20 @@ public class GenericDao {
 				.getResultList().toArray(new PostWithPoster[]{});
 	}
 
-	public EventInfo saveEventButNoStorage(CreateEventRequest dto, User_Info loginBean) {
-		// all controller logic🫠
-		EventInfo eventInfo = dto.toEntity();
+	public EventInfo saveEventButNoStorage(CreateEventForm form, User_Info loginBean) {
+		// adapter logic (EventService.applyToEntity())
+		var eventInfo = new EventInfo();
+		eventInfo.setA_name(form.getA_name());
+		eventInfo.setA_type(form.getA_type());
+		eventInfo.setRegistration_starttime(form.getRegistration_starttime());
+		eventInfo.setRegistration_endrttime(form.getRegistration_endrttime());
+		eventInfo.setTransienta_startTime(form.getTransienta_startTime());
+		eventInfo.setTransienta_endTime(form.getTransienta_endTime());
+		eventInfo.setA_address(form.getA_address());
+		eventInfo.setTransientcomment(form.getTransientcomment());
+		eventInfo.setApplicants(form.getApplicants());
+		eventInfo.setEventImage(form.getEventImage());
+
 		em.persist(eventInfo);
 		em.flush();
 

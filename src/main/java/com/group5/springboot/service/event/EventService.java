@@ -1,5 +1,9 @@
 package com.group5.springboot.service.event;
 
+import com.group5.springboot.dto.event.CreateEventForm;
+import com.group5.springboot.dto.event.CreateEventView;
+import com.group5.springboot.dto.event.UpdateEventForm;
+import com.group5.springboot.dto.event.UpdateEventView;
 import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.user.User_Info;
@@ -39,4 +43,14 @@ public interface EventService {
 	boolean isEntryformExist(EventInfo eventInfo,User_Info user_info);
 
 	int findentryformByaidreturnsize(EventInfo eventinfo);
+
+	EventInfo applyToEntity(CreateEventForm form);
+
+	CreateEventView mapToCreateEventView(CreateEventForm form);
+
+	UpdateEventView mapToUpdateEventView(EventInfo entity);
+
+	UpdateEventView mapToUpdateEventView(Long a_aid, UpdateEventForm form);
+
+	EventInfo applyToEntity(Long a_aid, UpdateEventForm form);
 }

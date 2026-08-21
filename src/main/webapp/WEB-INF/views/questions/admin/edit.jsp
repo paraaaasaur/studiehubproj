@@ -48,27 +48,16 @@
 				<div align="center">
 					<h2 align='center'>維護試題資料</h2>
 
-					<form:form method="POST" modelAttribute="Q1" enctype='multipart/form-data'>
+					<form:form method="POST" modelAttribute="updateQuestionView" enctype='multipart/form-data'>
 						<table>
-							<c:choose>
-								<c:when test='${Q1.q_id == null}'>
-									<tr>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-									</tr>
-								</c:when>
-								<c:otherwise>
-									<tr>
-										<td>題目編號：<br>&nbsp;</td>
-									    <td>
-											<form:hidden path="q_id"/>
-										    ${fn:escapeXml(Q1.q_id)}
-										    <br>
-										    &nbsp;
-									    </td>
-									</tr>
-							   </c:otherwise>
-						   </c:choose>
+							<tr>
+								<td>題目編號：<br>&nbsp;</td>
+								<td>
+									<form:hidden path="q_id"/>
+									${fn:escapeXml(updateQuestionView.q_id)}
+									<br>
+								</td>
+							</tr>
 
 							<tr>
 								<td>課程分類：<br>&nbsp;</td>
@@ -144,23 +133,21 @@
 								<td>
 									<form:checkboxes items="${answerList}"  path="answers" />
 								    <br>
-									<form:errors path='q_answer' cssClass="error"/>
+									<form:errors path='answers' cssClass="error"/>
 							    </td>
 						    </tr>
 
 						    <tr>
 							    <td>題目照片：<br>&nbsp;</td>
 							    <td>
-									<form:input path="multipartFilePic" type='file'/>
-									<form:errors path='multipartFilePic' cssClass="error"/>
+									<input name="multipartFilePic" type='file'>
 							    </td>
 							</tr>
 
 							<tr>
 								<td>題目音檔：<br>&nbsp;</td>
 							    <td>
-									<form:input path="multipartFileAudio" type='file'/>
-									<form:errors path='multipartFileAudio' cssClass="error"/>
+									<input name="multipartFileAudio" type='file'>
 							    </td>
 						    </tr>
 

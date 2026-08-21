@@ -1,6 +1,6 @@
 package com.group5.springboot.service.product;
 
-import com.group5.springboot.dto.product.ProductSearchCriteria;
+import com.group5.springboot.dto.product.*;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.product.Rating;
 
@@ -34,4 +34,16 @@ public interface ProductService {
 	void deleteProduct(Integer p_ID);
 
 	Map<String, Object> pendingAccess();
+
+	ProductDetail mapToProductDetail(ProductInfo productInfo);
+
+	UpdateProductView mapToUpdateProductView(ProductInfo productInfo);
+
+	UpdateProductView mapToUpdateProductView(UpdateProductForm form);
+
+	CreateProductView mapToCreateProductView(CreateProductForm form);
+
+	ProductInfo applyToEntity(UpdateProductForm form);
+
+	ProductInfo applyToEntity(CreateProductForm form);
 }

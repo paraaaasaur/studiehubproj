@@ -3,6 +3,9 @@ package com.group5.springboot.controller.user;
 import com.group5.springboot.annotation.auth.RejectsUser;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.dto.user.ProfileForm;
+import com.group5.springboot.dto.user.LoginRequest;
+import com.group5.springboot.dto.user.SignupRequest;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.EmailSenderService;
@@ -10,8 +13,8 @@ import com.group5.springboot.utils.SystemUtils;
 import com.group5.springboot.validate.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -24,6 +27,8 @@ import java.sql.Blob;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.springframework.validation.BindingResult.MODEL_KEY_PREFIX;
 
 @Controller
 public class UserController {
@@ -50,19 +55,23 @@ public class UserController {
 	public String gotoLoginPage() {
 		return "auth/login";
 	}
-	
+
 	@RejectsUser
 	@GetMapping(path = "/gotosignup.controller")
 	public String gotoSignupPage() {
 		return "users/signup";
 	}
-	
+
 	@RequiresUser
 	@GetMapping(path = "/gotoUpdateUserinfo.controller")
-	public String gotoUpdateUserinfo() {
+	public String gotoUpdateUserinfo(Model model, @SessionAttribute User_Info loginBean) {
+		var dbUser = userService.getSingleUser(loginBean.getU_id());
+		var view = userService.mapToProfileView(dbUser);
+		model.addAttribute("view", view);
+		model.addAttribute("genderList", getGenderList());
 		return "users/edit-profile";
 	}
-	
+
 	@RequiresUser
 	@GetMapping(path = "/gotoChangePassword.controller")
 	public String gotoChangePassword() {
@@ -72,17 +81,20 @@ public class UserController {
 	@RejectsUser
 	@PostMapping(path = "/login.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, Object> login(@RequestBody User_Info user_Info, HttpSession session) {
+	public Map<String, Object> login(
+			@RequestBody LoginRequest loginRequest,
+			HttpSession session
+	) {
 		Map<String, Object> map = new HashMap<>();
 		User_Info user_info = null;
 		try {
-			user_info = userService.login(user_Info);
-			if(user_info != null && user_info.getU_id().length()>0) {
+			user_info = userService.login(loginRequest.getU_id(), loginRequest.getU_psw());
+			if (user_info != null && user_info.getU_id().length() > 0) {
 				map.put("success", "登入成功");
 				map.put("loginBean", user_info);
 
 				session.setAttribute("loginBean", user_info);
-			} else if(user_info == null) {
+			} else if (user_info == null) {
 				map.put("fail", "帳號或密碼錯誤，請再試一次...");
 			}
 		} catch (Exception e) {
@@ -90,42 +102,42 @@ public class UserController {
 		}
 		return map;
 	}
-	
+
 	@PostMapping(path = "/checkUserId", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, String> checkUserId(@RequestParam String u_id){
+	public Map<String, String> checkUserId(@RequestParam String u_id) {
 		Map<String, String> map = new HashMap<>();
 		String user_id = userService.checkUserId(u_id);
 		map.put("u_id", user_id);
 		return map;
 	}
-	
+
 	@RejectsUser
 	@PostMapping(path = "/userSignup", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, String> signup(@RequestBody User_Info user_Info){
+	public Map<String, String> signup(@RequestBody SignupRequest signupRequest) {
 		Map<String, String> map = new HashMap<>();
 		try {
-			if(!(user_Info.getU_email().trim().contains("@"))) {
+			if (!(signupRequest.getU_email().trim().contains("@"))) {
 				map.put("formatError", "信箱格式錯誤!");
 				return map;
 			}
 		} catch (Exception e) {
 			map.put("fail", e.getMessage());
 		}
-		
-		
+
+
 		int n = 0;
 		try {
-			n = userService.saveUser(user_Info);
-			if(n == 1) {
+			n = userService.saveUser(signupRequest);
+			if (n == 1) {
 				map.put("success", "註冊成功");
 				//寄成功註冊的信件
-				String body = "用戶: " + user_Info.getU_id() + " 您好，歡迎註冊成為Studie Hub的會員，祝您使用愉快!";
-				emailService.sendSimpleEmail(user_Info.getU_email(),
-											 body,
-											 "Studie Hub 會員註冊成功通知");
-			}else if(n == -1) {
+				String body = "用戶: " + signupRequest.getU_id() + " 您好，歡迎註冊成為Studie Hub的會員，祝您使用愉快!";
+				emailService.sendSimpleEmail(signupRequest.getU_email(),
+						body,
+						"Studie Hub 會員註冊成功通知");
+			} else if (n == -1) {
 				map.put("fail", "帳號重複");
 			}
 		} catch (Exception e) {
@@ -137,54 +149,61 @@ public class UserController {
 	@RequiresUser
 	@PostMapping("/changePassword.controller")
 	public String changePassword(
-			@ModelAttribute("userBean") User_Info user_Info,
-			RedirectAttributes ra,
+			@RequestParam String old_psw,
 			@RequestParam String u_psw,
 			@RequestParam String cfm_psw,
-			HttpSession session
+			RedirectAttributes ra,
+			HttpSession session,
+			@SessionAttribute User_Info loginBean
 	) {
-		if(!(u_psw.equals(cfm_psw))) {
+		if (!(u_psw.equals(cfm_psw))) {
 			ra.addFlashAttribute("errorMessageOfChangingPassword", "兩次密碼不同");
 			return "redirect:/gotoChangePassword.controller";
 		}
-		
-		userService.updateUser(user_Info);
+
+		userService.changePassword(loginBean.getU_id(), u_psw);
 		updateLoginBean(session);
 		ra.addFlashAttribute("successMessageOfChangingPassword", "修改成功");
 		return "redirect:/";
 	}
-	
+
 	@RequiresUser
 	@PostMapping("/updateUserinfo.controller")
 	public String updateUser(
-			@ModelAttribute("userBean") User_Info user_Info,
-			BindingResult bindingResult,
-			RedirectAttributes ra,
-			HttpSession session
+			ProfileForm form, @SessionAttribute User_Info loginBean,
+			Model model, RedirectAttributes ra, HttpSession session
 	) {
-		userValidator.validate(user_Info, bindingResult);
-		if(bindingResult.hasErrors()) {
+		var u_id = loginBean.getU_id();
+
+		var result = userValidator.validate(form);
+		if (result.hasErrors()) {
+			var view = userService.mapToProfileView(u_id, form);
+			model.addAttribute("view", view);
+			model.addAttribute(MODEL_KEY_PREFIX + "view", result);
+			model.addAttribute("genderList", getGenderList());
 			return "users/edit-profile";
 		}
-		
+
+		User_Info user_info = userService.applyToEntity(u_id, form);
+
 		Blob blob = null;
 		String mimeType = "";
 		String ogfName = "";
-		MultipartFile uploadImage = user_Info.getUploadImage();
-		if(uploadImage != null && uploadImage.getSize() > 0) {
+		MultipartFile uploadImage = user_info.getUploadImage();
+		if (uploadImage != null && uploadImage.getSize() > 0) {
 			try {
 				InputStream is = uploadImage.getInputStream();
 				ogfName = uploadImage.getOriginalFilename();
 				blob = SystemUtils.inputStreamToBlob(is);
 				mimeType = context.getMimeType(ogfName);
-				user_Info.setU_img(blob);
-				user_Info.setMimeType(mimeType);
+				user_info.setU_img(blob);
+				user_info.setMimeType(mimeType);
 				String ext = StringUtils.getFilenameExtension(ogfName);
 				try {
 					File imageFolder = new File(AVATAR_STORAGE_DIR);
 					if (!imageFolder.exists())
 						imageFolder.mkdirs();
-					String imageFilename = "MemberImage_" + user_Info.getU_id() + "." + ext;
+					String imageFilename = "MemberImage_" + user_info.getU_id() + "." + ext;
 					File file = new File(imageFolder, imageFilename);
 					uploadImage.transferTo(file);
 				} catch (Exception e) {
@@ -195,8 +214,8 @@ public class UserController {
 				e.printStackTrace();
 			}
 		}
-		
-		userService.updateUser(user_Info);
+
+		userService.updateUser(user_info);
 		updateLoginBean(session);
 		ra.addFlashAttribute("successMessage", "修改成功");
 		return "redirect:/gotoUpdateUserinfo.controller";
@@ -210,24 +229,10 @@ public class UserController {
 		session.setAttribute("loginBean", updateBean);
 	}
 
-
-	// ==================== @ModelAttributes ====================
-	@ModelAttribute("userBean")
-	public User_Info getLoginUserInfos(@SessionAttribute(required = false) User_Info loginBean) {
-		User_Info userInfo = null;
-		try {
-			userInfo = userService.getSingleUser(loginBean.getU_id());
-		} catch (Exception e) {
-			userInfo = new User_Info();
-		}
-		return userInfo;
-	}
-	
-	@ModelAttribute("genderList")
-    public Map<String, String>  getGenderList(){
+	public Map<String, String> getGenderList() {
 		Map<String, String> map = new LinkedHashMap<>();
 		map.put("男", "男");
 		map.put("女", "女");
 		return map;
-    }
+	}
 }

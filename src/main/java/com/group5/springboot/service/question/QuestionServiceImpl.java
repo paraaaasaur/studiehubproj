@@ -1,15 +1,14 @@
 package com.group5.springboot.service.question;
 
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
+import com.group5.springboot.dao.question.QuestionDao;
+import com.group5.springboot.dto.question.*;
+import com.group5.springboot.model.question.Question_Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.group5.springboot.dao.question.QuestionDao;
-import com.group5.springboot.model.question.Question_Info;
+import javax.transaction.Transactional;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -76,5 +75,111 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public Map<String, Object> sendVerifyQuestion() {
 		return questionDao.sendVerifyQuestion();
+	}
+
+	@Override
+	public CreateQuestionView mapToCreateQuestionView(CreateQuestionForm form) {
+		return new CreateQuestionView(
+				form.getQ_class(),
+				form.getQ_type(),
+				form.getQ_question(),
+				form.getQ_selectionA(),
+				form.getQ_selectionB(),
+				form.getQ_selectionC(),
+				form.getQ_selectionD(),
+				form.getQ_selectionE(),
+				form.getAnswers()
+		);
+	}
+
+	@Override
+	public Question_Info applyToEntity(CreateQuestionForm form) {
+		var entity = new Question_Info();
+		entity.setQ_class(form.getQ_class());
+		entity.setQ_type(form.getQ_type());
+		entity.setQ_question(form.getQ_question());
+		entity.setQ_selectionA(form.getQ_selectionA());
+		entity.setQ_selectionB(form.getQ_selectionB());
+		entity.setQ_selectionC(form.getQ_selectionC());
+		entity.setQ_selectionD(form.getQ_selectionD());
+		entity.setQ_selectionE(form.getQ_selectionE());
+		entity.setMultipartFilePic(form.getMultipartFilePic());
+		entity.setMultipartFileAudio(form.getMultipartFileAudio());
+
+		// adaption-required
+		String q_answer = String.join(",", form.getAnswers());
+		entity.setQ_answer(q_answer);
+
+		return entity;
+	}
+
+	@Override
+	public QuestionDetail mapToQuestionDetail(Question_Info entity) {
+		return new QuestionDetail(
+				entity.getQ_id(),
+				entity.getQ_class(),
+				entity.getQ_type(),
+				entity.getQ_question(),
+				entity.getQ_selectionA(),
+				entity.getQ_selectionB(),
+				entity.getQ_selectionC(),
+				entity.getQ_selectionD(),
+				entity.getQ_selectionE(),
+				entity.getQ_answer(),
+				entity.getQ_audioString(),
+				entity.getQ_pictureString()
+		);
+	}
+
+	@Override
+	public UpdateQuestionView mapToUpdateQuestionView(Question_Info entity) {
+		String[] answers = entity.getQ_answer().split(",");
+
+		return new UpdateQuestionView(
+				entity.getQ_id(),
+				entity.getQ_class(),
+				entity.getQ_type(),
+				entity.getQ_question(),
+				entity.getQ_selectionA(),
+				entity.getQ_selectionB(),
+				entity.getQ_selectionC(),
+				entity.getQ_selectionD(),
+				entity.getQ_selectionE(),
+				answers
+		);
+	}
+
+	@Override
+	public UpdateQuestionView mapToUpdateQuestionView(Long q_id, UpdateQuestionForm form) {
+		return new UpdateQuestionView(
+				q_id,
+				form.getQ_class(),
+				form.getQ_type(),
+				form.getQ_question(),
+				form.getQ_selectionA(),
+				form.getQ_selectionB(),
+				form.getQ_selectionC(),
+				form.getQ_selectionD(),
+				form.getQ_selectionE(),
+				form.getAnswers()
+		);
+	}
+
+	@Override
+	public Question_Info applyToEntity(Long q_id, UpdateQuestionForm form) {
+		var entity = questionDao.findById(q_id);
+		entity.setQ_class(form.getQ_class());
+		entity.setQ_type(form.getQ_type());
+		entity.setQ_question(form.getQ_question());
+		entity.setQ_selectionA(form.getQ_selectionA());
+		entity.setQ_selectionB(form.getQ_selectionB());
+		entity.setQ_selectionC(form.getQ_selectionC());
+		entity.setQ_selectionD(form.getQ_selectionD());
+		entity.setQ_selectionE(form.getQ_selectionE());
+		entity.setAnswers(form.getAnswers());
+		entity.setMultipartFilePic(form.getMultipartFilePic());
+		entity.setMultipartFileAudio(form.getMultipartFileAudio());
+
+		return entity;
 	}
 }

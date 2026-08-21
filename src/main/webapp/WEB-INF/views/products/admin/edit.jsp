@@ -73,10 +73,10 @@ textarea {
 
 				<h2 align='center'>請更改課程資訊</h2>
 				<hr>
-				<form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
+				<form:form method="POST" modelAttribute="updateProductView" enctype='multipart/form-data'>
 					<table border="1">
 						<c:choose>
-							<c:when test="${productInfo.p_ID == null }">
+							<c:when test="${updateProductView.p_ID == null }">
 								<tr>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
@@ -87,7 +87,7 @@ textarea {
 									<td>編號:<br>&nbsp;
 									</td>
 									<td><form:hidden path="p_ID" />
-									${fn:escapeXml(productInfo.p_ID) }<br>&nbsp;</td>
+									${fn:escapeXml(updateProductView.p_ID) }<br>&nbsp;</td>
 								</tr>
 							</c:otherwise>
 						</c:choose>
@@ -127,14 +127,13 @@ textarea {
 						<tr>
 							<td>課程圖片:</td>
 							<td>
-								<form:input path="imgFile" type="file" />
-								<form:errors path='imgFile' cssClass="error" />
+								<input type="file" name="imgFile" />
 							</td>
 						</tr>
 						<tr>
 							<td>課程影片:</td>
-							<td><form:input path="videoFile" type="file" />
-								<form:errors path='videoFile' cssClass="error" />
+							<td>
+								<input type="file" name="videoFile" />
 							</td>
 						</tr>
 						<tr>

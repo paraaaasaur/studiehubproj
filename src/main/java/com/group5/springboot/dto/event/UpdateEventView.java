@@ -1,0 +1,86 @@
+package com.group5.springboot.dto.event;
+
+public final class UpdateEventView {
+	private final Long a_aid;
+	private final String a_name;
+	private final String a_type;
+	private final String registration_starttime;
+	private final String registration_endrttime;
+	private final String transienta_startTime;
+	private final String transienta_endTime;
+	private final String a_address;
+	private final String transientcomment;
+	private final int applicants;
+
+
+	public UpdateEventView(Long a_aid, String a_name, String a_type, String registration_starttime, String registration_endrttime, String transienta_startTime, String transienta_endTime, String a_address, String transientcomment, int applicants) {
+		this.a_aid = a_aid;
+		this.a_name = a_name;
+		this.a_type = a_type;
+		this.registration_starttime = registration_starttime;
+		this.registration_endrttime = registration_endrttime;
+		this.transienta_startTime = transienta_startTime;
+		this.transienta_endTime = transienta_endTime;
+		this.a_address = a_address;
+		this.transientcomment = transientcomment;
+		this.applicants = applicants;
+	}
+
+
+	public Long getA_aid() {
+		return a_aid;
+	}
+
+	public String getA_name() {
+		return a_name;
+	}
+
+	public String getA_type() {
+		return a_type;
+	}
+
+	public String getRegistration_starttime() {
+		return registration_starttime;
+	}
+
+	public String getRegistration_endrttime() {
+		return registration_endrttime;
+	}
+
+	public String getTransienta_startTime() {
+		return transienta_startTime;
+	}
+
+	public String getTransienta_endTime() {
+		return transienta_endTime;
+	}
+
+	public String getA_address() {
+		return a_address;
+	}
+
+	public String getTransientcomment() {
+		return transientcomment;
+	}
+
+	public int getApplicants() {
+		return applicants;
+	}
+
+
+	@Override
+	public String toString() {
+		return "UpdateEventView{" +
+			   "a_aid=" + a_aid +
+			   ", a_name='" + a_name + '\'' +
+			   ", a_type='" + a_type + '\'' +
+			   ", registration_starttime='" + registration_starttime + '\'' +
+			   ", registration_endrttime='" + registration_endrttime + '\'' +
+			   ", transienta_startTime='" + transienta_startTime + '\'' +
+			   ", transienta_endTime='" + transienta_endTime + '\'' +
+			   ", a_address='" + a_address + '\'' +
+			   ", transientcomment='" + transientcomment + '\'' +
+			   ", applicants=" + applicants +
+			   '}';
+	}
+}

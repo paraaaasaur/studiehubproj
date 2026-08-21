@@ -68,8 +68,8 @@
 		document.getElementById("q_selectionB").value = "明日、映画を見に行きませんか。";
 		document.getElementById("q_selectionC").value = "明日、映画に行きたいそうですよ。";
 		document.getElementById("q_selectionD").value = "明日、映画の撮影を行きましょうか。";
-		// jsp resolves multiple `path = q_answer` by suffixing each of them numbers from 1
-		document.getElementById("q_answer2").toggleAttribute('checked', true);
+		// jsp resolves multiple `path = answers` by suffixing each of them numbers from 1
+		document.getElementById("answers2").toggleAttribute('checked', true);
 	}
 </script>
 
@@ -85,26 +85,8 @@
 				<div align="center">
 					<br>
 					<h2 align='center'>新增試題資料</h2>
-					<form:form method="POST"  modelAttribute="Q1" enctype='multipart/form-data'>
+					<form:form method="POST"  modelAttribute="createQuestionView" enctype='multipart/form-data'>
 						<table>
-							<c:choose>
-								<c:when test='${question_Info.q_id == null}'>
-									<tr>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-									</tr>
-								</c:when>
-								<c:otherwise>
-									<tr>
-										<td>題目編號：<br>&nbsp;</td>
-										<td>
-											<form:hidden path='q_id'/>
-											${fn:escapeXml(question_Info.q_id)}<br>&nbsp;
-										</td>
-									</tr>
-								</c:otherwise>
-							</c:choose>
-
 							<tr>
 								<td>課程分類：<br>&nbsp;</td>
 								<td>
@@ -177,25 +159,23 @@
 							<tr>
 								<td>正解：<br>&nbsp;</td>
 								<td>
-									<form:checkboxes items="${answerList}" path="q_answer" />
+									<form:checkboxes items="${answerList}" path="answers" />
 									<br>
-									<form:errors path='q_answer' cssClass="error"/>
+									<form:errors path='answers' cssClass="error"/>
 								</td>
 							</tr>
 
 							<tr>
 								<td>題目照片<br>&nbsp;</td>
 								<td>
-									<form:input path="multipartFilePic" type='file'/>
-									<form:errors path='multipartFilePic' cssClass="error"/>
+									<input name="multipartFilePic" type='file'/>
 								</td>
 							</tr>
 
 							<tr>
 								<td>題目音檔：<br>&nbsp;</td>
 								<td>
-									<form:input path="multipartFileAudio" type='file'/>
-									<form:errors path='multipartFileAudio' cssClass="error"/>
+									<input name="multipartFileAudio" type='file'/>
 								</td>
 							</tr>
 

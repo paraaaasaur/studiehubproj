@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,17 +87,17 @@
 				<hr>
 				<div style="text-align: center;">
 					<div style="display: inline-block; text-align: left;">
-						<form:form method="POST" action="changePassword.controller" modelAttribute="userBean">
+						<form method="POST" action="changePassword.controller">
       						目前的密碼: <input type="password" name="old_psw" id='old_psw' placeholder="Current password">
 							<br>
-							新密碼: <form:password path="u_psw" name="u_psw" id="u_psw" placeholder="New password" />
+							新密碼: <input type="password" name="u_psw" id="u_psw" placeholder="New password" required>
 							<br>
       						再次輸入新密碼: <input type="password" name="cfm_psw" id='cfm_psw' placeholder="Confirm new password" required>
 							<br>
 							<div align='center'>
 								<input type="submit" id="save" value="儲存變更">
 							</div>
-						</form:form>
+						</form>
 					</div>
 					<hr>
 				</div>

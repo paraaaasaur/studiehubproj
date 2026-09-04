@@ -1,14 +1,13 @@
 package com.group5.springboot.dao.user;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.group5.springboot.dto.user.SignupRequest;
+import com.group5.springboot.model.user.User_Info;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.group5.springboot.model.user.User_Info;
+import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -36,11 +35,11 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
-	public int saveUser(User_Info user_Info) {
+	public int saveUser(SignupRequest signupRequest) {
 		int n = 0;
 		boolean exist = false;
 
-		User_Info ckResult = em.find(User_Info.class, user_Info.getU_id());
+		User_Info ckResult = em.find(User_Info.class, signupRequest.getU_id());
 		if (!(ckResult == null) && !(ckResult.getU_id().length() == 0)) {
 			exist = true;
 		}
@@ -50,7 +49,7 @@ public class UserDaoImpl implements UserDao {
 		}
 
 		try {
-			em.persist(user_Info);
+			em.persist(signupRequest.toEntity());
 			n = 1;
 		} catch (Exception e) {
 			n = -2;
@@ -59,13 +58,13 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User_Info login(User_Info user_Info) {
+	public User_Info login(String u_id, String u_psw) {
 		User_Info user_info = null;
 		String hql = "from User_Info where u_id=:id and u_psw=:psw";
 		try {
 			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)
-					.setParameter("id", user_Info.getU_id())
-					.setParameter("psw", user_Info.getU_psw());
+					.setParameter("id", u_id)
+					.setParameter("psw", u_psw);
 			User_Info loginBean = query.uniqueResult();
 			if (loginBean != null && !(loginBean.getU_id().length() == 0)) {
 				user_info = loginBean;

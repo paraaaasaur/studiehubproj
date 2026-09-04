@@ -58,9 +58,9 @@ public class UserfunctionController {
 	@RejectsUser
 	@PostMapping(path = "/sendRandomPasswordToRegisteredEmail.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, String> resetPasswordAndSendEmail(@RequestBody User_Info userInfo) {
+	public Map<String, String> resetPasswordAndSendEmail(@RequestBody Map<String, String> u_emailMap) {
 		Map<String, String> maps = new HashMap<>();
-		String u_email = userInfo.getU_email();
+		String u_email = u_emailMap.get("u_email");
 		User_Info searchResult = userService.getUserInfoForForgetPassword(u_email);
 		
 		if(searchResult == null) {

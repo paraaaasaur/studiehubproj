@@ -1,15 +1,14 @@
 package com.group5.springboot.service.question;
 
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
+import com.group5.springboot.dao.question.QuestionDao;
+import com.group5.springboot.dto.question.*;
+import com.group5.springboot.model.question.Question_Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.group5.springboot.dao.question.QuestionDao;
-import com.group5.springboot.model.question.Question_Info;
+import javax.transaction.Transactional;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -76,5 +75,44 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public Map<String, Object> sendVerifyQuestion() {
 		return questionDao.sendVerifyQuestion();
+	}
+
+	@Override
+	public Question_Info applyToEntity(CreateQuestionRequest data) {
+		var entity = new Question_Info();
+		entity.setQ_class(data.getQ_class());
+		entity.setQ_type(data.getQ_type());
+		entity.setQ_question(data.getQ_question());
+		entity.setQ_selectionA(data.getQ_selectionA());
+		entity.setQ_selectionB(data.getQ_selectionB());
+		entity.setQ_selectionC(data.getQ_selectionC());
+		entity.setQ_selectionD(data.getQ_selectionD());
+		entity.setQ_selectionE(data.getQ_selectionE());
+		entity.setMultipartFilePic(data.getMultipartFilePic());
+		entity.setMultipartFileAudio(data.getMultipartFileAudio());
+
+		// adaption-required
+		String q_answer = String.join(",", data.getAnswers());
+		entity.setQ_answer(q_answer);
+
+		return entity;
+	}
+
+	@Override
+	public Question_Info applyToEntity(Long q_id, UpdateQuestionRequest data) {
+		var entity = questionDao.findById(q_id);
+		entity.setQ_class(data.getQ_class());
+		entity.setQ_type(data.getQ_type());
+		entity.setQ_question(data.getQ_question());
+		entity.setQ_selectionA(data.getQ_selectionA());
+		entity.setQ_selectionB(data.getQ_selectionB());
+		entity.setQ_selectionC(data.getQ_selectionC());
+		entity.setQ_selectionD(data.getQ_selectionD());
+		entity.setQ_selectionE(data.getQ_selectionE());
+		entity.setAnswers(data.getAnswers());
+		entity.setMultipartFilePic(data.getMultipartFilePic());
+		entity.setMultipartFileAudio(data.getMultipartFileAudio());
+
+		return entity;
 	}
 }

@@ -1,8 +1,5 @@
 package com.group5.springboot.controller.product;
 
-import java.util.List;
-import java.util.Map;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.dto.product.ProductSearchCriteria;
 import com.group5.springboot.model.product.ProductInfo;
@@ -12,9 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class ProductResultController {
-	final ProductService productService;
+	private final ProductService productService;
 
 
 	@Autowired

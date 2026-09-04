@@ -174,11 +174,11 @@
 	}
 	function onclickApprove(e, p_ID) {
 		e.preventDefault();
-		window.location.href = '/accessResult/' + p_ID;
+		window.location.href = 'accessResult/' + p_ID;
 	}
 	function onclickDelete(e, p_ID) {
 		e.preventDefault();
-		window.location.href = '/deleteProduct/' + p_ID;
+		window.location.href = 'deleteProduct/' + p_ID;
 	}
 </script>
 

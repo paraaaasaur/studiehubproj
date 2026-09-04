@@ -32,4 +32,14 @@ public final class ProductSearchCriteria {
 	public void setApproved(Boolean approved) {
 		this.approved = approved;
 	}
+
+
+	@Override
+	public String toString() {
+		return "ProductSearchCriteria{" +
+			   "pname='" + pname + '\'' +
+			   ", producttypename='" + producttypename + '\'' +
+			   ", approved=" + approved +
+			   '}';
+	}
 }

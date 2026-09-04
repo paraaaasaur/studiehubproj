@@ -296,6 +296,7 @@ class UserControllerTest {
 		mockMvc.perform(post("/changePassword.controller")
 					.session(mockHttpSession)
 					.contentType(APPLICATION_FORM_URLENCODED)
+					.param("old_psw", joshua.getU_psw())
 					.param("u_psw", "tasukaru")
 					.param("cfm_psw", "tasukaru"))
 
@@ -323,6 +324,7 @@ class UserControllerTest {
 		mockMvc.perform(post("/changePassword.controller")
 						.session(mockHttpSession)
 						.contentType(APPLICATION_FORM_URLENCODED)
+						.param("old_psw", joshua.getU_psw())
 						.param("u_psw", "honeybee")
 						.param("cfm_psw", "wasp"))
 
@@ -402,9 +404,11 @@ class UserControllerTest {
 		mockMvc.perform(multipart("/updateUserinfo.controller")
 						.contentType(APPLICATION_FORM_URLENCODED)
 						.session(mockHttpSession)
-						.param("u_lastname", "")) // mandatory field empty
+						.param("u_firstname", "") // mandatory field empty
+						.param("u_lastname", "") // mandatory field empty
+						.param("u_email", "")) // mandatory field empty
 
 				.andExpect(view().name("users/edit-profile"))
-				.andExpect(model().errorCount(1));
+				.andExpect(model().errorCount(3));
 	}
 }

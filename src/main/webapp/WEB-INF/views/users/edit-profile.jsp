@@ -109,11 +109,11 @@
 
 				<div align='center'>
 					<br>
-					<form:form method="POST" action="updateUserinfo.controller" modelAttribute="userBean" enctype='multipart/form-data'>
+					<form:form method="POST" action="updateUserinfo.controller" modelAttribute="view" enctype='multipart/form-data'>
 						<table style="width: 750px;">
 							<tr>
 								<td class="tdTitle">帳號:</td>
-								<td class="tdContent"><b>${fn:escapeXml(userBean.u_id)}</b></td>
+								<td class="tdContent"><b>${fn:escapeXml(view.u_id)}</b></td>
 								<td class="tdError">&nbsp;</td>
 							</tr>
 							<tr>

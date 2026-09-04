@@ -1,43 +1,37 @@
 package com.group5.springboot.controller.question;
 
-import java.io.File;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.dto.question.*;
+import com.group5.springboot.model.question.Question_Info;
+import com.group5.springboot.service.question.QuestionService;
 import com.group5.springboot.utils.SystemUtils;
+import com.group5.springboot.validate.QuestionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.group5.springboot.model.question.Question_Info;
-import com.group5.springboot.service.question.QuestionService;
-import com.group5.springboot.validate.QuestionValidator;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.validation.BindingResult.MODEL_KEY_PREFIX;
 
 @Controller
 public class QuestionController {
-	final QuestionService questionService;
-	final ServletContext context;
-	final QuestionValidator questionValidator;
+	private final QuestionService questionService;
+	private final ServletContext context;
+	private final QuestionValidator questionValidator;
 
 	private final String IMAGE_AUDIO_STORAGE_DIR;
 
@@ -47,38 +41,36 @@ public class QuestionController {
 		this.questionService = questionService;
 		this.context = context;
 		this.questionValidator = questionValidator;
-		IMAGE_AUDIO_STORAGE_DIR = props.getQuestionAudioAndImageUploadStorageDir();
+		this.IMAGE_AUDIO_STORAGE_DIR = props.getQuestionAudioAndImageUploadStorageDir();
 	}
 
 
 	@GetMapping(path = "/question.controller/turnQuestionIndex")
 	public String turnQuestionIndex() {
 		return "questions/exam/index";
-	}	
-	
+	}
+
 	@RequiresUser
 	@GetMapping("/question.controller/insertQuestion")
-	public String sendInsertQuestion() {
+	public String sendInsertQuestion(Model model) {
+		addCreateQuestionAttributes(model, CreateQuestionResponse.newInstance());
 		return "questions/add";
 	}
-	
+
 	@RequiresUser
 	@PostMapping("/question.controller/insertQuestion")
 	public String saveQuestion(
-			@ModelAttribute("Q1") Question_Info question_Info,
-			BindingResult result,
-			RedirectAttributes ra
+			@ModelAttribute("createQuestionResponse") CreateQuestionRequest req, 
+			RedirectAttributes ra, Model model
 	) {
-		questionValidator.validate(question_Info, result);
+		var result = questionValidator.validate(req);
 		if (result.hasErrors()) {
-			List<ObjectError> list = result.getAllErrors();
-			for (ObjectError error : list) {
-				System.out.println("有錯誤：" + error);
-			}
+			readdCreateQuestionAttributes(model, req, result);
 			return "questions/add";
 		}
-		
-		
+
+		var question_Info = questionService.applyToEntity(req);
+
 		Blob blob = null;
 		String mimeTypePic = "";
 		String mimeTypeAudio = "";
@@ -94,20 +86,20 @@ public class QuestionController {
 			mimeTypePic = context.getMimeType(namePic);
 			question_Info.setQ_picture(blob);
 			question_Info.setMimeTypePic(mimeTypePic);
-			
+
 			is = multipartFileAudio.getInputStream();
 			nameAudio = multipartFileAudio.getOriginalFilename();
 			blob = SystemUtils.inputStreamToBlob(is);
 			mimeTypeAudio = context.getMimeType(nameAudio);
 			question_Info.setQ_audio(blob);
 			question_Info.setMimeTypeAudio(mimeTypeAudio);
-			
+
 			question_Info.setVerification("N");  //設定為待審核 
 			question_Info.setCreateDate(new Timestamp(System.currentTimeMillis()));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		questionService.insertQuestion(question_Info);
 		String extPic = StringUtils.getFilenameExtension(namePic);
 		String extAudio = StringUtils.getFilenameExtension(nameAudio);
@@ -127,34 +119,33 @@ public class QuestionController {
 			e.printStackTrace();
 			throw new RuntimeException("檔案上傳發生異常: " + e.getMessage());
 		}
-		
+
 		ra.addFlashAttribute("successMessage", "申請編號: " + question_Info.getQ_id() + "，  已成功送至審核作業中！");
 		return "redirect:/question.controller/guestQueryQuestion";
 	}
-	
+
 	@GetMapping("/question.controller/guestQueryQuestion")
 	public String sendGuestQueryQuestion() {
 		return "questions/list";
-	}	
+	}
 
 	@GetMapping("/question.controller/guestOneQuestion/{q_id}")
     public String guestOneQuestion(@PathVariable Long q_id, Model model) {
-		Question_Info question_Info = questionService.findApprovedById(q_id);
-		model.addAttribute("Q1", question_Info);
+		model.addAttribute("questionDetail", getPublicQuestionDetail(q_id));
 		return "questions/detail";
-	}	
+	}
 
-    @RequiresAdmin
+	@RequiresAdmin
 	@GetMapping("/question.controller/queryQuestion")
 	public String sendQueryQuestion() {
 		return "questions/admin/list";
 	}
-	
+
 	@GetMapping(value="/question.controller/findAllQuestions", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> findAllQuestions(){
 		return questionService.findAllQuestions();
 	}
-	
+
 	@GetMapping(value="/question.controller/queryByName", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> queryByName(@RequestParam("qname") String qname) {
 		return questionService.queryByName(qname);
@@ -163,33 +154,25 @@ public class QuestionController {
 	@RequiresAdmin
 	@GetMapping("/question.controller/modifyQuestion/{q_id}")
     public String sendEditPage(@PathVariable Long q_id, Model model) {
-		Question_Info question_Info = questionService.findById(q_id);
-	    
-		String q_answer = question_Info.getQ_answer();
-	    System.out.println(q_answer);
-	    question_Info.setAnswers(q_answer.split(","));
-		
-		model.addAttribute("Q1", question_Info);
+		addUpdateQuestionAttributes(model, q_id);
 		return "questions/admin/edit";
 	}
 
 	@RequiresAdmin
 	@PostMapping("/question.controller/modifyQuestion/{q_id}")
 	public String updateQuestion(
-			@ModelAttribute("Q1") Question_Info question_Info,
-			BindingResult result, 
-			RedirectAttributes ra
+			@ModelAttribute("updateQuestionResponse") UpdateQuestionRequest req,
+			RedirectAttributes ra, Model model
 	) {
-		
-		questionValidator.validate(question_Info, result);
+		var result = questionValidator.validate(req);
 		if (result.hasErrors()) {
-			List<ObjectError> list = result.getAllErrors();
-			for (ObjectError error : list) {
-				System.out.println("有錯誤：" + error);
-			}
+			readdUpdateQuestionAttributes(model, req.getQ_id(), req, result);
 			return "questions/admin/edit";
 		}
-		
+
+
+		var question_Info = questionService.applyToEntity(req.getQ_id(), req);
+
 		Blob blob = null;
 		String mimeTypePic = "";
 		String mimeTypeAudio = "";
@@ -197,9 +180,7 @@ public class QuestionController {
 		String nameAudio = "";
 		MultipartFile multipartFilePic = question_Info.getMultipartFilePic();
 		MultipartFile multipartFileAudio = question_Info.getMultipartFileAudio();
-		
-		System.out.println("multipartFilePic=" + multipartFilePic);
-		System.out.println("size=" + multipartFilePic.getSize());
+
 
 		if (multipartFilePic != null && multipartFilePic.getSize() > 0) {
 			try {
@@ -217,16 +198,16 @@ public class QuestionController {
 				String filenamePic = "QuestionFile_" + question_Info.getQ_id() + "." + extPic;
 				File filePic = new File(fileFolder, filenamePic);
 				multipartFilePic.transferTo(filePic);
-			
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException("檔案上傳發生異常: " + e.getMessage());
 			}
-			
+
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
-		
+
 			}
 		if (multipartFileAudio != null && multipartFileAudio.getSize() > 0) {
 			try {
@@ -236,7 +217,7 @@ public class QuestionController {
 				mimeTypeAudio = context.getMimeType(nameAudio);
 				question_Info.setQ_audio(blob);
 				question_Info.setMimeTypeAudio(mimeTypeAudio);
-		
+
 			String extAudio = StringUtils.getFilenameExtension(nameAudio);
 			try {
 				File fileFolder = new File(IMAGE_AUDIO_STORAGE_DIR);
@@ -249,42 +230,42 @@ public class QuestionController {
 				e.printStackTrace();
 				throw new RuntimeException("檔案上傳發生異常: " + e.getMessage());
 			}
-			
+
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
 	    }
-		
-		
+
+
         String a = question_Info.toString().replaceAll("\\s+","");  //陣列轉字串，將空白替處理掉
         question_Info.setQ_answer(a.substring(1,a.length()-1));  //處理掉中框弧
         System.out.println(a.substring(1,a.length()-1));
-		
-		
+
+
 		questionService.update(question_Info);
 		ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  修改成功!");
 		return "redirect:/question.controller/queryQuestion";
 	}
 
-    @RequiresAdmin
+	@RequiresAdmin
 	@GetMapping("/question.controller/deleteQuestion/{q_id}")
-	public String deleteEditPage(@PathVariable Long q_id, Model model,RedirectAttributes ra) {
+	public String deleteEditPage(@PathVariable Long q_id, RedirectAttributes ra) {
 		Question_Info question_Info = questionService.findById(q_id);
 		questionService.deleteQuestion(question_Info);
 		ra.addFlashAttribute("successMessage", "題目編號: " + question_Info.getQ_id() + "  刪除成功!");
 		return "redirect:/question.controller/queryQuestion";
 	}
-	
+
 	@GetMapping(value="/question.controller/sendRandomMixExam", produces = "application/json; charset=UTF-8")
 	public @ResponseBody Map<String, Object> sendRandomMixExam(){
 		return questionService.sendRandomMixExam();
 	}
-	
+
 	@GetMapping("/question.controller/startRandomMixExam")
 	public String startRandomMixExam() {
 		return "questions/exam/jp-mixed-types";
 	}
-	
+
 	@RequiresAdmin
 	@GetMapping("/question.controller/intoVerifyQuestion")
 	public String intoVerifyQuestion() {
@@ -296,10 +277,10 @@ public class QuestionController {
 	public @ResponseBody Map<String, Object> sendVerifyQuestion(){
 		return questionService.sendVerifyQuestion();
 	}
-	
+
 	@RequiresAdmin
 	@GetMapping("/question.controller/verifyPassQuestion/{q_id}")
-	public String verifyPassQuestion(@PathVariable Long q_id,Model model,RedirectAttributes ra) {
+	public String verifyPassQuestion(@PathVariable Long q_id, RedirectAttributes ra) {
 		Question_Info question_Info = questionService.findById(q_id);
 		question_Info.setVerification("Y");
 		questionService.update(question_Info);
@@ -309,56 +290,155 @@ public class QuestionController {
 
 	@RequiresAdmin
 	@GetMapping("/question.controller/verifyDeleteQuestion/{q_id}")
-	public String verifydeleteEditPage(@PathVariable Long q_id, Model model,RedirectAttributes ra) {
+	public String verifydeleteEditPage(@PathVariable Long q_id, RedirectAttributes ra) {
 	Question_Info question_Info = questionService.findById(q_id);
 	questionService.deleteQuestion(question_Info);
 	ra.addFlashAttribute("successMessage", "申請編號: " + question_Info.getQ_id() + "  未通過審核，已取消申請！");
-	return "redirect:/question.controller/intoVerifyQuestion";	
+	return "redirect:/question.controller/intoVerifyQuestion";
 	}
 
 	@RequiresAdmin
 	@GetMapping("/question.controller/verifyOneQuestion/{q_id}")
     public String verifyOneQuestion(@PathVariable Long q_id, Model model) {
-		Question_Info question_Info = questionService.findById(q_id);
-		model.addAttribute("Q1", question_Info);
+		model.addAttribute("questionDetail", getPendingQuestionDetail(q_id));
 		return "questions/admin/pending-detail";
-	}	
-
-
-	// ==================== @ModelAttribute ====================
-	@ModelAttribute("Q1")
-	public Question_Info getQuestion1(@RequestParam(value="q_id", required = false ) Long q_id) {
-		System.out.println("------------------------------------------");
-		Question_Info question_Info = null;
-		if (q_id != null) {
-			question_Info = questionService.findById(q_id);
-		} else {
-			question_Info = new Question_Info();
-		}
-		System.out.println("In @ModelAttribute, question_Info=" + question_Info);
-		return question_Info;
 	}
 
-	@ModelAttribute("classList")
-    public Map<String, String>  getClassList(){
+
+	// helpers
+	private void addCreateQuestionAttributes(Model model, CreateQuestionResponse view) {
+		model.addAttribute("classList", getClassList());
+		model.addAttribute("typeList", getTypeList());
+		model.addAttribute("answerList", getAnswerList());
+		model.addAttribute("createQuestionResponse", CreateQuestionResponse.newInstance());
+	}
+
+	private void readdCreateQuestionAttributes(Model model, CreateQuestionRequest req, BindingResult result) {
+		var response = toResponse(req);
+
+		model.addAttribute("createQuestionResponse", response);
+		model.addAttribute(MODEL_KEY_PREFIX + "createQuestionResponse", result);
+		model.addAttribute("classList", getClassList());
+		model.addAttribute("typeList", getTypeList());
+		model.addAttribute("answerList", getAnswerList());
+	}
+
+	private void addUpdateQuestionAttributes(Model model, Long q_id) {
+		var entity = questionService.findApprovedById(q_id);
+		var response = toResponse(entity);
+
+		model.addAttribute("classList", getClassList());
+		model.addAttribute("typeList", getTypeList());
+		model.addAttribute("answerList", getAnswerList());
+		model.addAttribute("updateQuestionResponse", response);
+	}
+
+	private void readdUpdateQuestionAttributes(Model model, Long q_id, UpdateQuestionRequest req, BindingResult result) {
+		var response = toResponse(q_id, req);
+
+		model.addAttribute("classList", getClassList());
+		model.addAttribute("typeList", getTypeList());
+		model.addAttribute("answerList", getAnswerList());
+		model.addAttribute("updateQuestionResponse", response);
+		model.addAttribute(MODEL_KEY_PREFIX + "updateQuestionResponse", result);
+	}
+
+	// facades
+	private QuestionDetail getPendingQuestionDetail(Long q_id) {
+		var entity = questionService.findById(q_id);
+		var questionDetail = toQuestionDetail(entity);
+		return questionDetail;
+	}
+
+	private QuestionDetail getPublicQuestionDetail(Long q_id) {
+		var entity = questionService.findApprovedById(q_id);
+		var questionDetail = toQuestionDetail(entity);
+		return questionDetail;
+	}
+	
+	// adapters
+	private CreateQuestionResponse toResponse(CreateQuestionRequest req) {
+		return new CreateQuestionResponse(
+				req.getQ_class(),
+				req.getQ_type(),
+				req.getQ_question(),
+				req.getQ_selectionA(),
+				req.getQ_selectionB(),
+				req.getQ_selectionC(),
+				req.getQ_selectionD(),
+				req.getQ_selectionE(),
+				req.getAnswers()
+		);
+	}
+
+	private QuestionDetail toQuestionDetail(Question_Info entity) {
+		return new QuestionDetail(
+				entity.getQ_id(),
+				entity.getQ_class(),
+				entity.getQ_type(),
+				entity.getQ_question(),
+				entity.getQ_selectionA(),
+				entity.getQ_selectionB(),
+				entity.getQ_selectionC(),
+				entity.getQ_selectionD(),
+				entity.getQ_selectionE(),
+				entity.getQ_answer(),
+				entity.getQ_audioString(),
+				entity.getQ_pictureString()
+		);
+	}
+
+	private UpdateQuestionResponse toResponse(Question_Info entity) {
+		String[] answers = entity.getQ_answer().split(",");
+
+		return new UpdateQuestionResponse(
+				entity.getQ_id(),
+				entity.getQ_class(),
+				entity.getQ_type(),
+				entity.getQ_question(),
+				entity.getQ_selectionA(),
+				entity.getQ_selectionB(),
+				entity.getQ_selectionC(),
+				entity.getQ_selectionD(),
+				entity.getQ_selectionE(),
+				answers
+		);
+	}
+
+	private UpdateQuestionResponse toResponse(Long q_id, UpdateQuestionRequest req) {
+		return new UpdateQuestionResponse(
+				q_id,
+				req.getQ_class(),
+				req.getQ_type(),
+				req.getQ_question(),
+				req.getQ_selectionA(),
+				req.getQ_selectionB(),
+				req.getQ_selectionC(),
+				req.getQ_selectionD(),
+				req.getQ_selectionE(),
+				req.getAnswers()
+		);
+	}
+
+
+	// model attrs
+	public Map<String, String> getClassList() {
 		Map<String, String> map = new HashMap<>();
 		map.put("英語", "英語");
 		map.put("日語", "日語");
 		map.put("德語", "德語");
 		return map;
-    }	
-	
-	@ModelAttribute("typeList")
-    public Map<String, String>  getTypeList(){
+	}
+
+	public Map<String, String> getTypeList() {
 		Map<String, String> map = new HashMap<>();
 		map.put("單選題", "單選題");
 		map.put("多選題", "多選題");
 		map.put("聽力題", "聽力題");
 		return map;
-    }
-	
-	@ModelAttribute("answerList")
-    public Map<String, String>  getAnswerList(){
+	}
+
+	public Map<String, String>  getAnswerList() {
 		Map<String, String> map = new HashMap<>();
 		map.put("A", "選項A");
 		map.put("B", "選項B");
@@ -366,5 +446,5 @@ public class QuestionController {
 		map.put("D", "選項D");
 		map.put("E", "選項E");
 		return map;
-    }
+	}
 }

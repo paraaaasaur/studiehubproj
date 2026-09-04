@@ -1,8 +1,9 @@
 package com.group5.springboot.service.question;
 
-import java.util.Map;
-
+import com.group5.springboot.dto.question.*;
 import com.group5.springboot.model.question.Question_Info;
+
+import java.util.Map;
 
 public interface QuestionService {
 	void insertQuestion(Question_Info question_Info) ;
@@ -24,4 +25,16 @@ public interface QuestionService {
 
 	////回傳待審核資料
 	Map<String, Object> sendVerifyQuestion();
+
+	CreateQuestionView mapToCreateQuestionView(CreateQuestionForm form);
+
+	Question_Info applyToEntity(CreateQuestionForm form);
+
+	QuestionDetail mapToQuestionDetail(Question_Info entity);
+
+	UpdateQuestionView mapToUpdateQuestionView(Question_Info entity);
+
+	UpdateQuestionView mapToUpdateQuestionView(Long q_id, UpdateQuestionForm form);
+
+	Question_Info applyToEntity(Long q_id, UpdateQuestionForm form);
 }

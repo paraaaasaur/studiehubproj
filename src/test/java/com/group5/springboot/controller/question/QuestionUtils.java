@@ -20,7 +20,7 @@ public final class QuestionUtils {
 			question_Info.setQ_selectionB("明日、映画を見に行きませんか。");
 			question_Info.setQ_selectionC("明日、映画に行きたいそうですよ。");
 			question_Info.setQ_selectionD("明日、映画の撮影を行きましょうか。");
-			question_Info.setQ_answer("B");
+			question_Info.setAnswers(new String[]{"B"});
 
 			// optional
 			question_Info.setMultipartFilePic(new MockMultipartFile("multipartFilePic", "mock-image.jpg", MediaType.IMAGE_JPEG_VALUE, "mock-image-content".getBytes()));
@@ -43,7 +43,7 @@ public final class QuestionUtils {
 			question_Info.setQ_selectionB("駅で待ち合わせします。");
 			question_Info.setQ_selectionC("電車を見に行きます。");
 			question_Info.setQ_selectionD("切符を買いたいです。");
-			question_Info.setQ_answer("A");
+			question_Info.setAnswers(new String[]{"A"});
 
 			// optional
 			question_Info.setMultipartFilePic(
@@ -70,7 +70,7 @@ public final class QuestionUtils {
 			question_Info.setQ_selectionB("はい、特に予定はありません。");
 			question_Info.setQ_selectionC("毎週土曜日に行きます。");
 			question_Info.setQ_selectionD("土曜日が一番忙しいです。");
-			question_Info.setQ_answer("B");
+			question_Info.setAnswers(new String[]{"B"});
 
 			// optional
 			question_Info.setMultipartFilePic(
@@ -97,7 +97,7 @@ public final class QuestionUtils {
 			question_Info.setQ_selectionB("図書館は日曜日に休みます。");
 			question_Info.setQ_selectionC("図書館は夜八時まで開いています。");
 			question_Info.setQ_selectionD("学生は図書館を利用できません。");
-			question_Info.setQ_answer("C");
+			question_Info.setAnswers(new String[]{"C"});
 
 			// optional
 			question_Info.setMultipartFilePic(

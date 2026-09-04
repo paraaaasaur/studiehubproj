@@ -2,6 +2,7 @@ package com.group5.springboot.controller.question;
 
 import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
+import com.group5.springboot.dto.question.QuestionDetail;
 import com.group5.springboot.model.question.Question_Info;
 import com.group5.springboot.model.user.User_Info;
 import org.junit.jupiter.api.AfterEach;
@@ -127,7 +128,7 @@ class QuestionControllerTest {
 						.param("q_selectionB", newQuestion.getQ_selectionB())
 						.param("q_selectionC", newQuestion.getQ_selectionC())
 						.param("q_selectionD", newQuestion.getQ_selectionD())
-						.param("q_answer", newQuestion.getQ_answer()))
+						.param("answers", newQuestion.getAnswers()))
 
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attribute("successMessage", notNullValue()))
@@ -161,7 +162,7 @@ class QuestionControllerTest {
 						.param("q_selectionB", newQuestion.getQ_selectionB())
 						.param("q_selectionC", newQuestion.getQ_selectionC())
 						.param("q_selectionD", newQuestion.getQ_selectionD())
-						.param("q_answer", newQuestion.getQ_answer()))
+						.param("answers", newQuestion.getAnswers()))
 
 				.andExpect(view().name("questions/add"))
 				.andExpect(model().errorCount(1));
@@ -183,7 +184,7 @@ class QuestionControllerTest {
 		mockMvc.perform(get("/question.controller/guestOneQuestion/{q_id}", q_id))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("Q1", isA(Question_Info.class)))
+				.andExpect(model().attribute("questionDetail", isA(QuestionDetail.class)))
 				.andExpect(view().name("questions/detail"));
 	}
 
@@ -250,7 +251,7 @@ class QuestionControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("Q1"))
+				.andExpect(model().attributeExists("updateQuestionView"))
 				.andExpect(view().name("questions/admin/edit"));
 	}
 
@@ -281,7 +282,7 @@ class QuestionControllerTest {
 						.param("q_selectionB", question1CreateRequest.getQ_selectionB())
 						.param("q_selectionC", question1CreateRequest.getQ_selectionC())
 						.param("q_selectionD", question1CreateRequest.getQ_selectionD())
-						.param("q_answer", question1CreateRequest.getQ_answer())
+						.param("answers", question1CreateRequest.getAnswers())
 						.contentType(MULTIPART_FORM_DATA)
 						.session(mockHttpSession))
 
@@ -317,7 +318,7 @@ class QuestionControllerTest {
 						.param("q_selectionB", question1CreateRequest.getQ_selectionB())
 						.param("q_selectionC", question1CreateRequest.getQ_selectionC())
 						.param("q_selectionD", question1CreateRequest.getQ_selectionD())
-						.param("q_answer", question1CreateRequest.getQ_answer())
+						.param("answers", question1CreateRequest.getAnswers())
 						.contentType(MULTIPART_FORM_DATA)
 						.session(mockHttpSession))
 
@@ -489,16 +490,17 @@ class QuestionControllerTest {
 
 
 		long q_id = question2.getQ_id();
-		MvcResult mvcResult = mockMvc.perform(get("/question.controller/verifyOneQuestion/{q_id}", q_id)
+		MvcResult mvcResult = mockMvc
+				.perform(get("/question.controller/verifyOneQuestion/{q_id}", q_id)
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("Q1"))
+				.andExpect(model().attributeExists("questionDetail"))
 				.andExpect(view().name("questions/admin/pending-detail"))
 				.andReturn();
 
-		Question_Info q1 = (Question_Info) mvcResult.getModelAndView().getModel().get("Q1");
-		assertEquals(q_id, q1.getQ_id());
+		QuestionDetail questionDetail = (QuestionDetail) mvcResult.getModelAndView().getModel().get("questionDetail");
+		assertEquals(q_id, questionDetail.getQ_id());
 	}
 
 	@Test

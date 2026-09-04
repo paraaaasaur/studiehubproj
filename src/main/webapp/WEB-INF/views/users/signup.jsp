@@ -20,7 +20,9 @@
 		var loading = document.getElementById("loadingGif");
 
 		//檢查帳號是否重複
-		alink.onclick = function() {
+		alink.onclick = function(e) {
+			e.preventDefault();
+
 			var u_id = document.getElementById("u_id").value;
 			var span = document.getElementById("result0c");
 			if(!u_id){

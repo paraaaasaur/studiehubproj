@@ -1,10 +1,9 @@
 package com.group5.springboot.dao.user;
 
-import java.util.List;
-
+import com.group5.springboot.model.user.User_Info;
 import org.springframework.stereotype.Repository;
 
-import com.group5.springboot.model.user.User_Info;
+import java.util.List;
 
 @Repository
 public interface UserDao {
@@ -13,7 +12,7 @@ public interface UserDao {
 
 	int saveUser(User_Info user_Info);
 
-	User_Info login(User_Info user_Info);
+	User_Info login(String u_id, String u_psw);
 
 	List<User_Info> showAllUsers();
 

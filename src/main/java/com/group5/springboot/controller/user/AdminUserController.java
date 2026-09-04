@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 @Controller
 public class AdminUserController {
-	final UserService userService;
+	private final UserService userService;
 
 
 	@Autowired

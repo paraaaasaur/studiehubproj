@@ -98,7 +98,7 @@
 
                 <h2 align='center'>請輸入課程資訊</h2>
                 <hr>
-                <form:form method="POST" modelAttribute="productInfo" enctype='multipart/form-data'>
+                <form:form method="POST" modelAttribute="createProductView" enctype='multipart/form-data'>
                     <table border="1">
                         <tr>
                             <td>導師名稱:</td>
@@ -144,16 +144,14 @@
                         <tr>
                             <td>課程圖片:</td>
                             <td>
-                                <form:input path="imgFile" type="file" />
-                                <form:errors path='imgFile' cssClass="error"/>
+                                <input name="imgFile" type="file" />
                             </td>
                         </tr>
 
                         <tr>
                             <td>課程影片:</td>
                             <td>
-                                <form:input path="videoFile" type="file" />
-                                <form:errors path='videoFile' cssClass="error"/>
+                                <input name="videoFile" type="file" />
                             </td>
                         </tr>
 

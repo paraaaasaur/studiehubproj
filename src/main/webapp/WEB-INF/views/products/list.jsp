@@ -20,12 +20,15 @@
 <script type="application/json" id="bootstrap-data">
 	{
 		"u_id": "${fn:escapeXml(loginBean.u_id)}",
-		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+		"userPicString": "${fn:escapeXml(loginBean.pictureString)}",
+		"successMessage": "${fn:escapeXml(successMessage)}"
 	}
 </script>
 <script>
 	const bootstrapData = JSON.parse(document.getElementById('bootstrap-data').textContent);
-	const { u_id, userPicString } = bootstrapData;
+	const { u_id, userPicString, successMessage } = bootstrapData;
+
+	if (successMessage) alert(successMessage);
 
 	window.onload = function(){
 		var logout = document.getElementById("logout");

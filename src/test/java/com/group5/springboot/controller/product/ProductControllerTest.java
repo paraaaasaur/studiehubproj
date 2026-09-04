@@ -97,7 +97,7 @@ class ProductControllerTest {
 
 				.andExpect(status().isOk())
 				.andExpect(view().name("products/admin/edit"))
-				.andExpect(model().attributeExists("productInfo"));
+				.andExpect(model().attributeExists("updateProductView"));
 	}
 
 	@Test
@@ -260,7 +260,7 @@ class ProductControllerTest {
 						.param("descString", product2CreateRequest.getDescString()))
 
 				.andExpect(view().name("products/admin/edit"))
-				.andExpect(model().attributeHasFieldErrors("productInfo", "p_Name"));
+				.andExpect(model().attributeHasFieldErrors("updateProductView", "p_Name"));
 	}
 
 	@Test
@@ -317,7 +317,7 @@ class ProductControllerTest {
 						.param("descString", rawTestProduct.getDescString()))
 
 				.andExpect(view().name("products/add"))
-				.andExpect(model().attributeHasFieldErrors("productInfo", "p_Name"));
+				.andExpect(model().attributeHasFieldErrors("createProductView", "p_Name"));
 	}
 
 	@Test

@@ -1,14 +1,12 @@
 package com.group5.springboot.dao.user;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.group5.springboot.model.user.User_Info;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.group5.springboot.model.user.User_Info;
+import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -59,13 +57,13 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User_Info login(User_Info user_Info) {
+	public User_Info login(String u_id, String u_psw) {
 		User_Info user_info = null;
 		String hql = "from User_Info where u_id=:id and u_psw=:psw";
 		try {
 			Query<User_Info> query = (Query<User_Info>) em.createQuery(hql, User_Info.class)
-					.setParameter("id", user_Info.getU_id())
-					.setParameter("psw", user_Info.getU_psw());
+					.setParameter("id", u_id)
+					.setParameter("psw", u_psw);
 			User_Info loginBean = query.uniqueResult();
 			if (loginBean != null && !(loginBean.getU_id().length() == 0)) {
 				user_info = loginBean;

@@ -2,6 +2,7 @@ package com.group5.springboot.controller.user;
 
 import com.group5.springboot.annotation.auth.RejectsUser;
 import com.group5.springboot.annotation.auth.RequiresUser;
+import com.group5.springboot.dto.user.ResetEmailRequest;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.user.UserService;
 import com.group5.springboot.utils.EmailSenderService;
@@ -16,8 +17,8 @@ import java.util.Map;
 
 @Controller
 public class UserfunctionController {
-	final UserService userService;
-	final EmailSenderService emailService;
+	private final UserService userService;
+	private final EmailSenderService emailService;
 
 
 	@Autowired
@@ -58,9 +59,9 @@ public class UserfunctionController {
 	@RejectsUser
 	@PostMapping(path = "/sendRandomPasswordToRegisteredEmail.controller", produces = {"application/json"})
 	@ResponseBody
-	public Map<String, String> resetPasswordAndSendEmail(@RequestBody User_Info userInfo) {
+	public Map<String, String> resetPasswordAndSendEmail(@RequestBody ResetEmailRequest req) {
+		String u_email = req.getU_email();
 		Map<String, String> maps = new HashMap<>();
-		String u_email = userInfo.getU_email();
 		User_Info searchResult = userService.getUserInfoForForgetPassword(u_email);
 		
 		if(searchResult == null) {

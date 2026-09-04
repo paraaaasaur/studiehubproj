@@ -1,15 +1,16 @@
 package com.group5.springboot.service.product;
 
-import java.util.*;
-
 import com.group5.springboot.dao.product.ProductDao;
-import com.group5.springboot.dto.product.ProductSearchCriteria;
+import com.group5.springboot.dto.product.*;
+import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.product.Rating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.group5.springboot.model.product.ProductInfo;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -83,5 +84,31 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Map<String, Object> pendingAccess() {
 		return productDao.pendingAccess();
+	}
+
+	@Override
+	public ProductInfo applyToEntity(UpdateProductRequest form) {
+		var entity = productDao.findByProductID(form.getP_ID());
+		entity.setP_Name(form.getP_Name());
+		entity.setP_Class(form.getP_Class());
+		entity.setP_Price(form.getP_Price());
+		entity.setDescString(form.getDescString());
+		entity.setImgFile(form.getImgFile());
+		entity.setVideoFile(form.getVideoFile());
+
+		return entity;
+	}
+
+	@Override
+	public ProductInfo applyToEntity(CreateProductRequest form) {
+		var entity = new ProductInfo();
+		entity.setP_Name(form.getP_Name());
+		entity.setP_Class(form.getP_Class());
+		entity.setP_Price(form.getP_Price());
+		entity.setDescString(form.getDescString());
+		entity.setImgFile(form.getImgFile());
+		entity.setVideoFile(form.getVideoFile());
+
+		return entity;
 	}
 }

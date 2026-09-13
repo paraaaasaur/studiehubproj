@@ -1,18 +1,19 @@
 package com.group5.springboot.service.event;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.group5.springboot.dao.event.EventDao;
+import com.group5.springboot.dto.event.CreateEventRequest;
+import com.group5.springboot.dto.event.UpdateEventRequest;
 import com.group5.springboot.exception.AccessDeniedException;
+import com.group5.springboot.model.event.Entryform;
+import com.group5.springboot.model.event.EventInfo;
+import com.group5.springboot.model.user.User_Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.group5.springboot.dao.event.EventDao;
-import com.group5.springboot.model.event.Entryform;
-import com.group5.springboot.model.event.EventInfo;
-import com.group5.springboot.model.user.User_Info;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -116,5 +117,39 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public int findentryformByaidreturnsize(EventInfo eventinfo) {
 		return EventDao.findentryformByaidreturnsize(eventinfo);
+	}
+
+	@Override
+	public EventInfo applyToEntity(CreateEventRequest form) {
+		var entity = new EventInfo();
+		entity.setA_name(form.getA_name());
+		entity.setA_type(form.getA_type());
+		entity.setRegistration_starttime(form.getRegistration_starttime());
+		entity.setRegistration_endrttime(form.getRegistration_endrttime());
+		entity.setTransienta_startTime(form.getTransienta_startTime());
+		entity.setTransienta_endTime(form.getTransienta_endTime());
+		entity.setA_address(form.getA_address());
+		entity.setTransientcomment(form.getTransientcomment());
+		entity.setApplicants(form.getApplicants());
+		entity.setEventImage(form.getEventImage());
+
+		return entity;
+	}
+
+	@Override
+	public EventInfo applyToEntity(Long a_aid, UpdateEventRequest form) {
+		var entity = EventDao.findByid(a_aid);
+		entity.setA_name(form.getA_name());
+		entity.setA_type(form.getA_type());
+		entity.setRegistration_starttime(form.getRegistration_starttime());
+		entity.setRegistration_endrttime(form.getRegistration_endrttime());
+		entity.setTransienta_startTime(form.getTransienta_startTime());
+		entity.setTransienta_endTime(form.getTransienta_endTime());
+		entity.setA_address(form.getA_address());
+		entity.setTransientcomment(form.getTransientcomment());
+		entity.setApplicants(form.getApplicants());
+		entity.setEventImage(form.getEventImage());
+
+		return entity;
 	}
 }

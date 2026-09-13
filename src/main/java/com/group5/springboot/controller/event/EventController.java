@@ -3,6 +3,7 @@ package com.group5.springboot.controller.event;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.config.StorageConfigProperties;
+import com.group5.springboot.dto.event.*;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.event.EventService;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -23,13 +23,14 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static org.springframework.validation.BindingResult.MODEL_KEY_PREFIX;
 
 @Controller
 public class EventController {
-	final EventService EventService;
-	final EventValidator eventValidator;
+	private final EventService eventService;
+	private final EventValidator eventValidator;
 
 	private final String IMAGE_STORAGE_DIR;
 	private final String IMAGE_URL_BASE;
@@ -37,16 +38,17 @@ public class EventController {
 
 	@Autowired
 	public EventController(EventService eventService, EventValidator eventValidator, StorageConfigProperties props) {
-		this.EventService = eventService;
+		this.eventService = eventService;
 		this.eventValidator = eventValidator;
-		IMAGE_STORAGE_DIR = props.getEventImageUploadStorageDir();
-		IMAGE_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(IMAGE_STORAGE_DIR);
+		this.IMAGE_STORAGE_DIR = props.getEventImageUploadStorageDir();
+		this.IMAGE_URL_BASE = StorageConfigProperties.storagePathToViewAndDbUrl(IMAGE_STORAGE_DIR);
 	}
 
 
 	@RequiresUser
 	@GetMapping("/insertEvent")
-	public String insertEvent() {
+	public String insertEvent(Model model) {
+		addModelAttributes(model);
 		return "events/add";
 	}
 
@@ -76,21 +78,19 @@ public class EventController {
 	@RequiresUser
 	@PostMapping("/insertEvent")
 	public String insertSaveEvent(
-			@ModelAttribute("EventInfo") EventInfo eventinfo,
-			BindingResult result,
-			@SessionAttribute(value = "loginBean") User_Info user_info,
-			RedirectAttributes ra
+			@ModelAttribute("createEventForm") CreateEventRequest req,
+			@SessionAttribute User_Info loginBean,
+			RedirectAttributes ra, Model model
 	) {
-		eventValidator.validate(eventinfo, result);
+		var result = eventValidator.validate(req);
 		if (result.hasErrors()) {
-			List<ObjectError> list = result.getAllErrors();
-			for (ObjectError error : list) {
-				System.out.println("有錯誤" + error);
-			}
+			readdModelAttributes(model, req, result);
 			return "events/add";
 		}
 
-		EventService.saveEvent(eventinfo);
+		EventInfo eventinfo = eventService.applyToEntity(req);
+
+		eventService.saveEvent(eventinfo);
 		String Transientcomment = eventinfo.getTransientcomment();
 		eventinfo.setComment(Transientcomment);
 		eventinfo.setCreationTime(new Timestamp(System.currentTimeMillis()));
@@ -116,37 +116,42 @@ public class EventController {
 				eventinfo.setA_picturepath(ResourceLocationResolver.EVENT_NO_IMAGE_URL);
 			}
 			
-			eventinfo.setUidname(user_info.getU_lastname()+user_info.getU_firstname());
+			eventinfo.setUidname(loginBean.getU_lastname()+loginBean.getU_firstname());
 			eventinfo.setExpired("未過期");
 			eventinfo.setVerification("N");
-			eventinfo.setA_uid(user_info.getU_id());
-			EventService.saveEvent(eventinfo);
+			eventinfo.setA_uid(loginBean.getU_id());
+			eventService.saveEvent(eventinfo);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("檔案上傳發生異常:" + e.getMessage());
 		}
 
 		ra.addFlashAttribute("successMessage", eventinfo.getA_name() + "新增成功");
-
 		return "redirect:/userAllEvent";
 	}
 
 	@RequiresUser
 	@GetMapping("/updateEvent/{a_aid}")
 	public String SendEditPage(@PathVariable Long a_aid, Model model) {
-		EventInfo eventinfo = EventService.findByid(a_aid);
-		model.addAttribute("EventInfo", eventinfo);
+		addModelAttributes(model, a_aid);
 		return "events/edit";
 	}
 
 	@RequiresUser
 	@PostMapping("/updateEvent/{a_aid}")
-	public String updateSaveEvent(@ModelAttribute("EventInfo") EventInfo eventinfo,BindingResult result, RedirectAttributes ra,  @SessionAttribute(value = "loginBean")  User_Info user_info) {
-		eventValidator.validate(eventinfo, result);
+	public String updateSaveEvent(
+			@PathVariable Long a_aid, 
+			@ModelAttribute("updateEventForm") UpdateEventRequest req,
+			@SessionAttribute User_Info loginBean,
+			RedirectAttributes ra, Model model
+	) {
+		var result = eventValidator.validate(req);
 		if (result.hasErrors()) {
-			result.getAllErrors().forEach(System.err::println);
+			readdModelAttributes(model, a_aid, req, result);
 			return "events/edit";
 		}
+
+		var eventinfo = eventService.applyToEntity(a_aid, req);
 
 		eventinfo.setCreationTime(new Timestamp(System.currentTimeMillis()));
 
@@ -170,25 +175,25 @@ public class EventController {
 				eventinfoImage.transferTo(file);
 			}
 
-			eventinfo.setUidname(user_info.getU_lastname()+user_info.getU_firstname());
+			eventinfo.setUidname(loginBean.getU_lastname()+loginBean.getU_firstname());
 			eventinfo.setExpired("未過期");
 			eventinfo.setVerification("N");
-			EventService.update(eventinfo);
+			eventService.update(eventinfo);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("檔案上傳發生異常:" + e.getMessage());
 		}
 
 		ra.addFlashAttribute("successMessage", eventinfo.getA_name() + "修改成功");
-
 		return "redirect:/userAllEvent";
 	}
 
 	@RequiresUser
 	@GetMapping("/deleteEvent/{a_aid}")
 	public String deleteEditPage(@PathVariable Long a_aid, RedirectAttributes ra) {
-		EventInfo eventinfo = EventService.findByid(a_aid);
-		EventService.deletdate(eventinfo);
+		EventInfo eventinfo = eventService.findByid(a_aid);
+		eventService.deletdate(eventinfo);
+
 		ra.addFlashAttribute("successMessage",eventinfo.getA_name() + "下架成功");
 		return "redirect:/userAllEvent";
 	}
@@ -196,26 +201,25 @@ public class EventController {
 	@RequiresAdmin
 	@GetMapping("/deleteadminEvent/{a_aid}")
 	public String deleteadminEvent(@PathVariable Long a_aid, RedirectAttributes ra) {
-		EventInfo eventinfo = EventService.findByid(a_aid);
-		EventService.deletdate(eventinfo);
+		EventInfo eventinfo = eventService.findByid(a_aid);
+		eventService.deletdate(eventinfo);
+
 		ra.addFlashAttribute("successMessage",eventinfo.getA_name() + "下架成功");
 		return "redirect:/adminAllEvent";
 	}
 
 	@GetMapping("/Selecteventcontent/{a_aid}")
-	public String Selecteventcontent(@PathVariable Long a_aid,Model model) {
-		EventInfo eventcontent = EventService.findByid(a_aid);
-		model.addAttribute("eventcontent", eventcontent);
-
+	public String Selecteventcontent() {
 		return "events/detail";
 	}
 	
 	@RequiresAdmin
 	@GetMapping("/verification/{a_aid}")
 	public String verification(@PathVariable Long a_aid, RedirectAttributes ra) {
-		EventInfo eventinfo = EventService.findByid(a_aid);
+		EventInfo eventinfo = eventService.findByid(a_aid);
 		eventinfo.setVerification("Y");
-		EventService.update(eventinfo);
+		eventService.update(eventinfo);
+
 		ra.addFlashAttribute("successMessage",eventinfo.getA_name() + "發布成功");
 		return "redirect:/managerAllEvent";	
 	}
@@ -223,33 +227,31 @@ public class EventController {
 	@RequiresAdmin
 	@GetMapping("/deleteverification/{a_aid}")
 	public String deleteverification(@PathVariable Long a_aid, RedirectAttributes ra) {
-		EventInfo eventinfo = EventService.findByid(a_aid);
-		EventService.deletdate(eventinfo);
+		EventInfo eventinfo = eventService.findByid(a_aid);
+		eventService.deletdate(eventinfo);
+
 		ra.addFlashAttribute("successMessage",eventinfo.getA_name() + "已被駁回");
 		return "redirect:/managerAllEvent";
 	}
 	
 	@RequiresUser
 	@GetMapping("/signupclick/{a_aid}")
-	public @ResponseBody Map<String, String> signupclick(
-			@PathVariable Long a_aid,
-			@SessionAttribute(value = "loginBean") User_Info user_info
-	) {
+	public @ResponseBody Map<String, String> signupclick(@PathVariable Long a_aid, @SessionAttribute User_Info loginBean) {
 		Map<String , String> map = new HashMap<>();
-		 
-		EventInfo eventInfo = EventService.findByid(a_aid);
 
-		boolean isEntryformExist = EventService.isEntryformExist(eventInfo, user_info);
+		EventInfo eventInfo = eventService.findByid(a_aid);
+
+		boolean isEntryformExist = eventService.isEntryformExist(eventInfo, loginBean);
 		if (!isEntryformExist) {
 			if (eventInfo.getA_registration_endrttime().getTime() <= new Date().getTime()) {
 				map.put("Time", "這個活動報名時間結束了,報名失敗");
 				return map;
 			}
 			if (!(eventInfo.getEntryforms().size() >= eventInfo.getApplicants())) {
-				EventService.saveEntryform(eventInfo, user_info);
-				int size = EventService.findentryformByaidreturnsize(eventInfo);
+				eventService.saveEntryform(eventInfo, loginBean);
+				int size = eventService.findentryformByaidreturnsize(eventInfo);
 				eventInfo.setHavesignedup(size);
-				EventService.saveEvent(eventInfo);
+				eventService.saveEvent(eventInfo);
 			} else {
 				map.put("Exceed", "這個活動報名已經額滿,報名失敗");
 				return map ;
@@ -266,9 +268,9 @@ public class EventController {
 	@RequiresUser
 	@GetMapping("/signupEvent/{a_aid}")
 	public String signupEvent(@PathVariable Long a_aid, Model model) {
-		EventInfo Event = EventService.findByid(a_aid);
-		model.addAttribute("signupEvent",Event);
-		
+		EventInfo event = eventService.findByid(a_aid);
+
+		model.addAttribute("a_name", event.getA_name());
 		return "events/registration/list";
 	}
 
@@ -279,35 +281,20 @@ public class EventController {
 			@PathVariable Long a_id,
 			Model model
 	) {
-		EventInfo Event = EventService.findByid(a_id);
-		EventService.deleteEntryformByid(e_id);
+		EventInfo event = eventService.findByid(a_id);
+		eventService.deleteEntryformByid(e_id);
 
-		int size = EventService.findentryformByaidreturnsize(Event);
-		Event.setHavesignedup(size);
-		EventService.saveEvent(Event);
-		
-		model.addAttribute("signupEvent",Event);
-		
+		int size = eventService.findentryformByaidreturnsize(event);
+		event.setHavesignedup(size);
+		eventService.saveEvent(event);
+
+		model.addAttribute("a_name", event.getA_name());
 		return "events/registration/list";
 	}
-	
 
-	// ==================== @ModelAttribute ====================
-	@ModelAttribute("EventInfo")
-	public EventInfo getPlace(@RequestParam(value = "a_aid", required = false) Long a_aid) {
-		EventInfo eventinfo = null;
-		// 好像沒用到
-		if (a_aid != null) {
-			eventinfo = EventService.findByid(a_aid);
-		} else {
-			eventinfo = new EventInfo();
-		}
 
-		return eventinfo;
-	}
-
-	@ModelAttribute("eventtype")
-    public Map<String, String> eventtype(){
+	// model attrs
+	public Map<String, String> eventtype() {
 		Map<String, String> map = new HashMap<>();
 		
 		map.put("研討會", "研討會");
@@ -316,5 +303,75 @@ public class EventController {
 		map.put("分享會", "分享會");
 
 		return map;
-    }
+	}
+
+	// helpers
+	private void addModelAttributes(Model model) {
+		model.addAttribute("eventtype", eventtype());
+		model.addAttribute("createEventForm", CreateEventForm.newInstance());
+	}
+
+	private void readdModelAttributes(Model model, CreateEventRequest req, BindingResult result) {
+		model.addAttribute("eventtype", eventtype());
+		model.addAttribute("createEventForm", toForm(req));
+		model.addAttribute(MODEL_KEY_PREFIX + "createEventForm", result);
+	}
+
+	private void addModelAttributes(Model model, Long a_aid) {
+		var entity = eventService.findByid(a_aid);
+
+		model.addAttribute("eventtype", eventtype());
+		model.addAttribute("updateEventForm", toForm(entity));
+	}
+
+	private void readdModelAttributes(Model model, Long a_aid, UpdateEventRequest req, BindingResult result) {
+		model.addAttribute("eventtype", eventtype());
+		model.addAttribute("updateEventForm", toForm(a_aid, req));
+		model.addAttribute(MODEL_KEY_PREFIX + "updateEventForm", result);
+	}
+
+	// adapters
+	private CreateEventForm toForm(CreateEventRequest req) {
+		return new CreateEventForm(
+				req.getA_name(),
+				req.getA_type(),
+				req.getRegistration_starttime(),
+				req.getRegistration_endrttime(),
+				req.getTransienta_startTime(),
+				req.getTransienta_endTime(),
+				req.getA_address(),
+				req.getTransientcomment(),
+				req.getApplicants()
+		);
+	}
+
+	private UpdateEventForm toForm(EventInfo entity) {
+		return new UpdateEventForm(
+				entity.getA_aid(),
+				entity.getA_name(),
+				entity.getA_type(),
+				entity.getRegistration_starttime(),
+				entity.getRegistration_endrttime(),
+				entity.getTransienta_startTime(),
+				entity.getTransienta_endTime(),
+				entity.getA_address(),
+				entity.getTransientcomment(),
+				entity.getApplicants()
+		);
+	}
+
+	private UpdateEventForm toForm(Long a_aid, UpdateEventRequest req) {
+		return new UpdateEventForm(
+				a_aid,
+				req.getA_name(),
+				req.getA_type(),
+				req.getRegistration_starttime(),
+				req.getRegistration_endrttime(),
+				req.getTransienta_startTime(),
+				req.getTransienta_endTime(),
+				req.getA_address(),
+				req.getTransientcomment(),
+				req.getApplicants()
+		);
+	}
 }

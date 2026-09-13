@@ -1,7 +1,7 @@
 package com.group5.springboot.dao.test;
 
-import com.group5.springboot.dto.CreateEventRequest;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
+import com.group5.springboot.dto.event.CreateEventRequest;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.chat.Chat_Info;
@@ -208,9 +208,9 @@ public class GenericDao {
 				.getResultList().toArray(new PostWithPoster[]{});
 	}
 
-	public EventInfo saveEventButNoStorage(CreateEventRequest dto, User_Info loginBean) {
+	public EventInfo saveEventButNoStorage(CreateEventRequest req, User_Info loginBean) {
 		// all controller logic🫠
-		EventInfo eventInfo = dto.toEntity();
+		EventInfo eventInfo = req.dumpToEntity();
 		em.persist(eventInfo);
 		em.flush();
 

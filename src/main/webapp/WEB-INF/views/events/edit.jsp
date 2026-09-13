@@ -107,24 +107,14 @@
 
 				<form:form method="POST" modelAttribute="EventInfo" enctype='multipart/form-data'>
 					<table border="1">
-						<c:choose>
-							<c:when test='${EventInfo.a_aid == null}'>
-								<tr>
-									<td>&nbsp;</td>
-									<td>&nbsp;</td>
-								</tr>
-							</c:when>
-							<c:otherwise>
-								<tr>
-									<td>活動編號：<br>&nbsp;</td>
-									<td>
-										<form:hidden path='a_aid' />
-										<c:out value="${EventInfo.a_aid}" />
-										<br>&nbsp;
-									</td>
-								</tr>
-							</c:otherwise>
-						</c:choose>
+						<tr>
+							<td>活動編號：<br>&nbsp;</td>
+							<td>
+								<form:hidden path='a_aid' />
+								<c:out value="${EventInfo.a_aid}" />
+								<br>&nbsp;
+							</td>
+						</tr>
 						<tr>
 							<td>活動名稱:</td>
 							<td>
@@ -194,7 +184,7 @@
 						<tr>
 							<td>活動圖片:</td>
 							<td>
-								<form:input path="eventImage" type="file" />
+								<input name="eventImage" type="file">
 							</td>
 						</tr>
 

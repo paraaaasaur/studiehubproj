@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -125,28 +124,8 @@
 				<h2 align='center'>請輸入新增活動</h2>
 				<hr>
 
-				<form:form method="POST" modelAttribute="EventInfo" enctype='multipart/form-data'>
+				<form:form method="POST" modelAttribute="createEventView" enctype='multipart/form-data'>
 					<table border="1">
-						<c:choose>
-							<c:when test='${EventInfo.a_aid == null}'>
-								<tr>
-									<td>&nbsp;</td>
-									<td>&nbsp;</td>
-								</tr>
-							</c:when>
-							<c:otherwise>
-								<tr>
-									<td>活動編號：
-										<br>&nbsp;
-									</td>
-									<td>
-										<form:hidden path='a_aid' />
-										<c:out value="${EventInfo.a_aid}" />
-										<br>
-									</td>
-								</tr>
-							</c:otherwise>
-						</c:choose>
 						<tr>
 							<td>活動名稱:</td>
 							<td>
@@ -216,7 +195,7 @@
 						<tr>
 							<td>活動圖片:</td>
 							<td>
-								<form:input path="eventImage" type="file" />
+								<input name="eventImage" type="file">
 							</td>
 						</tr>
 

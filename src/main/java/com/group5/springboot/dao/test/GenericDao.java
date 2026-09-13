@@ -1,6 +1,7 @@
 package com.group5.springboot.dao.test;
 
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
+import com.group5.springboot.dto.event.CreateEventForm;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.model.chat.Chat_Info;
@@ -207,9 +208,20 @@ public class GenericDao {
 				.getResultList().toArray(new PostWithPoster[]{});
 	}
 
-	public EventInfo saveEventButNoStorage(CreateEventRequest dto, User_Info loginBean) {
-		// all controller logic🫠
-		EventInfo eventInfo = dto.toEntity();
+	public EventInfo saveEventButNoStorage(CreateEventForm form, User_Info loginBean) {
+		// adapter logic (EventService.applyToEntity())
+		var eventInfo = new EventInfo();
+		eventInfo.setA_name(form.getA_name());
+		eventInfo.setA_type(form.getA_type());
+		eventInfo.setRegistration_starttime(form.getRegistration_starttime());
+		eventInfo.setRegistration_endrttime(form.getRegistration_endrttime());
+		eventInfo.setTransienta_startTime(form.getTransienta_startTime());
+		eventInfo.setTransienta_endTime(form.getTransienta_endTime());
+		eventInfo.setA_address(form.getA_address());
+		eventInfo.setTransientcomment(form.getTransientcomment());
+		eventInfo.setApplicants(form.getApplicants());
+		eventInfo.setEventImage(form.getEventImage());
+
 		em.persist(eventInfo);
 		em.flush();
 

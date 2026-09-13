@@ -5,7 +5,10 @@ import com.group5.springboot.dao.test.GenericDao;
 import com.group5.springboot.model.event.Entryform;
 import com.group5.springboot.model.event.EventInfo;
 import com.group5.springboot.model.user.User_Info;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,14 +19,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.group5.springboot.controller.event.EventTestUtils.*;
 import static com.group5.springboot.controller.user.UserTestUtils.*;
-import static com.group5.springboot.controller.user.UserTestUtils.aUserKen;
-import static com.group5.springboot.controller.user.UserTestUtils.aUserNick;
-import static com.group5.springboot.controller.user.UserTestUtils.aUserYen;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.validation.BindingResult.MODEL_KEY_PREFIX;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -89,6 +91,7 @@ class EventControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("eventtype", "createEventView"))
 				.andExpect(view().name("events/add"));
 	}
 
@@ -242,7 +245,8 @@ class EventControllerTest {
 						.contentType(MULTIPART_FORM_DATA))
 
 				.andExpect(view().name("events/add"))
-				.andExpect(model().errorCount(1));
+				.andExpect(model().errorCount(1))
+				.andExpect(model().attributeExists("eventtype", "createEventView", MODEL_KEY_PREFIX + "createEventView"));
 	}
 
 	@Test
@@ -258,7 +262,7 @@ class EventControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("EventInfo"))
+				.andExpect(model().attributeExists("eventtype", "updateEventView"))
 				.andExpect(view().name("events/edit"));
 	}
 
@@ -308,6 +312,38 @@ class EventControllerTest {
 		mockMvc.perform(multipart("/updateEvent/{a_aid}", event1Approved.getA_aid()))
 
 				.andExpect(forwardedUrl("/gotologin.controller"));
+	}
+
+	@Test
+	@DisplayName("POST /updateEvent/{a_aid} - empty field")
+	void updateSaveEvent_whenEmptyField_thenRequestIsRejected() throws Exception {
+		// 0. login + prepare test data
+		final User_Info holder = yuz;
+		userTestUtils.loginAs(holder, mockHttpSession);
+
+		var body = anEventInfo3();
+
+
+		// 1. main
+		mockMvc.perform(multipart("/updateEvent/{a_aid}", event1Approved.getA_aid())
+						.file((MockMultipartFile) body.getEventImage())
+						.param("a_name", "") // mandatory field empty
+						.param("a_type", body.getA_type())
+						.param("registration_starttime", "") // mandatory field empty
+						.param("registration_endrttime", body.getRegistration_endrttime())
+						.param("Transienta_startTime", body.getTransienta_startTime())
+						.param("Transienta_endTime", body.getTransienta_endTime())
+						.param("a_address", body.getA_address())
+						.param("transientcomment", body.getTransientcomment())
+						.param("applicants", body.getApplicants() + "")
+						.param("uidname", holder.getU_lastname() + holder.getU_firstname())
+						.param("a_uid", holder.getU_id())
+						.session(mockHttpSession)
+						.contentType(MULTIPART_FORM_DATA))
+
+				.andExpect(model().errorCount(2))
+				.andExpect(model().attributeExists("eventtype", "updateEventView", MODEL_KEY_PREFIX + "updateEventView"))
+				.andExpect(view().name("events/edit"));
 	}
 
 	@Test
@@ -366,7 +402,6 @@ class EventControllerTest {
 		mockMvc.perform(get("/Selecteventcontent/{a_aid}", a_aid))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("eventcontent"))
 				.andExpect(view().name("events/detail"));
 	}
 
@@ -510,7 +545,7 @@ class EventControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("signupEvent"))
+				.andExpect(model().attributeExists("a_name"))
 				.andExpect(view().name("events/registration/list"));
 	}
 
@@ -537,7 +572,7 @@ class EventControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("signupEvent"))
+				.andExpect(model().attributeExists("a_name"))
 				.andExpect(view().name("events/registration/list"));
 	}
 

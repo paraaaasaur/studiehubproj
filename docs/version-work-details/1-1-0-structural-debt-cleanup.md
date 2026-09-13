@@ -1,8 +1,7 @@
 # 1.1.0 - Mass Refactoring: Structural Debt Cleanup
 
 ## Goal
-First focused effort to address major maintainability issues, in preparation  
-for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
+First focused effort to address major maintainability issues, in preparation for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
 
 ---
 
@@ -58,7 +57,12 @@ for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
         - `POST /insertEvent`
         - `GET /updateEvent/{a_aid}`
         - `POST /updateEvent/{a_aid}`
-        - `GET /Selecteventcontent/{a_aid}`
+        - `GET /Selecteventcontent/{a_aid}` 
+          - Changes happen both in endpoint and view to simplify data delivery.
+            - Old: “model carries event object → view restores id from model attr→ uses id to retrieve json”.
+            - New: "model carries nothing → view simply deduces id from url → uses id to retrieve json"
+        - `GET /signupEvent/{a_aid}`
+          - View only needs id and event name. id: frontend can derive from url; name: model attr (HTML injection)
 + Compliance
   - fix failed boundary enforcement with mixed/leaked logic across layers, notably:
     - common
@@ -71,7 +75,9 @@ for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
   - (6) encapsulate inline validation clutter in controllers into their own validators
   - extract storage logic to dedicated service
 + Improvement
-  - controller splitting
+  - controller splitting & organizing
+    - organize misplaced endpoints
+    - ...
   - mixed dao splitting
     - `ChatDao` covering both `Chat_Info` and `Chat_Reply` atm
     - `EventDao`
@@ -123,6 +129,8 @@ for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
 - Method/Class/Variable names overhaul
   - easy-to-forget cases
     - `ChatValidator` => `ChatReplyValidator` for clarity
+  - trivia
+    - boolean methods
 - Review classes to enforce good practices, notably:
   - extract reusable logic
   - raw uses in generic

@@ -21,6 +21,10 @@
 ## How to implement reaction?
 - a reaction by a user to a post
 
+## General
+- User uploads denied by admins shouldn't just get deleted into void
+  - should preserve an archive entry (read-only) for users to check out and reuse if needed
+  - admin verification features in all domains don't preserve at all at the moment.   
 
 ## User
 - `reset-password` feature

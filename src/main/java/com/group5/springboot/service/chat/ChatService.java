@@ -1,12 +1,15 @@
 package com.group5.springboot.service.chat;
 
-import java.util.List;
-
+import com.group5.springboot.dto.chat.CreateReplyRequest;
+import com.group5.springboot.dto.chat.CreateTopPostRequest;
+import com.group5.springboot.dto.chat.UpdatePostRequest;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 
+import java.util.List;
+
 public interface ChatService {
-	void insertChat(Chat_Info chat_Info);
+	void insertTopPostAndRedundancy(String u_ID, CreateTopPostRequest data);
 	
     void deleteChat(int c_ID);
 	
@@ -18,25 +21,9 @@ public interface ChatService {
 	
 	List<Chat_Reply> findAllChatReply(int c_IDr);
 	
-	void insertFirstChatReply(Chat_Info chat_Info);
-	
-	void insertChatReply(Chat_Reply chat_Reply);
+	void insertChatReply(String U_ID, CreateReplyRequest data);
 	
 	void deleteChatReply(int c_IDr);
 	
-	void updateChatReply(Chat_Reply chat_Reply);
-
-	/**
-	 * Try to remove potential risk for XSS attack embedded in the HTML content
-	 * user attackers might send.
-	 * @param rawReply Raw user reply
-	 **/
-	void sanitizeConts(Chat_Reply rawReply);
-
-	/**
-	 * Try to remove potential risk for XSS attack embedded in the HTML content
-	 * user attackers might send.
-	 * @param rawTopPost Raw user top-post
-	 **/
-	void sanitizeConts(Chat_Info rawTopPost);
+	Chat_Reply updateChatReply(UpdatePostRequest data);
 }

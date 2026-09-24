@@ -381,16 +381,16 @@ class ChatControllerTest {
 
 
 		// 1. main
-		String newContent = "請問聖誕老人到底是哪國傳來的啊";
 		mockMvc.perform(post("/goUpdateChat/{c_ID}", chatInfo1Redundancy.getC_ID())
 						.session(mockHttpSession)
 						.param("c_IDr", chatInfo1Redundancy.getC_IDr() + "")
 						.param("c_Date", chatInfo1Redundancy.getC_Date())
 						.param("U_ID", chatInfo1Redundancy.getU_ID())
-						.param("c_Conts", newContent))
+						.param("c_Conts", "")) // empty required field
 
-				.andExpect(status().is3xxRedirection())
-				.andExpect(flash().attributeExists("successMessage"))
-				.andExpect(redirectedUrl("/goSelectOneChat/" + chatInfo1Redundancy.getC_IDr()));
+				.andExpect(model().attributeExists("chatReply"))
+				.andExpect(model().attributeHasFieldErrors("chatReply", "c_Conts"))
+				.andExpect(model().errorCount(1))
+				.andExpect(view().name("chat/threads/edit-post"));
 	}
 }

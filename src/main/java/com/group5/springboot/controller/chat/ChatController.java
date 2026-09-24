@@ -3,10 +3,12 @@ package com.group5.springboot.controller.chat;
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
 import com.group5.springboot.annotation.dev.RenameSuggestion;
+import com.group5.springboot.dto.chat.*;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
+import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.chat.ChatService;
-import com.group5.springboot.validate.ChatValidator;
+import com.group5.springboot.validate.ChatReplyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,16 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.validation.BindingResult.MODEL_KEY_PREFIX;
+
 @Controller
 public class ChatController {
-	final ChatService chatService;
-	final ChatValidator chatValidator;
+	private final ChatService chatService;
+	private final ChatReplyValidator chatReplyValidator;
 
 
 	@Autowired
-	public ChatController(ChatService chatService, ChatValidator chatValidator) {
+	public ChatController(ChatService chatService, ChatReplyValidator chatReplyValidator) {
 		this.chatService = chatService;
-		this.chatValidator = chatValidator;
+		this.chatReplyValidator = chatReplyValidator;
 	}
 
 
@@ -66,8 +70,7 @@ public class ChatController {
 	@GetMapping("/goUpdateChat/{c_ID}")
 	@RenameSuggestion("gotoTopPostUpdate")
 	public String updateChat(@PathVariable int c_ID, Model model){
-		Chat_Reply chat_Reply = chatService.selectChatReplyById(c_ID);
-		model.addAttribute("chatReply", chat_Reply);
+		addModelAttributes(model, c_ID);
 		return "chat/threads/edit-post";
 	}
 
@@ -108,14 +111,13 @@ public class ChatController {
 	@PostMapping(path = "/insertChat", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("insertTopPost")
-	public Map<String, String> InsertChat(@RequestBody Chat_Info chat_Info) {
+	public Map<String, String> InsertChat(
+			@SessionAttribute User_Info loginBean,
+			@RequestBody CreateTopPostRequest req
+	) {
 		Map<String, String> map = new HashMap<>();
 		try {
-			chatService.sanitizeConts(chat_Info);
-			// literally insert chat_info
-			chatService.insertChat(chat_Info);
-			// ...it's "insert chat_info as chat_reply which gets represented as the first block when grabbing the chat_replies"
-			chatService.insertFirstChatReply(chat_Info);
+			chatService.insertTopPostAndRedundancy(loginBean.getU_id(), req);
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
@@ -128,11 +130,13 @@ public class ChatController {
 	@PostMapping(path = "/insertChatReply", produces = {"application/json"})
 	@ResponseBody
 	@RenameSuggestion("insertReply")
-	public Map<String, String> InsertChatReply(@RequestBody Chat_Reply chat_Reply){
+	public Map<String, String> InsertChatReply(
+			@SessionAttribute User_Info loginBean,
+			@RequestBody CreateReplyRequest req
+	) {
 		Map<String, String> map = new HashMap<>();
 		try {
-			chatService.sanitizeConts(chat_Reply);
-			chatService.insertChatReply(chat_Reply);
+			chatService.insertChatReply(loginBean.getU_id(), req);
 			map.put("success", "新增成功");
 		} catch (Exception e) {
 			map.put("fail", "新增失敗");
@@ -145,7 +149,7 @@ public class ChatController {
 	@DeleteMapping("/deleteChatAdmin/{c_ID}")
 	@ResponseBody
 	@RenameSuggestion("deleteThreadAdmin")
-	public Map<String, String> deleteChatAdmin(@PathVariable(required = true) int c_ID){
+	public Map<String, String> deleteChatAdmin(@PathVariable int c_ID){
 		Map<String, String> map = new HashMap<>();
 		try {
 			chatService.deleteChatReply(c_ID);
@@ -161,21 +165,60 @@ public class ChatController {
 	//技術上：修改討論回覆及討論文章；用意：修改文章
 	@RequiresUser
 	@PostMapping("/goUpdateChat/{c_ID}")
-	@RenameSuggestion("updateTopPost")
-	public String updateChatReply(@ModelAttribute("chatReply") Chat_Reply chat_Reply, BindingResult result, RedirectAttributes ra){
-		chatValidator.validate(chat_Reply, result);
+	@RenameSuggestion("updatePost")
+	public String updateChatReply(
+			@ModelAttribute("updatePostForm") UpdatePostRequest req, 
+			RedirectAttributes ra, 
+			Model model
+	) {
+		var result = chatReplyValidator.validate(req);
 		if (result.hasErrors()) {
-			List<ObjectError> list = result.getAllErrors();
-			for (ObjectError error : list) {
-				System.out.println("有錯誤：" + error);
+			for (ObjectError error : result.getAllErrors()) {
+				System.err.println("有錯誤：" + error);
 			}
+			
+			readdModelAttributes(model, req, result);
 			return "chat/threads/edit-post";
 		}
 
-		chatService.sanitizeConts(chat_Reply);
+		Chat_Reply post = chatService.updateChatReply(req);
 
-		chatService.updateChatReply(chat_Reply);
-		ra.addFlashAttribute("successMessage", "編號: " + chat_Reply.getC_ID() + "  修改成功!");
-		return "redirect:/goSelectOneChat/" + chat_Reply.getC_IDr();
+		ra.addFlashAttribute("successMessage", "編號: " + post.getC_ID() + "  修改成功!");
+
+		return "redirect:/goSelectOneChat/" + post.getC_IDr();
+	}
+
+
+	// convenience methods
+	private void addModelAttributes(Model model, int c_ID) {
+		model.addAttribute("updatePostForm", getForm(c_ID));
+	}
+
+	private void readdModelAttributes(Model model, UpdatePostRequest req, BindingResult result) {
+		model.addAttribute("updatePostForm", toForm(req));
+		model.addAttribute(MODEL_KEY_PREFIX + "updatePostForm", result);
+	}
+
+	// facades
+	private UpdatePostForm getForm(int c_ID) {
+		Chat_Reply post = chatService.selectChatReplyById(c_ID);
+		return toForm(post);
+	}
+
+	// adapters
+	private UpdatePostForm toForm(UpdatePostRequest req) {
+		return new UpdatePostForm(
+				req.getC_IDr(),
+				req.getC_Date(),
+				req.getC_Conts()
+		);
+	}
+
+	private UpdatePostForm toForm(Chat_Reply entity) {
+		return new UpdatePostForm(
+				entity.getC_IDr(),
+				entity.getC_Date(),
+				entity.getC_Conts()
+		);
 	}
 }

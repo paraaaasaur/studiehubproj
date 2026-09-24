@@ -1,52 +1,47 @@
 package com.group5.springboot.controller.chat;
 
-import com.group5.springboot.model.chat.Chat_Info;
-import com.group5.springboot.model.chat.Chat_Reply;
+import com.group5.springboot.dto.chat.CreateReplyRequest;
+import com.group5.springboot.dto.chat.CreateTopPostRequest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public final class ChatTestUtils {
-	public static Chat_Info aChatInfo() {
-		Chat_Info chatInfo = new Chat_Info();
-		{
-			chatInfo.setC_Title("我總算知道println可以做什麼了");
-			chatInfo.setC_Class("Java");
-			chatInfo.setC_Conts(
-					"你們知道嗎\r\n" +
-					"println可以物件變成字串，還可以和int相加\r\n" +
-					"真的很神奇，從名字裡你感覺不出他是這種功能\r\n" +
-					"對了，有人知道到底要怎麼在console上印下一行嗎\r\n" +
-					"找了好久都找不到這功能，怎麼會這樣"
-			);
-		}
+	public static CreateTopPostRequest aTopPost() {
+		return new CreateTopPostRequest(
+				"1445-5-30 1:51:15PM",
+				"Java",
+				"我總算知道println可以做什麼了",
 
-		return chatInfo;
+				"你們知道嗎\r\n" +
+				"println可以物件變成字串，還可以和int相加\r\n" +
+				"真的很神奇，從名字裡你感覺不出他是這種功能\r\n" +
+				"對了，有人知道到底要怎麼在console上印下一行嗎\r\n" +
+				"找了好久都找不到這功能，怎麼會這樣"
+		);
 	}
 
-	public static Chat_Info aChatInfo2() {
-		Chat_Info chatInfo = new Chat_Info();
-		{
-			chatInfo.setC_Title("麻婆豆腐鮭魚義大利麵");
-			chatInfo.setC_Class("法式料理");
-			chatInfo.setC_Conts(
-					"這是我最近新開發的料理\r\n" +
-					"製作跨時代和文化的廚藝結晶非常不容易\r\n" +
-					"但是我想推廣料理的不同面向\r\n" +
-					"所以歡迎各位嘗試，記得幫說食譜是源自這裡就好\r\n" +
-					"不用客氣，只是記得要加很多花椒，不然很難體現法式風味的精髓"
-			);
-		}
+	public static CreateTopPostRequest aTopPost2() {
+		return new CreateTopPostRequest(
+				"1345-5-30 1:51:15PM",
+				"法式料理",
+				"麻婆豆腐鮭魚義大利麵",
 
-		return chatInfo;
+				"這是我最近新開發的料理\r\n" +
+				"製作跨時代和文化的廚藝結晶非常不容易\r\n" +
+				"但是我想推廣料理的不同面向\r\n" +
+				"所以歡迎各位嘗試，記得幫說食譜是源自這裡就好\r\n" +
+				"不用客氣，只是記得要加很多花椒，不然很難體現法式風味的精髓"
+		);
 	}
 
-	public static Chat_Reply aRandomChatReply() {
-		Chat_Reply chatReply = new Chat_Reply();
-		{
-			chatReply.setC_Conts(getRandomReply());
-		}
-
-		return chatReply;
+	public static CreateReplyRequest aRandomReplyTo(int topPostId) {
+		return new CreateReplyRequest(
+				topPostId,
+				getRandomDateTime(),
+				getRandomReplyContent()
+		);
 	}
 
 
@@ -72,8 +67,22 @@ public final class ChatTestUtils {
 			"法式料理？我記得那個應該算是英式料理..."
 	));
 
-	private static String getRandomReply() {
+	private static String getRandomReplyContent() {
 		Collections.shuffle(replies);
 		return replies.get(0) + UUID.randomUUID();
+	}
+
+	private static String getRandomDateTime() {
+		int thousandYears =  36525000;
+		int secondsPerDay = 86400;
+		int randomOffsetInDays = new Random().nextInt(thousandYears);
+		int randomOffsetInSeconds = new Random().nextInt(secondsPerDay);
+		LocalDateTime randomDateTime = LocalDateTime.now()
+				.minusDays(randomOffsetInDays)
+				.minusSeconds(randomOffsetInSeconds);
+
+		return randomDateTime.format(
+				DateTimeFormatter.ofPattern("uuuu-MM-dd hh:mm:ssa")
+		);
 	}
 }

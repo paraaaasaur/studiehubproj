@@ -3,11 +3,13 @@ package com.group5.springboot.controller.chat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
+import com.group5.springboot.dto.chat.CreateReplyRequest;
 import com.group5.springboot.model.chat.Chat_Info;
 import com.group5.springboot.model.chat.Chat_Reply;
 import com.group5.springboot.model.chat.scaffolding.dev.ChatInfoWithRedundancy;
 import com.group5.springboot.model.chat.scaffolding.dev.PostWithPoster;
 import com.group5.springboot.model.user.User_Info;
+import com.group5.springboot.service.chat.ChatService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +21,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import static com.group5.springboot.controller.chat.ChatTestUtils.*;
 import static com.group5.springboot.controller.user.UserTestUtils.aUserTajenwww;
@@ -38,6 +39,7 @@ class ChatControllerTest {
 	private final UserTestUtils userTestUtils;
 	private final ObjectMapper objectMapper;
 	private final GenericDao dao;
+	private final ChatService chatService;
 
 	private MockHttpSession mockHttpSession = new MockHttpSession();
 
@@ -50,11 +52,12 @@ class ChatControllerTest {
 
 
 	@Autowired
-	ChatControllerTest(MockMvc mockMvc, ObjectMapper objectMapper, GenericDao dao) {
+	ChatControllerTest(MockMvc mockMvc, ObjectMapper objectMapper, GenericDao dao, ChatService chatService) {
 		this.mockMvc = mockMvc;
 		this.userTestUtils = new UserTestUtils(mockMvc);
 		this.objectMapper = objectMapper;
 		this.dao = dao;
+		this.chatService = chatService;
 	}
 
 
@@ -65,11 +68,12 @@ class ChatControllerTest {
 		// set up test data
 		this.yen = dao.save(aUserYen());
 		this.tajenwww = dao.save(aUserTajenwww());
-		ChatInfoWithRedundancy saved = dao.saveTopPost(aChatInfo(), yen);
+		chatService.insertTopPostAndRedundancy(yen.getU_id(), aTopPost());
+		ChatInfoWithRedundancy saved = dao.findTopPostAndRedundancy(aTopPost().getC_Title());
 		this.chatInfo1 = saved.getChatInfo();
 		this.chatInfo1Redundancy = saved.getRedundancy();
-		this.chatReply1 = dao.saveReply(aRandomChatReply(), chatInfo1, tajenwww);
-		this.chatReply2 = dao.saveReply(aRandomChatReply(), chatInfo1, tajenwww);
+		this.chatReply1 = dao.saveReply(tajenwww.getU_id(), aRandomReplyTo(chatInfo1.getC_ID()));
+		this.chatReply2 = dao.saveReply(tajenwww.getU_id(), aRandomReplyTo(chatInfo1.getC_ID()));
 	}
 
 	@AfterEach
@@ -184,7 +188,7 @@ class ChatControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("chatReply", notNullValue(Chat_Reply.class)))
+				.andExpect(model().attribute("updatePostResponse", notNullValue(Chat_Reply.class)))
 				.andExpect(view().name("chat/threads/edit-post"));
 	}
 
@@ -264,9 +268,15 @@ class ChatControllerTest {
 	void InsertChat_success() throws Exception {
 		// 0. login + prepare insert data
 		userTestUtils.loginAs(yen, mockHttpSession);
-		Chat_Info newChatInfo = aChatInfo2();
-		newChatInfo.setU_ID(yen.getU_id());
-		String reqBody = objectMapper.writeValueAsString(newChatInfo);
+		var newTopPost = aTopPost2();
+		var reqObj = Map.of(
+				"c_Date", newTopPost.getC_Date(),
+				"c_Class", newTopPost.getC_Class(),
+				"c_Title", newTopPost.getC_Title(),
+				"c_Conts", newTopPost.getC_Conts(),
+				"u_ID", yen.getU_id() // redundant; to be removed in 2.0.0
+		);
+		String reqBody = objectMapper.writeValueAsString(reqObj);
 
 
 		mockMvc.perform(post("/insertChat")
@@ -293,14 +303,17 @@ class ChatControllerTest {
 		// 0. login + prepare reply data
 		userTestUtils.loginAs(yen, mockHttpSession);
 
-		Chat_Reply newChatReply = aRandomChatReply();
-		newChatReply.setU_ID(yen.getU_id());
-		newChatReply.setC_Date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssa")));
-		newChatReply.setC_IDr(chatInfo1.getC_ID());
+		CreateReplyRequest newReply = aRandomReplyTo(chatInfo1.getC_ID());
+		var reqObj = Map.of(
+				"c_IDr", newReply.getC_IDr(),
+				"c_Date", newReply.getC_Date(),
+				"c_Conts", newReply.getC_Conts(),
+				"u_ID", yen.getU_id() // redundant; to be removed in 2.0.0
+		);
 
 
 		// 1. main
-		String reqBody = objectMapper.writeValueAsString(newChatReply);
+		String reqBody = objectMapper.writeValueAsString(reqObj);
 		mockMvc.perform(post("/insertChatReply")
 				.session(mockHttpSession)
 				.contentType(APPLICATION_JSON)
@@ -357,7 +370,7 @@ class ChatControllerTest {
 						.session(mockHttpSession)
 						.param("c_IDr", chatInfo1Redundancy.getC_IDr() + "")
 						.param("c_Date", chatInfo1Redundancy.getC_Date())
-						.param("U_ID", chatInfo1Redundancy.getU_ID())
+						.param("U_ID", chatInfo1Redundancy.getU_ID()) // redundant; to be removed in 2.0.0
 						.param("c_Conts", newContent))
 
 				.andExpect(status().is3xxRedirection())
@@ -385,11 +398,11 @@ class ChatControllerTest {
 						.session(mockHttpSession)
 						.param("c_IDr", chatInfo1Redundancy.getC_IDr() + "")
 						.param("c_Date", chatInfo1Redundancy.getC_Date())
-						.param("U_ID", chatInfo1Redundancy.getU_ID())
+						.param("U_ID", chatInfo1Redundancy.getU_ID()) // redundant; to be removed in 2.0.0
 						.param("c_Conts", "")) // empty required field
 
-				.andExpect(model().attributeExists("chatReply"))
-				.andExpect(model().attributeHasFieldErrors("chatReply", "c_Conts"))
+				.andExpect(model().attribute("updatePostResponse", notNullValue()))
+				.andExpect(model().attributeHasFieldErrors("updatePostResponse", "c_Conts"))
 				.andExpect(model().errorCount(1))
 				.andExpect(view().name("chat/threads/edit-post"));
 	}

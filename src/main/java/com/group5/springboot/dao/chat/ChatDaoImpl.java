@@ -1,15 +1,12 @@
 package com.group5.springboot.dao.chat;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.group5.springboot.model.chat.Chat_Info;
+import com.group5.springboot.model.chat.Chat_Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.group5.springboot.model.chat.Chat_Info;
-import com.group5.springboot.model.chat.Chat_Reply;
-import com.group5.springboot.model.user.User_Info;
+import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 public class ChatDaoImpl implements ChatDao {
@@ -24,8 +21,6 @@ public class ChatDaoImpl implements ChatDao {
 
 	@Override
 	public void insertChat(Chat_Info chat_Info) {
-		User_Info user_Info = em.find(User_Info.class, chat_Info.getU_ID());
-		chat_Info.setUser_Info(user_Info);
 		em.persist(chat_Info);
 	}
 
@@ -75,10 +70,6 @@ public class ChatDaoImpl implements ChatDao {
 
 	@Override
 	public void insertChatReply(Chat_Reply chat_Reply) {
-		Chat_Info chat_Info = em.find(Chat_Info.class, chat_Reply.getC_IDr());
-		User_Info user_Info = em.find(User_Info.class, chat_Reply.getU_ID());
-		chat_Reply.setChat_Info(chat_Info);
-		chat_Reply.setUser_Info(user_Info);
 		em.persist(chat_Reply);
 	}
 
@@ -90,13 +81,7 @@ public class ChatDaoImpl implements ChatDao {
 	}
 
 	@Override
-	public void updateChatReply(Chat_Reply chat_Reply) {
-		Chat_Reply crBean = em.find(Chat_Reply.class, chat_Reply.getC_ID());
-		Chat_Info cBean = em.find(Chat_Info.class, chat_Reply.getC_IDr());
-		User_Info uBean = em.find(User_Info.class, chat_Reply.getU_ID());
-		crBean.setC_IDr(cBean.getC_ID());
-		crBean.setU_ID(uBean.getU_id());
-		crBean.setC_Conts(chat_Reply.getC_Conts());
-		em.merge(crBean);
+	public void updateChatReply(Chat_Reply topPostRedundancy) {
+		em.merge(topPostRedundancy);
 	}
 }

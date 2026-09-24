@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
@@ -8,14 +7,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<base href="${fn:escapeXml(pageContext.request.contextPath)}/">
+<base href="<c:out value="${pageContext.request.contextPath}/" />">
 <link rel='stylesheet' href="assets/css/main.css">
 <link rel="stylesheet" href="assets/css/ckeditor.css">
 <title>編輯回覆</title>
 <script type="application/json" id="bootstrap-data">
 	{
-		"u_id": "${fn:escapeXml(loginBean.u_id)}",
-		"userPicString": "${fn:escapeXml(loginBean.pictureString)}"
+		"u_id": "<c:out value="${loginBean.u_id}" />",
+		"userPicString": "<c:out value="${loginBean.pictureString}" />"
 	}
 </script>
 <script>
@@ -68,30 +67,27 @@
 
 				<div align='center'>
 					<br>
-					<form:form method="POST" modelAttribute="chatReply" enctype='multipart/form-data'>
+					<form:form method="POST" modelAttribute="updatePostResponse" enctype='multipart/form-data'>
 						<table style="line-height:20px;">
 							<tr>
 								<td align='left'>文章編號: </td>
 								<td colspan='2' align='center'>
-									<form:input path="c_IDr" readonly="true"/>
-									<br>
-									<form:errors path="c_IDr" cssClass="error"/>
+									<form:hidden path='c_IDr' />
+									<c:out value="${updatePostResponse.c_IDr}" />
 								</td>
 							</tr>
 							<tr>
 								<td align='left'>日期: </td>
 								<td colspan='2' align='center'>
-									<form:input path="c_Date" readonly="true"/>
-									<br>
-									<form:errors path="c_Date" cssClass="error"/>
+									<form:hidden path='c_Date' />
+									<c:out value="${updatePostResponse.c_Date}" />
 								</td>
 							</tr>
 							<tr>
 								<td align='left'>帳號: </td>
 								<td colspan='2' align='center'>
-									<form:input path="U_ID" readonly="true"/>
-									<br>
-									<form:errors path="U_ID" cssClass="error"/>
+									<input type="hidden" name="U_ID" value="foobar"> <!-- useless entry but okay for backend -->
+									<c:out value="${loginBean.u_id}" />
 								</td>
 							</tr>
 							<tr>
@@ -99,7 +95,7 @@
 								<td colspan='2' align='center'>
 									<form:textarea path="c_Conts"/>
 									<br>
-									<form:errors path="c_Conts" cssClass="error"/>
+									<form:errors path="c_Conts" cssClass="error" />
 								</td>
 							</tr>
 							<tr>

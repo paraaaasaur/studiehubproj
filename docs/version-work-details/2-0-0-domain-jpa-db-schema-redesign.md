@@ -79,6 +79,7 @@
     - `view_count`, `emote_count`
     - fk: nullable `post_id`
 - rename: `conts` -> `content`
+- field "c_Date": should be derived on the backend 
 
 ### event
 - rename: `uidname` -> `nickname`

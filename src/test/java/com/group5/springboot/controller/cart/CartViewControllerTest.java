@@ -2,12 +2,15 @@ package com.group5.springboot.controller.cart;
 
 import com.group5.springboot.controller.user.UserTestUtils;
 import com.group5.springboot.dao.test.GenericDao;
-import com.group5.springboot.dto.cart.AdminCreateCartItemRequest;
-import com.group5.springboot.dto.cart.AdminUpdateCartItemRequest;
+import com.group5.springboot.dto.cart.CreateCartItemRequest;
+import com.group5.springboot.dto.cart.UpdateCartItemRequest;
 import com.group5.springboot.model.cart.CartItem;
 import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +19,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.group5.springboot.controller.product.ProductTestUtils.aRandomProduct;
-import static com.group5.springboot.controller.user.UserTestUtils.*;
+import static com.group5.springboot.controller.user.UserTestUtils.aUserKen;
+import static com.group5.springboot.controller.user.UserTestUtils.aUserTajenwww;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -80,7 +84,7 @@ class CartViewControllerTest {
 				.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("emptyCartItem"))
+				.andExpect(model().attributeExists("createCartItemView"))
 				.andExpect(view().name("cart-items/admin/add"));
 	}
 
@@ -97,18 +101,18 @@ class CartViewControllerTest {
 	void cartAdminInsert_success() throws Exception {
 		// 0. admin-login + decide a cart item to add & a user to add for
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
-		var newCartItem = new AdminCreateCartItemRequest(shelfItem1, tajenwww);
+		var newCartItem = new CreateCartItemRequest(shelfItem1.getP_ID(), tajenwww.getU_id());
 
 
 		// 1. main
 		mockMvc.perform(post("/cart.controller/adminInsert")
 						.session(mockHttpSession)
 						.param("p_id", newCartItem.getP_id() + "")
-						.param("p_name", newCartItem.getP_name())
-						.param("p_price", newCartItem.getP_price() + "")
+						.param("p_name", "gibberish-placeholder")
+						.param("p_price", "gibberish-placeholder")
 						.param("u_id", newCartItem.getU_id())
-						.param("u_firstname", newCartItem.getU_firstname())
-						.param("u_lastname", newCartItem.getU_lastname()))
+						.param("u_firstname", "gibberish-placeholder")
+						.param("u_lastname", "gibberish-placeholder"))
 
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
@@ -128,21 +132,21 @@ class CartViewControllerTest {
 	void cartAdminInsert_whenEmptyField_thenRequestIsRejected() throws Exception {
 		// 0. admin-login + decide a cart item to add & a user to add for
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
-		var newCartItem = new AdminCreateCartItemRequest(shelfItem1, tajenwww);
 
 
 		// 1. main
 		mockMvc.perform(post("/cart.controller/adminInsert")
 						.session(mockHttpSession)
 						.param("p_id", "") // mandatory field empty
-						.param("p_name", newCartItem.getP_name())
-						.param("p_price", newCartItem.getP_price() + "")
+						.param("p_name", "gibberish-placeholder")
+						.param("p_price", "gibberish-placeholder")
 						.param("u_id", "") // mandatory field empty
-						.param("u_firstname", newCartItem.getU_firstname())
-						.param("u_lastname", newCartItem.getU_lastname()))
+						.param("u_firstname", "gibberish-placeholder")
+						.param("u_lastname", "gibberish-placeholder"))
 
-				.andExpect(view().name("cart-items/admin/add"))
-				.andExpect(model().errorCount(2));
+				.andExpect(model().attributeHasFieldErrors("createCartItemView", "p_id", "u_id"))
+				.andExpect(model().errorCount(2))
+				.andExpect(view().name("cart-items/admin/add"));
 	}
 
 	@Test
@@ -157,7 +161,7 @@ class CartViewControllerTest {
 						.session(mockHttpSession))
 
 				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("cartItem"))
+				.andExpect(model().attributeExists("updateCartItemView"))
 				.andExpect(view().name("cart-items/admin/edit"));
 	}
 
@@ -174,10 +178,9 @@ class CartViewControllerTest {
 	void cartAdminUpdate_success() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
-		var update = AdminUpdateCartItemRequest.Builder
+		var update = UpdateCartItemRequest
 				.from(cartItem1)
-				.newProduct(shelfItem1)
-				.build();
+				.withP_id(shelfItem1.getP_ID());
 
 
 		// 1. main
@@ -185,11 +188,11 @@ class CartViewControllerTest {
 				.session(mockHttpSession)
 				.param("cart_id", update.getCart_id() + "")
 				.param("p_id", update.getP_id() + "")
-				.param("p_name", update.getP_name())
-				.param("p_price", update.getP_price() + "")
+				.param("p_name", "gibberish-placeholder")
+				.param("p_price", "gibberish-placeholder")
 				.param("u_id", update.getU_id())
-				.param("u_firstname", update.getU_firstname())
-				.param("u_lastname", update.getU_lastname()))
+				.param("u_firstname", "gibberish-placeholder")
+				.param("u_lastname", "gibberish-placeholder"))
 
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("successMessage"))
@@ -209,10 +212,9 @@ class CartViewControllerTest {
 	void cartAdminUpdate_whenEmptyField_thenRequestIsRejected() throws Exception {
 		// 0. admin-login
 		userTestUtils.adminLoginAsAdming5(mockHttpSession);
-		var update = AdminUpdateCartItemRequest.Builder
+		var update = UpdateCartItemRequest
 				.from(cartItem1)
-				.newProduct(shelfItem1)
-				.build();
+				.withP_id(shelfItem1.getP_ID());
 
 
 		// 1. main
@@ -220,13 +222,14 @@ class CartViewControllerTest {
 						.session(mockHttpSession)
 						.param("cart_id", update.getCart_id() + "")
 						.param("p_id", "") // mandatory field empty
-						.param("p_name", update.getP_name())
-						.param("p_price", update.getP_price() + "")
+						.param("p_name", "gibberish-placeholder")
+						.param("p_price", "gibberish-placeholder")
 						.param("u_id", "")  // mandatory field empty
-						.param("u_firstname", update.getU_firstname())
-						.param("u_lastname", update.getU_lastname()))
+						.param("u_firstname", "gibberish-placeholder")
+						.param("u_lastname", "gibberish-placeholder"))
 
 				.andExpect(view().name("cart-items/admin/edit"))
+				.andExpect(model().attributeHasFieldErrors("updateCartItemView", "p_id", "u_id"))
 				.andExpect(model().errorCount(2));
 	}
 

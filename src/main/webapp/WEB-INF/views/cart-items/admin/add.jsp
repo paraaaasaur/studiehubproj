@@ -45,48 +45,36 @@
 
 					<fieldset>
 						<h1 style="text-align: center;">新增購物車品項資料</h1>
-						<form:form method="POST" modelAttribute="emptyCartItem" enctype='application/x-www-form-urlencoded'>
+						<form:form method="POST" modelAttribute="createCartItemView" enctype='application/x-www-form-urlencoded'>
 							<table>
 								<tr>
-									<td>(1) 品項代號：<br>&nbsp;</td>
-									<td width='360'>
-										<form:input path="cart_id" disabled="true" value="[由系統自動產生]" /><br>&nbsp;
-									</td>
-									<td>(2) 課程代號：<br>&nbsp;</td>
+									<td>(1) 課程代號：<br>&nbsp;</td>
 									<td width='360'>
 										<form:input path='p_id' /><br>&nbsp;
 										<form:errors path='p_id' cssClass="error" />
 									</td>
-								</tr>
-								<tr>
-									<td>(3) 課程名稱：<br>&nbsp;</td>
+									<td>(2) 課程名稱：<br>&nbsp;</td>
 									<td width='360'>
-										<form:input path="p_name" readonly="true" placeholder="【由系統自動代入】" /><br>&nbsp;
+										<input id="p_name" readonly placeholder="【由系統自動代入】" ><br>&nbsp;
 									</td>
-									<td>(4) 課程價格：<br>&nbsp;</td>
-									<td>
-										<form:input path="p_price" readonly="true" placeholder="【由系統自動代入】" /><br>&nbsp;
-									</td>
-								</tr>
 								<tr>
-									<td>(5) 會員帳號：<br>&nbsp;</td>
+									<td>(3) 課程價格：<br>&nbsp;</td>
+									<td>
+										<input id="p_price" readonly placeholder="【由系統自動代入】" ><br>&nbsp;
+									</td>
+									<td>(4) 會員帳號：<br>&nbsp;</td>
 									<td width='360'>
 										<form:input path="u_id" /><br>&nbsp;
 										<form:errors path='u_id' cssClass="error" />
 									</td>
-									<td>(6) 會員名字：<br>&nbsp;</td>
-									<td width='360'>
-										<form:input path='u_firstname' readonly="true" placeholder="【由系統自動代入】" /><br>&nbsp;
-									</td>
-								</tr>
 								<tr>
-									<td>(7) 會員姓氏：<br>&nbsp;</td>
-									<td>
-										<form:input path="u_lastname" readonly="true" placeholder="【由系統自動代入】" /><br>&nbsp;
+									<td>(5) 會員名字：<br>&nbsp;</td>
+									<td width='360'>
+										<input id='u_firstname' readonly placeholder="【由系統自動代入】" ><br>&nbsp;
 									</td>
-									<td>(8) 品項加入日期：<br>&nbsp;</td>
+									<td>(6) 會員姓氏：<br>&nbsp;</td>
 									<td>
-										<form:input path="cart_date" readonly="true" placeholder="【由系統自動產生】" /><br>&nbsp;
+										<input id="u_lastname" readonly placeholder="【由系統自動代入】" ><br>&nbsp;
 									</td>
 								</tr>
 

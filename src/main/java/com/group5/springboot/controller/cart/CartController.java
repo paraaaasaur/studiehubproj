@@ -1,40 +1,32 @@
 package com.group5.springboot.controller.cart;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
 import com.group5.springboot.annotation.auth.RequiresUser;
+import com.group5.springboot.dto.cart.CartItemSearchCriteria;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
+import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.service.cart.CartItemService;
 import com.group5.springboot.service.cart.OrderService;
 import com.group5.springboot.service.product.ProductService;
 import com.group5.springboot.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.model.product.ProductInfo;
-import com.group5.springboot.model.user.User_Info;
 import com.group5.springboot.utils.api.ecpay.payment.integration.AllInOne;
 import com.group5.springboot.utils.api.ecpay.payment.integration.domain.AioCheckOutALL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.group5.springboot.utils.SystemUtils.getBaseUrl;
 
 @RestController
 public class CartController {
-	final ProductService productService;
-	final UserService userService;
-	final CartItemService cartItemService;
-	final OrderService orderService;
+	private final ProductService productService;
+	private final UserService userService;
+	private final CartItemService cartItemService;
+	private final OrderService orderService;
 
 
 	@Autowired
@@ -48,24 +40,28 @@ public class CartController {
 
 	@RequiresUser
 	@PostMapping(value="/cart.controller/clientShowCart")
-	public List<Map<String, Object>> clientShowCart(@RequestParam String u_id) {
-		return cartItemService.getCart(u_id);
+	public List<Map<String, Object>> clientShowCart(@SessionAttribute User_Info loginBean) {
+		return cartItemService.getCart(loginBean.getU_id());
 	}
 	
 	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientRemoveProductFromCartByCartId", produces = "application/json; charset=UTF-8")
-	public List<Map<String, Object>> clientRemoveProductFromCartByCartId(@RequestParam Integer[] cart_ids, @RequestParam String u_id) {
+	public List<Map<String, Object>> clientRemoveProductFromCartByCartId(
+			@RequestParam Integer[] cart_ids, 
+			@SessionAttribute User_Info loginBean
+	) {
 		Arrays.asList(cart_ids).forEach(cartItemService::deleteASingleProduct);
-		return cartItemService.getCart(u_id);
+		return cartItemService.getCart(loginBean.getU_id());
 	}
 	
 	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientAddProductToCart")
 	public Boolean clientAddProductToCart(
+			@SessionAttribute User_Info loginBean,
 			@RequestParam Integer p_ID,
-			@RequestParam String u_ID,
 			@RequestParam String toDo
 	) {
+		final String u_ID = loginBean.getU_id(); 
 		Boolean canBuy = (orderService.selectIfBoughtOrNot(p_ID, u_ID) && cartItemService.selectByProductId(p_ID, u_ID));
 		if ("query".equals(toDo)) {
 			return canBuy;
@@ -80,9 +76,10 @@ public class CartController {
 	@RequiresUser
 	@PostMapping(value = "/cart.controller/clientInitializeProductBtnFunc")
 	public Integer clientInitializeProductBtnFunc(
-			@RequestParam Integer p_ID,
-			@RequestParam String u_ID
+			@SessionAttribute User_Info loginBean,
+			@RequestParam Integer p_ID
 	) {
+		final String u_ID = loginBean.getU_id();
 		Boolean alreadyBought = !(orderService.selectIfBoughtOrNot(p_ID, u_ID));
 		Boolean alreadyInCart = !(cartItemService.selectByProductId(p_ID, u_ID));
 		if (alreadyBought) {
@@ -104,8 +101,8 @@ public class CartController {
 	
 	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSelectProduct")
-	public ProductInfo adminCartSelectProduct(@RequestParam("p_id") String p_id) {
-		return productService.findByProductID(Integer.parseInt(p_id));
+	public ProductInfo adminCartSelectProduct(@RequestParam("p_id") Integer p_id) {
+		return productService.findByProductID(p_id);
 	}
 	
 	@RequiresAdmin
@@ -116,7 +113,10 @@ public class CartController {
 	
 	@RequiresAdmin
 	@PostMapping(value = "/cart.controller/adminSearchBar")
-	public Map<String, Object> adminCartSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
+	public Map<String, Object> adminCartSearchBar(CartItemSearchCriteria req) {
+		final String condition = req.getCondition();
+		final String value = req.getValue();
+		
 		try {
 			
 			if ("u_id".equals(condition)) {
@@ -166,17 +166,16 @@ public class CartController {
 	@RequiresUser
 	@PostMapping("/cart.controller/checkout")
 	public String payViaEcpay(
-			@RequestParam("u_id") String u_id,
+			@SessionAttribute User_Info loginBean,
 			@RequestParam("p_ids") Integer[] p_ids
 	) {
-		List<ProductInfo> cart = new ArrayList<ProductInfo>();
+		List<ProductInfo> cart = new ArrayList<>();
 		for(Integer p_id : p_ids) {
 			ProductInfo product = productService.findByProductID(p_id);
 			cart.add(product);
 		}
-		User_Info uBean = userService.getSingleUser(u_id);
 		
-		AioCheckOutALL aioObj = genEcpayOrder(cart, uBean, cart); 
+		AioCheckOutALL aioObj = genEcpayOrder(cart, loginBean, cart);
 		System.out.println(aioObj);
 		
 		// 參數 1 = 充滿EcpayOrder參數的aioObj，參數 2 = 是否要發票(invoice)
@@ -194,7 +193,7 @@ public class CartController {
 	
 
 	// ==================== helper ====================
-	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info uBean, List<ProductInfo> tempCart) {
+	private AioCheckOutALL genEcpayOrder(List<ProductInfo> cart, User_Info loginBean, List<ProductInfo> tempCart) {
 		// 【產生 MerchantTradeNo String(20)】 = studiehub + date(yyMMdd) + oid五位
 		// ❗ 交易失敗的時候這會變得不能用第二次
 		Integer latestOid = orderService.getCurrentIdSeed() + 10000 + (int)Math.ceil(Math.random() * 60000);
@@ -229,11 +228,11 @@ public class CartController {
 		aioObj.setItemName(myItemName);
 		aioObj.setReturnURL(myReturnURL);
 		aioObj.setNeedExtraPaidInfo("N"); // ❗ 實際上應該要有選擇性
-		aioObj.setCustomField1(uBean.getU_id()); // u_id
-		aioObj.setCustomField2(uBean.getU_lastname() + uBean.getU_firstname()); // user's full name
+		aioObj.setCustomField1(loginBean.getU_id()); // u_id
+		aioObj.setCustomField2(loginBean.getU_lastname() + loginBean.getU_firstname()); // user's full name
 		aioObj.setClientBackURL(myClientBackURL);
 
-		CartViewController.cartInfoMap.put(uBean.getU_id(), tempCart);
+		CartViewController.cartInfoMap.put(loginBean.getU_id(), tempCart);
 
 		return aioObj;
 	}

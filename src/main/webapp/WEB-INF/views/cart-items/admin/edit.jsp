@@ -45,7 +45,7 @@
 
 					<fieldset>
 						<h1 style="text-align: center;">維護購物車品項資料</h1>
-						<form:form method="POST" modelAttribute="cartItem" enctype='multipart/form-data'>
+						<form:form method="POST" modelAttribute="updateCartItemView" enctype='multipart/form-data'>
 							<table>
 								<tr>
 									<td>(1) 品項代號：<br>&nbsp;</td>

@@ -1,33 +1,34 @@
 package com.group5.springboot.validate;
 
+import com.group5.springboot.dto.cart.CreateCartItemRequest;
+import com.group5.springboot.dto.cart.UpdateCartItemRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.SmartValidator;
 import org.springframework.validation.ValidationUtils;
 
-import com.group5.springboot.model.cart.CartItem;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 @Component
-public class CartValidator implements SmartValidator {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+public class CartValidator extends AbstractValidator {
+
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return CartItem.class.isAssignableFrom(clazz);
+		Optional<?> any = Stream.of(CreateCartItemRequest.class, UpdateCartItemRequest.class)
+				.filter(c -> c.isAssignableFrom(clazz))
+				.findAny();
+		
+		return any.isPresent();
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		@SuppressWarnings("unused")
-		CartItem cartItem = (CartItem) target; // ❓
-//		void rejectIfEmpty(Errors errors, String field, String errorCode == 會去對應.properties裡設好的鍵值pair, String defaultMessage)
-//		errorCode 放空值只用DefaultValue也完全可以
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "p_id", "cartItem.p_id.notempty", "課程編號(p_id)必須填寫(DefaultMsg)");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "u_id", "cartItem.u_id.notempty", "會員帳號(u_id)必須填寫(DefaultMsg)");
 	}
 
-	@Override
-	public void validate(Object target, Errors errors, Object... validationHints) {
-		// TODO Auto-generated method stub
-		
+	public BindingResult validate(Object target) {
+		return super.validate(target);
 	}
-
 }

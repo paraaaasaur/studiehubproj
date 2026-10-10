@@ -1,18 +1,12 @@
 package com.group5.springboot.controller.cart;
 
-import com.group5.springboot.dto.cart.AdminCreateCartItemRequest;
 import com.group5.springboot.dto.cart.ECPayPaymentResult;
-import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.model.product.ProductInfo;
 import com.group5.springboot.model.user.User_Info;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class CartAndOrderTestUtils {
 	private final MockMvc mockMvc;
@@ -22,20 +16,6 @@ public final class CartAndOrderTestUtils {
 		this.mockMvc = mockMvc;
 	}
 
-	public void adminAddsCartItem(ProductInfo dbProduct, User_Info dbUser, MockHttpSession mockHttpSession) throws Exception {
-		// 0. validation
-		assertNotNull(mockHttpSession);
-		assertNotNull(mockHttpSession.getAttribute("adminId"), "requires admin session");
-	}
-
-	/**
-	 * A method to construct a {@link CartItem} holding exactly enough
-	 * information for cart service to save to the database.
-	 * @since 1.0.0
-	 **/
-	public static AdminCreateCartItemRequest aCartItemDto(ProductInfo product, User_Info customer) {
-		return new AdminCreateCartItemRequest(product, customer);
-	}
 
 	/**
 	 * <li>A mock ECPay payment result DTO for credit card payment.</li>

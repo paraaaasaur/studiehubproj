@@ -1,36 +1,45 @@
 package com.group5.springboot.service.cart;
 
+import com.group5.springboot.dao.cart.CartItemDao;
+import com.group5.springboot.dao.product.ProductDao;
+import com.group5.springboot.dao.user.UserDao;
+import com.group5.springboot.dto.cart.UpdateCartItemRequest;
+import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.product.ProductInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.group5.springboot.dao.cart.CartItemDao;
-import com.group5.springboot.dao.product.ProductDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.model.product.ProductInfo;
-
 @Service
 @Transactional
 public class CartItemServiceImpl implements CartItemService {
 	private final CartItemDao cartItemDao;
+	private final UserDao userDao;
 	private final ProductDao productDao;
 
 
 	@Autowired
-	public CartItemServiceImpl(CartItemDao cartItemDao, ProductDao productDao) {
+	public CartItemServiceImpl(CartItemDao cartItemDao, UserDao userDao, ProductDao productDao) {
 		this.cartItemDao = cartItemDao;
+		this.userDao = userDao;
 		this.productDao = productDao;
 	}
 
 
+	@Deprecated
 	@Override
 	public Map<String, Object> select(Integer cart_id) {
 		return cartItemDao.select(cart_id);
+	}
+
+	@Override
+	public CartItem find(Integer cartItemId) {
+		return cartItemDao.find(cartItemId);
 	}
 
 	@Override
@@ -62,15 +71,30 @@ public class CartItemServiceImpl implements CartItemService {
 	public Map<String, Object> selectWithNumberRange(String condition, Integer minValue, Integer maxValue) {
 		return cartItemDao.selectWithNumberRange(condition, minValue, maxValue);
 	}
-	
+
+	@Deprecated
 	@Override
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		return cartItemDao.insert(p_id, u_id);
 	}
 
 	@Override
+	public CartItem insert2(Integer p_id, String u_id) {
+		var newEntity = applyToEntity(p_id, u_id);
+		return cartItemDao.insert2(newEntity);
+	}
+
+	@Deprecated
+	@Override
 	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
 		return cartItemDao.update(newU_id, newP_id, cart_id);
+	}
+
+	@Override
+	public CartItem update2(UpdateCartItemRequest data) {
+		var entity = applyToEntity(data);
+		
+		return cartItemDao.update2(entity);
 	}
 
 	@Override
@@ -113,5 +137,30 @@ public class CartItemServiceImpl implements CartItemService {
 			cart.add(map);
 		}
 		return cart;
+	}
+
+
+	// convenience methods
+	private CartItem applyToEntity(Integer p_id, String u_id) {
+		var dbProduct = productDao.findByProductID(p_id);
+		var dbUser = userDao.getSingleUser(u_id);
+
+		CartItem newEntity = new CartItem();
+		newEntity.setProductInfo(dbProduct);
+		newEntity.setUser_Info(dbUser);
+
+		return newEntity;
+	}
+	
+	private CartItem applyToEntity(UpdateCartItemRequest data) {
+		var dbCartItem = cartItemDao.find(data.getCart_id());
+		var dbUser = userDao.getSingleUser(data.getU_id());
+		var dbProduct = productDao.findByProductID(data.getP_id());
+		
+		// update associations
+		dbCartItem.setProductInfo(dbProduct);
+		dbCartItem.setUser_Info(dbUser);
+		
+		return dbCartItem;
 	}
 }

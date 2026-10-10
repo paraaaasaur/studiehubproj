@@ -1,23 +1,18 @@
 package com.group5.springboot.dao.cart;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.group5.springboot.model.cart.CartItem;
+import com.group5.springboot.model.product.ProductInfo;
+import com.group5.springboot.model.user.User_Info;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.group5.springboot.model.cart.CartItem;
-import com.group5.springboot.model.product.ProductInfo;
-import com.group5.springboot.model.user.User_Info;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Repository
 public class CartItemDaoImpl implements CartItemDao {
@@ -37,6 +32,11 @@ public class CartItemDaoImpl implements CartItemDao {
 		map.put("cartItem", cartItem);
 
 		return map;
+	}
+
+	@Override
+	public CartItem find(Integer cartItemId) {
+		return em.find(CartItem.class, cartItemId);
 	}
 
 	@Override
@@ -144,6 +144,7 @@ public class CartItemDaoImpl implements CartItemDao {
 		return map;
 	}
 
+	@Deprecated
 	@Override
 	public Map<String, Object> insert(Integer p_id, String u_id) {
 		Map<String, Object> map = new HashMap<>();
@@ -177,6 +178,12 @@ public class CartItemDaoImpl implements CartItemDao {
 	}
 
 	@Override
+	public CartItem insert2(CartItem data) {
+		em.persist(data);
+		return data;
+	}
+
+	@Override
 	public Integer update(String newU_id, Integer newP_id, Integer cart_id) {
 		CartItem cartBean = em.find(CartItem.class, cart_id);
 
@@ -203,6 +210,11 @@ public class CartItemDaoImpl implements CartItemDao {
 		} else {
 			return -1;
 		}
+	}
+
+	@Override
+	public CartItem update2(CartItem entity) {
+		return em.merge(entity);
 	}
 
 	@Override

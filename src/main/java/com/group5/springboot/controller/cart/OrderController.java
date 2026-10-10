@@ -1,18 +1,17 @@
 package com.group5.springboot.controller.cart;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.group5.springboot.annotation.auth.RequiresAdmin;
+import com.group5.springboot.dto.cart.OrderSearchCriteria;
+import com.group5.springboot.model.cart.OrderInfo;
 import com.group5.springboot.service.cart.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.group5.springboot.model.cart.OrderInfo;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class OrderController {
@@ -33,7 +32,10 @@ public class OrderController {
 
 	@RequiresAdmin
 	@PostMapping(value = "/order.controller/adminSearchBar")
-	public Map<String, Object> adminOrderSearchBar(@RequestParam(name = "searchBy") String condition, @RequestParam(name = "searchBar") String value) {
+	public Map<String, Object> adminOrderSearchBar(OrderSearchCriteria req) {
+		final String condition = req.getCondition();
+		final String value = req.getValue();
+		
 		try {
 			if ("o_status".equals(condition) || "u_id".equals(condition) || "u_email".equals(condition) || "ecpay_o_id".equals(condition)) {
 				// (1) 準確查詢
@@ -64,7 +66,7 @@ public class OrderController {
 			e.printStackTrace();
 		}
 
-		HashMap<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("errorMessage", "查詢出錯");
 		map.put("list", new ArrayList<OrderInfo>());
 		return map;

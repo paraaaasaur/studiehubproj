@@ -21,6 +21,12 @@
 ## How to implement reaction?
 - a reaction by a user to a post
 
+## General
+- User uploads denied by admins shouldn't just get deleted into void
+  - should preserve an archive entry (read-only) for users to check out and reuse if needed
+  - admin verification features in all domains don't preserve at all at the moment.
+  - deletions - whether it's user-based or admin-based - probably shouldn't simply assume success to make decisions like add `successMessage` to `model` by default. 
+    - use returned booleans from services to branch conditions
 
 ## User
 - `reset-password` feature

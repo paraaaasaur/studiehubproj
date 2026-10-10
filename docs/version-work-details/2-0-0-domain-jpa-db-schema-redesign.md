@@ -79,6 +79,7 @@
     - `view_count`, `emote_count`
     - fk: nullable `post_id`
 - rename: `conts` -> `content`
+- field "c_Date": should be derived on the backend 
 
 ### event
 - rename: `uidname` -> `nickname`
@@ -93,6 +94,7 @@
     - order: immutable, frozen data (no deletion or update) by frontend admin
     - order_status_history: "append" status change if necessary
       - PENDING, PAID, CANCELLED_BY_USER, CANCELLED_BY_ADMIN, REFUNDED, FAILED_PAYMENT, ARCHIVED...
+- 3rd-party tables if needed
 
 ## JPA
 - Redesign some data types:

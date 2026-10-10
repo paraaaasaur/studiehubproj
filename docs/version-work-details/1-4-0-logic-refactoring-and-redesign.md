@@ -24,6 +24,9 @@ Renovate non-structural controller/service (mainly) logic
     - Handler method: i18n
     - Tests
 
+### CharService
+1. Make DELETE and UPDATE operations atomic
+
 ### CartController
 1. `/cart.controller/clientRemoveProductFromCartByCartId`
    - issue: non-atomic deletion on multiple cartItems

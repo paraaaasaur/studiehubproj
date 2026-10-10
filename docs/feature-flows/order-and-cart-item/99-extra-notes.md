@@ -23,6 +23,7 @@
 - Manual admin CRUD operations on orders other than legitimate business rules (payment)
   - order insertion/deletion and arbitrary update
   - scheduled for removal
+- Chaotic JSON responses found in multiple handlers
 
 ## Domain Vocabulary
 - `order_info`: the order detail table that flattens an order into each item
@@ -51,6 +52,3 @@
 
 
 ## Unanswered Questions
-1. What is everything `public static cartInfoMap` in `CartViewController` do?
-   - You need to name all its tasks before getting rid of it
-2. How to request the payment result multiple times before expiration?

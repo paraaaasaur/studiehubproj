@@ -1,8 +1,7 @@
 # 1.1.0 - Mass Refactoring: Structural Debt Cleanup
 
 ## Goal
-First focused effort to address major maintainability issues, in preparation  
-for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
+First focused effort to address major maintainability issues, in preparation for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
 
 ---
 
@@ -20,45 +19,85 @@ for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
 
 #### 1. Architecture
 + Correctness
-  - (1) fixed injection type and naming style inconsistencies in dao/service classes
-  - [ ] (6) simplify/correct data shapes in web layer
-    - targets: request payloads, model attributes
-    - not targets: nested shapes (e.g., Object Map)
-    - goal: align with intents, not just picking one random side
-      - e.g., For the `Event` domain,
-        - prefer: `Event` record when possible
-        - avoid: generic `HashMap`
-    - replace god entities with POJO DTOs
-    - related
-      - client code in views
-      - depended on service/dao methods
-    - changed endpoints
-      - user domain
+  - (1) Fixed injection type and naming style inconsistencies in dao/service classes
+  - (6) Refined and clarified request payload shapes
+    - Targets: request payloads, related model attributes
+      - Old payloads: generic maps, god entities
+      - Migrated to dedicated DTOs
+    - Main change
+      - Added DTOs with exact numbers of required fields to replace old 
+        - DTO naming choice
+          - Request and view DTOs: `Request` and `View` suffixes respectively
+          - By case: e.g., `SearchCriteria`
+      - Merged `@ModelAttribute` methods into relevant handlers
+      - Added consistent private helpers in controllers
+        - DTO adapters/assemblers, dedicated model attribute adders
+    - Related change
+      - Tests, validators, view (model attr names, unused fields)
+      - Service and DAO layers
+    - Opportunistic change
+      - Logic flow consolidation
+    - Changed endpoints
+      - User domain
         - `GET /gotoUpdateUserinfo.controller`
         - `POST /login.controller`
         - `POST /userSignup`
         - `POST /changePassword.controller`
         - `POST /updateUserinfo.controller`
         - `POST /sendRandomPasswordToRegisteredEmail.controller`
-      - product domain
+      - Product domain
         - `GET /takeClass/{p_ID}`
         - `GET /updateProduct/{p_ID}`
         - `GET /insertProduct`
         - `POST /updateProduct/{p_ID}`
         - `POST /insertProduct`
-      - question domain
+        - `POST /saveRating`
+      - Question domain
         - `GET /question.controller/insertQuestion`
         - `POST /question.controller/insertQuestion`
         - `GET /question.controller/guestOneQuestion/{q_id}`
         - `GET /question.controller/modifyQuestion/{q_id}`
         - `POST /question.controller/modifyQuestion/{q_id}`
         - `GET /question.controller/verifyOneQuestion/{q_id}`
-      - event domain
+      - Event domain
         - `GET /insertEvent`
         - `POST /insertEvent`
         - `GET /updateEvent/{a_aid}`
         - `POST /updateEvent/{a_aid}`
-        - `GET /Selecteventcontent/{a_aid}`
+        - `GET /Selecteventcontent/{a_aid}` 
+          - Changes happen both in endpoint and view to simplify data delivery.
+            - Old: “model carries event object → view restores id from model attr→ uses id to retrieve json”.
+            - New: "model carries nothing → view derives id directly from url → uses id to retrieve json"
+        - `GET /signupEvent/{a_aid}`
+          - View only needs ID and event name
+            1. ID: derivable from url
+            2. Name: model attr (for HTML injection)
+      - Chat domain
+        - `POST /insertChat`
+          - Refactored test fixture: Tests now use real prod infra (save action) + minimal test fixture (query)
+            - Previously: prod duplicate code
+        - `POST /insertChatReply`
+        - `GET /goUpdateChat/{c_ID}`
+        - `POST /goUpdateChat/{c_ID}`
+      - Cart domain
+        - `POST /cart.controller/clientShowCart`,
+        - `POST /cart.controller/clientRemoveProductFromCartByCartId`,
+        - `POST /cart.controller/clientAddProductToCart`, and
+        - `POST /cart.controller/clientInitializeProductBtnFunc`
+          - Implementation fix: `u_id` (User ID) should've been session-derived
+        - `POST /cart.controller/adminSelectProduct`
+          - Param `p_id` type can simply be `Integer` rather than `String` #Spring-type-conversion
+        - `POST /cart.controller/adminSearchBar`
+        - `POST /cart.controller/checkout`
+          - Implementation fix: user context should've been session-derived
+        - `GET /cart.controller/adminInsert`
+        - `POST /cart.controller/adminInsert`
+        - `GET /cart.controller/adminUpdate/{cartid}`
+        - `POST /cart.controller/adminUpdate/{cartid}`
+          - Added temporary try-catch for response message for better clarity (ultimate shall be replaced with standard exception handling)
+          - Fixed response message typo (`o_id` → `cart_id`)
+      - Order domain
+        - `POST /order.controller/adminSearchBar`
 + Compliance
   - fix failed boundary enforcement with mixed/leaked logic across layers, notably:
     - common
@@ -71,7 +110,9 @@ for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
   - (6) encapsulate inline validation clutter in controllers into their own validators
   - extract storage logic to dedicated service
 + Improvement
-  - controller splitting
+  - controller splitting & organizing
+    - organize misplaced endpoints
+    - ...
   - mixed dao splitting
     - `ChatDao` covering both `Chat_Info` and `Chat_Reply` atm
     - `EventDao`
@@ -122,8 +163,10 @@ for the upcoming dependency update(@1.2.0) and project redesign(@2.x.x).
 #### 3. Code Hygiene
 - Method/Class/Variable names overhaul
   - easy-to-forget cases
-    - `ChatValidator` => `ChatReplyValidator` for clarity
-- Review classes to enforce good practices, notably:
+    - `ChatReplyValidator` => `ChatReplyValidator` for clarity
+  - trivia
+    - boolean methods
+- Enforce good practices to classes, notably:
   - extract reusable logic
   - raw uses in generic
   - tighten modifiers

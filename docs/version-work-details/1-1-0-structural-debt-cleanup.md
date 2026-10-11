@@ -20,16 +20,15 @@ First focused effort to address major maintainability issues, in preparation for
 #### 1. Architecture
 + Correctness
   - (1) Fixed injection type and naming style inconsistencies in dao/service classes
-  - (6) Refined and clarified request payload shapes
-    - Targets: request payloads, related model attributes
-      - Old payloads: generic maps, god entities
-      - Migrated to dedicated DTOs
+  - (6) Clarified request payload and model attribute shapes with DTOs
+    - Old shapes: generic maps, god entities
     - Main change
       - Added DTOs with exact numbers of required fields to replace old 
         - DTO naming choice
           - Request and view DTOs: `Request` and `View` suffixes respectively
           - By case: e.g., `SearchCriteria`
-      - Merged `@ModelAttribute` methods into relevant handlers
+      - Merged all `@ModelAttribute` methods into relevant handlers for explicitness
+      - Renamed model attributes to reflect actual uses
       - Added consistent private helpers in controllers
         - DTO adapters/assemblers, dedicated model attribute adders
     - Related change
